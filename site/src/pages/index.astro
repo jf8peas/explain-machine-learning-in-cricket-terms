@@ -1,0 +1,80 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import { innings, totalChapters } from "../data/innings";
+---
+
+<BaseLayout title="Home">
+  <div
+    class="mx-auto w-full max-w-[1440px] flex-1 px-[clamp(14px,3vw,28px)] pb-14 pt-[clamp(20px,3vw,32px)]"
+  >
+    <!-- Home hero -->
+    <header
+      class="relative mb-[clamp(18px,2.6vw,28px)] overflow-hidden rounded-2xl bg-[linear-gradient(140deg,#0B2B1A_0%,#0F3A24_55%,#071D11_100%)] px-[clamp(20px,3.4vw,44px)] py-[clamp(26px,4vw,46px)]"
+    >
+      <div
+        class="pointer-events-none absolute inset-0"
+        style="background:repeating-linear-gradient(115deg,rgba(255,255,255,.045) 0 1px,transparent 1px 22px)"
+      >
+      </div>
+      <div class="relative flex max-w-[70ch] flex-col gap-4">
+        <span
+          class="inline-flex h-[23px] w-fit items-center rounded-full bg-gold px-2.5 font-mono text-[9.5px] font-medium uppercase tracking-[0.14em] text-pitch"
+          >Season 1 · {totalChapters} chapters</span
+        >
+        <h1
+          class="m-0 text-balance font-display text-[clamp(32px,5vw,56px)] font-extrabold leading-[1.02] tracking-[-0.035em] text-white"
+        >
+          Machine learning, called from the commentary box.
+        </h1>
+        <p
+          class="m-0 text-pretty text-[clamp(15px,1.35vw,17.5px)] leading-[1.55] text-mist-light"
+        >
+          A four-innings course that explains regression, neural networks and
+          agent systems the way cricket actually works — overs, reviews, batting
+          orders and all. No prior ML required; a passing tolerance for cricket
+          metaphors strongly recommended.
+        </p>
+      </div>
+    </header>
+
+    <!-- Innings cards -->
+    <div class="grid gap-[clamp(14px,2vw,22px)] md:grid-cols-2">
+      {
+        innings.map((inn) => (
+          <a
+            href={`/${inn.slug}/`}
+            class="group flex flex-col gap-3 rounded-2xl border border-line bg-white p-[clamp(16px,2vw,24px)] shadow-[0_1px_0_rgba(11,15,13,.04)] transition-all hover:-translate-y-0.5 hover:border-pitch hover:shadow-[0_12px_30px_rgba(11,15,13,.08)]"
+          >
+            <div class="flex items-baseline justify-between gap-2">
+              <span class="font-mono text-[10px] font-medium uppercase tracking-[0.18em] text-gold-deep">
+                {inn.number}
+              </span>
+              <span class="font-mono text-[9.5px] uppercase tracking-[0.12em] text-slate-custom">
+                {inn.chapters.length} chapters
+              </span>
+            </div>
+            <h2 class="m-0 font-display text-[clamp(20px,2vw,26px)] font-bold leading-[1.1] tracking-[-0.025em] text-pitch">
+              {inn.title}
+            </h2>
+            <p class="m-0 font-mono text-[10.5px] tracking-[0.06em] text-slate-custom">
+              {inn.subtitle}
+            </p>
+            <ul class="m-0 mt-1 flex list-none flex-col gap-1.5 p-0">
+              {inn.chapters.map((c, j) => (
+                <li class="flex items-baseline gap-2.5 text-[13.5px] text-ink-soft">
+                  <span class="font-mono text-[10px] text-gold-deep">
+                    {inn.index + 1}.{j + 1}
+                  </span>
+                  <span>{c.nav}</span>
+                </li>
+              ))}
+            </ul>
+            <span class="mt-1 font-mono text-[10px] uppercase tracking-[0.14em] text-gold-deep transition-colors group-hover:text-pitch">
+              Pad up →
+            </span>
+          </a>
+        ))
+      }
+    </div>
+  </div>
+</BaseLayout>

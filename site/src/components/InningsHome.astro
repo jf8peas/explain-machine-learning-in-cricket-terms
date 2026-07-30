@@ -1,0 +1,70 @@
+---
+import { getInnings } from "../data/innings";
+
+interface Props {
+  /** innings section slug */
+  slug: string;
+}
+
+const inn = getInnings(Astro.props.slug);
+if (!inn) throw new Error(`Unknown innings section: ${Astro.props.slug}`);
+---
+
+<div
+  class="mx-auto w-full max-w-[1440px] flex-1 px-[clamp(14px,3vw,28px)] pb-14 pt-[clamp(20px,3vw,32px)]"
+>
+  <!-- Section hero -->
+  <header
+    class="relative mb-[clamp(18px,2.6vw,28px)] overflow-hidden rounded-2xl bg-[linear-gradient(140deg,#0B2B1A_0%,#0F3A24_55%,#071D11_100%)] px-[clamp(20px,3.4vw,44px)] py-[clamp(22px,3.4vw,38px)]"
+  >
+    <div
+      class="pointer-events-none absolute inset-0"
+      style="background:repeating-linear-gradient(115deg,rgba(255,255,255,.045) 0 1px,transparent 1px 22px)"
+    >
+    </div>
+    <div class="relative flex flex-col gap-3">
+      <span
+        class="font-mono text-[10px] font-medium uppercase tracking-[0.18em] text-gold"
+        >Innings {inn.number}</span
+      >
+      <h1
+        class="m-0 text-balance font-display text-[clamp(28px,4vw,46px)] font-extrabold leading-[1.02] tracking-[-0.035em] text-white"
+      >
+        {inn.title}
+      </h1>
+      <p class="m-0 font-mono text-[11px] tracking-[0.08em] text-mist">
+        {inn.subtitle}
+      </p>
+    </div>
+  </header>
+
+  <!-- Chapter cards -->
+  <div class="grid gap-[clamp(14px,2vw,22px)] md:grid-cols-3">
+    {
+      inn.chapters.map((c, j) => (
+        <a
+          href={`/${inn.slug}/${c.slug}/`}
+          class="group flex flex-col gap-3 rounded-2xl border border-line bg-white p-[clamp(16px,2vw,22px)] shadow-[0_1px_0_rgba(11,15,13,.04)] transition-all hover:-translate-y-0.5 hover:border-pitch hover:shadow-[0_12px_30px_rgba(11,15,13,.08)]"
+        >
+          <div class="flex items-center justify-between gap-2">
+            <span class="flex h-[30px] w-[38px] items-center justify-center rounded-[8px] bg-pitch font-mono text-[11px] font-medium text-gold">
+              {inn.index + 1}.{j + 1}
+            </span>
+            <span class="font-mono text-[9.5px] uppercase tracking-[0.12em] text-slate-custom">
+              {c.meta}
+            </span>
+          </div>
+          <h2 class="m-0 font-display text-[19px] font-bold leading-[1.15] tracking-[-0.02em] text-pitch">
+            {c.nav}
+          </h2>
+          <p class="m-0 flex-1 text-[13.5px] leading-[1.55] text-ink-soft">
+            {c.lede}
+          </p>
+          <span class="font-mono text-[10px] uppercase tracking-[0.14em] text-gold-deep transition-colors group-hover:text-pitch">
+            Start over →
+          </span>
+        </a>
+      ))
+    }
+  </div>
+</div>

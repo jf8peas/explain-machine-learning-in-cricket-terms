@@ -1,0 +1,355 @@
+---
+import BaseLayout from "./BaseLayout.astro";
+import { getChapter, totalChapters, type Stat } from "../data/innings";
+
+interface Props {
+  frontmatter: {
+    title: string;
+    /** innings section slug, e.g. "first-innings" */
+    innings: string;
+    /** chapter slug, e.g. "regression" */
+    chapter: string;
+    meta: string;
+    lede: string;
+    commentary?: string;
+    codeFile?: string;
+    codeOut?: string;
+    code?: string;
+    stats?: Stat[];
+  };
+}
+
+const { frontmatter: fm } = Astro.props;
+const ctx = getChapter(fm.innings, fm.chapter);
+if (!ctx) throw new Error(`Unknown chapter: ${fm.innings}/${fm.chapter}`);
+
+const { innings: inn, chIdx, flatIdx, prev, next } = ctx;
+const over = `${inn.index + 1}.${chIdx + 1}`;
+const eyebrow = `${inn.short} · Over ${over}`;
+const readTime = fm.meta.split(" · ")[0];
+const pct = Math.round((flatIdx / totalChapters) * 100);
+const codeLines = (fm.code ?? "").split("\n");
+---
+
+<BaseLayout title={fm.title} description={fm.lede} section={inn.slug}>
+  <!-- Scorebug readout (header slot) -->
+  <Fragment slot="scorebug">
+    <div class="flex flex-col gap-0.5 border-l border-white/10 px-4">
+      <span class="font-mono text-[9px] uppercase tracking-[0.14em] text-mist"
+        >Innings</span
+      >
+      <span
+        class="font-display text-lg font-extrabold leading-none tracking-[-0.02em] text-white"
+        >{inn.index + 1} / 4</span
+      >
+    </div>
+    <div class="flex flex-col gap-0.5 border-l border-white/10 px-4">
+      <span class="font-mono text-[9px] uppercase tracking-[0.14em] text-mist"
+        >Over</span
+      >
+      <span
+        class="font-display text-lg font-extrabold leading-none tracking-[-0.02em] text-gold"
+        >{over}</span
+      >
+    </div>
+    <div class="flex flex-col gap-0.5 border-l border-white/10 px-4">
+      <span class="font-mono text-[9px] uppercase tracking-[0.14em] text-mist"
+        >Read rate</span
+      >
+      <span
+        class="font-display text-lg font-extrabold leading-none tracking-[-0.02em] text-white"
+        >{readTime}</span
+      >
+    </div>
+    <div class="flex items-center gap-2.5 border-l border-white/10 pl-4">
+      <div class="flex flex-col gap-[5px]">
+        <span
+          class="font-mono text-[9px] uppercase tracking-[0.14em] text-mist"
+          >Course progress</span
+        >
+        <div
+          class="h-1.5 w-[clamp(90px,14vw,150px)] overflow-hidden rounded-full bg-white/[0.12]"
+        >
+          <div
+            class="h-full rounded-full bg-gradient-to-r from-gold to-gold-light transition-[width] duration-300"
+            style={`width:${pct}%`}
+          >
+          </div>
+        </div>
+      </div>
+      <span class="font-mono text-[11px] font-medium text-gold"
+        >{flatIdx}/{totalChapters}</span
+      >
+    </div>
+  </Fragment>
+
+  <!-- ═══ BODY ═══ -->
+  <div
+    class="mx-auto flex w-full max-w-[1440px] flex-1 flex-wrap items-start gap-[clamp(16px,2vw,24px)] px-[clamp(14px,3vw,28px)] pb-14 pt-[clamp(16px,2.4vw,28px)]"
+  >
+    <!-- Sidebar — innings card -->
+    <aside
+      class="sticky top-[152px] flex min-w-[240px] max-w-[320px] flex-[1_1_258px] flex-col gap-3.5"
+    >
+      <div
+        class="overflow-hidden rounded-[14px] bg-pitch shadow-[0_2px_0_rgba(6,22,14,.06),0_10px_26px_rgba(6,22,14,.14)]"
+      >
+        <div
+          class="flex flex-col gap-1 border-b border-white/[0.08] bg-[linear-gradient(90deg,rgba(226,183,20,.16),rgba(226,183,20,0))] px-4 py-3.5"
+        >
+          <span
+            class="font-mono text-[9.5px] uppercase tracking-[0.16em] text-gold"
+            >Innings card</span
+          >
+          <span
+            class="font-display text-base font-bold tracking-[-0.02em] text-white"
+            >{inn.title}</span
+          >
+        </div>
+        <div class="flex flex-col p-1.5">
+          {
+            inn.chapters.map((c, j) => {
+              const on = j === chIdx;
+              return (
+                <a
+                  href={`/${inn.slug}/${c.slug}/`}
+                  class:list={[
+                    "flex w-full items-center gap-[11px] rounded-[9px] p-2.5 transition-colors hover:bg-white/5",
+                    on ? "bg-gold/[0.12] text-white" : "text-mist-light",
+                  ]}
+                >
+                  <span
+                    class:list={[
+                      "flex h-[26px] w-[26px] flex-none items-center justify-center rounded-[7px] font-mono text-[11px] font-medium",
+                      on ? "bg-gold text-pitch" : "bg-white/[0.08] text-mist",
+                    ]}
+                  >
+                    {inn.index + 1}.{j + 1}
+                  </span>
+                  <span class="flex min-w-0 flex-col gap-0.5 text-left">
+                    <span class="text-[13px] font-medium leading-[1.25]">
+                      {c.nav}
+                    </span>
+                    <span class="font-mono text-[9.5px] tracking-[0.06em] text-mist">
+                      {c.meta}
+                    </span>
+                  </span>
+                </a>
+              );
+            })
+          }
+        </div>
+      </div>
+
+      <div
+        class="flex flex-col gap-2.5 rounded-[14px] border border-line bg-white px-4 py-3.5"
+      >
+        <span
+          class="font-mono text-[9.5px] uppercase tracking-[0.16em] text-slate-custom"
+          >Match situation</span
+        >
+        <div class="flex flex-col gap-2">
+          <div class="flex items-baseline justify-between gap-2">
+            <span class="text-[12.5px] text-slate-custom"
+              >Chapters completed</span
+            >
+            <span class="font-mono text-[12.5px] font-medium text-pitch"
+              >{flatIdx} / {totalChapters}</span
+            >
+          </div>
+          <div class="flex items-baseline justify-between gap-2">
+            <span class="text-[12.5px] text-slate-custom"
+              >Exercises passed</span
+            >
+            <span class="font-mono text-[12.5px] font-medium text-pitch"
+              >18 / 24</span
+            >
+          </div>
+          <div class="flex items-baseline justify-between gap-2">
+            <span class="text-[12.5px] text-slate-custom">Streak</span>
+            <span class="font-mono text-[12.5px] font-medium text-gold-deep"
+              >6 days · not out</span
+            >
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Main content container -->
+    <main
+      class="min-w-0 flex-[3_1_520px] overflow-hidden rounded-2xl border border-line bg-white shadow-[0_1px_0_rgba(11,15,13,.04),0_12px_30px_rgba(11,15,13,.06)]"
+    >
+      <!-- Chapter hero -->
+      <div
+        class="relative overflow-hidden bg-[linear-gradient(140deg,#0B2B1A_0%,#0F3A24_55%,#071D11_100%)] px-[clamp(20px,3.4vw,44px)] pb-[clamp(18px,2.6vw,26px)] pt-[clamp(22px,3.4vw,38px)]"
+      >
+        <div
+          class="pointer-events-none absolute inset-0"
+          style="background:repeating-linear-gradient(115deg,rgba(255,255,255,.045) 0 1px,transparent 1px 22px)"
+        >
+        </div>
+        <div class="relative flex flex-col gap-3.5">
+          <div class="flex flex-wrap items-center gap-2">
+            <span
+              class="inline-flex h-[23px] items-center rounded-full bg-gold px-2.5 font-mono text-[9.5px] font-medium uppercase tracking-[0.14em] text-pitch"
+              >{eyebrow}</span
+            >
+            <span
+              class="inline-flex h-[23px] items-center whitespace-nowrap rounded-full border border-white/[0.18] px-2.5 font-mono text-[9.5px] uppercase tracking-[0.12em] text-mist-lighter"
+              >{fm.meta}</span
+            >
+            <span
+              class="inline-flex h-[23px] items-center whitespace-nowrap rounded-full border border-white/[0.18] px-2.5 font-mono text-[9.5px] uppercase tracking-[0.12em] text-mist-lighter"
+              >Python 3.11</span
+            >
+          </div>
+          <h1
+            class="m-0 text-balance font-display text-[clamp(30px,4.4vw,52px)] font-extrabold leading-[1.02] tracking-[-0.035em] text-white"
+          >
+            {fm.title}
+          </h1>
+          <p
+            class="m-0 max-w-[62ch] text-pretty text-[clamp(15px,1.35vw,17.5px)] leading-[1.55] text-mist-light"
+          >
+            {fm.lede}
+          </p>
+        </div>
+      </div>
+
+      <!-- Body -->
+      <article
+        class="flex flex-col gap-[clamp(20px,2.4vw,30px)] px-[clamp(20px,3.4vw,44px)] py-[clamp(22px,3vw,38px)]"
+      >
+        <div
+          class="prose prose-neutral max-w-[72ch] prose-headings:font-display prose-h2:text-[clamp(20px,2.1vw,27px)] prose-h2:font-bold prose-h2:leading-[1.15] prose-h2:tracking-[-0.028em] prose-h2:text-pitch prose-h3:text-pitch prose-p:text-[15.5px] prose-p:leading-[1.68] prose-p:text-ink-soft prose-a:font-medium prose-a:text-pitch hover:prose-a:text-gold-deep prose-strong:text-ink prose-code:font-mono prose-li:text-[15.5px] prose-li:leading-[1.68] prose-li:text-ink-soft"
+        >
+          <slot />
+        </div>
+
+        <!-- Commentary box callout -->
+        {
+          fm.commentary && (
+            <aside class="flex gap-3.5 rounded-xl border border-line border-l-[3px] border-l-gold bg-card px-[18px] py-4">
+              <div class="flex h-[34px] w-[34px] flex-none items-center justify-center rounded-full bg-pitch font-mono text-[10px] tracking-[0.04em] text-gold">
+                CB
+              </div>
+              <div class="flex min-w-0 flex-col gap-[5px]">
+                <span class="font-mono text-[9.5px] uppercase tracking-[0.16em] text-slate-custom">
+                  From the commentary box
+                </span>
+                <p class="m-0 text-pretty text-[14.5px] leading-[1.6] text-ink">
+                  {fm.commentary}
+                </p>
+              </div>
+            </aside>
+          )
+        }
+
+        <!-- Code block -->
+        {
+          fm.code && (
+            <div class="flex flex-col gap-2.5">
+              <div class="flex items-baseline gap-3">
+                <span class="pt-1 font-mono text-[10.5px] font-medium tracking-[0.14em] text-gold">
+                  03
+                </span>
+                <h2 class="m-0 text-balance font-display text-[clamp(20px,2.1vw,27px)] font-bold leading-[1.15] tracking-[-0.028em] text-pitch">
+                  Into the nets
+                </h2>
+              </div>
+              <div class="overflow-hidden rounded-xl border border-pitch-mid bg-pitch-dark shadow-[0_10px_24px_rgba(6,22,14,.16)]">
+                <div class="flex items-center gap-2.5 border-b border-white/[0.08] bg-pitch py-[9px] pl-3.5 pr-3">
+                  <span class="h-2 w-2 flex-none rounded-full bg-gold" />
+                  <span class="overflow-hidden text-ellipsis whitespace-nowrap font-mono text-[11px] tracking-[0.02em] text-mist-lighter">
+                    {fm.codeFile}
+                  </span>
+                  <span class="flex-1" />
+                  <span class="font-mono text-[9.5px] uppercase tracking-[0.12em] text-mist">
+                    py
+                  </span>
+                </div>
+                <div class="overflow-x-auto pb-4 pt-3.5">
+                  {codeLines.map((line, i) => (
+                    <div class="flex gap-3.5 px-4 font-mono text-[13px] leading-[1.75]">
+                      <span class="w-4 flex-none select-none text-right text-stump">
+                        {i + 1}
+                      </span>
+                      <span class="min-w-0 whitespace-pre text-mist-lighter">
+                        {line.trimEnd().length ? line : " "}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+                {fm.codeOut && (
+                  <div class="flex flex-wrap gap-2 border-t border-white/[0.06] bg-pitch-line px-3.5 py-2.5">
+                    <span class="font-mono text-[10px] uppercase tracking-[0.1em] text-mist">
+                      Output
+                    </span>
+                    <span class="font-mono text-[11.5px] text-run">
+                      {fm.codeOut}
+                    </span>
+                  </div>
+                )}
+              </div>
+            </div>
+          )
+        }
+
+        <!-- Scorecard stat strip -->
+        {
+          fm.stats && fm.stats.length > 0 && (
+            <div class="grid grid-cols-[repeat(auto-fit,minmax(118px,1fr))] gap-px overflow-hidden rounded-xl border border-line bg-white">
+              {fm.stats.map((st) => (
+                <div class="flex flex-col gap-[5px] bg-white px-4 py-3.5 shadow-[0_0_0_1px_#E5E7EB]">
+                  <span class="font-mono text-[9.5px] uppercase tracking-[0.14em] text-slate-custom">
+                    {st.k}
+                  </span>
+                  <span class="font-display text-[22px] font-bold leading-none tracking-[-0.03em] text-pitch">
+                    {st.v}
+                  </span>
+                  <span class="text-[11.5px] text-gray-500">{st.s}</span>
+                </div>
+              ))}
+            </div>
+          )
+        }
+
+        <!-- Over nav footer -->
+        <div class="mt-0.5 flex flex-wrap gap-3 border-t border-line pt-2">
+          <a
+            href={`/${prev.innings.slug}/${prev.chapter.slug}/`}
+            class="flex flex-[1_1_220px] items-center gap-3 rounded-xl border border-line bg-white px-4 py-3.5 text-left transition-colors hover:border-pitch hover:bg-card"
+          >
+            <span class="font-mono text-[15px] text-gold">←</span>
+            <span class="flex min-w-0 flex-col gap-[3px]">
+              <span
+                class="font-mono text-[9.5px] uppercase tracking-[0.14em] text-slate-custom"
+                >Previous over</span
+              >
+              <span
+                class="overflow-hidden text-ellipsis whitespace-nowrap text-sm font-medium text-pitch"
+                >{prev.chapter.nav}</span
+              >
+            </span>
+          </a>
+          <a
+            href={`/${next.innings.slug}/${next.chapter.slug}/`}
+            class="flex flex-[1_1_220px] items-center justify-end gap-3 rounded-xl border border-pitch bg-pitch px-4 py-3.5 text-right transition-colors hover:bg-pitch-mid"
+          >
+            <span class="flex min-w-0 flex-col items-end gap-[3px]">
+              <span
+                class="font-mono text-[9.5px] uppercase tracking-[0.14em] text-gold"
+                >Next over</span
+              >
+              <span
+                class="overflow-hidden text-ellipsis whitespace-nowrap text-sm font-medium text-white"
+                >{next.chapter.nav}</span
+              >
+            </span>
+            <span class="font-mono text-[15px] text-gold">→</span>
+          </a>
+        </div>
+      </article>
+    </main>
+  </div>
+</BaseLayout>

@@ -1,0 +1,140 @@
+---
+import "../styles/global.css";
+import { innings, totalChapters } from "../data/innings";
+
+interface Props {
+  title: string;
+  description?: string;
+  /** slug of the active innings section, for nav highlighting */
+  section?: string;
+}
+
+const {
+  title,
+  description = "Machine learning explained in cricket terms.",
+  section,
+} = Astro.props;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content={description} />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400..800&family=Geist:wght@400..800&family=Geist+Mono:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
+    <title>{title} · The Playing XI</title>
+  </head>
+  <body>
+    <div class="flex min-h-screen flex-col bg-canvas">
+      <!-- ═══ SCOREBUG HEADER ═══ -->
+      <header
+        class="sticky top-0 z-20 border-b-2 border-gold bg-gradient-to-b from-pitch to-pitch-deep shadow-[0_8px_24px_rgba(6,22,14,.28)]"
+      >
+        <div
+          class="mx-auto flex min-h-[74px] max-w-[1440px] flex-wrap items-stretch px-[clamp(14px,3vw,28px)]"
+        >
+          <!-- Brand blade -->
+          <a
+            href="/"
+            class="flex min-w-0 flex-[1_1_260px] items-center gap-3.5 py-3 pr-[22px]"
+          >
+            <div
+              class="flex h-11 w-11 flex-none items-center justify-center rounded-[10px] bg-gold font-display text-[19px] font-extrabold tracking-[-0.04em] text-pitch shadow-[0_2px_0_rgba(0,0,0,.25)]"
+            >
+              XI
+            </div>
+            <div class="flex min-w-0 flex-col gap-[3px]">
+              <span
+                class="font-mono text-[9.5px] font-medium uppercase tracking-[0.18em] text-gold"
+                >Broadcast Centre</span
+              >
+              <span
+                class="overflow-hidden text-ellipsis whitespace-nowrap font-display text-[clamp(17px,2.2vw,22px)] font-extrabold leading-none tracking-[-0.025em] text-white"
+              >
+                The Playing XI<span class="font-semibold text-mist">
+                  · ML in Cricket Terms</span
+                >
+              </span>
+            </div>
+          </a>
+
+          <!-- Scorebug readout -->
+          <div class="flex flex-wrap items-center py-2.5">
+            <div class="flex items-center gap-2 border-l border-white/10 px-4">
+              <span class="h-[7px] w-[7px] animate-blink rounded-full bg-gold"
+              ></span>
+              <span
+                class="font-mono text-[10px] font-medium uppercase tracking-[0.14em] text-mist-lighter"
+                >Live</span
+              >
+            </div>
+            <slot name="scorebug" />
+          </div>
+        </div>
+
+        <!-- ═══ INNINGS NAVIGATION ═══ -->
+        <nav class="border-t border-white/[0.07] bg-pitch-dark">
+          <div
+            class="mx-auto flex max-w-[1440px] overflow-x-auto px-[clamp(14px,3vw,28px)] [scrollbar-width:thin]"
+          >
+            {
+              innings.map((inn) => {
+                const active = section === inn.slug;
+                return (
+                  <a
+                    href={`/${inn.slug}/`}
+                    class:list={[
+                      "flex flex-none items-center gap-[11px] border-b-[3px] px-[18px] py-3 text-left transition-colors hover:bg-gold/[0.07]",
+                      active
+                        ? "border-gold bg-gold/10 text-white"
+                        : "border-transparent text-[#b9c9be]",
+                    ]}
+                  >
+                    <span class="font-mono text-[10px] font-medium tracking-[0.1em] text-gold">
+                      {inn.number}
+                    </span>
+                    <span class="flex flex-col items-start gap-0.5">
+                      <span class="whitespace-nowrap font-display text-sm font-semibold tracking-[-0.01em]">
+                        {inn.title}
+                      </span>
+                      <span class="whitespace-nowrap font-mono text-[9.5px] tracking-[0.06em] text-mist">
+                        {inn.subtitle}
+                      </span>
+                    </span>
+                  </a>
+                );
+              })
+            }
+          </div>
+        </nav>
+      </header>
+
+      <slot />
+
+      <!-- ═══ FOOTER ═══ -->
+      <footer
+        class="mt-auto border-t border-white/[0.07] bg-pitch-dark px-[clamp(14px,3vw,28px)] py-[18px]"
+      >
+        <div
+          class="mx-auto flex max-w-[1440px] flex-wrap items-center justify-between gap-3"
+        >
+          <span
+            class="font-mono text-[10px] uppercase tracking-[0.14em] text-mist"
+            >The Playing XI · Season 1 · {totalChapters} chapters</span
+          >
+          <span
+            class="font-mono text-[10px] uppercase tracking-[0.14em] text-stump"
+            >Stumps drawn at 18:30</span
+          >
+        </div>
+      </footer>
+    </div>
+  </body>
+</html>

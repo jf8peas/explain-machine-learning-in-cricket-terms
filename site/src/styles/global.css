@@ -1,0 +1,52 @@
+@import "tailwindcss";
+@plugin "@tailwindcss/typography";
+
+@theme {
+  /* ─── The Playing XI · scorebug palette ─── */
+  --color-pitch: #0b2b1a;
+  --color-pitch-deep: #071d11;
+  --color-pitch-dark: #06160e;
+  --color-pitch-mid: #0f3a24;
+  --color-pitch-line: #08200f;
+  --color-crease: #16513a;
+  --color-gold: #e2b714;
+  --color-gold-light: #f5d65c;
+  --color-gold-deep: #8a6e00;
+  --color-canvas: #eef1ee;
+  --color-card: #f6f8f6;
+  --color-ink: #0b0f0d;
+  --color-ink-soft: #2a2f36;
+  --color-mist: #8fa59a;
+  --color-mist-light: #c6d6cb;
+  --color-mist-lighter: #dde7e0;
+  --color-line: #e5e7eb;
+  --color-slate-custom: #475569;
+  --color-run: #7fd1a6;
+  --color-stump: #3e5a4b;
+  --color-sky-ball: #9fd0ff;
+
+  --font-display: "Bricolage Grotesque", ui-sans-serif, system-ui, sans-serif;
+  --font-sans: "Geist", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "Geist Mono", ui-monospace, monospace;
+
+  --animate-blink: xiBlink 1.6s ease-in-out infinite;
+}
+
+@keyframes xiBlink {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.25;
+  }
+}
+
+body {
+  @apply bg-canvas font-sans text-ink antialiased;
+  font-feature-settings: "tnum";
+}
+
+::selection {
+  background: #e2b71455;
+}

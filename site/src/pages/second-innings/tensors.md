@@ -1,0 +1,33 @@
+---
+layout: ../../layouts/MatchLayout.astro
+title: "Tensors: The Scorecard as a Shape"
+innings: second-innings
+chapter: tensors
+meta: "9 min · the scorecard as a shape"
+lede: "A tensor is a scorecard with more dimensions. One ball is a scalar, an over is a vector, an innings is a matrix, and a whole tournament is the rank-3 array everyone keeps getting the axes wrong on."
+commentary: "Nobody misreads a scorecard on purpose. They just forget which column is which."
+codeFile: second_innings/tensors.py
+codeOut: "shape (32, 6, 8) · rank 3 · dtype float32"
+code: |
+  import tensorflow as tf
+
+  ball    = tf.constant(4.0)                      # scalar  · rank 0
+  over    = tf.constant([1, 0, 4, 6, 0, 2])       # vector  · rank 1
+  innings = tf.random.normal((6, 8))              # matrix  · rank 2
+  season  = tf.random.normal((32, 6, 8))          # batch   · rank 3
+
+  print(season.shape, tf.rank(season).numpy(), season.dtype)
+stats:
+  - { k: "Rank", v: "3", s: "matches × overs × feats" }
+  - { k: "Batch axis", v: "0", s: "never move it" }
+  - { k: "dtype", v: "f32", s: "default precision" }
+  - { k: "Elements", v: "1536", s: "32 × 6 × 8" }
+---
+
+## Rank is just how many columns deep the scorecard goes
+
+A **scalar** is one delivery. A **vector** is an over. A **matrix** is an innings, overs by features. Stack innings into a season and you have a rank-3 tensor — the same scorecard logic, one column deeper. Neural networks do not think differently about data than scorers do; they just keep more columns.
+
+## Axis zero is sacred
+
+The first axis is the batch — which match you are looking at. Shuffle it, slice it, never reorder the *meaning* of it. Nearly every mysterious shape error in TensorFlow is someone forgetting which column was which, and the fix is always to write the shape down before you write the code.
