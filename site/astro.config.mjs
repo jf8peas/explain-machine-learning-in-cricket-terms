@@ -4,9 +4,9 @@ import tailwindcss from '@tailwindcss/vite';
 
 // https://astro.build/config
 export default defineConfig({
+  site: 'https://jf8peas.github.io',
+  base: '/explain-machine-learning-in-cricket-terms/',
   vite: {
     plugins: [tailwindcss()],
-    site: 'https://jf8peas.github.io',
-    base: '/explain-machine-learning-in-cricket-terms/'
-  },
+  }
 });
