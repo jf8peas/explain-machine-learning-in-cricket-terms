@@ -6,5 +6,7 @@ import tailwindcss from '@tailwindcss/vite';
 export default defineConfig({
   vite: {
     plugins: [tailwindcss()],
+    site: 'https://jf8peas.github.io',
+    base: '/explain-machine-learning-in-cricket-terms/'
   },
 });
