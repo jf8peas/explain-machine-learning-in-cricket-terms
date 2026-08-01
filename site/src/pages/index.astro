@@ -1,6 +1,7 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
 import { innings, totalChapters } from "../data/innings";
+import { url } from "../utils/paths";
 ---
 
 <BaseLayout title="Home">
@@ -42,7 +43,7 @@ import { innings, totalChapters } from "../data/innings";
       {
         innings.map((inn) => (
           <a
-            href={`/${inn.slug}/`}
+            href={url(`${inn.slug}/`)}
             class="group flex flex-col gap-3 rounded-2xl border border-line bg-white p-[clamp(16px,2vw,24px)] shadow-[0_1px_0_rgba(11,15,13,.04)] transition-all hover:-translate-y-0.5 hover:border-pitch hover:shadow-[0_12px_30px_rgba(11,15,13,.08)]"
           >
             <div class="flex items-baseline justify-between gap-2">

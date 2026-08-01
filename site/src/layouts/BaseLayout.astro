@@ -1,6 +1,7 @@
 ---
 import "../styles/global.css";
 import { innings, totalChapters } from "../data/innings";
+import { url } from "../utils/paths";
 
 interface Props {
   title: string;
@@ -22,7 +23,7 @@ const {
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="description" content={description} />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="icon" type="image/svg+xml" href={url("favicon.svg")} />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -42,7 +43,7 @@ const {
         >
           <!-- Brand blade -->
           <a
-            href="/"
+            href={url()}
             class="flex min-w-0 flex-[1_1_260px] items-center gap-3.5 py-3 pr-[22px]"
           >
             <div
@@ -89,7 +90,7 @@ const {
                 const active = section === inn.slug;
                 return (
                   <a
-                    href={`/${inn.slug}/`}
+                    href={url(`${inn.slug}/`)}
                     class:list={[
                       "flex flex-none items-center gap-[11px] border-b-[3px] px-[18px] py-3 text-left transition-colors hover:bg-gold/[0.07]",
                       active

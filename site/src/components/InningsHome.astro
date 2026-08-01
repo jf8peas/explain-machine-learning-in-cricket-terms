@@ -1,5 +1,6 @@
 ---
 import { getInnings } from "../data/innings";
+import { url } from "../utils/paths";
 
 interface Props {
   /** innings section slug */
@@ -43,7 +44,7 @@ if (!inn) throw new Error(`Unknown innings section: ${Astro.props.slug}`);
     {
       inn.chapters.map((c, j) => (
         <a
-          href={`/${inn.slug}/${c.slug}/`}
+          href={url(`${inn.slug}/${c.slug}/`)}
           class="group flex flex-col gap-3 rounded-2xl border border-line bg-white p-[clamp(16px,2vw,22px)] shadow-[0_1px_0_rgba(11,15,13,.04)] transition-all hover:-translate-y-0.5 hover:border-pitch hover:shadow-[0_12px_30px_rgba(11,15,13,.08)]"
         >
           <div class="flex items-center justify-between gap-2">

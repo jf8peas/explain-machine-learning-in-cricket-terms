@@ -1,6 +1,7 @@
 ---
 import BaseLayout from "./BaseLayout.astro";
 import { getChapter, totalChapters, type Stat } from "../data/innings";
+import { url } from "../utils/paths";
 
 interface Props {
   frontmatter: {
@@ -112,7 +113,7 @@ const codeLines = (fm.code ?? "").split("\n");
               const on = j === chIdx;
               return (
                 <a
-                  href={`/${inn.slug}/${c.slug}/`}
+                  href={url(`${inn.slug}/${c.slug}/`)}
                   class:list={[
                     "flex w-full items-center gap-[11px] rounded-[9px] p-2.5 transition-colors hover:bg-white/5",
                     on ? "bg-gold/[0.12] text-white" : "text-mist-light",
@@ -317,7 +318,7 @@ const codeLines = (fm.code ?? "").split("\n");
         <!-- Over nav footer -->
         <div class="mt-0.5 flex flex-wrap gap-3 border-t border-line pt-2">
           <a
-            href={`/${prev.innings.slug}/${prev.chapter.slug}/`}
+            href={url(`${prev.innings.slug}/${prev.chapter.slug}/`)}
             class="flex flex-[1_1_220px] items-center gap-3 rounded-xl border border-line bg-white px-4 py-3.5 text-left transition-colors hover:border-pitch hover:bg-card"
           >
             <span class="font-mono text-[15px] text-gold">←</span>
@@ -333,7 +334,7 @@ const codeLines = (fm.code ?? "").split("\n");
             </span>
           </a>
           <a
-            href={`/${next.innings.slug}/${next.chapter.slug}/`}
+            href={url(`${next.innings.slug}/${next.chapter.slug}/`)}
             class="flex flex-[1_1_220px] items-center justify-end gap-3 rounded-xl border border-pitch bg-pitch px-4 py-3.5 text-right transition-colors hover:bg-pitch-mid"
           >
             <span class="flex min-w-0 flex-col items-end gap-[3px]">
