@@ -542,7 +542,7 @@ export function getChapter(inningsSlug: string, chapterSlug: string): ChapterCon
     chapter: g.chapters[chIdx],
     chIdx,
     flatIdx,
-    prev: flat[(flatIdx + flat.length - 1) % flat.length],
-    next: flat[(flatIdx + 1) % flat.length],
+    prev: flatIdx > 0 ? flat[flatIdx - 1] : undefined,
+    next: flatIdx < flat.length - 1 ? flat[flatIdx + 1] : undefined
   };
 }
