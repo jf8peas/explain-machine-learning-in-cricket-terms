@@ -33,9 +33,9 @@ If you pick up a conventional machine learning textbook, you are often greeted b
 
 *The Playing XI* was built on a core belief: **Machine learning isn't magic, and it certainly shouldn't be dry.**
 
-When we strip away the academic jargon, machine learning is simply about making tactical decisions under uncertainty, observing the outcome, and making small adjustments. Which, as any cricket follower knows, is the exact definition of a long session at the crease.
+When I strip away the academic jargon, machine learning is simply about making tactical decisions under uncertainty, observing the outcome, and making small adjustments. Which, as any cricket follower knows, is the exact definition of a long session at the crease.
 
-By using whimsical analogies, we anchor complex algorithmic mechanics into vivid, memorable mental models:
+By using whimsical analogies, I anchor complex algorithmic mechanics into vivid, memorable mental models:
 * **Overfitting** becomes a batter who has memorised one specific bowler's action in the nets, only to get bowled for a duck on an away pitch.
 * **Loss functions** become the hawk-eyed third umpire calling a front-foot no-ball.
 * **Hyperparameters** are the strategic choices made before stepping onto the field—like choosing whether to bowl first or set a total.
@@ -44,12 +44,12 @@ By using whimsical analogies, we anchor complex algorithmic mechanics into vivid
 
 ## 2. Learning Without Fear of Failure
 
-In cricket, even the greatest batters fail more than half the time. A edge through the slips still counts as four runs, and a scratchy 20 under pressure can win a match. 
+In cricket, even the greatest batters fail more than half the time. An edge through the slips still counts as four runs, and a scratchy 20 under pressure can win a match. 
 
 Learning machine learning should feel the same way:
 * **Experimentation in the Nets:** Every concept in this course comes with runnable code snippets. You are encouraged to tweak the parameters, mess up the inputs, and see where the model breaks.
 * **Intuition First, Formalism Second:** Once your brain understands *why* an algorithm behaves the way it does through a relatable story, the underlying code and mathematics naturally fall into place.
-* **Playful, Not Unprofessional:** Whimsy doesn't mean skipping the rigor. We build real models, configure real data pipelines, and write production-grade Python—we just refuse to take ourselves too seriously while doing it.
+* **Playful, Not Unprofessional:** Whimsy doesn't mean skipping the rigor. I build real models, configure real data pipelines, and write production-grade Python—I just refuse to take myself too seriously while doing it.
 
 ---
 
