@@ -132,33 +132,28 @@ print("author registered · 1 scorer on duty")`,
     subtitle: "Architecture · Workflow · Setup",
     chapters: [
       {
-
-        slug: "site-architecture",
-        nav: "Site Architecture",
-        meta: "9 min · ground plan",
-        title: "Site Architecture: Reading the Ground",
-        lede: "Before a single ball is bowled, you walk the ground. A learning system is the same — know where the pitch is, where the boundary sits, and which end the data comes from.",
+        slug: "environment-setup",
+        nav: "Environment Setup",
+        meta: "7 min · kit bag",
+        title: "Environment Setup: The Kit Bag Check",
+        lede: "Nobody borrows a bat at the toss. Pin your versions, isolate your environment, and make the whole thing reproducible on someone else's machine before you write a line of modelling code.",
         commentary:
-          "If you cannot draw your system on the back of a scorecard, it is too complicated to debug at 2am.",
-        codeFile: "project/layout.py",
-        codeOut: "4 zones registered · feature store: pitch/",
-        code: `from pathlib import Path
+          "'It works on my machine' is the batting equivalent of 'I was in, actually'.",
+        codeFile: "setup.sh",
+        codeOut: "env ready · 14 packages pinned",
+        code: `python -m venv .venv
+source .venv/bin/activate
 
-ZONES = {
-    "outfield": "data/raw",       # ingestion
-    "pitch":    "data/features",  # prepared
-    "nets":     "experiments",    # training
-    "middle":   "serving",        # production
-}
+pip install "numpy==2.1.3" "pandas==2.2.3" \\
+            "scikit-learn==1.5.2" "tensorflow==2.18.0"
 
-for name, path in ZONES.items():
-    Path(path).mkdir(parents=True, exist_ok=True)
-    print(f"{name:9} -> {path}")`,
+pip freeze > requirements.lock
+python -c "import sklearn; print(sklearn.__version__)"`,
         stats: [
-          { k: "Zones", v: "4", s: "outfield to middle" },
-          { k: "Boundary", v: "1", s: "raw never reaches serving" },
-          { k: "Owners", v: "2", s: "data + platform" },
-          { k: "Review", v: "Weekly", s: "architecture net session" },
+          { k: "Python", v: "3.11", s: "pinned interpreter" },
+          { k: "Packages", v: "14", s: "exact versions" },
+          { k: "Cold build", v: "92s", s: "CI from lockfile" },
+          { k: "Drift", v: "0", s: "since lock committed" },
         ],
       },
       {
@@ -190,28 +185,33 @@ print(len(X_train), len(X_val), len(X_test))`,
         ],
       },
       {
-        slug: "environment-setup",
-        nav: "Environment Setup",
-        meta: "7 min · kit bag",
-        title: "Environment Setup: The Kit Bag Check",
-        lede: "Nobody borrows a bat at the toss. Pin your versions, isolate your environment, and make the whole thing reproducible on someone else's machine before you write a line of modelling code.",
+
+        slug: "site-architecture",
+        nav: "Site Architecture",
+        meta: "9 min · ground plan",
+        title: "Site Architecture: Reading the Ground",
+        lede: "Before a single ball is bowled, you walk the ground. A learning system is the same — know where the pitch is, where the boundary sits, and which end the data comes from.",
         commentary:
-          "'It works on my machine' is the batting equivalent of 'I was in, actually'.",
-        codeFile: "setup.sh",
-        codeOut: "env ready · 14 packages pinned",
-        code: `python -m venv .venv
-source .venv/bin/activate
+          "If you cannot draw your system on the back of a scorecard, it is too complicated to debug at 2am.",
+        codeFile: "project/layout.py",
+        codeOut: "4 zones registered · feature store: pitch/",
+        code: `from pathlib import Path
 
-pip install "numpy==2.1.3" "pandas==2.2.3" \\
-            "scikit-learn==1.5.2" "tensorflow==2.18.0"
+ZONES = {
+    "outfield": "data/raw",       # ingestion
+    "pitch":    "data/features",  # prepared
+    "nets":     "experiments",    # training
+    "middle":   "serving",        # production
+}
 
-pip freeze > requirements.lock
-python -c "import sklearn; print(sklearn.__version__)"`,
+for name, path in ZONES.items():
+    Path(path).mkdir(parents=True, exist_ok=True)
+    print(f"{name:9} -> {path}")`,
         stats: [
-          { k: "Python", v: "3.11", s: "pinned interpreter" },
-          { k: "Packages", v: "14", s: "exact versions" },
-          { k: "Cold build", v: "92s", s: "CI from lockfile" },
-          { k: "Drift", v: "0", s: "since lock committed" },
+          { k: "Zones", v: "4", s: "outfield to middle" },
+          { k: "Boundary", v: "1", s: "raw never reaches serving" },
+          { k: "Owners", v: "2", s: "data + platform" },
+          { k: "Review", v: "Weekly", s: "architecture net session" },
         ],
       },
     ],
