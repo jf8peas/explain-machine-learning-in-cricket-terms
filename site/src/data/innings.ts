@@ -73,6 +73,33 @@ print("author registered · 1 scorer on duty")`,
         ],
       },
       {
+        slug: "preface",
+        nav: "Preface",
+        meta: "6 min · ground regulations",
+        title: "Preface: The Whimsical Game of ML & Cricket",
+        lede: "Machine learning can feel like a game governed by obscure laws, arbitrary decisions, and unpredictable weather. As it turns out, so is cricket. Welcome to a practical, whimsical approach to mastering AI.",
+        commentary:
+          "'In cricket, as in statistical modelling, you can do everything right for five days and still get rained out.' — The Scorer",
+        codeFile: "about/preface.py",
+        codeOut: "preface initialized · toss won · electing to bat",
+        code: `def play_the_game():
+          return {
+              "metaphor": "Cricket",
+              "subject": "Machine Learning",
+              "approach": "Whimsical & Intuitive",
+              "math_prelims_required": False,
+              "joy_of_learning": 1.0,
+          }
+      
+      print("preface initialized · toss won · electing to bat")`,
+        stats: [
+          { k: "Premise", v: "100% Fun", s: "zero pretension" },
+          { k: "Maths", v: "Visual", s: "intuitive concepts" },
+          { k: "Code", v: "Python", s: "runnable in the nets" },
+          { k: "Target", v: "Anyone", s: "curious about ML" },
+        ],
+      },
+      {
         slug: "how-this-site-was-built",
         nav: "Site Meta",
         meta: "8 min · meta-architecture",

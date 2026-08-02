@@ -68,4 +68,4 @@ I created *The Playing XI* to prove that technical concepts don't need to be bur
 
 Whether you want to discuss data product strategies, modern AI-assisted engineering, predictive architectures, or chat about cricket and code, I am always open to connecting with fellow technology leaders, engineers, and executive teams.
 
-The best place to reach me is on **[LinkedIn](https://www.linkedin.com/in/john-fong-04b7a120/)**. Feel free to connect or send a direct message — the score's office is always open!
+The best place to reach me is on **[LinkedIn](https://www.linkedin.com/in/john-fong-04b7a120/)**. Feel free to connect or send a direct message — the scorer's office is always open!
