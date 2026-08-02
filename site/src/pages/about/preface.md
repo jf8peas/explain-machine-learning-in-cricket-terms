@@ -21,10 +21,10 @@ code: |
 
   print("preface initialized · toss won · electing to bat")
 stats:
-  - { k: "Premise", v: "100% Fun", s: "zero pretension" },
-  - { k: "Maths", v: "Visual", s: "intuitive concepts" },
-  - { k: "Code", v: "Python", s: "runnable in the nets" },
-  - { k: "Target", v: "Anyone", s: "curious about ML" },
+  - { k: "Premise", v: "100% Fun", s: "zero pretension" }
+  - { k: "Maths", v: "Visual", s: "intuitive concepts" }
+  - { k: "Code", v: "Python", s: "runnable in the nets" }
+  - { k: "Target", v: "Anyone", s: "curious about ML" }
 ---
 
 ## 1. Demystifying the Black Box Through Whimsy
