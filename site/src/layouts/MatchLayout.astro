@@ -379,40 +379,48 @@ const codeLines = (fm.code ?? "").split("\n");
           )
         }
 
-        <!-- Over nav footer -->
+        <!-- Over nav footer (prev/next are undefined at the course boundaries) -->
         <div class="mt-0.5 flex flex-wrap gap-3 border-t border-line pt-2">
-          <a
-            href={url(`${prev.innings.slug}/${prev.chapter.slug}/`)}
-            class="flex flex-[1_1_220px] items-center gap-3 rounded-xl border border-line bg-white px-4 py-3.5 text-left transition-colors hover:border-pitch hover:bg-card"
-          >
-            <span class="font-mono text-[15px] text-gold">←</span>
-            <span class="flex min-w-0 flex-col gap-[3px]">
-              <span
-                class="font-mono text-[9.5px] uppercase tracking-[0.14em] text-slate-custom"
-                >Previous over</span
+          {
+            ctx?.prev ? (
+              <a
+                href={url(`${ctx.prev?.innings.slug}/${ctx.prev?.chapter.slug}/`)}
+                class="flex flex-[1_1_220px] items-center gap-3 rounded-xl border border-line bg-white px-4 py-3.5 text-left transition-colors hover:border-pitch hover:bg-card"
               >
-              <span
-                class="overflow-hidden text-ellipsis whitespace-nowrap text-sm font-medium text-pitch"
-                >{prev.chapter.nav}</span
+                <span class="font-mono text-[15px] text-gold">←</span>
+                <span class="flex min-w-0 flex-col gap-[3px]">
+                  <span class="font-mono text-[9.5px] uppercase tracking-[0.14em] text-slate-custom">
+                    Previous over
+                  </span>
+                  <span class="overflow-hidden text-ellipsis whitespace-nowrap text-sm font-medium text-pitch">
+                    {ctx.prev?.chapter.nav}
+                  </span>
+                </span>
+              </a>
+            ) : (
+              <div />
+            )
+          }
+          {
+            ctx?.next ? (
+              <a
+                href={url(`${ctx.next?.innings.slug}/${ctx.next?.chapter.slug}/`)}
+                class="flex flex-[1_1_220px] items-center justify-end gap-3 rounded-xl border border-pitch bg-pitch px-4 py-3.5 text-right transition-colors hover:bg-pitch-mid"
               >
-            </span>
-          </a>
-          <a
-            href={url(`${next.innings.slug}/${next.chapter.slug}/`)}
-            class="flex flex-[1_1_220px] items-center justify-end gap-3 rounded-xl border border-pitch bg-pitch px-4 py-3.5 text-right transition-colors hover:bg-pitch-mid"
-          >
-            <span class="flex min-w-0 flex-col items-end gap-[3px]">
-              <span
-                class="font-mono text-[9.5px] uppercase tracking-[0.14em] text-gold"
-                >Next over</span
-              >
-              <span
-                class="overflow-hidden text-ellipsis whitespace-nowrap text-sm font-medium text-white"
-                >{next.chapter.nav}</span
-              >
-            </span>
-            <span class="font-mono text-[15px] text-gold">→</span>
-          </a>
+                <span class="flex min-w-0 flex-col items-end gap-[3px]">
+                  <span class="font-mono text-[9.5px] uppercase tracking-[0.14em] text-gold">
+                    Next over
+                  </span>
+                  <span class="overflow-hidden text-ellipsis whitespace-nowrap text-sm font-medium text-white">
+                    {ctx.next?.chapter.nav}
+                  </span>
+                </span>
+                <span class="font-mono text-[15px] text-gold">→</span>
+              </a>
+            ) : (
+              <div />
+            )
+          }
         </div>
       </article>
     </main>
