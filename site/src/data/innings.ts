@@ -101,7 +101,7 @@ print("author registered · 1 scorer on duty")`,
       },
       {
         slug: "how-this-site-was-built",
-        nav: "Site Meta",
+        nav: "How This Site Was Built",
         meta: "8 min · meta-architecture",
         title: "How This Site Was Built: The Broadcast Tech Stack",
         lede: "Behind every seamless cricket broadcast sits a truck full of cables, telemetry tools, and director monitors. Here is the exact stack, local agent setup, and CI/CD pipeline used to engineer this course.",
