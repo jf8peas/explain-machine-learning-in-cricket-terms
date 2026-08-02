@@ -49,6 +49,28 @@ export const innings: Innings[] = [
     subtitle: "Architecture · Workflow · Setup",
     chapters: [
       {
+        slug: "how-this-site-was-built",
+        nav: "Site Meta",
+        meta: "8 min · meta-architecture",
+        title: "How This Site Was Built: The Broadcast Tech Stack",
+        lede: "Behind every seamless cricket broadcast sits a truck full of cables, telemetry tools, and director monitors. Here is the exact stack, local agent setup, and CI/CD pipeline used to engineer this course.",
+        commentary:
+          "'We aren't paying for the fancy commentary box when we have a perfectly good open-source terminal in the truck.' — Lead Systems Engineer",
+        codeFile: "deploy.yml",
+        codeOut: "build success · 12 static routes generated in 4.2s",
+        code: `# The OpenRouter + Cline + GitHub Actions Loop
+1. Local Dev: Cursor IDE + Cline Extension
+2. Intelligence: Moonshot Kimi K3 via OpenRouter API
+3. Static Engine: Astro 5.0 + Tailwind CSS v4 (Vite)
+4. Pipeline: Automated GitHub Actions CI/CD to Pages`,
+        stats: [
+          { k: "Orchestration", v: "Cline", s: "local open-source agent" },
+          { k: "LLM Engine", v: "Kimi K3", s: "via OpenRouter API" },
+          { k: "Framework", v: "Astro", s: "zero-JS static output" },
+          { k: "Hosting", v: "GH Pages", s: "automated action deployment" },
+        ],
+      },
+      {
         slug: "site-architecture",
         nav: "Site Architecture",
         meta: "9 min · ground plan",
