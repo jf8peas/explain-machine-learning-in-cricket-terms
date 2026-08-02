@@ -46,7 +46,7 @@ By using whimsical analogies, I anchor complex algorithmic mechanics into vivid,
 
 In cricket, even the greatest batters fail more than half the time. An edge through the slips still counts as four runs, and a scratchy 20 under pressure can win a match. 
 
-Learning machine learning should feel the same way:
+Studying machine learning should feel the same way:
 * **Experimentation in the Nets:** Every concept in this course comes with runnable code snippets. You are encouraged to tweak the parameters, mess up the inputs, and see where the model breaks.
 * **Intuition First, Formalism Second:** Once your brain understands *why* an algorithm behaves the way it does through a relatable story, the underlying code and mathematics naturally fall into place.
 * **Playful, Not Unprofessional:** Whimsy doesn't mean skipping the rigor. I build real models, configure real data pipelines, and write production-grade Python—I just refuse to take myself too seriously while doing it.
