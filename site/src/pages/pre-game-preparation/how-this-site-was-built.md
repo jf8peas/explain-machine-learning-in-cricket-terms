@@ -1,5 +1,5 @@
 ---
-layout: ../layouts/MatchLayout.astro
+layout: ../../layouts/MatchLayout.astro
 title: "How This Site Was Built: The Broadcast Tech Stack"
 innings: post-game
 chapter: how-this-site-was-built
