@@ -519,8 +519,8 @@ export interface ChapterContext {
   chIdx: number;
   /** index of the chapter across the whole course */
   flatIdx: number;
-  prev: { innings: Innings; chapter: Chapter };
-  next: { innings: Innings; chapter: Chapter };
+  prev?: { innings: Innings; chapter: Chapter };
+  next?: { innings: Innings; chapter: Chapter };
 }
 
 /**
