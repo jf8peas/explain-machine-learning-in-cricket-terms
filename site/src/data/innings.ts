@@ -42,7 +42,7 @@ export interface Innings {
 export const innings: Innings[] = [
   {
     slug: "about",
-    index: 1,
+    index: 0,
     number: "01",
     title: "About This Site",
     short: "About",
@@ -125,7 +125,7 @@ print("author registered · 1 scorer on duty")`,
   },
   {
     slug: "pre-game-preparation",
-    index: 2,
+    index: 1,
     number: "02",
     title: "Pre-Game Preparation",
     short: "Pre-Game",
@@ -218,7 +218,7 @@ for name, path in ZONES.items():
   },
   {
     slug: "first-innings",
-    index: 3,
+    index: 2,
     number: "03",
 
     title: "First Innings: Machine Learning",
@@ -308,7 +308,7 @@ tidy = DecisionTreeClassifier(max_depth=4, min_samples_leaf=25)`,
   },
   {
     slug: "second-innings",
-    index: 4,
+    index: 3,
     number: "04",
 
     title: "Second Innings: TensorFlow & NN",
@@ -403,7 +403,7 @@ model.compile(optimizer="adam", loss="binary_crossentropy",
   },
   {
     slug: "post-game",
-    index: 5,
+    index: 4,
     number: "05",
 
     title: "Post-Game: Agent Solutions",
