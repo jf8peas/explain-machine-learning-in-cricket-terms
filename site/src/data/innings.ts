@@ -41,12 +41,12 @@ export interface Innings {
 
 export const innings: Innings[] = [
   {
-    slug: "pre-game-preparation",
+    slug: "about",
     index: 0,
-    number: "01",
-    title: "Pre-Game Preparation",
-    short: "Pre-Game",
-    subtitle: "Architecture · Workflow · Setup",
+    number: "00",
+    title: "About This Site",
+    short: "About",
+    subtitle: "Overview · Author · Engineering",
     chapters: [
       {
         slug: "how-this-site-was-built",
@@ -71,6 +71,41 @@ export const innings: Innings[] = [
         ],
       },
       {
+        slug: "author",
+        nav: "The Author",
+        meta: "5 min · the scorer",
+        title: "About the Author",
+        lede: "Every scorecard has a scorer sitting quietly in the box, recording every ball. This chapter introduces the person keeping score for this course — who they are, and why machine learning made more sense once it was explained in cricket terms.",
+        commentary:
+          "The scorer never faces a ball, but nothing counts until they write it down.",
+        codeFile: "about/author.py",
+        codeOut: "author registered · 1 scorer on duty",
+        code: `AUTHOR = {
+    "role": "scorer / course author",
+    "format": "ML explained in cricket terms",
+    "prior_ml_required": False,
+}
+
+print("author registered · 1 scorer on duty")`,
+        stats: [
+          { k: "Role", v: "Scorer", s: "keeping the book" },
+          { k: "Format", v: "4 innings", s: "plus this card" },
+          { k: "Chapters", v: "12", s: "across the season" },
+          { k: "Umpire", v: "You", s: "the final call" },
+        ],
+      },
+    ],
+  },
+  {
+    slug: "pre-game-preparation",
+    index: 1,
+    number: "02",
+    title: "Pre-Game Preparation",
+    short: "Pre-Game",
+    subtitle: "Architecture · Workflow · Setup",
+    chapters: [
+      {
+
         slug: "site-architecture",
         nav: "Site Architecture",
         meta: "9 min · ground plan",
@@ -156,8 +191,9 @@ python -c "import sklearn; print(sklearn.__version__)"`,
   },
   {
     slug: "first-innings",
-    index: 1,
-    number: "02",
+    index: 2,
+    number: "03",
+
     title: "First Innings: Machine Learning",
     short: "First Innings",
     subtitle: "Regression · Classification · Overfitting",
@@ -245,8 +281,9 @@ tidy = DecisionTreeClassifier(max_depth=4, min_samples_leaf=25)`,
   },
   {
     slug: "second-innings",
-    index: 2,
-    number: "03",
+    index: 3,
+    number: "04",
+
     title: "Second Innings: TensorFlow & NN",
     short: "Second Innings",
     subtitle: "Tensors · Backpropagation · Build a Model",
@@ -339,8 +376,9 @@ model.compile(optimizer="adam", loss="binary_crossentropy",
   },
   {
     slug: "post-game",
-    index: 3,
-    number: "04",
+    index: 4,
+    number: "05",
+
     title: "Post-Game: Agent Solutions",
     short: "Post-Game",
     subtitle: "Architecture · The DRS Agent · Agent Tools",

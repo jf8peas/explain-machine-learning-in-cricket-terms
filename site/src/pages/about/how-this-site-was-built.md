@@ -1,7 +1,7 @@
 ---
 layout: ../../layouts/MatchLayout.astro
 title: "How This Site Was Built: The Broadcast Tech Stack"
-innings: pre-game-preparation
+innings: about
 chapter: how-this-site-was-built
 meta: "8 min · meta-architecture"
 lede: "Behind every seamless cricket broadcast sits a truck full of cables, telemetry tools, and director monitors. Here is the exact stack, local agent setup, and CI/CD pipeline used to engineer this course."
