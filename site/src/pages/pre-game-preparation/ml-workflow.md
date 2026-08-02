@@ -1,7 +1,7 @@
 ---
 layout: ../../layouts/MatchLayout.astro
 title: "The Machine Learning Workflow: Playing the Innings"
-innings: first-innings
+innings: pre-game-preparation
 chapter: ml-workflow
 meta: "9 min · one full innings"
 lede: "No selector picks a squad off a single highlight reel. They gather the scorecards, study the averages, run the nets, name an XI, and only then send them out to face a bowler they have never seen. The machine learning workflow is that same selection process, written in code."
