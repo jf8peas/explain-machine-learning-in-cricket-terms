@@ -129,7 +129,7 @@ print("author registered · 1 scorer on duty")`,
     number: "02",
     title: "Pre-Game Preparation",
     short: "Pre-Game",
-    subtitle: "Architecture · Workflow · Setup",
+    subtitle: "Workflow · Setup",
     chapters: [
       {
         slug: "environment-setup",
@@ -184,8 +184,17 @@ print(len(X_train), len(X_val), len(X_test))`,
           { k: "Cadence", v: "2 wks", s: "one experiment cycle" },
         ],
       },
+    ],
+  },
+  {
+    slug: "scoring-model-evaluation",
+    index: 2,
+    number: "03",
+    title: "Scoring: Model Evaluation",
+    short: "Scoring",
+    subtitle: "Evaluation · Architecture",
+    chapters: [
       {
-
         slug: "site-architecture",
         nav: "Site Architecture",
         meta: "9 min · ground plan",
@@ -218,11 +227,10 @@ for name, path in ZONES.items():
   },
   {
     slug: "first-innings",
-    index: 2,
-    number: "03",
-
-    title: "First Innings: Machine Learning",
-    short: "First Innings",
+    index: 3,
+    number: "04",
+    title: "First Innings: Classical ML",
+    short: "Classical ML",
     subtitle: "Regression · Classification · Overfitting",
     chapters: [
       {
@@ -308,11 +316,10 @@ tidy = DecisionTreeClassifier(max_depth=4, min_samples_leaf=25)`,
   },
   {
     slug: "second-innings",
-    index: 3,
-    number: "04",
-
-    title: "Second Innings: TensorFlow & NN",
-    short: "Second Innings",
+    index: 4,
+    number: "05",
+    title: "Second Innings: Deep Learning",
+    short: "Deep Learning",
     subtitle: "Tensors · Backpropagation · Build a Model",
     chapters: [
       {
@@ -403,9 +410,8 @@ model.compile(optimizer="adam", loss="binary_crossentropy",
   },
   {
     slug: "post-game",
-    index: 4,
-    number: "05",
-
+    index: 5,
+    number: "06",
     title: "Post-Game: Agent Solutions",
     short: "Post-Game",
     subtitle: "Architecture · The DRS Agent · Agent Tools",

@@ -1,7 +1,7 @@
 ---
 layout: ../../layouts/MatchLayout.astro
 title: "Site Architecture: Reading the Ground"
-innings: pre-game-preparation
+innings: scoring-model-evaluation
 chapter: site-architecture
 meta: "9 min · ground plan"
 lede: "Before a single ball is bowled, you walk the ground. A learning system is the same — know where the pitch is, where the boundary sits, and which end the data comes from."

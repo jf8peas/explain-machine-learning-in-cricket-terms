@@ -1,6 +1,6 @@
 ---
 import BaseLayout from "./BaseLayout.astro";
-import { getChapter, totalChapters, type Stat } from "../data/innings";
+import { getChapter, innings, totalChapters, type Stat } from "../data/innings";
 import { url } from "../utils/paths";
 
 interface Props {
@@ -41,7 +41,7 @@ const codeLines = (fm.code ?? "").split("\n");
       >
       <span
         class="font-display text-lg font-extrabold leading-none tracking-[-0.02em] text-white"
-        >{inn.index + 1} / 4</span
+        >{inn.index + 1} / {innings.length}</span
       >
     </div>
     <div class="flex flex-col gap-0.5 border-l border-white/10 px-4">
