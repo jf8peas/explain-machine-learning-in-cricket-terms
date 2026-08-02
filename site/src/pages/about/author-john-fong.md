@@ -29,20 +29,27 @@ stats:
 
 Hi, I'm **John Fong**.
 
-I operate across the complete data and modern software lifecycle—translating messy real-world information into actionable intelligence and building AI-enabled software systems.
+I operate across the complete data and modern software lifecycle — translating messy real-world information into actionable intelligence and building AI-enabled software systems.
 
 My work bridges three core disciplines:
-* **Data Analytics:** Reading the pitch before a ball is bowled—building pipelines, uncovering insights, and establishing clear metric telemetry.
-* **Data Science:** Training and validating predictive models—handling statistical uncertainty with the discipline of a test match bowling attack.
+* **Data Analytics:** Reading the pitch before a ball is bowled — building pipelines, uncovering insights, and establishing clear metric telemetry.
+* **Data Science:** Training and validating predictive models — handling statistical uncertainty with the discipline of a test match bowling attack.
 * **AI-Assisted Engineering:** Harnessing cutting-edge AI workflows (like autonomous coding agents, LLM orchestration, and custom tool-use architectures) to design, ship, and deploy production static sites and tools in record time.
 
 I created *The Playing XI* to prove that technical concepts don't need to be buried in jargon. When you frame machine learning through real-world operational frameworks like cricket, complex architectural choices become intuitive, practical, and clear.
+
+<div style="display: flex; align-items: center; gap: 8px; margin-top: 16px;">
+  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="#0A66C2">
+    <path d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14m-.5 15.5v-5.3a3.26 3.26 0 0 0-3.26-3.26c-.85 0-1.84.52-2.28 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 0 1 1.4 1.4v4.93h2.75M6.46 10.9v8.37H9.25V10.9H6.46M7.86 6.78a1.62 1.62 0 1 0 0 3.24 1.62 1.62 0 0 0 0-3.24Z"/>
+  </svg>
+  <span><strong>Contact me at:</strong> <a href="https://www.linkedin.com/in/john-fong-04b7a120/" target="_blank" rel="noopener noreferrer">LinkedIn Profile</a></span>
+</div>
 
 ---
 
 ## 2. Technical Capabilities & Playbook
 
-**Raw Subsystems** &nbsp;$\rightarrow$&nbsp; **Enterprise Semantic Layer** &nbsp;$\rightarrow$&nbsp; **Predictive Analytics** &nbsp;$\rightarrow$&nbsp; **AI-Native Delivery**
+**Raw Subsystems** &nbsp;&rarr;&nbsp; **Enterprise Semantic Layer** &nbsp;&rarr;&nbsp; **Predictive Analytics** &nbsp;&rarr;&nbsp; **AI-Native Delivery**
 
 * **Data Strategy & Architecture:** Designing unified enterprise semantic layers to establish single sources of truth across global regions, enabling self-serve analytics and executive business management systems.
 * **Predictive Data Science:** Modeling multi-variate subscription, revenue, and customer attrition forecasts, and building automated ML lead-scoring pipelines (RAG + Databricks Spark SQL) integrated directly into CRM workflows.
@@ -57,8 +64,8 @@ I created *The Playing XI* to prove that technical concepts don't need to be bur
 
 ---
 
-## 4. Let's Connect
+## 4. Get in Touch
 
 Whether you want to discuss data product strategies, modern AI-assisted engineering, predictive architectures, or chat about cricket and code, I am always open to connecting with fellow technology leaders, engineers, and executive teams.
 
-The best place to reach me is on **[LinkedIn](https://www.linkedin.com/in/john-fong-04b7a120/)**. Feel free to connect or send a direct message — the scorebook is always open!
+The best place to reach me is on **[LinkedIn](https://www.linkedin.com/in/john-fong-04b7a120/)**. Feel free to connect or send a direct message — the score's office is always open!
