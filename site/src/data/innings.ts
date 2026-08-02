@@ -42,8 +42,8 @@ export interface Innings {
 export const innings: Innings[] = [
   {
     slug: "about",
-    index: 0,
-    number: "00",
+    index: 1,
+    number: "01",
     title: "About This Site",
     short: "About",
     subtitle: "Overview · Author · Engineering",
@@ -125,7 +125,7 @@ print("author registered · 1 scorer on duty")`,
   },
   {
     slug: "pre-game-preparation",
-    index: 1,
+    index: 2,
     number: "02",
     title: "Pre-Game Preparation",
     short: "Pre-Game",
@@ -218,7 +218,7 @@ python -c "import sklearn; print(sklearn.__version__)"`,
   },
   {
     slug: "first-innings",
-    index: 2,
+    index: 3,
     number: "03",
 
     title: "First Innings: Machine Learning",
@@ -308,7 +308,7 @@ tidy = DecisionTreeClassifier(max_depth=4, min_samples_leaf=25)`,
   },
   {
     slug: "second-innings",
-    index: 3,
+    index: 4,
     number: "04",
 
     title: "Second Innings: TensorFlow & NN",
@@ -403,7 +403,7 @@ model.compile(optimizer="adam", loss="binary_crossentropy",
   },
   {
     slug: "post-game",
-    index: 4,
+    index: 5,
     number: "05",
 
     title: "Post-Game: Agent Solutions",
