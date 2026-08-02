@@ -88,13 +88,14 @@ const codeLines = (fm.code ?? "").split("\n");
   <div
     class="mx-auto flex w-full max-w-[1440px] flex-1 flex-wrap items-start gap-[clamp(16px,2vw,24px)] px-[clamp(14px,3vw,28px)] pb-14 pt-[clamp(16px,2.4vw,28px)]"
   >
-    <!-- Sidebar — innings card -->
+    <!-- Sidebar — innings card (sticky only on desktop; scrolls away naturally on mobile) -->
     <aside
-      class="sticky top-[152px] flex min-w-[240px] max-w-[320px] flex-[1_1_258px] flex-col gap-3.5"
+      class="flex min-w-[240px] max-w-full flex-[1_1_258px] flex-col gap-3.5 lg:sticky lg:top-[152px] lg:max-h-[calc(100vh-170px)] lg:max-w-[320px]"
     >
       <div
-        class="overflow-hidden rounded-[14px] bg-pitch shadow-[0_2px_0_rgba(6,22,14,.06),0_10px_26px_rgba(6,22,14,.14)]"
+        class="overflow-y-auto rounded-[14px] bg-pitch shadow-[0_2px_0_rgba(6,22,14,.06),0_10px_26px_rgba(6,22,14,.14)] lg:max-h-[80vh]"
       >
+
         <div
           class="flex flex-col gap-1 border-b border-white/[0.08] bg-[linear-gradient(90deg,rgba(226,183,20,.16),rgba(226,183,20,0))] px-4 py-3.5"
         >
