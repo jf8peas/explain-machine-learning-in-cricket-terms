@@ -42,10 +42,10 @@ import { url } from "../utils/paths";
     <div class="grid gap-[clamp(14px,2vw,22px)] md:grid-cols-2">
       {
         innings.map((inn) => (
-          <a
-            href={url(`${inn.slug}/`)}
+          <div
             class="group flex flex-col gap-3 rounded-2xl border border-line bg-white p-[clamp(16px,2vw,24px)] shadow-[0_1px_0_rgba(11,15,13,.04)] transition-all hover:-translate-y-0.5 hover:border-pitch hover:shadow-[0_12px_30px_rgba(11,15,13,.08)]"
           >
+
             <div class="flex items-baseline justify-between gap-2">
               <span class="font-mono text-[10px] font-medium uppercase tracking-[0.18em] text-gold-deep">
                 {inn.number}
@@ -55,8 +55,11 @@ import { url } from "../utils/paths";
               </span>
             </div>
             <h2 class="m-0 font-display text-[clamp(20px,2vw,26px)] font-bold leading-[1.1] tracking-[-0.025em] text-pitch">
-              {inn.title}
+              <a href={url(`${inn.slug}/`)} class="text-inherit no-underline">
+                {inn.title}
+              </a>
             </h2>
+
             <p class="m-0 font-mono text-[10.5px] tracking-[0.06em] text-slate-custom">
               {inn.subtitle}
             </p>
@@ -66,16 +69,26 @@ import { url } from "../utils/paths";
                   <span class="font-mono text-[10px] text-gold-deep">
                     {inn.index + 1}.{j + 1}
                   </span>
-                  <span>{c.nav}</span>
+                  <a
+                    href={url(`${inn.slug}/${c.slug}/`)}
+                    class="text-inherit no-underline transition-colors hover:text-pitch hover:underline"
+                  >
+                    {c.nav}
+                  </a>
                 </li>
               ))}
+
             </ul>
-            <span class="mt-1 font-mono text-[10px] uppercase tracking-[0.14em] text-gold-deep transition-colors group-hover:text-pitch">
+            <a
+              href={url(`${inn.slug}/`)}
+              class="mt-1 font-mono text-[10px] uppercase tracking-[0.14em] text-gold-deep no-underline transition-colors hover:text-pitch group-hover:text-pitch"
+            >
               Pad up →
-            </span>
-          </a>
+            </a>
+          </div>
         ))
       }
+
     </div>
   </div>
 </BaseLayout>
