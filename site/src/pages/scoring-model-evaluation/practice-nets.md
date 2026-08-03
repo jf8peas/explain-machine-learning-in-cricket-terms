@@ -1,211 +1,199 @@
 ---
 layout: ../../layouts/MatchLayout.astro
-title: "The Machine Learning Workflow: Playing the Innings"
+title: "The Practice Nets: Train/Test Splits & Model Fit"
 innings: scoring-model-evaluation
 chapter: practice-nets
-meta: "9 min · one full innings"
-lede: "No selector picks a squad off a single highlight reel. They gather the scorecards, study the averages, run the nets, name an XI, and only then send them out to face a bowler they have never seen. The machine learning workflow is that same selection process, written in code."
-commentary: "'The nets tell you who can bat. The middle tells you who can score. Never confuse the two.' — Chief Selector"
-codeFile: match_day.py
-codeOut: "483 in the nets · 86 in the middle · accuracy 0.9651"
+meta: "7 min · data splits & fit"
+lede: "You don't evaluate a batter's match readiness by how well they hit gentle throw-downs in the nets. To build an accurate model, you must split your data and learn the difference between practicing footwork and flat-track bullying."
+commentary: "'In the nets, everyone looks like Bradman. Match day on a green wicket is where you find out who can actually bat.' — Head Coach"
+codeFile: scoring/train_test_split.py
+codeOut: "train: 80% (net practice) · val: 10% (center wicket) · test: 10% (match day)"
 code: |
-  # Match Day: One Full Innings of the ML Workflow
-  from sklearn.datasets import load_breast_cancer
   from sklearn.model_selection import train_test_split
-  from sklearn.svm import LinearSVC
-
-  cancer_data = load_breast_cancer(as_frame=True)
-  cancer_df = cancer_data.data
-  cancer_df['target'] = cancer_data.target
-
-  X = cancer_df.drop(["target"], axis=1)
-  y = cancer_df["target"]
+  # Splitting historical match telemetry into Net Practice and Match Day
   X_train, X_test, y_train, y_test = train_test_split(
-      X, y, test_size=0.15, random_state=417)
-
-  model = LinearSVC(penalty="l2", loss="squared_hinge", C=10, random_state=417)
-  model.fit(X_train, y_train)
-  model.score(X_test, y_test)
+      features, targets, test_size=0.2, random_state=42
+  )
 stats:
-  - { k: "Squad Size", v: "569 rows", s: "observations / feature vectors" }
-  - { k: "Player Card", v: "30 features", s: "+ 1 target variable" }
-  - { k: "Selection Split", v: "483 / 86", s: "nets vs. the middle" }
-  - { k: "Verdict", v: "Binary", s: "malignant or benign" }
+  - { k: "Net Practice", v: "Train Set", s: "learning the strokes" }
+  - { k: "Match Day", v: "Test Set", s: "unseen bowling" }
+  - { k: "Net Hero", v: "Overfitting", s: "memorized throw-downs" }
+  - { k: "One-Trick", v: "Underfitting", s: "too simple technique" }
 ---
 
-Machine learning lets us build mathematical models that find patterns in data on their own, and then apply those patterns to data they have never seen. That last clause is the whole game. A model that performs beautifully on the deliveries it has already faced has proved nothing — every batter looks like a century-maker against a bowling machine set to the same length.
+Every club has one. The player who murders the bowling in the nets — pulls, cuts, lofts everything over the sightscreen — and then walks out on Saturday and nicks off for three. The coach knew. The coach always knows. And the reason the coach knows is that they never once mistook net form for match form.
 
-So the workflow is built to prevent self-deception. Seven steps, in order:
+Your model has exactly the same problem, and this chapter is about not being fooled by it.
 
-1. Data collection
-2. Data exploration and wrangling
-3. Data preparation
-4. Building and training a model
-5. Evaluating model performance
-6. Fine-tuning the model
-7. Evaluating model performance *again*
+## Dividing the Ground: Data Splits
 
-Notice that evaluation appears twice. That is not a typo in the running order — it is the point of the exercise.
+Scoring a model on the data it trained on is the cardinal sin of machine learning. Not a rookie mistake — a *sin*, because it produces a number that looks wonderful and means nothing, and it will happily follow you all the way into production before anyone notices.
 
-## Scouting the Squad: Data Collection
+Think about what you are actually asking. You have shown the model 10,000 deliveries. You then ask it to play those same 10,000 deliveries again and report how it did. A sufficiently complex model can simply memorise all 10,000 and answer perfectly. That tells you the model has a good memory. It tells you nothing about whether it can bat.
 
-Before anything else, you need players. Data collection is the scouting trip: scraping a website, querying a database, pulling from an API, or — as here — reaching for a well-known dataset that ships with the library.
+So we divide the ground into three areas, each with a different job.
 
-We will use the Breast Cancer Wisconsin (Diagnostic) dataset, a squad that scikit-learn keeps permanently on the books.
+### Training Set — Net Practice and Throw-downs
 
-```python
-from sklearn.datasets import load_breast_cancer
+This is where the volume happens. Thousands of deliveries, a coach feeding balls from twenty-two yards, the batter grooving footwork, timing, and shot selection. Mistakes here are free and expected — that is the entire point of a net. The model looks at these rows over and over, adjusting its internal parameters until the patterns stick.
 
-cancer_data = load_breast_cancer(as_frame=True)
+Roughly 70–80% of your data lives here.
 
-cancer_df = cancer_data.data
-cancer_df['target'] = cancer_data.target
-```
+### Validation Set — Center-Wicket Warm-Up Matches
 
-The `as_frame=True` argument asks scikit-learn to hand the squad over as a pandas DataFrame rather than a bare NumPy array. Do this. Column names are the players' names on the back of the shirt — you will want them at every step that follows.
+Between the nets and the Test match sits the practice fixture: full-length, match conditions, real bowlers, no trophy. This is where the coaching staff try things. Move the young left-hander up to three. Ask the seamer to bowl a fuller length. See what happens.
 
-The second and third lines matter: `cancer_data.data` gives you the measurements, and `cancer_data.target` gives you the verdicts. They arrive separately, and we glue the verdict column on so the whole scorecard sits in one table while we explore.
+The validation set is your center-wicket warm-up. You use it to make decisions *about* the model without touching the official benchmark:
 
-## Reading the Scorecard: Exploration and Wrangling
+- Which algorithm to use
+- Which hyperparameter settings work — `C`, tree depth, learning rate, number of neighbours
+- Which features to keep and which to drop
+- When to stop training
 
-A selector who has not read the scorecard is guessing. Before a single model is trained, look at what you actually have.
+You may look at the validation score as many times as you like. That freedom is precisely why it cannot also serve as your final verdict — a score you have optimised against is a score you have contaminated.
 
-```python
-cancer_df.shape          # (569, 31)
-cancer_df.isna().sum()   # missing values per column
-cancer_df.head()
-```
+Typically 10–15%.
 
-`shape` tells us the squad is **569 players deep, with 31 columns on the card**. `isna()` checks for gaps — a player whose bowling average was never recorded. Here the sheet is spotless: zero missing values. Real-world data is rarely so obliging, and wrangling is where you fill, drop, or flag those gaps.
+### Test Set — Match Day
 
-### The Vocabulary of the Scorecard
+Sealed in the vault. Opened once, at the very end, after every decision has already been made.
 
-For tabular data, three words carry the entire conversation:
+The test set exists to answer one question: *how will this perform against deliveries nobody has ever seen?* It is a one-shot instrument. If you run it, see a disappointing number, go back and adjust something, then run it again, you have converted your test set into a second validation set and you no longer have an honest estimate of anything.
 
-- A **feature** is a column. It describes a property of the data — the player's strike rate, average, or catches taken. We have 30 of them: radius, texture, perimeter, smoothness, and so on.
-- The **target variable** is the one column we want the model to predict. On our card it is `target`: is this tumour malignant or benign?
-- An **observation** — also called a **feature vector** — is a row. One player, one complete set of stats, one verdict.
-
-Because every row carries a verdict, this is **supervised** machine learning. The model learns from data that is already labelled, the way a young bowler studies old footage where the outcome of every delivery is already known. Those labels can be continuous numbers (a regression task, predicting *how many* runs) or categories (a classification task, predicting *out* or *not out*).
-
-Ours are categorical, so the model is a **classifier**. And because there are exactly two labels — malignant or benign — this is **binary classification**. Three or more labels and it becomes **multi-class classification**: not just *out*, but *bowled, caught, LBW, or run out*.
-
-## Naming the XI and Sealing the Envelope: Data Preparation
-
-Here is the step that separates honest work from wishful thinking.
-
-You cannot judge a batter on the deliveries they practised against. So before training begins, we split the squad in two: most of them go to the nets, and a small group is sealed in an envelope and not opened until match day.
+Around 10–15%, and treated with something close to superstition.
 
 ```python
 from sklearn.model_selection import train_test_split
 
-X = cancer_df.drop(["target"], axis=1)
-y = cancer_df["target"]
-
-X_train, X_test, y_train, y_test = train_test_split(
-    X, y, test_size=0.15, random_state=417
+# First cut: peel off Match Day (20%) and lock it away
+X_temp, X_test, y_temp, y_test = train_test_split(
+    features, targets, test_size=0.2, random_state=42
 )
+
+# Second cut: split the rest into Net Practice and Center-Wicket
+X_train, X_val, y_train, y_val = train_test_split(
+    X_temp, y_temp, test_size=0.125, random_state=42
+)
+
+print(len(X_train), len(X_val), len(X_test))
+# 80% / 10% / 10%
 ```
 
-Read this in two beats.
+The `test_size=0.125` on the second split looks odd until you follow the arithmetic: it is 12.5% of the remaining 80%, which is 10% of the original. Splitting twice is the standard idiom, and the second fraction always needs this adjustment.
 
-**First, separate the stats from the verdicts.** `X` holds the 30 features — everything the model is allowed to see. `y` holds the target. Dropping `target` from `X` is not housekeeping; if you leave the answer in the question paper, the model will simply read it off and report perfect accuracy. This is the single most common way beginners fool themselves.
+A few ground rules worth taping to the dressing-room wall:
 
-**Second, split.** `test_size=0.15` seals 15% of the squad in the envelope. The convention is **15% to 20%** — enough players in the envelope for the result to mean something, but not so many that the nets go empty. With 569 rows that gives us **483 for training and 86 for testing**.
+- **Split before you do anything else.** Scaling, imputing, encoding — fit those on the training set only, then apply the fitted transformer to validation and test. Fit a `StandardScaler` on the full dataset and you have leaked information about match day into your net sessions.
+- **Fix your `random_state`.** Reproducible splits mean comparable results.
+- **Stratify when classes are imbalanced.** `stratify=y` keeps the same class proportions in every split, so you don't end up with a validation set containing four examples of your rare class.
 
-`random_state=417` fixes the shuffle. Any integer will do; what matters is that you use the *same* one every time, so your split is reproducible and your results are comparable across runs. Without it, every execution reshuffles the squad and your accuracy wanders for reasons that have nothing to do with your model.
+Now, with the ground properly divided, we can talk about the two ways a technique goes wrong.
 
-The data used to train is the **training set**. The data in the envelope is the **test set**. From this moment until step five, the test set does not exist.
+## Underfitting: The One-Dimensional Batter (High Bias)
 
-## Net Sessions: Building and Training the Model
+Picture a batter who has learned exactly one shot: the forward defensive.
 
-Now we pick a technique and put it to work. Our bowler for this innings is a Linear Support Vector Classifier.
+Short ball climbing at the throat? Forward defence. Yorker crashing into the base of off stump? Forward defence. Leg-spinner drifting wide outside leg? Forward defence, played hopefully in the general direction of the bowler. The technique is *consistent*. It is also useless.
+
+This batter does not score runs in the nets. They do not score runs on match day. They do not score runs anywhere, because their model of "how to bat" is too simple to capture what batting actually requires.
+
+That is **underfitting**, or **high bias**. The model's capacity is too small for the structure in the data. A straight line trying to trace a curve. A depth-1 decision tree asked to separate ten classes. No amount of extra practice fixes it, because the limitation is in the technique itself, not the volume of reps.
+
+**The diagnostic sign is unmistakable: poor performance on the training set *and* poor performance on validation.** Both numbers are bad, and they are bad together.
 
 ```python
-from sklearn.svm import LinearSVC
-
-model = LinearSVC(penalty="l2", loss="squared_hinge", C=10, random_state=417)
-model.fit(X_train, y_train)
+model.score(X_train, y_train)   # 0.61
+model.score(X_val,   y_val)     # 0.59
 ```
 
-Two lines, two distinct actions — and the distinction is worth holding onto.
+Two low scores sitting next to each other is the signature. If you see this, do not reach for more data — more throw-downs will not teach a blocker to drive. Reach for:
 
-The first line **builds** the model. Nothing has been learned yet; this is a bowler with a run-up and an action, marking out their steps. The arguments are the settings you chose *before* any ball was bowled:
+- A more expressive model (polynomial terms, a deeper tree, more layers)
+- Better or more informative features
+- Less regularisation — you have been coaching caution into a player who needs to play shots
+- Longer training, if it simply hasn't converged yet
 
-- `penalty="l2"` and `loss="squared_hinge"` describe how the model is punished for getting things wrong — the coach's standard for what counts as a bad ball.
-- `C=10` controls how hard it tries to fit every last training point. High `C` means a bowler obsessed with never conceding a run in the nets; low `C` means one willing to leak a few in exchange for a repeatable action.
-- `random_state=417` again pins down internal randomness so the run is reproducible.
+## Overfitting: The Flat-Track Bully and the Net Hero (High Variance)
 
-The second line, `.fit()`, is the net session itself. The model works through all 483 training observations, adjusting its internal parameters until it finds the boundary that best separates malignant from benign.
+Now the opposite failure, and the more seductive one.
 
-One practical note: `LinearSVC` on raw, unscaled features will often print a convergence warning — the features here range from fractions of a unit to the thousands, and the optimiser struggles to settle. The model still trains and still scores well, but if you want to silence it properly, `StandardScaler` is the tool, and it is a topic for its own chapter.
+Our net hero has spent six months in the same indoor facility, facing the same bowling machine, set to the same length, at the same pace, off the same worn patch of artificial turf. They have effectively memorised it. Ball leaves the machine, and before it has travelled a yard they are already into the shot — because it is *always this ball*. Six, four, six, six. They look like Bradman. People come to watch.
 
-## Match Day: Evaluating the Performance
+Then the tour party lands, and they walk out on a green, seaming, bouncy overseas wicket with a cross-breeze and a bowler who has never operated at a fixed pace in his life. First delivery moves half a bat's width off the seam. Caught behind. Duck.
 
-Open the envelope.
+Nothing was learned about *how a cricket ball moves*. What was learned was the specific quirks of one bowling machine in one shed — the **noise**, not the **signal**.
+
+That is **overfitting**, or **high variance**. The model has enough capacity to memorise the training set, including its random idiosyncrasies, and it has done exactly that.
+
+**The diagnostic sign is a gap:**
 
 ```python
-model.score(X_test, y_test)
-# 0.9651
+model.score(X_train, y_train)   # 0.998
+model.score(X_val,   y_val)     # 0.712
 ```
 
-`score()` does two things in one call: it asks the model to predict a label for each of the 86 unseen observations, then compares those predictions against the actual labels. The fraction it gets right is the **accuracy**.
+Near-perfect in the nets, falling apart in the middle. Whenever training accuracy substantially exceeds validation accuracy, you are looking at a net hero. The size of that gap *is* the measurement — watch it, not the training score.
 
-**0.9651.** Roughly 83 of 86 correct on players it has never faced.
+The remedies all amount to varying the practice conditions:
 
-This number means something precisely because the test set was sealed. The model had no opportunity to memorise these rows. What we are measuring is not recall — it is judgement.
+- **More data** — more bowlers, more surfaces, more genuine variety
+- **Regularisation** (L1/L2, dropout, lower `C`) — penalise the model for over-committing to any single pattern
+- **Simplify** — shallower trees, fewer features, fewer parameters
+- **Cross-validation** — rotate which slice is held out, so no single quirky split flatters you
+- **Early stopping** — pull the batter out of the nets before they start grooving in bad habits
+- **Data augmentation** — change the machine's pace and length between deliveries
 
-Accuracy is the natural first metric and the right one to learn on, though it is not the last word. When one class vastly outnumbers the other, a lazy model that always predicts the majority can post an impressive accuracy while being useless. Precision, recall, and the confusion matrix are the follow-up questions, and they come later in the series.
+One thing that never fixes overfitting: more training on the same data. That is sending the net hero back to the same shed.
 
-## Changing the Field: Fine-Tuning, Then Evaluating Again
+## Generalization: Finding the Sweet Spot
 
-Every model comes with dials. Fine-tuning is the captain walking down the pitch mid-over and shifting the field — same bowler, same batter, different setting.
+Between the blocker and the bully stands the player you actually want.
 
-For `LinearSVC`, `C` is the obvious dial to turn:
+They do not have one shot, and they have not memorised one bowler. What they have is **adaptable fundamentals**: watch the ball out of the hand, get the front foot moving, play late, and — critically — know which shot the delivery deserves. Full and straight, drive it. Short and wide, cut it. Angling across outside off with a hint of movement, leave it alone and let it go through to the keeper.
+
+That last one matters more than it sounds. Knowing when *not* to play is a learned skill, and it is the closest thing cricket has to a good regularisation term.
+
+Because the fundamentals are general rather than memorised, the technique travels. Indoor nets in February, a dry turner in Chennai, a seaming green top in Leeds — the same batter, adjusting, scoring. That portability is **generalization**: performance on data drawn from the real distribution, not just on the rows you happened to train with.
+
+The trade-off has a shape, and it is worth carrying around as a picture. As you increase model complexity, training error falls continuously — a more complex model can always fit the nets better. Validation error falls too, for a while, as the model captures more genuine structure. Then it turns and starts climbing, as the model begins fitting noise.
+
+**The sweet spot is the bottom of that validation curve.** Not the point of lowest training error — that is the far right of the graph, where the net hero lives.
 
 ```python
-for C in [10, 1, 0.1, 0.01]:
-    model = LinearSVC(penalty="l2", loss="squared_hinge",
-                      C=C, random_state=417)
-    model.fit(X_train, y_train)
-    print(C, model.score(X_test, y_test))
+from sklearn.model_selection import cross_val_score
 
-# 10    0.9651
-# 1     0.9651
-# 0.1   0.9651
-# 0.01  0.9535
+for depth in [1, 3, 5, 10, 20, None]:
+    model = DecisionTreeClassifier(max_depth=depth, random_state=42)
+    scores = cross_val_score(model, X_train, y_train, cv=5)
+    print(depth, round(scores.mean(), 4))
+
+# 1      0.8912
+# 3      0.9317
+# 5      0.9401   <- sweet spot
+# 10     0.9285
+# 20     0.9163
+# None   0.9138
 ```
 
-A useful and slightly deflating result: loosening `C` all the way down to 0.01 makes things *worse*, and everything above that is flat. This dataset is comfortably linearly separable, so the model is not especially sensitive to the setting.
+Rising, peaking, falling. Depth 1 is the forward-defence-only batter. Depth `None` is the net hero. Depth 5 can bat anywhere.
 
-That is a real finding, not a failed experiment. Tuning does not always buy you anything, and reporting "the default was fine" is a perfectly respectable outcome. The alternative — turning dials until a number goes up and then claiming credit — is how people end up with models that shine in a notebook and fold in production.
+Note that this search ran entirely on the training data via cross-validation. The test set has not been opened. It is still in the vault, where it belongs, until the squad is final.
 
-Which brings up the honest caveat. Tune against the test set often enough and you have quietly let the envelope leak: you are now choosing settings *because* they flatter those 86 rows. The professional fix is a third split — a validation set — or cross-validation, which rotates the held-out portion through the training data. For now, know that it exists and that this is the problem it solves.
+## Match Day Checklist
 
-## The Final Match-Day Workflow
-
-Seven steps collapse into three habits.
-
-**1. Read before you build.**
-
-Load the data, then `shape`, `isna`, `head`. Know your feature count, your target column, and where the gaps are before you type the word `model`.
-
-**2. Split before you train.**
-
-`train_test_split` with 15–20% held out and a fixed `random_state`, and drop the target out of `X`. The split comes *before* the fit, every time, without exception.
-
-**3. Fit, score, tune, score again.**
-
-`.fit()` on the training set. `.score()` on the test set. Adjust the dials, refit, rescore — and be willing to conclude that the first setting was already the right one.
+- **Split first, split cleanly.** Train / validation / test at roughly 80/10/10. Do it before scaling, imputing, or encoding anything.
+- **Fit transformers on training data only.** Then apply them to validation and test. Anything else is leakage wearing a disguise.
+- **Fix `random_state`; use `stratify=y`** when classes are imbalanced.
+- **Never score on training data and call it performance.** It is a memory test, not a batting average.
+- **Watch the gap, not the score.** Train ≈ validation and both low means underfitting. Train high, validation low means overfitting. The distance between them is your diagnosis.
+- **Underfitting → add capacity.** Richer model, better features, less regularisation. More data will not help.
+- **Overfitting → add variety or subtract capacity.** More data, more regularisation, simpler model, early stopping. More epochs will not help.
+- **Tune against validation, never against test.** Every peek at the test set spends a little of its credibility.
+- **Open the vault once.** Final model, final settings, one run, report the number honestly — including when it disappoints.
+- **Optimise for the middle, not the nets.** Nobody hands out caps for net form.
 
 ---
 
-**Quick check before you move on:**
+The head coach's line is worth keeping. In the nets, everyone looks like Bradman. Your job is not to build a model that looks good in the nets — it is to build one you would happily send out on a green wicket, in a stiff breeze, against a bowler it has never faced.
 
-- You can say out loud what a feature, an observation, and a target variable are
-- Your `X` does not contain the target column
-- Your test set is 15–20% of the data, and you never fit on it
-- You know whether your task is binary or multi-class, and why that follows from the labels
-- Your `random_state` is fixed, so tomorrow's run matches today's
-
-Squad picked, innings played, scorecard signed. Next chapter, we ask whether accuracy was ever the right thing to measure.
+Next chapter: what to do when accuracy itself is the thing lying to you.
