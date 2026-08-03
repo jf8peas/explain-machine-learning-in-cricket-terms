@@ -184,6 +184,23 @@ print(len(X_train), len(X_val), len(X_test))`,
           { k: "Cadence", v: "2 wks", s: "one experiment cycle" },
         ],
       },
+      {
+        slug: "the-coachs-settings",
+        nav: "2.3 The Coach's Settings",
+        meta: "6 min · technical tuning",
+        title: "The Coach's Settings: Parameters & Hyperparameters",
+        lede: "Before a team takes the field, the head coach dials in the bowling machine settings, boundary ropes, and tactical constraints. Understanding the difference between external configuration (hyperparameters) and internal player adaptation (parameters) is fundamental to training machine learning models.",
+        commentary: "'You set the pitch dimensions and net drills in the morning. The bowler's wrist position and seam control adapt during the spell.' — Head Coach",
+        codeFile: "setup/hyperparameters.py",
+        codeOut: "model weights (parameters) initialized · max_depth=5, lr=0.01 (hyperparameters) set",
+        code: `from sklearn.tree import DecisionTreeClassifier\n\n# Hyperparameters set before fit\nmodel = DecisionTreeClassifier(max_depth=5)\nmodel.fit(X_train, y_train)`,
+        stats: [
+          { k: "Dugout Setup", v: "Hyperparameters", s: "set before training" },
+          { k: "Player Mechanics", v: "Parameters", s: "learned during training" },
+          { k: "Net Tuning", v: "Grid Search", s: "finding optimal settings" },
+          { k: "Goal", v: "Generalization", s: "balanced performance" }
+        ]
+      }
     ],
   },
   {
