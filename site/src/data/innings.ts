@@ -195,34 +195,39 @@ print(len(X_train), len(X_val), len(X_test))`,
     subtitle: "Evaluation · Architecture",
     chapters: [
       {
-        slug: "site-architecture",
-        nav: "Site Architecture",
-        meta: "9 min · ground plan",
-        title: "Site Architecture: Reading the Ground",
-        lede: "Before a single ball is bowled, you walk the ground. A learning system is the same — know where the pitch is, where the boundary sits, and which end the data comes from.",
-        commentary:
-          "If you cannot draw your system on the back of a scorecard, it is too complicated to debug at 2am.",
-        codeFile: "project/layout.py",
-        codeOut: "4 zones registered · feature store: pitch/",
-        code: `from pathlib import Path
-
-ZONES = {
-    "outfield": "data/raw",       # ingestion
-    "pitch":    "data/features",  # prepared
-    "nets":     "experiments",    # training
-    "middle":   "serving",        # production
-}
-
-for name, path in ZONES.items():
-    Path(path).mkdir(parents=True, exist_ok=True)
-    print(f"{name:9} -> {path}")`,
+        slug: "practice-nets",
+        nav: "3.1 Practice Nets",
+        meta: "7 min · data splits & fit",
+        title: "The Practice Nets: Train/Test Splits & Model Fit",
+        lede: "You don't evaluate a batter's match readiness by how well they hit gentle throw-downs in the nets. To build an accurate model, you must split your data and learn the difference between practicing footwork and flat-track bullying.",
+        commentary: "'In the nets, everyone looks like Bradman. Match day on a green wicket is where you find out who can actually bat.' — Head Coach",
+        codeFile: "scoring/train_test_split.py",
+        codeOut: "train: 80% (net practice) · val: 10% (center wicket) · test: 10% (match day)",
+        code: `from sklearn.model_selection import train_test_split\n\n# Splitting the match data\nX_train, X_test, y_train, y_test = train_test_split(\n    X, y, test_size=0.2, random_state=42\n)`,
         stats: [
-          { k: "Zones", v: "4", s: "outfield to middle" },
-          { k: "Boundary", v: "1", s: "raw never reaches serving" },
-          { k: "Owners", v: "2", s: "data + platform" },
-          { k: "Review", v: "Weekly", s: "architecture net session" },
-        ],
+          { k: "Net Practice", v: "Train Set", s: "learning the strokes" },
+          { k: "Match Day", v: "Test Set", s: "unseen bowling" },
+          { k: "Net Hero", v: "Overfitting", s: "memorized throw-downs" },
+          { k: "One-Trick", v: "Underfitting", s: "too simple technique" }
+        ]
       },
+      {
+        slug: "scorers-box",
+        nav: "3.2 Scorer's Box",
+        meta: "8 min · metrics & leakage",
+        title: "The Scorer's Box: Metrics, Bias & Umpire Errors",
+        lede: "Raw accuracy on a scorecard can lie. To truly evaluate performance, you need to step into the scorer's box, break down the confusion matrix, master precision vs. recall, and eliminate illegal data leakage.",
+        commentary: "'A strike rate of 200 looks brilliant until you realize every single run came off dropped catches.' — The Official Scorer",
+        codeFile: "scoring/metrics_evaluation.py",
+        codeOut: "confusion matrix generated · precision 0.88 · recall 0.82 · F1 0.85",
+        code: `from sklearn.metrics import classification_report, confusion_matrix\n\n# Evaluate test set predictions against ground truth\nprint(classification_report(y_test, y_pred))\nprint(confusion_matrix(y_test, y_pred))`,
+        stats: [
+          { k: "Umpire Grid", v: "Confusion Matrix", s: "TP, FP, TN, FN calls" },
+          { k: "DRS Accuracy", v: "Precision", s: "valid review calls" },
+          { k: "Catch Rate", v: "Recall", s: "nabbing real chances" },
+          { k: "Cheating", v: "Data Leakage", s: "reading bowler signs" }
+        ]
+      }
     ],
   },
   {
