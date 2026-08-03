@@ -186,7 +186,7 @@ print(len(X_train), len(X_val), len(X_test))`,
       },
       {
         slug: "the-coachs-settings",
-        nav: "2.3 The Coach's Settings",
+        nav: "The Coach's Settings",
         meta: "6 min · technical tuning",
         title: "The Coach's Settings: Parameters & Hyperparameters",
         lede: "Before a team takes the field, the head coach dials in the bowling machine settings, boundary ropes, and tactical constraints. Understanding the difference between external configuration (hyperparameters) and internal player adaptation (parameters) is fundamental to training machine learning models.",

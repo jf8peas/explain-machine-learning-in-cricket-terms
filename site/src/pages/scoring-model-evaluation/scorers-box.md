@@ -30,7 +30,11 @@ This chapter is about getting into that box.
 
 Accuracy is the first metric everyone learns and the first one that betrays them.
 
-$$\text{Accuracy} = \frac{\text{correct predictions}}{\text{total predictions}}$$
+```
+              correct predictions
+Accuracy  =  ─────────────────────
+               total predictions
+```
 
 The formula is honest. The problem is what happens when the classes are lopsided.
 
@@ -106,7 +110,11 @@ Two metrics, both derived from the ledger, each answering a different question.
 
 **Of all the times the captain went upstairs claiming a wicket, how often was he right?**
 
-$$\text{Precision} = \frac{TP}{TP + FP} = \frac{45}{45 + 6} = 0.88$$
+```
+                 TP             45
+Precision  =  ─────────  =  ────────  =  0.88
+               TP + FP        45 + 6
+```
 
 Precision lives entirely in the *predicted positive* column. It ignores everything you didn't flag. A captain with high precision is one whose reviews are trusted — when he twirls his hands in a T, the fielding side is already celebrating, because he doesn't burn reviews on hopeful appeals.
 
@@ -116,7 +124,11 @@ Precision lives entirely in the *predicted positive* column. It ignores everythi
 
 **Of all the genuine chances that actually occurred, how many did the side take?**
 
-$$\text{Recall} = \frac{TP}{TP + FN} = \frac{45}{45 + 10} = 0.82$$
+```
+              TP             45
+Recall  =  ─────────  =  ─────────  =  0.82
+            TP + FN        45 + 10
+```
 
 Recall lives entirely in the *actual positive* row. It ignores your false alarms and asks only about the ones that got away. A side with high recall drops nothing — every edge is snaffled at second slip, every half-chance in the deep is converted, every faint nick is heard and appealed.
 
@@ -149,7 +161,11 @@ There is no setting that maximises both. The threshold is a *decision*, not a de
 
 When you need one number, the F1-score is the harmonic mean of the two:
 
-$$F_1 = 2 \cdot \frac{\text{Precision} \cdot \text{Recall}}{\text{Precision} + \text{Recall}} = 2 \cdot \frac{0.88 \times 0.82}{0.88 + 0.82} = 0.85$$
+```
+            Precision × Recall           0.88 × 0.82
+F1  =  2 · ────────────────────  =  2 · ─────────────  =  0.85
+            Precision + Recall           0.88 + 0.82
+```
 
 The harmonic mean, rather than the plain average, is deliberate: it punishes imbalance. A model with precision 1.0 and recall 0.1 averages a respectable 0.55 but scores an F1 of just 0.18. That is correct behaviour. A captain who reviews once a match, is always right, and lets nine other dismissals go unappealed is not a good captain — he is a cautious one, and F1 says so.
 
@@ -159,15 +175,19 @@ F1 is the sensible default for imbalanced binary problems. If precision and reca
 
 Not every model classifies. When you are predicting a *quantity* — a final score, a run chase margin, a projected total — the umpire's ledger doesn't apply. You are no longer asking "right or wrong" but "off by how much".
 
-**Mean Absolute Error** is the plain-English answer:
+**Mean Absolute Error** is the plain-English answer — average the size of each miss, ignoring which side of the true value it fell on:
 
-$$\text{MAE} = \frac{1}{n}\sum_{i=1}^{n} |y_i - \hat{y}_i|$$
+```
+MAE  =  mean( | actual − predicted | )
+```
 
 "Our projected-score model is off by 12 runs on average." Everyone in the room understands that sentence, and it is in the same units as the thing being predicted.
 
-**Root Mean Squared Error** squares the errors before averaging:
+**Root Mean Squared Error** squares the errors before averaging, then takes the square root to get back into runs:
 
-$$\text{RMSE} = \sqrt{\frac{1}{n}\sum_{i=1}^{n} (y_i - \hat{y}_i)^2}$$
+```
+RMSE  =  sqrt( mean( (actual − predicted)² ) )
+```
 
 Squaring means a single catastrophic miss dominates the score. Being off by 12 runs contributes 144; being off by 50 contributes 2,500 — seventeen times the penalty for roughly four times the error.
 

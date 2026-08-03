@@ -22,24 +22,24 @@ code: |
   model.fit(X_train, y_train)
   # Internal weights and split criteria are calculated automatically
 stats:
-  - { k: "Dugout Setup", v: "Hyperparameters", s: "set before training" }
+  - { k: "Dressing Room Setup", v: "Hyperparameters", s: "set before training" }
   - { k: "Player Mechanics", v: "Parameters", s: "learned during training" }
   - { k: "Net Tuning", v: "Grid Search", s: "finding optimal settings" }
   - { k: "Goal", v: "Generalization", s: "balanced performance" }
 ---
 
-## 1. The Dugout vs. The Pitch: Setting the Stage
+## 1. The Dressing Room vs. The Pitch: Setting the Stage
 
 When preparing a squad for a long series, there are two distinct types of adjustments taking place:
 
-1. **Strategic decisions made in the dugout** before players cross the boundary line.
+1. **Strategic decisions made in the dressing room** before players cross the boundary line.
 2. **On-field physical adaptations made by the players** as they face actual bowling on the pitch.
 
 In machine learning, this exact distinction separates **Hyperparameters** from **Parameters**.
 
 ```
 ┌────────────────────────────────────────────────────────────────────────┐
-│                   THE DUGOUT (Hyperparameters)                        │
+│               THE DRESSING ROOM (Hyperparameters)                      │
 │   Coach sets rules before play: Tree Depth, Learning Rate, k-Neighbors │
 └───────────────────────────────────┬────────────────────────────────────┘
                                     │
@@ -57,7 +57,7 @@ In machine learning, this exact distinction separates **Hyperparameters** from *
 **Parameters** are the internal configuration variables that the model learns automatically from the training data during the fitting process (`model.fit()`).
 
 * **Cricket Analogy:** Think of parameters as a bowler's muscle memory. As a fast bowler runs in on a green pitch, their brain makes micro-adjustments to wrist position, release point, and seam angle based on how the ball is swinging. The coach doesn't manually move the bowler's fingers on every ball; the bowler's body learns the optimal angles through repetition.
-* **ML Equivalent:** In linear regression or neural networks, parameters are the **weights ($w$)** and **biases ($b$)**. In decision trees, parameters are the specific split thresholds chosen at each node.
+* **ML Equivalent:** In linear regression or neural networks, parameters are the **weights (*w*)** and **biases (*b*)**. In decision trees, parameters are the specific split thresholds chosen at each node.
 
 $$\text{Prediction } (\hat{y}) = w_1 x_1 + w_2 x_2 + b$$
 
@@ -69,11 +69,11 @@ The algorithm calculates and updates these weights automatically to minimize los
 
 **Hyperparameters** are the external settings that *you* (the coach/data scientist) specify **before** model training begins. They control *how* the model learns, setting the boundaries and constraints within which parameters are adjusted.
 
-* **Cricket Analogy:** Think of hyperparameters as dialing in the controls on a automated bowling machine in the indoor nets:
-  * **Speed Dial:** Sets how fast the balls arrive ($\rightarrow$ **Learning Rate** $\eta$). Too fast, and the batter overreacts and misses; too slow, and they don't learn real match conditions.
-  * **Slip Cordon Width:** Dictates how wide the fielding practice grid extends ($\rightarrow$ **Max Tree Depth** $d$).
-  * **Number of Bowling Lanes:** Dictates how many bowlers run in at once ($\rightarrow$ **Number of Estimators / Trees** $n$ in Random Forest).
-  * **Neighbor Count:** Deciding how many previous deliveries to analyze before selecting a shot ($\rightarrow$ $k$ **in** $k$**-Nearest Neighbors**).
+* **Cricket Analogy:** Think of hyperparameters as dialing in the controls on an automated bowling machine in the indoor nets:
+  * **Speed Dial:** Sets how fast the balls arrive (→ **Learning Rate** *η*). Too fast, and the batter overreacts and misses; too slow, and they don't learn real match conditions.
+  * **Slip Cordon Width:** Dictates how wide the fielding practice grid extends (→ **Max Tree Depth** *d*).
+  * **Number of Bowling Lanes:** Dictates how many bowlers run in at once (→ **Number of Estimators / Trees** *n* in Random Forest).
+  * **Neighbor Count:** Deciding how many previous deliveries to analyze before selecting a shot (→ *k* **in** *k*-**Nearest Neighbors**).
 
 ```python
 # The Coach sets hyperparameters BEFORE fit()
@@ -105,5 +105,5 @@ How does a coach know which bowling machine speed or field placement produces th
 | **Who sets it?** | Learned automatically by the algorithm | Defined manually by the developer/coach |
 | **When is it set?** | During training (`model.fit()`) | Before training begins |
 | **Cricket Metaphor** | Player's wrist angle, seam position, muscle memory | Net drill constraints, machine speed dial, tree depth |
-| **Examples** | Weights ($w$), Bias ($b$), Tree splits | Learning rate ($\eta$), $k$ in kNN, Max Depth, L2 penalty ($\lambda$) |
+| **Examples** | Weights (*w*), Bias (*b*), Tree splits | Learning rate (*η*), *k* in kNN, Max Depth, L2 penalty (*λ*) |
 | **Goal** | Minimize prediction error on training data | Prevent underfitting/overfitting and promote generalization |
