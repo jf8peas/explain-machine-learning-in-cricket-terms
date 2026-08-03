@@ -3,7 +3,7 @@ layout: ../../layouts/MatchLayout.astro
 title: "The Practice Nets: Dividing the Ground"
 innings: scoring-model-evaluation
 chapter: practice-nets
-meta: "5 min · train, validation & test splits"
+meta: "7 min · train, validation & test splits"
 lede: "You don't judge a batter's match readiness by how well they hit gentle throw-downs in the nets. Before you can trust a single number your model reports, you have to divide the ground — nets, warm-up fixture, and a Match Day sealed in the vault."
 commentary: "'In the nets, everyone looks like Bradman. Match day on a green wicket is where you find out who can actually bat.' — Head Coach"
 codeFile: scoring/train_test_split.py
@@ -64,6 +64,30 @@ The test set exists to answer one question: *how will this perform against deliv
 
 Around 10–15%, and treated with something close to superstition. Some clubs won't even say its name out loud during selection week.
 
+## Who Is Allowed to Touch What
+
+The three areas differ in size, but the far more important difference is *who has permission to change something* while standing on each one.
+
+| Dataset | What is adjusted? | Who/what adjusts it? | Example adjustment |
+|---|---|---|---|
+| **Training set** — the nets | Model parameters (weights & biases) | The algorithm itself, e.g. gradient descent | Nudging weight β₁ from 0.4 to 0.8 to minimise loss |
+| **Validation set** — center wicket | Hyperparameters & architecture | You, or an automated tuner like `GridSearchCV` | Changing alpha from 0.01 to 1.0, or picking Random Forest over Logistic Regression |
+| **Test set** — match day | Nothing | No one. Locked away until the very end | Purely measuring final real-world performance |
+
+Read it as a chain of command. In the nets, nobody is consciously deciding anything — the batter's hands and feet are adjusting themselves, ball after ball, the way an optimiser adjusts weights. At the center-wicket fixture, the *coach* is the one adjusting: batting order, bowling plans, whether the young left-hander goes up to three. And on match day, the coach sits in the pavilion with their arms folded and changes nothing at all, because the whole point of match day is to find out what you've actually got.
+
+## Why Not Just Call Validation a "Second Training Set"?
+
+Fair question. Both sets influence the final model. But they operate at completely different levels.
+
+**Direct fitting versus indirect tuning.** The training set is read *by the model*: raw features `X` and targets `y` go in, gradients come out, internal equations get set. The validation set is never seen by the algorithm during mathematical optimisation. You look at the score from outside the rope and decide: *should I stop training early? Should I add more trees to this forest?* The batter learns in the nets. In the warm-up fixture, the batter learns nothing new — **the selectors do**.
+
+**Preventing hyperparameter overfitting.** Suppose you had only a training set and tuned hyperparameters directly against it. The tuner would cheerfully pick whatever settings memorise that data best: tree depth set to infinity, regularisation set to zero, every knob turned to "flatter me."
+
+This is what happens when you let a batter choose their own net conditions. They will pick the length they like, the pace they like, and the surface they like, and their average will be magnificent and entirely fictional.
+
+The validation set is the sanity check. It forces you to choose settings that hold up on deliveries the model's weights have never directly memorised — which is a different question from "which settings score highest in the shed," and a much better one.
+
 ## Cutting the Ground in Two Passes
 
 ```python
@@ -87,6 +111,7 @@ The `test_size=0.125` on the second split looks odd until you follow the arithme
 
 ## Ground Rules for the Dressing-Room Wall
 
+- **Know who's adjusting what.** The algorithm tunes parameters on the nets; you tune hyperparameters on the center wicket; nobody tunes anything on match day.
 - **Split before you do anything else.** Scaling, imputing, encoding — fit those on the training set only, then apply the fitted transformer to validation and test. Fit a `StandardScaler` on the full dataset and you have leaked information about match day into your net sessions.
 - **Fix your `random_state`.** Reproducible splits mean comparable results, and comparable results are the only kind worth arguing about.
 - **Stratify when classes are imbalanced.** `stratify=y` keeps the same class proportions in every split, so you don't end up with a validation set containing four examples of your rare class.
