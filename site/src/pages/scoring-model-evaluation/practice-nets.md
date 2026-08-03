@@ -2,7 +2,7 @@
 layout: ../../layouts/MatchLayout.astro
 title: "The Machine Learning Workflow: Playing the Innings"
 innings: scoring-model-evaluation
-chapter: ml-workflow
+chapter: practice-nets
 meta: "9 min · one full innings"
 lede: "No selector picks a squad off a single highlight reel. They gather the scorecards, study the averages, run the nets, name an XI, and only then send them out to face a bowler they have never seen. The machine learning workflow is that same selection process, written in code."
 commentary: "'The nets tell you who can bat. The middle tells you who can score. Never confuse the two.' — Chief Selector"
