@@ -212,8 +212,25 @@ print(len(X_train), len(X_val), len(X_test))`,
         ]
       },
       {
+        slug: "selection-meeting",
+        nav: "3.2 Selection Meeting",
+        meta: "7 min · bias, variance & generalization",
+        title: "The Selection Meeting: Underfitting, Overfitting & Finding the Sweet Spot",
+        lede: "The ground is divided, the numbers are in, and now four people in a small room have to decide who can actually bat. One candidate has a single shot. One has memorised a bowling machine. Somewhere between them is the player you want.",
+        commentary: "'Form is temporary. Class is permanent. Our job tonight is to work out which one we're looking at.' — Chair of Selectors",
+        codeFile: "scoring/bias_variance.py",
+        codeOut: "depth 1: 0.8912 · depth 5: 0.9401 ← sweet spot · depth None: 0.9138",
+        code: `model.score(X_train, y_train)   # 0.998  net form\nmodel.score(X_val,   y_val)     # 0.712  match form\n\n# mind the gap`,
+        stats: [
+          { k: "One-Trick", v: "Underfitting", s: "high bias · both scores low" },
+          { k: "Net Hero", v: "Overfitting", s: "high variance · mind the gap" },
+          { k: "Travels Well", v: "Good Fit", s: "adaptable fundamentals" },
+          { k: "The Verdict", v: "The Gap", s: "watch it, not the score" }
+        ]
+      },
+      {
         slug: "scorers-box",
-        nav: "3.2 Scorer's Box",
+        nav: "3.3 Scorer's Box",
         meta: "8 min · metrics & leakage",
         title: "The Scorer's Box: Metrics, Bias & Umpire Errors",
         lede: "Raw accuracy on a scorecard can lie. To truly evaluate performance, you need to step into the scorer's box, break down the confusion matrix, master precision vs. recall, and eliminate illegal data leakage.",
