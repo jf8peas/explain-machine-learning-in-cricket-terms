@@ -287,7 +287,7 @@ print(len(X_train), len(X_val), len(X_test))`,
     number: "04",
     title: "First Innings: Classical ML",
     short: "Classical ML",
-    subtitle: "Classification vs Regression · K-Nearest Neighbours",
+    subtitle: "Classification vs Regression · K-Nearest Neighbours · K-Means",
     chapters: [
       {
         slug: "classification-vs-regression",
@@ -341,6 +341,34 @@ print(call)`,
           { k: "Distance", v: "Euclidean", s: "√Σ(x − y)²" },
           { k: "Training phase", v: "None", s: "it's a lazy learner" },
           { k: "Verdict", v: "Majority", s: "panel votes, label wins" },
+        ],
+      },
+      {
+        slug: "k-means-clustering",
+        nav: "K-Means Clustering",
+        meta: "13 min · sorting without a team sheet",
+        title: "K-Means Clustering: How Many Piles Do You Want?",
+        lede: "Hand K-Nearest Neighbours an unlabelled player and it's stuck — it has nothing to compare them against. Hand K-Means the same pile of stat sheets, tell it how many groups you want, and it will happily sort all of them for you. It just won't tell you what to call the groups.",
+        commentary:
+          "'Nobody told the algorithm who the finishers were. It just noticed that this lot all stood together.' — Head of Analytics",
+        codeFile: "first_innings/kmeans.py",
+        codeOut: "4 clusters · inertia 812.4 · converged in 6 iterations",
+        code: `from sklearn.preprocessing import StandardScaler
+from sklearn.cluster import KMeans
+
+scaler = StandardScaler()
+scaler.fit(squad_df)
+squad_scaled = scaler.transform(squad_df)
+
+model = KMeans(n_clusters=4, random_state=42)
+squad_df["cluster"] = model.fit_predict(squad_scaled)
+
+print(model.inertia_, model.n_iter_)`,
+        stats: [
+          { k: "k", v: "4", s: "piles you asked for" },
+          { k: "Inertia", v: "812.4", s: "tightness of the piles" },
+          { k: "Iterations", v: "6", s: "reshuffles to settle down" },
+          { k: "Labels supplied", v: "0", s: "you name them afterwards" },
         ],
       },
     ],
