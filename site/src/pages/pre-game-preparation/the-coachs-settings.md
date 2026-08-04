@@ -59,9 +59,20 @@ In machine learning, this exact distinction separates **Hyperparameters** from *
 * **Cricket Analogy:** Think of parameters as a bowler's muscle memory. As a fast bowler runs in on a green pitch, their brain makes micro-adjustments to wrist position, release point, and seam angle based on how the ball is swinging. The coach doesn't manually move the bowler's fingers on every ball; the bowler's body learns the optimal angles through repetition.
 * **ML Equivalent:** In linear regression or neural networks, parameters are the **weights (*w*)** and **biases (*b*)**. In decision trees, parameters are the specific split thresholds chosen at each node.
 
-$$\text{Prediction } (\hat{y}) = w_1 x_1 + w_2 x_2 + b$$
+```
+prediction  ŷ  =  w₁x₁  +  w₂x₂  +  b
+                  └──────┬──────┘   └┬┘
+                     learned      learned
+```
 
-The algorithm calculates and updates these weights automatically to minimize loss. You do not set parameters manually!
+The algorithm calculates and updates these weights automatically to minimize loss. You do not set parameters manually — and after fitting, you can go and look at what the bowler's body worked out for itself:
+
+```python
+model.coef_          # learned during .fit()
+model.intercept_     # learned during .fit()
+```
+
+Nobody instructed those numbers. They are the residue of thousands of deliveries.
 
 ---
 
@@ -86,9 +97,37 @@ model = KNeighborsClassifier(
 )
 ```
 
+The same idea shows up on the field as **field restrictions**. Three slips and a gully, fielders inside the circle for the powerplay, spin from the Pavilion End — every one of these is a decision made *before* the ball is bowled, by a human, and every one of them shapes what the bowler is able to learn during the spell:
+
+```python
+model = LinearSVC(
+    C=10,              # how hard to fit the training data
+    penalty="l2",      # what kind of restraint to impose
+    max_iter=1000,     # how long the session runs
+)
+```
+
+The captain does not bowl the ball. The captain decides the conditions under which the ball is bowled. That is the whole job description of a hyperparameter.
+
 ---
 
-## 4. Hyperparameter Tuning: Finding the Winning XI Formula
+## 4. The Tell: Telling Them Apart in Two Seconds
+
+The two words look alike, which is why people mix them up for longer than they should. The distinction in code is refreshingly mechanical:
+
+**Anything you pass into the constructor is a hyperparameter. Anything with a trailing underscore after fitting is a learned parameter.**
+
+```python
+model = LinearSVC(C=10)    # C ............ hyperparameter (you set it)
+model.fit(X_train, y_train)
+model.coef_                # coef_ ........ parameter (the fit set it)
+```
+
+That trailing underscore is scikit-learn telling you, politely, *"I worked this one out myself, thank you."*
+
+---
+
+## 5. Hyperparameter Tuning: Finding the Winning XI Formula
 
 How does a coach know which bowling machine speed or field placement produces the best results on match day? They experiment with different net configurations in a systematic way:
 
@@ -96,14 +135,33 @@ How does a coach know which bowling machine speed or field placement produces th
 * **Random Search:** Randomly sampling settings across a range to quickly discover high-performing configurations without testing every single combination.
 * **Bayesian Optimization:** Using past net session results to intelligently predict which hyperparameter combination will yield the highest performance in the next session.
 
+In practice, the checklist approach looks like this:
+
+```python
+from sklearn.model_selection import GridSearchCV
+
+grid = GridSearchCV(
+    model,
+    {"C": [0.01, 0.1, 1, 10, 100]},
+    cv=5,
+)
+grid.fit(X_train, y_train)
+print(grid.best_params_, grid.best_score_)
+```
+
+One rule to carry forward, and it matters enormously: **hyperparameters are tuned against a held-out validation set — never against your final test data.** A coach who keeps rerunning match day until the settings look good has stopped measuring anything.
+
+That is a whole discipline of its own, and it gets its own chapter. See **The Practice Nets** in Innings 3, where we divide the ground properly, and **The Selection Meeting**, where we work out whether the settings you chose produced a batter who can actually travel.
+
 ---
 
-## 5. Quick Reference Scorecard
+## 6. Quick Reference Scorecard
 
 | Feature | Model Parameters | Model Hyperparameters |
 | :--- | :--- | :--- |
 | **Who sets it?** | Learned automatically by the algorithm | Defined manually by the developer/coach |
 | **When is it set?** | During training (`model.fit()`) | Before training begins |
-| **Cricket Metaphor** | Player's wrist angle, seam position, muscle memory | Net drill constraints, machine speed dial, tree depth |
+| **Where in code?** | Trailing underscore: `model.coef_` | Passed into the constructor: `LinearSVC(C=10)` |
+| **Cricket Metaphor** | Player's wrist angle, seam position, muscle memory | Net drill constraints, machine speed dial, field restrictions |
 | **Examples** | Weights (*w*), Bias (*b*), Tree splits | Learning rate (*η*), *k* in kNN, Max Depth, L2 penalty (*λ*) |
 | **Goal** | Minimize prediction error on training data | Prevent underfitting/overfitting and promote generalization |

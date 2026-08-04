@@ -261,28 +261,13 @@ These produce eerily perfect models. If your first attempt scores 0.99 on a hard
 
 That last one deserves emphasis. For anything with a time dimension, `train_test_split` with a random shuffle lets the model train on Thursday and predict Tuesday. Use `TimeSeriesSplit` and always split forward in time.
 
-## Hyperparameters: Adjusting the Field Restrictions
+## Tuning on the Metric You Actually Care About
 
-A quick but important distinction, because the two words look alike and mean opposite things.
+One last trap, and it is the one that undoes all of the above.
 
-**Model parameters are learned.** They are the bowler's natural seam position, wrist angle, and release point — developed over thousands of deliveries in the nets, absorbed rather than instructed. In code, these are the weights and coefficients that `.fit()` produces. You never set them by hand:
+Back in **The Coach's Settings** we drew the line between parameters the model learns and hyperparameters the coach sets, and we said hyperparameters get tuned against the validation set. What we could not say then — because we had no metrics yet — is *tuned against validation on what basis?*
 
-```python
-model.coef_          # learned during .fit()
-model.intercept_     # learned during .fit()
-```
-
-**Hyperparameters are set.** They are the captain's decisions before the ball is bowled: three slips and a gully, fielders inside the circle for the powerplay, spin from the Pavilion End. Chosen by a human, in advance, and they shape the conditions under which learning happens:
-
-```python
-model = LinearSVC(
-    C=10,              # how hard to fit the training data
-    penalty="l2",      # what kind of restraint to impose
-    max_iter=1000,     # how long the session runs
-)
-```
-
-The tell is simple: **anything you pass into the constructor is a hyperparameter; anything with a trailing underscore after fitting is a learned parameter.** Hyperparameters are tuned against the *validation* set — never the test set — usually with `GridSearchCV` or `RandomizedSearchCV`:
+`GridSearchCV` has an opinion by default, and on an imbalanced problem it is the wrong one:
 
 ```python
 from sklearn.model_selection import GridSearchCV
@@ -297,7 +282,9 @@ grid.fit(X_train, y_train)
 print(grid.best_params_, grid.best_score_)
 ```
 
-Note `scoring="f1"`. Tuning an imbalanced problem against accuracy will cheerfully optimise your model into the lazy umpire from Section 1, and the grid search will report that it did a wonderful job.
+Note `scoring="f1"`. Leave it at the default and the grid search will hunt, diligently and across every combination you gave it, for the settings that best reproduce the lazy umpire from the top of this chapter — hands in pockets, 94.5%, never once raising a finger. Then it will report that it did a wonderful job, and it will be telling the truth about the wrong thing.
+
+The field restrictions were never the problem. What you were measuring them against was.
 
 ## The Scorer's Summary
 
@@ -312,8 +299,7 @@ Note `scoring="f1"`. Tuning an imbalanced problem against accuracy will cheerful
 - **Split before you transform.** `fit_transform` on train, `transform` on test. Wrap it in a `Pipeline` so the rule is enforced by structure rather than memory.
 - **Audit every feature for time travel.** If it could not have been known at prediction time, it is a leak.
 - **Suspicious perfection is a bug report.** A 0.99 on a hard problem means go looking, not go celebrating.
-- **Learned parameters come out of `.fit()`; hyperparameters go into the constructor.** Tune the latter against validation, never against test.
-- **Tune on the metric you actually care about.** `scoring="f1"`, not the default.
+- **Tune on the metric you actually care about.** `scoring="f1"`, not the default. A grid search optimising accuracy on imbalanced data will find you the best possible lazy umpire.
 
 ---
 

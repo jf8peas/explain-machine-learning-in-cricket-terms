@@ -73,7 +73,7 @@ Near-perfect in the nets, falling apart in the middle. Whenever training accurac
 The remedies all amount to varying the practice conditions:
 
 - **More data** — more bowlers, more surfaces, more genuine variety
-- **Regularisation** (L1/L2, dropout, lower `C`) — penalise the model for over-committing to any single pattern
+- **Regularisation** (L1/L2, dropout, lower `C`) — penalise over-complexity so the model learns clean batting fundamentals rather than memorising pitch cracks
 - **Simplify** — shallower trees, fewer features, fewer parameters
 - **Cross-validation** — rotate which slice is held out, so no single quirky split flatters you
 - **Early stopping** — pull the batter out of the nets before they start grooving in bad habits
