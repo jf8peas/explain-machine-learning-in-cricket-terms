@@ -85,6 +85,31 @@ model.fit(X_train, y_train)
 
 Same arithmetic, no scratchpad.
 
+## The Other Road: Walked Instead of Solved
+
+The normal equation isn't the only way to arrive at these weights — it's just the fastest one available, and only because linear regression's particular cost function happens to have a clean, closed-form answer. **Gradient Descent** covered the general-purpose alternative: start with a guess for every weight, measure how wrong the resulting projected score is, work out which direction each weight should nudge to shrink that error, take a step, repeat.
+
+```python
+from sklearn.linear_model import SGDRegressor
+
+model = SGDRegressor(
+    loss="squared_error",
+    learning_rate="constant",
+    eta0=0.01,
+    tol=1e-3,
+    max_iter=1000,
+)
+model.fit(X_train, y_train)
+
+print("intercept", round(model.intercept_[0], 2))
+print("coefficients", dict(zip(X_train.columns, model.coef_.round(2))))
+# intercept 4.1 · overs +14.6 · wickets −9.0 · run_rate +11.2
+```
+
+Set that next to the normal equation's `4.2 · +14.8 · −9.1 · +11.3` from a moment ago. Not identical — gradient descent stopped the instant its tolerance said "close enough," rather than solving exactly — but close enough that either model hands the broadcast the same projected score to within a fraction of a run. Two completely different processes, one solving in a single shot of matrix algebra, one walking downhill in small steps, landing in the same valley.
+
+For plain linear regression, reach for the normal equation — `sklearn`'s ordinary `LinearRegression` already does, and there's no learning rate to get wrong. The reason to know the walking route at all is that it's the *only* route once you leave this chapter. Logistic regression, and every layer of a network waiting in Second Innings, has no equivalent one-shot formula. All of them get tuned exactly the way `SGDRegressor` just tuned this one.
+
 ## Reading the Weights Back
 
 A fitted model is willing to show its working:
@@ -114,6 +139,10 @@ plt.axhline(0, linestyle="--")
 ```
 
 A **residuals plot** — predicted score along the bottom, the size of the miss up the side — is the model's version of a spray chart. What you want to see is scattered rain: misses bouncing randomly above and below zero, roughly the same spread whether the projected score was 90 or 190. That's the textbook assumption behind linear regression's residuals — **zero mean and constant variance** across the range of predictions.
+
+![Two residuals plots side by side. The left, labelled Healthy, shows points scattered randomly above and below a dashed zero line with roughly constant spread across the full range of predicted scores. The right, labelled Unhealthy, shows the same kind of scatter but fanning out into a widening funnel — tight near low predictions, wildly spread near high ones.](/explain-machine-learning-in-cricket-terms/images/residuals-plot.png)
+
+Left plot, nobody would look twice — that's what a trustworthy model's misses look like: no shape, no drift, just noise. Right plot is the same model on a bad day: the spread visibly widens as the predicted score climbs, which is exactly the **funnel** pattern worth watching for.
 
 What you don't want is a shape. A widening funnel — tight misses on low projections, wild misses on high ones — says the model's confidence should shrink as scores climb, but the model doesn't know that. A curve — residuals consistently positive in the middle of the range and negative at both ends — says there's a bend in the real relationship that a straight line is structurally unable to draw. Either pattern means the model isn't just imprecise, it's wrong in a *specific, fixable* direction, and a residuals plot is how you catch that before someone else does.
 
@@ -161,6 +190,7 @@ Both exist for the same reason: a wildly skewed outcome makes for a model that's
 ## Ground Rules for the Dressing-Room Wall
 
 - **The outcome is a weighted sum, plus error.** Every predictor gets a coefficient; the error is whatever those predictors couldn't explain.
+- **The normal equation and gradient descent solve the same problem two different ways.** One solves exactly in a single shot; the other walks downhill and stops when it's close enough. Reach for the normal equation here — reach for gradient descent everywhere the closed form doesn't exist.
 - **Categorical predictors need K−1 dummy columns, not K.** `pd.get_dummies(..., drop_first=True)` — skip this and you've handed the model a perfectly redundant column and called it a feature.
 - **The intercept is a real prediction, for a real (if sometimes silly) situation.** Check that "all predictors at zero" describes something meaningful before quoting it.
 - **A coefficient's meaning depends on the company it keeps.** Never read one in isolation from what else is in the model.
