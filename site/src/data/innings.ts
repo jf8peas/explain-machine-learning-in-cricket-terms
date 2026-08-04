@@ -287,7 +287,7 @@ print(len(X_train), len(X_val), len(X_test))`,
     number: "04",
     title: "First Innings: Classical ML",
     short: "Classical ML",
-    subtitle: "Classification vs Regression · K-Nearest Neighbours · K-Means",
+    subtitle: "Classification vs Regression · Linear Regression · K-Nearest Neighbours · K-Means",
     chapters: [
       {
         slug: "classification-vs-regression",
@@ -312,6 +312,35 @@ clf.predict_proba(this_over)      # array([[0.82, 0.18]])`,
           { k: "Classification", v: "Which One?", s: "a fixed set of labels" },
           { k: "Same Pitch", v: "Different Question", s: "the target column decides" },
           { k: "Wrong Question", v: "Wrong Everything", s: "model, metric, meaning" },
+        ],
+      },
+      {
+        slug: "linear-regression",
+        nav: "Linear Regression",
+        meta: "16 min · the arithmetic behind the projected score",
+        title: "Linear Regression: The Arithmetic Behind the Projected Score",
+        lede: "The broadcast's projected score looks like a single confident number appearing out of nowhere. Underneath it is a straight line drawn through every match in the archive, a handful of weighted reasons added together, and rather more arithmetic than the commentator lets on.",
+        commentary:
+          "'The number isn't a guess. It's a hundred old matches, weighted and added up, wearing a very confident jacket.' — Data Analyst",
+        codeFile: "first_innings/linear_regression.py",
+        codeOut: "intercept 4.2 · overs +14.8 · wickets −9.1 · run_rate +11.3 · RMSE 11.4 · R² 0.78",
+        code: `from sklearn.linear_model import LinearRegression
+from sklearn.metrics import mean_squared_error, r2_score
+
+model = LinearRegression()
+model.fit(X_train, y_train)
+
+print("intercept", round(model.intercept_, 2))
+print("coefficients", dict(zip(X_train.columns, model.coef_.round(2))))
+
+preds = model.predict(X_val)
+rmse = mean_squared_error(y_val, preds, squared=False)
+print("RMSE", round(rmse, 1), "· R²", round(r2_score(y_val, preds), 3))`,
+        stats: [
+          { k: "Predictors", v: "3", s: "overs, wickets, rate" },
+          { k: "Cost function", v: "SSE", s: "sum of squared error" },
+          { k: "R²", v: "0.78", s: "variance explained" },
+          { k: "Solved via", v: "Normal Eqn", s: "(XᵀX)⁻¹XᵀY" },
         ],
       },
       {
