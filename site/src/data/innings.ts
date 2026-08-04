@@ -287,85 +287,60 @@ print(len(X_train), len(X_val), len(X_test))`,
     number: "04",
     title: "First Innings: Classical ML",
     short: "Classical ML",
-    subtitle: "Regression · Classification · Overfitting",
+    subtitle: "Classification vs Regression · K-Nearest Neighbours",
     chapters: [
       {
-        slug: "regression",
-        nav: "Regression",
-        meta: "12 min · predicting the chase",
-        title: "Regression: Predicting the Chase Total",
-        lede: "Twelve overs gone, two down, and the broadcast puts a projected score on screen. That number is a regression — a continuous prediction drawn from everything the match has told us so far.",
+        slug: "classification-vs-regression",
+        nav: "Classification vs Regression",
+        meta: "8 min · how many, or which one",
+        title: "Classification vs Regression: How Many, or Which One?",
+        lede: "Every number on the broadcast graphic is answering one of exactly two questions. Get the question wrong and the cleverest model in the ground will hand you a beautifully confident answer to something nobody asked.",
         commentary:
-          "A projected score is a confident guess wearing a suit. Always ask it for an error bar.",
-        codeFile: "first_innings/regression.py",
-        codeOut: "MAE 11.4 runs · R² 0.78",
-        code: `from sklearn.linear_model import LinearRegression
-from sklearn.metrics import mean_absolute_error
+          "'Is that a projected total or a review verdict? Because you've built a magnificent model for the wrong scoreboard.' — Match Analyst",
+        codeFile: "first_innings/task_type.py",
+        codeOut: "regression → 9.3 runs this over · classification → 'No Wicket' (p=0.82)",
+        code: `# Same over, two different questions to a model
 
-model = LinearRegression()
-model.fit(X_train[["overs", "wickets", "run_rate"]], y_train)
+# Regression: how many runs will this over cost?
+reg.predict(this_over)            # array([9.3])
 
-pred = model.predict(X_val[["overs", "wickets", "run_rate"]])
-print("MAE", round(mean_absolute_error(y_val, pred), 1), "runs")`,
+# Classification: will this over produce a wicket?
+clf.predict(this_over)            # array(['No Wicket'])
+clf.predict_proba(this_over)      # array([[0.82, 0.18]])`,
         stats: [
-          { k: "Target", v: "Runs", s: "continuous value" },
-          { k: "MAE", v: "11.4", s: "runs off the projection" },
-          { k: "R²", v: "0.78", s: "variance explained" },
-          { k: "Features", v: "3", s: "overs, wickets, rate" },
+          { k: "Regression", v: "How Many?", s: "a continuous target" },
+          { k: "Classification", v: "Which One?", s: "a fixed set of labels" },
+          { k: "Same Pitch", v: "Different Question", s: "the target column decides" },
+          { k: "Wrong Question", v: "Wrong Everything", s: "model, metric, meaning" },
         ],
       },
       {
-        slug: "classification",
-        nav: "Classification",
-        meta: "10 min · out or not out",
-        title: "Classification: Out or Not Out",
-        lede: "Regression asks how many. Classification asks which one — and cricket is full of which-one questions with exactly two answers and a very loud crowd.",
+        slug: "k-nearest-neighbours",
+        nav: "K-Nearest Neighbours",
+        meta: "12 min · the scouting comparison",
+        title: "K-Nearest Neighbours: Who Does He Remind You Of?",
+        lede: "Every scout has said it about an uncapped kid: 'he reminds me of a young someone.' K-Nearest Neighbours is that exact instinct, minus the vagueness — find the players who look most like this one, on the numbers, and let them vote.",
         commentary:
-          "Set the threshold before you see the replay. Otherwise you are just moving the stumps.",
-        codeFile: "first_innings/classify.py",
-        codeOut: "precision 0.88 · recall 0.74 · threshold 0.60",
-        code: `from sklearn.linear_model import LogisticRegression
-from sklearn.metrics import classification_report
+          "'I don't have a report on him yet. But put his numbers next to the last five who played that way, and you'll know exactly who he's going to be.' — Chief Scout",
+        codeFile: "first_innings/knn.py",
+        codeOut: "K=5 → 4×Finisher, 1×Anchor → call: Finisher",
+        code: `features = ["batting_avg", "strike_rate", "boundary_pct"]
 
-clf = LogisticRegression(max_iter=1000, class_weight="balanced")
-clf.fit(X_train, y_train)
+# Distance from the uncapped player to every player on file
+distance = 0
+for feature in features:
+    distance += (train_df[feature] - scout_target[feature]) ** 2
+train_df["distance"] = distance ** 0.5
 
-proba = clf.predict_proba(X_val)[:, 1]
-appeal_upheld = proba > 0.60          # your threshold, your call
-
-print(classification_report(y_val, appeal_upheld, digits=2))`,
+# The five closest comparisons, and what the majority says
+panel = train_df.nsmallest(5, "distance")
+call = panel["role"].mode()[0]
+print(call)`,
         stats: [
-          { k: "Classes", v: "2", s: "out / not out" },
-          { k: "Precision", v: "0.88", s: "appeals that were right" },
-          { k: "Recall", v: "0.74", s: "real dismissals caught" },
-          { k: "Threshold", v: "0.60", s: "chosen, not learned" },
-        ],
-      },
-      {
-        slug: "overfitting",
-        nav: "Overfitting",
-        meta: "11 min · playing too many shots",
-        title: "Overfitting: Playing Too Many Shots",
-        lede: "A model that memorises the training set is a batter who has learned one bowler's every delivery and nothing about batting. It looks magnificent in the nets and lasts four balls in the middle.",
-        commentary: "Anyone can score in the nets. Show me the away fixture.",
-        codeFile: "first_innings/overfit.py",
-        codeOut: "train 0.99 → cv 0.71 (±0.04) · overfit confirmed",
-        code: `from sklearn.tree import DecisionTreeClassifier
-from sklearn.model_selection import cross_val_score
-
-deep = DecisionTreeClassifier()                 # every shot, no discipline
-deep.fit(X_train, y_train)
-print("train", round(deep.score(X_train, y_train), 2))
-
-cv = cross_val_score(deep, X_train, y_train, cv=5)
-print("cv   ", round(cv.mean(), 2), "+/-", round(cv.std(), 2))
-
-tidy = DecisionTreeClassifier(max_depth=4, min_samples_leaf=25)`,
-        stats: [
-          { k: "Train", v: "0.99", s: "nets score" },
-          { k: "CV mean", v: "0.71", s: "five pitches" },
-          { k: "Gap", v: "0.28", s: "the diagnosis" },
-          { k: "Max depth", v: "4", s: "after regularising" },
+          { k: "K", v: "5", s: "size of the panel" },
+          { k: "Distance", v: "Euclidean", s: "√Σ(x − y)²" },
+          { k: "Training phase", v: "None", s: "it's a lazy learner" },
+          { k: "Verdict", v: "Majority", s: "panel votes, label wins" },
         ],
       },
     ],
