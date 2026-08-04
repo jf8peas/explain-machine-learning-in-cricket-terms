@@ -101,6 +101,23 @@ model.fit(X_train, y_train)
 
 Run this against overs/wickets/run-rate data and the coefficients it settles on land close to whatever the normal equation would have produced outright — the same weight and bias, the same projected score, reached by walking instead of solving. When you get to **Linear Regression**, you'll see that exact match made explicit.
 
+## Regularisation: Making the Model Pay for Trying Too Hard
+
+**Form and Class** told you to reach for "regularisation" when a model is overfitting, and left the word doing a lot of unexplained work. Here's what it actually is, now that you've seen the loss function up close: **regularisation is an extra term bolted directly onto the loss, penalising the weights themselves for being large or numerous — not just the predictions for being wrong.**
+
+Ordinary loss asks one question: how far off were the predictions? A regularised loss asks two, and adds them together:
+
+Loss_regularised = Loss_original + λ · penalty(weights)
+
+Gradient descent doesn't know or care which part of that sum it's minimising — it just walks downhill on the total. Which means a weight can no longer grow huge for free, chasing one quirky net session's worth of deliveries, unless shrinking the raw prediction error by that much is worth the penalty it now costs to carry a weight that size. It's the coach who marks a batter down not just for runs scored, but for technique that only works against one specific bowling machine — an elaborate, over-fitted trigger movement has to earn its keep against the penalty, not just against the scoreboard.
+
+λ (in `sklearn`'s `LogisticRegression`, its inverse, `C`) is the dial that decides how much the penalty matters relative to the error. A small `C` — strong regularisation — tells the model that carrying large weights is expensive, so it had better be worth it. That's the fix **Form and Class** was gesturing at with "lower `C`" for an overfitting model, and now you know why it works: it's not a separate correction bolted on afterward, it's a change to the exact number gradient descent has been walking downhill on the whole time.
+
+The two standard penalty shapes behave differently:
+
+- **L2 (Ridge)** penalises the sum of *squared* weights. Every weight gets nudged smaller, roughly in proportion to its size — a general instruction to tone everything down a little, with nothing banned outright.
+- **L1 (Lasso)** penalises the sum of *absolute* weights. This shape has a sharper habit: it tends to push the least useful weights all the way to exactly zero, dropping them from the model entirely rather than just shrinking them. That's regularisation doubling as feature selection — a second, automatic route to the same trimmed roster **Trial Matches** built by hand with `corr()`.
+
 ## Why Walk When You Can Just Solve It?
 
 For plain linear regression, the normal equation is genuinely the better tool most of the time — it's exact, and there's no learning rate to get wrong. Gradient descent earns its keep in two situations the closed form struggles with:
@@ -166,6 +183,7 @@ print(classification_report(y_val, clf.predict(X_val)))
 - **A loss landscape can have false floors.** A local minimum looks like the answer from nearby and can still be far from the true global minimum.
 - **More dials make the landscape harder to search exhaustively** — exactly why gradient descent, not grid search, is how models with continuous parameters get tuned.
 - **Three hyperparameters govern the whole process:** learning rate, maximum iterations, and a stopping tolerance. Any one of them can end the run.
+- **Regularisation is a penalty added to the loss itself, not a separate step.** Large weights now cost something, so gradient descent only keeps them where they earn their keep. L2 shrinks everything a little; L1 can drop weights to zero outright.
 - **Stochastic gradient descent trades a little accuracy per step for a lot of speed** — sampling instead of scanning the whole dataset on every update.
 - **The mechanism doesn't care what it's optimising.** Swap the loss function and the same downhill walk tunes a classifier instead of a regressor.
 

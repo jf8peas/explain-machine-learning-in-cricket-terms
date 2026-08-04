@@ -82,7 +82,7 @@ Fair question. Both sets influence the final model. But they operate at complete
 
 **Direct fitting versus indirect tuning.** The training set is read *by the model*: raw features `X` and targets `y` go in, gradients come out, internal equations get set. The validation set is never seen by the algorithm during mathematical optimisation. You look at the score from outside the rope and decide: *should I stop training early? Should I add more trees to this forest?* The batter learns in the nets. In the warm-up fixture, the batter learns nothing new — **the selectors do**.
 
-**Preventing hyperparameter overfitting.** Suppose you had only a training set and tuned hyperparameters directly against it. The tuner would cheerfully pick whatever settings memorise that data best: tree depth set to infinity, regularisation set to zero, every knob turned to "flatter me."
+**Preventing hyperparameter overfitting.** Suppose you had only a training set and tuned hyperparameters directly against it. The tuner would cheerfully pick whatever settings memorise that data best: tree depth set to infinity, regularisation (the overfitting penalty properly defined in **Gradient Descent**) set to zero, every knob turned to "flatter me."
 
 This is what happens when you let a batter choose their own net conditions. They will pick the length they like, the pace they like, and the surface they like, and their average will be magnificent and entirely fictional.
 

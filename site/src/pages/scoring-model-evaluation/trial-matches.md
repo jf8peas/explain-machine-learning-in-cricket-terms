@@ -97,7 +97,7 @@ You know from **The Coach's Settings** what a hyperparameter is: the dials you s
 
 **Hyperparameter optimisation** — or tuning — is the process of searching those dial settings for the combination that maximises performance. Not the settings that feel right. Not the defaults, which were chosen by library authors who have never seen your data. The ones that measurably win.
 
-The obstacle is that you cannot reason your way to them. There is no derivation that produces the correct `k` for your particular problem. Hyperparameters interact — the best tree depth changes depending on how much regularisation you applied — so you cannot even tune them one at a time and expect the individual winners to combine into an overall winner.
+The obstacle is that you cannot reason your way to them. There is no derivation that produces the correct `k` for your particular problem. Hyperparameters interact — the best tree depth changes depending on how much regularisation you applied (properly defined two chapters from now, in **Gradient Descent**) — so you cannot even tune them one at a time and expect the individual winners to combine into an overall winner.
 
 So you do what selectors have always done. You try combinations, and you keep notes.
 

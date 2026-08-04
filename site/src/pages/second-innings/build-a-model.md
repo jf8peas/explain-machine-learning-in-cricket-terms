@@ -35,4 +35,4 @@ The first dense layer faces the raw input — eight features, new ball, nothing 
 
 ## Dropout is strike rotation
 
-**Dropout** randomly benches a fifth of the players each training step, so no single unit becomes the star the whole innings depends on. It looks wasteful in the nets and is worth several wickets on match day — another quiet regulariser in the tradition of the previous over.
+**Dropout** randomly benches a fifth of the players each training step, so no single unit becomes the star the whole innings depends on. It looks wasteful in the nets and is worth several wickets on match day — another quiet regulariser in the tradition of **Gradient Descent**'s penalty term, just applied by benching units instead of shrinking weights.
