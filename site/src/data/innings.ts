@@ -261,7 +261,24 @@ print(len(X_train), len(X_val), len(X_test))`,
           { k: "Catch Rate", v: "Recall", s: "nabbing real chances" },
           { k: "Cheating", v: "Data Leakage", s: "reading bowler signs" }
         ]
-      }
+      },
+      {
+        slug: "naming-the-xi",
+        nav: "3.4 Naming the XI",
+        meta: "9 min · feature selection & grid search",
+        title: "Naming the XI: Feature Selection & Hyperparameter Optimisation",
+        lede: "Forty names on the whiteboard and eleven places in the side. Optimisation is the unglamorous work of finding the best combination — which players make the sheet, and what conditions you set for them — and then, finally, opening the vault to see whether you got it right.",
+        commentary: "'Everyone has an opinion on the XI. Only one of us has to write eleven names down and sign it.' — Chairman of Selectors",
+        codeFile: "scoring/grid_search.py",
+        codeOut: "90 fits · best: n_neighbors=7, metric='manhattan' · cv f1 0.847 · test f1 0.831",
+        code: `from sklearn.model_selection import GridSearchCV\n\ngrid_params = {"n_neighbors": range(1, 10),\n               "metric": ["minkowski", "manhattan"]}\n\nknn_grid = GridSearchCV(knn, grid_params, scoring="f1", cv=5)\nknn_grid.fit(X_train, y_train)\nprint(knn_grid.best_params_, knn_grid.best_score_)`,
+        stats: [
+          { k: "The Squad Sheet", v: "Feature Selection", s: "who makes the side" },
+          { k: "The Scouting Report", v: "Correlation", s: "corr() against the target" },
+          { k: "Trial Matches", v: "Grid Search", s: "every combination, tested" },
+          { k: "The Vault", v: "One Final Score", s: "best_estimator_.score()" }
+        ]
+      },
     ],
   },
   {

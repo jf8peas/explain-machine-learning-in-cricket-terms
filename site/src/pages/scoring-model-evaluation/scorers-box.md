@@ -3,7 +3,7 @@ layout: ../../layouts/MatchLayout.astro
 title: "The Scorer's Box: Metrics, Bias & Umpire Errors"
 innings: scoring-model-evaluation
 chapter: scorers-box
-meta: "8 min · metrics & leakage"
+meta: "7 min · metrics & leakage"
 lede: "Raw accuracy on a scorecard can lie. To truly evaluate performance, you need to step into the scorer's box, break down the confusion matrix, master precision vs. recall, and eliminate illegal data leakage."
 commentary: "'A strike rate of 200 looks brilliant until you realize every single run came off dropped catches.' — The Official Scorer"
 codeFile: scoring/metrics_evaluation.py
@@ -261,31 +261,6 @@ These produce eerily perfect models. If your first attempt scores 0.99 on a hard
 
 That last one deserves emphasis. For anything with a time dimension, `train_test_split` with a random shuffle lets the model train on Thursday and predict Tuesday. Use `TimeSeriesSplit` and always split forward in time.
 
-## Tuning on the Metric You Actually Care About
-
-One last trap, and it is the one that undoes all of the above.
-
-Back in **The Coach's Settings** we drew the line between parameters the model learns and hyperparameters the coach sets, and we said hyperparameters get tuned against the validation set. What we could not say then — because we had no metrics yet — is *tuned against validation on what basis?*
-
-`GridSearchCV` has an opinion by default, and on an imbalanced problem it is the wrong one:
-
-```python
-from sklearn.model_selection import GridSearchCV
-
-grid = GridSearchCV(
-    pipe,
-    {"model__C": [0.01, 0.1, 1, 10, 100]},
-    scoring="f1",      # not "accuracy" — the classes are imbalanced
-    cv=5,
-)
-grid.fit(X_train, y_train)
-print(grid.best_params_, grid.best_score_)
-```
-
-Note `scoring="f1"`. Leave it at the default and the grid search will hunt, diligently and across every combination you gave it, for the settings that best reproduce the lazy umpire from the top of this chapter — hands in pockets, 94.5%, never once raising a finger. Then it will report that it did a wonderful job, and it will be telling the truth about the wrong thing.
-
-The field restrictions were never the problem. What you were measuring them against was.
-
 ## The Scorer's Summary
 
 - **Never report accuracy alone on imbalanced data.** A 94.5% score can belong to a model that has never detected a single positive case.
@@ -299,7 +274,6 @@ The field restrictions were never the problem. What you were measuring them agai
 - **Split before you transform.** `fit_transform` on train, `transform` on test. Wrap it in a `Pipeline` so the rule is enforced by structure rather than memory.
 - **Audit every feature for time travel.** If it could not have been known at prediction time, it is a leak.
 - **Suspicious perfection is a bug report.** A 0.99 on a hard problem means go looking, not go celebrating.
-- **Tune on the metric you actually care about.** `scoring="f1"`, not the default. A grid search optimising accuracy on imbalanced data will find you the best possible lazy umpire.
 
 ---
 
@@ -307,4 +281,6 @@ The scorer's box exists because the scoreboard does not tell the whole story. Ru
 
 Build the habit of opening the ledger. The headline number is for the crowd.
 
-Next chapter: putting the model in the middle — deployment, drift, and what happens when conditions change after you have named the side.
+You now have an honest way to score a side. Which raises the question the whole innings has been circling: given that you can measure a model properly, how do you go and find a *better* one?
+
+Next chapter: **Naming the XI** — feature selection, hyperparameter search, and the one moment the vault is allowed to open.
