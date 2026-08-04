@@ -129,4 +129,4 @@ The symptom is a score that feels a bit too good. Trust that feeling. In this ga
 
 The ground is now properly divided: nets for grooving, a warm-up fixture for decisions, and Match Day untouched in the vault. Which means we can finally do the thing every coaching staff actually gets paid for — look at a player and work out whether the runs are real.
 
-Next chapter: **The Selection Meeting** — where the blockers, the flat-track bullies, and the batters who can actually travel all get argued over.
+Next chapter: **Form and Class** — where the blockers, the flat-track bullies, and the batters who can actually travel all get argued over.

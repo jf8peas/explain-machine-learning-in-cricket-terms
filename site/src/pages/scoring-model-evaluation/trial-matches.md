@@ -1,8 +1,8 @@
 ---
 layout: ../../layouts/MatchLayout.astro
-title: "Naming the XI: Feature Selection & Hyperparameter Optimisation"
+title: "Trial Matches: Feature Selection & Hyperparameter Optimisation"
 innings: scoring-model-evaluation
-chapter: naming-the-xi
+chapter: trial-matches
 meta: "9 min · feature selection & grid search"
 lede: "Forty names on the whiteboard and eleven places in the side. Optimisation is the unglamorous work of finding the best combination — which players make the sheet, and what conditions you set for them — and then, finally, opening the vault to see whether you got it right."
 commentary: "'Everyone has an opinion on the XI. Only one of us has to write eleven names down and sign it.' — Chairman of Selectors"

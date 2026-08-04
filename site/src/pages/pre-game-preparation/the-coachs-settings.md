@@ -151,7 +151,7 @@ print(grid.best_params_, grid.best_score_)
 
 One rule to carry forward, and it matters enormously: **hyperparameters are tuned against a held-out validation set — never against your final test data.** A coach who keeps rerunning match day until the settings look good has stopped measuring anything.
 
-That is a whole discipline of its own, and it gets its own chapter. See **The Practice Nets** in Innings 3, where we divide the ground properly, and **The Selection Meeting**, where we work out whether the settings you chose produced a batter who can actually travel.
+That is a whole discipline of its own, and it gets its own chapter. See **The Practice Nets** in Innings 3, where we divide the ground properly, and **Form and Class**, where we work out whether the settings you chose produced a batter who can actually travel.
 
 ---
 

@@ -1,8 +1,8 @@
 ---
 layout: ../../layouts/MatchLayout.astro
-title: "The Selection Meeting: Underfitting, Overfitting & Finding the Sweet Spot"
+title: "Form and Class: Underfitting, Overfitting & Finding the Sweet Spot"
 innings: scoring-model-evaluation
-chapter: selection-meeting
+chapter: form-and-class
 meta: "7 min · bias, variance & generalization"
 lede: "The ground is divided, the numbers are in, and now four people in a small room have to decide who can actually bat. One candidate has a single shot. One has memorised a bowling machine. Somewhere between them is the player you want."
 commentary: "'Form is temporary. Class is permanent. Our job tonight is to work out which one we're looking at.' — Chair of Selectors"
