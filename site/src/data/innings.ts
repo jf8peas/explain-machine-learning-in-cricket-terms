@@ -209,7 +209,7 @@ print(len(X_train), len(X_val), len(X_test))`,
     number: "03",
     title: "Scoring: Model Evaluation",
     short: "Scoring",
-    subtitle: "Evaluation · Architecture",
+    subtitle: "Evaluation · Architecture · Gradient Descent",
     chapters: [
       {
         slug: "practice-nets",
@@ -277,6 +277,36 @@ print(len(X_train), len(X_val), len(X_test))`,
           { k: "The Scouting Report", v: "Correlation", s: "corr() against the target" },
           { k: "Trial Matches", v: "Grid Search", s: "every combination, tested" },
           { k: "The Vault", v: "One Final Score", s: "best_estimator_.score()" }
+        ]
+      },
+      {
+        slug: "gradient-descent",
+        nav: "3.5 Gradient Descent",
+        meta: "15 min · loss landscapes & learning rates",
+        title: "Gradient Descent: Finding the Perfect Length",
+        lede: "Trial Matches searched for good settings by trying combinations and keeping the winner. Most models don't get that luxury — their real dials aren't a short list you can grid-search, they're numbers that could be anything. Gradient Descent is how a model finds good settings anyway: not by trying everything, but by feeling which way is downhill and taking a step.",
+        commentary:
+          "'You don't need the pitch report. You need to know: did that miss short, or did it miss full? Adjust, and bowl again.' — Bowling Coach",
+        codeFile: "scoring/gradient_descent.py",
+        codeOut: "same destination, different road: intercept 4.1 · overs +14.6 · wickets −9.0 · run_rate +11.2",
+        code: `from sklearn.linear_model import SGDRegressor
+
+model = SGDRegressor(
+    loss="squared_error",
+    learning_rate="constant",
+    eta0=0.01,
+    tol=1e-3,
+    max_iter=1000,
+)
+model.fit(X_train, y_train)
+
+print("intercept", round(model.intercept_[0], 2))
+print("coefficients", dict(zip(X_train.columns, model.coef_.round(2))))`,
+        stats: [
+          { k: "Global Min", v: "One", s: "the actual best length" },
+          { k: "Local Min", v: "Many", s: "false floors nearby" },
+          { k: "Learning Rate", v: "Step Size", s: "too big overshoots, too small crawls" },
+          { k: "Stop When", v: "Barely Moving", s: "or out of overs — max_iter" }
         ]
       },
     ],

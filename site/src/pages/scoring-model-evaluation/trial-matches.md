@@ -227,4 +227,4 @@ Forty names became eleven. The dials found their settings. The vault opened once
 
 The side is named. Which, as every selector eventually learns, is the moment the actual difficulty begins — because a team that was optimal in July is playing in November, on a different surface, against opposition that has spent three months watching the footage.
 
-Next chapter: putting the model in the middle — deployment, drift, and what happens when conditions change after you have named the side.
+Next chapter: **Gradient Descent** — how a model tunes settings that were never on a shortlist to begin with, one small correction at a time.
