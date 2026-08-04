@@ -317,7 +317,7 @@ print("coefficients", dict(zip(X_train.columns, model.coef_.round(2))))`,
     number: "04",
     title: "First Innings: Classical ML",
     short: "Classical ML",
-    subtitle: "Classification vs Regression · Linear Regression · K-Nearest Neighbours · K-Means",
+    subtitle: "Classification vs Regression · Linear & Logistic Regression · K-Nearest Neighbours · K-Means",
     chapters: [
       {
         slug: "classification-vs-regression",
@@ -371,6 +371,33 @@ print("RMSE", round(rmse, 1), "· R²", round(r2_score(y_val, preds), 3))`,
           { k: "Cost function", v: "SSE", s: "sum of squared error" },
           { k: "R²", v: "0.78", s: "variance explained" },
           { k: "Solved via", v: "Normal Eqn", s: "(XᵀX)⁻¹XᵀY" },
+        ],
+      },
+      {
+        slug: "logistic-regression",
+        nav: "Logistic Regression",
+        meta: "16 min · turning an appeal into a probability",
+        title: "Logistic Regression: How Plumb Was It?",
+        lede: "No umpire actually thinks in yes or no. There's a sliding scale in their head running from 'stone dead plumb' to 'not a hope in the world,' and the finger only goes up once that internal reading crosses a line. Logistic Regression is that sliding scale, written down.",
+        commentary:
+          "'Nobody's ever 100% certain out there. Some of us are just a lot more certain than others.' — Umpire",
+        codeFile: "first_innings/logistic_regression.py",
+        codeOut: "P(out) 0.73 · odds ≈ 2.7 to 1 · call: OUT",
+        code: `from sklearn.linear_model import LogisticRegression
+
+model = LogisticRegression()
+model.fit(X_train, y_train)
+
+print("intercept", round(model.intercept_[0], 2))
+print("coefficients", dict(zip(X_train.columns, model.coef_[0].round(2))))
+
+proba = model.predict_proba(X_val)[:, 1]
+print("P(out) for first delivery:", round(proba[0], 2))`,
+        stats: [
+          { k: "Output", v: "Probability", s: "squeezed through the sigmoid" },
+          { k: "Linear In", v: "Log-Odds", s: "not in probability itself" },
+          { k: "Loss", v: "Log-Loss", s: "punishes confident wrongness hard" },
+          { k: "Coefficient", v: "Odds Ratio", s: "eᵝ, not runs" },
         ],
       },
       {

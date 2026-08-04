@@ -93,7 +93,7 @@ Here's the part that trips people up: the exact same ball-by-ball dataset can su
 
 The task type isn't a footnote you fill in after picking an algorithm — it comes first, and it decides almost everything else:
 
-- **The algorithm.** `LinearRegression` produces a number on a continuous scale. Asking it to output "Out" or "Not Out" doesn't make sense; asking `LogisticRegression` for a projected score doesn't either. Some algorithms — K-Nearest Neighbours among them, coming up next — can do either job, but only once you've told them which one you want.
+- **The algorithm.** `LinearRegression` produces a number on a continuous scale. Asking it to output "Out" or "Not Out" doesn't make sense; asking `LogisticRegression` for a projected score doesn't either. Some algorithms — K-Nearest Neighbours among them, met later in this innings — can do either job, but only once you've told them which one you want.
 - **The metric.** Reporting "accuracy" on a projected score, or "mean absolute error" on a label, are both category errors. You'll get a number back. It will mean nothing.
 - **The output itself.** A regressor asked a which-one question will cheerfully hand you 0.7340912, and you'll have to remember that this is a probability of the positive class, not a score, not a count, not anything you can put straight on the scoreboard.
 
