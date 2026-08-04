@@ -64,6 +64,29 @@ Somewhere on that curve sits a **global minimum** — the one true length that m
 
 That "nearby" is the catch. A slightly-too-short length might, on a two-paced pitch, produce fewer boundaries than lengths immediately around it — a small dip that looks like the answer if you're only comparing it to its neighbours. That's a **local minimum**: genuinely better than nearby alternatives, while a much deeper valley sits further off, reachable only by getting worse for a while first. A bowler taking small, timid corrections can get stuck in that shallow dip forever, convinced they've found the length, because every small step away from it looks like a step backwards.
 
+```
+  loss
+  (how far off the stumps)
+    │
+    │●  ← ball one: well short, big miss
+    │ ╲
+    │  ╲                     ___
+    │   ╲                 __╱   ╲__
+    │    ╲___          __╱         ╲
+    │        ╲___     ╱              ╲
+    │            ╲___╱                ╲___
+    │                ↑                     ╲___●
+    │          local minimum                    ↑
+    │       (a decent length —              global minimum
+    │        looks like the answer         (the true best length —
+    │        from nearby alternatives)      only reachable by getting
+    │                                        worse for a while first)
+    └──────────────────────────────────────────────────── length bowled
+      short                good length                    full / yorker
+```
+
+A bowler taking cautious, one-step-at-a-time corrections from the left edge of that curve rolls straight into the shallow dip and stops — every neighbouring length looks worse, so there's no local signal telling them to keep going. Reaching the true minimum means tolerating a stretch where the loss goes back *up* before it comes back down, which is exactly why "always take the step that looks best right now" isn't quite the whole strategy real optimisers use.
+
 With one dial — just length — the landscape is a single curve, and it's hard to miss a deep valley by much. Real models tune dozens or thousands of dials simultaneously — length *and* line *and* pace *and* seam position — and the landscape becomes a surface with folds and false floors in every direction at once. This is the same explosion **Trial Matches** hit when the grid went from two dials to four: exhaustively checking every combination stopped being possible long before you ran out of dials worth tuning. Gradient descent doesn't check every combination either. It just always knows, from wherever it's currently standing, which direction is downhill.
 
 ## Learning Rate: How Big a Step Is Too Big?
