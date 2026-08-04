@@ -116,7 +116,7 @@ Precision  =  ─────────  =  ────────  =  0.88
                TP + FP        45 + 6
 ```
 
-Precision lives entirely in the *predicted positive* column. It ignores everything you didn't flag. A captain with high precision is one whose reviews are trusted — when he twirls his hands in a T, the fielding side is already celebrating, because he doesn't burn reviews on hopeful appeals.
+Precision is a **quality** question, not a quantity one: of everything the model was willing to call "out," how much of it actually was? It lives entirely in the *predicted positive* column and ignores everything you didn't flag — a false negative doesn't touch this number at all. In plain terms, precision is whether you can **trust the model when it calls positive**. A captain with high precision is one whose reviews are trusted — when he twirls his hands in a T, the fielding side is already celebrating, because he doesn't burn reviews on hopeful appeals.
 
 **Optimise precision when a false positive is expensive.** You have two reviews per innings and a wasted one may cost you the match. When you claim a wicket, you had better be right.
 
@@ -130,7 +130,7 @@ Recall  =  ─────────  =  ─────────  =  0.82
             TP + FN        45 + 10
 ```
 
-Recall lives entirely in the *actual positive* row. It ignores your false alarms and asks only about the ones that got away. A side with high recall drops nothing — every edge is snaffled at second slip, every half-chance in the deep is converted, every faint nick is heard and appealed.
+Recall is a **quantity** question: of every genuine dismissal that actually happened out there in the world, how many did you actually catch? It lives entirely in the *actual positive* row and ignores your false alarms — a false positive doesn't touch this number at all. In plain terms, recall is whether the model **missed anything that mattered**. A side with high recall drops nothing — every edge is snaffled at second slip, every half-chance in the deep is converted, every faint nick is heard and appealed.
 
 **Optimise recall when a false negative is expensive.** Miss a dismissal and the batter goes on to make 150 and win the game from there. Miss a tumour, miss a fraudulent transaction, miss a failing turbine.
 
@@ -167,7 +167,7 @@ F1  =  2 · ────────────────────  =  2 �
             Precision + Recall           0.88 + 0.82
 ```
 
-The harmonic mean, rather than the plain average, is deliberate: it punishes imbalance. A model with precision 1.0 and recall 0.1 averages a respectable 0.55 but scores an F1 of just 0.18. That is correct behaviour. A captain who reviews once a match, is always right, and lets nine other dismissals go unappealed is not a good captain — he is a cautious one, and F1 says so.
+The harmonic mean, rather than the plain average, is deliberate: it **punishes a low rate in either direction**, rather than letting a strong one paper over a weak one. A model with precision 1.0 and recall 0.1 averages a respectable 0.55 but scores an F1 of just 0.18. That is correct behaviour — F1 only rewards a captain who is both trustworthy *and* thorough, and a model can't back into a high F1 by being excellent at one and careless about the other. A captain who reviews once a match, is always right, and lets nine other dismissals go unappealed is not a good captain — he is a cautious one, and F1 says so.
 
 F1 is the sensible default for imbalanced binary problems. If precision and recall genuinely matter unequally in your context, `fbeta_score` lets you weight them (β > 1 favours recall, β < 1 favours precision).
 

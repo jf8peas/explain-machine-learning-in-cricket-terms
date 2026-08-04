@@ -68,6 +68,16 @@ Read it as a batting average against this particular opposition. High absolute v
 
 **And the one that should make you nervous: a suspiciously high correlation is a leak, not a gift.** A feature correlating 0.97 with your target has almost certainly seen the future. Go back to the sign sheet warning in 3.3 and check where that column came from before you celebrate.
 
+### A Worked Example: The Review That Already Happened
+
+Say you're building a model to help a captain decide whether to send an LBW shout upstairs — predict, in the ten seconds after the on-field umpire's decision, whether a review would overturn it. You run `corr()` against your target and one column towers over the rest: `third_umpire_ruling`, sitting at 0.99.
+
+**Why it's a leak.** `third_umpire_ruling` isn't a fact about the delivery — it's the *outcome of the review itself*. It doesn't get written down until after the review has already happened.
+
+**The failure in production.** The one moment this model actually has to earn its keep — right after the on-field decision, before anyone has reviewed anything — `third_umpire_ruling` is blank. Nobody has reviewed the ball yet; there is nothing to put in that column. A model that leaned on it in training has learned to read a verdict that, at the exact moment it's asked to predict, hasn't been handed down.
+
+**The test that catches this every time:** for any suspiciously strong feature, ask *"would I actually have this exact piece of information at the exact moment I need to make the call?"* If the honest answer is no, it isn't a feature. It's the answer key, wearing a disguise.
+
 ```
                         THE SQUAD SHEET
 
