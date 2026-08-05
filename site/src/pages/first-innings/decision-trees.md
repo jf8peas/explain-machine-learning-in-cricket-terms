@@ -98,17 +98,23 @@ A tree doesn't invent its questions from intuition. For every feature, it sorts 
 
 A classification tree wants each split to leave its two children as close to pure as possible — as close to "everyone in this group shares the same label" as it can manage. Two criteria measure that.
 
-**Gini impurity** answers a specific question: if you picked one observation at random from this node and guessed its label at random too, using the node's own class proportions as your guessing odds, how often would you be wrong?
+**Gini impurity** measures something precise: the probability that a randomly chosen observation from this node would be **mislabelled**, if you classified it randomly according to the node's own class proportions instead of actually looking at it.
 
 Gini = 1 − Σ(pᵢ)²
 
-Where `pᵢ` is the proportion of class `i` in the node. A node that's 100% one class scores `0` — you'd never be wrong, because there's only one label to guess. A node evenly split across many classes climbs toward (but never quite reaches) `1`. The threshold with the **lowest** resulting Gini is the one the tree picks.
+Where `pᵢ` is the proportion of class `i` in the node. A node that's 100% one class scores `0` — there's only one label to guess, so a random guess is never wrong. The threshold with the **lowest** resulting Gini is the one the tree picks.
 
-**Entropy**, borrowed from information theory, measures the same idea a different way — how much disorder, or unpredictability, sits in a node:
+The goal, split after split, is to drive Gini all the way to `0` on every node — every leaf perfectly pure, every observation inside it sharing one label. Chase that goal without any restraint, though, and you already know where it leads: **Form and Class**'s net hero, carving the training set into smaller and smaller pure little pockets until every leaf holds one delivery and the tree has stopped learning cricket and started memorising a season. `max_depth` and `min_samples_leaf` exist precisely to stop a tree from reaching `0` everywhere.
+
+**Entropy**, borrowed from information theory, scores a node a different way — not "how often would a random guess be wrong," but **how much information, randomness, or disorder the node's class mix contains**. High entropy is a coin flip: genuinely unpredictable. Low entropy is close to a foregone conclusion — high order, easy to call.
 
 Entropy = −Σ pᵢ · log₂(pᵢ)
 
-A pure node scores `0`. A node split evenly across two classes hits its maximum of `1`; across four evenly-split classes, the maximum climbs to `2`. But trees don't pick splits by minimising raw entropy directly — they use **information gain**: the entropy of the parent minus the weighted entropy of the two children that split produces. The bigger the drop in disorder, the better the split.
+A pure node scores `0` — nothing left to be uncertain about. A node split dead-evenly across two classes hits entropy's own worst case; across four evenly-split classes, that ceiling climbs higher still. Entropy shares Gini's exact goal — drive every node toward `0`, without driving the tree into memorising its own training data to get there — and it's held back by the same brakes, `max_depth` and `min_samples_leaf`.
+
+The one place the two genuinely diverge is **scale**. For a binary split — Out vs Not Out, the running example in this chapter — a dead-even 50/50 node is the worst case either criterion can describe, and each puts a different number on it: **Gini tops out at `0.5`; entropy tops out at `1`.** Same worst-case node, two different rulers. Which is exactly why comparing a Gini score against an entropy score directly is meaningless — compare Gini against Gini, entropy against entropy, never across.
+
+Trees don't pick splits by minimising raw entropy directly, though — they use **information gain**: the entropy of the parent minus the weighted entropy of the two children that split produces. The bigger the drop in disorder, the better the split.
 
 IG = Entropy(parent) − [ (nₜᵣᵤₑ / nₚₐᵣₑₙₜ) · Entropy(true child) + (n_false / nₚₐᵣₑₙₜ) · Entropy(false child) ]
 
