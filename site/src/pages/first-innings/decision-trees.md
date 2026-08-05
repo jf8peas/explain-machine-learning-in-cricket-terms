@@ -56,6 +56,38 @@ Here's an actual tree, grown on delivery data — pitch line, impact line, and b
 
 Read the root: `impact_line_cm <= -6.49`. Every delivery starts here. If true — the ball's line of impact was well outside off — follow the left branch into a node that's already 94% "Not Out" before asking anything else. If false, follow right into a node that's a much closer call, `[0.64, 0.36]`, and needs more questions to settle it. Trace any path from root to leaf and you're reading a complete, human-readable justification for the verdict at the bottom — which is precisely why decision trees are the one model in this innings you can hand to someone who has never heard of `scikit-learn` and still have them follow the logic.
 
+## Two Goals, One Shape
+
+Everything so far describes the shape of a tree — nodes, leaves, branches — without saying what it's actually trying to predict. That question splits into exactly the same two answers **Classification vs Regression** already taught: how many, or which one?
+
+**`DecisionTreeClassifier`** answers *which one*. It predicts a category from a fixed shortlist — Out or Not Out, or a longer menu like Four/Six/Dot Ball/Wicket. The delivery-by-delivery example running through this chapter, and the tree diagram above, is a classifier: every leaf ends in a class, `Out` or `Not Out`.
+
+**`DecisionTreeRegressor`** answers *how many*. It predicts a number with no fixed shortlist — a projected final score, a player's expected strike rate against left-arm spin, anything you could sensibly average. Its leaves don't end in a class at all; as the next section covers, they end in a plain numeric average.
+
+Instantiating either looks almost identical — same shape, different criterion argument:
+
+```python
+from sklearn.tree import DecisionTreeRegressor
+
+regression_tree = DecisionTreeRegressor(
+    criterion="squared_error",   # or "absolute_error"
+    max_depth=3,
+    random_state=24,
+)
+```
+
+```python
+from sklearn.tree import DecisionTreeClassifier
+
+classification_tree = DecisionTreeClassifier(
+    criterion="gini",   # or "entropy"
+    max_depth=3,
+    random_state=24,
+)
+```
+
+Everything downstream — how a split gets judged, what a leaf actually hands back — depends entirely on which of the two you reached for. That's the next two sections, in order: how thresholds get proposed (identical for both), then how they get judged (not identical at all).
+
 ## Splitting the Ground: Finding a Threshold
 
 A tree doesn't invent its questions from intuition. For every feature, it sorts every observed value and takes the midpoint between each consecutive pair as a **candidate threshold**. With 200 deliveries and a `ball_speed` column, that's up to 199 candidate cutoffs to consider for that feature alone — and every single one, across every feature, gets tested at every split. It's exhaustive by design: an analyst trying every conceivable dividing line on every stat, just to find the one line that separates the data best.
@@ -166,6 +198,8 @@ tree.fit(X_train, y_train)
 tree.score(X_test, y_test)
 y_pred = tree.predict(X_test)
 ```
+
+Swap `DecisionTreeClassifier` for `DecisionTreeRegressor` and the rest of the block doesn't change — same `fit`, same `score`, same `predict`. Only what comes back is different: a class label from the classifier, a plain number from the regressor.
 
 A brand-new, single delivery gets judged the same way a scout runs an uncapped player's numbers through the model:
 
