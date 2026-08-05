@@ -42,6 +42,24 @@ Before the sigmoid, three ways of expressing the exact same underlying confidenc
 
 **Log-odds** — the logarithm of the odds — finally break free in both directions, running the whole way from negative infinity to positive infinity. That's exactly the range a linear combination of predictors already produces naturally. Log-odds are the honest target. Probability is just the report you eventually translate it into for the scoreboard.
 
+Take one LBW shout and run it through all three. Say the model looks at this delivery and lands on a probability of `0.75` — 75% likely to be out.
+
+- **Probability**: `0.75`. Reads naturally. Bounded between 0 and 1, which is exactly why a straight line can't predict it honestly — nothing stops linear regression from handing back `1.4` or `-0.2`.
+- **Odds**: `0.75 / 0.25 = 3`. This is the bookmaker's "3 to 1 on" — three times as likely to be out as not. The lower fence is gone (odds can't go negative), but the upper one's still there.
+- **Log-odds**: `ln(3) ≈ 1.10`. Finally unbounded both ways — the number the model is honestly allowed to predict.
+
+The pattern that matters sits in how these three move together across a full range of confidence:
+
+| Probability | Odds | Log-odds |
+|---|---|---|
+| 0.95 — near-certain out | 19 | +2.94 |
+| 0.75 — fairly confident | 3 | +1.10 |
+| 0.50 — dead-even shout | 1 | 0 |
+| 0.25 — fairly confident not out | 0.33 | −1.10 |
+| 0.05 — near-certain not out | 0.053 | −2.94 |
+
+Odds are lopsided around a coin-flip shout — 3 on one side of even, but `0.33` rather than `-3` on the other — which is exactly the fence a linear model can't respect. Log-odds are perfectly symmetric around zero at the dead-even 0.50 mark, and climb without limit toward either extreme. That symmetry is why log-odds, not probability or odds, is the quantity a straight line can honestly predict.
+
 Z = β₀ + β₁X
 
 Z here is log-odds — the model's raw, unfiltered opinion, in units nobody outside a statistics department finds intuitive.
