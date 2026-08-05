@@ -77,6 +77,10 @@ def sigmoid(z):
     return 1 / (1 + np.exp(-z))
 ```
 
+![A line chart titled The sigmoid: log-odds squeezed into a probability. An S-shaped curve rises from near zero on the left to near one on the right, flattening at both ends and crossing the midpoint exactly at Z equals zero, probability 0.5. Four points from the earlier probability, odds and log-odds table are marked on the curve: Z equals negative 2.94 at probability 0.05, Z equals 0 at probability 0.50, Z equals 1.10 at probability 0.75, and Z equals 2.94 at probability 0.95.](/explain-machine-learning-in-cricket-terms/images/sigmoid.png)
+
+Same four shouts from the table a moment ago, now sitting on the curve. The middle of the S is the steep part — near `Z = 0`, a small nudge in log-odds swings the probability substantially, which is exactly why a dead-even shout is the most sensitive point on the whole curve. Out at the flat ends, near-certainty in either direction, that same size nudge barely moves the probability at all — the umpire's already made up their mind, and no small scrap of new evidence is going to shift it much further.
+
 Feed it a very negative Z and it flattens toward 0. Feed it a very positive Z and it flattens toward 1. Feed it exactly 0 and it lands precisely on 0.5 — the model's version of a genuine, dead-even shout. The sigmoid never quite touches either fence, which is honest: no model — no umpire — should ever claim absolute certainty.
 
 ## Fitting It: The Same Walk, a Sharper Penalty
@@ -133,7 +137,7 @@ model.predict_proba(X)
 
 Here's the trap that catches everyone coming from linear regression: **a logistic regression coefficient is not "runs per unit," because the model isn't linear in probability — it's linear in log-odds.** A coefficient of `0.7` on "delivery pitched in line with the stumps" doesn't mean "add 0.7 to the chance of being out." It means: add `0.7` to the log-odds, which — undoing the logarithm — means **multiply the odds by e^0.7 ≈ 2.01.** Pitching in line, all else held equal, roughly doubles the odds of the decision going against the batter. That's an **odds ratio**, and it's the native, honest unit a logistic coefficient speaks in.
 
-`model.predict_proba(X)` will hand you probabilities directly, and they're the number you'll actually report — but they're the less useful number to *reason* with. A coefficient's effect on log-odds is constant everywhere; its effect on probability is not. Near a coin-flip (probability around 0.5), a small nudge in log-odds swings the probability substantially. Out near the extremes (a probability already at 0.02 or 0.98), that exact same nudge in log-odds barely moves the probability at all — the sigmoid has gone nearly flat out there. Same coefficient, wildly different real-world impact, depending entirely on where you started. Odds ratios don't have that problem, which is why the PDF's own instinct is right: know the odds before you trust the probability.
+`model.predict_proba(X)` will hand you probabilities directly, and they're the number you'll actually report — but they're the less useful number to *reason* with. A coefficient's effect on log-odds is constant everywhere; its effect on probability is not. Near a coin-flip (probability around 0.5), a small nudge in log-odds swings the probability substantially. Out near the extremes (a probability already at 0.02 or 0.98), that exact same nudge in log-odds barely moves the probability at all — the sigmoid has gone nearly flat out there. Same coefficient, wildly different real-world impact, depending entirely on where you started. Odds ratios don't have that problem — the same multiplier applies everywhere on the curve, regardless of where you started. Know the odds before you trust the probability.
 
 ## Grading the Verdict: Four Numbers, Two Vocabularies
 
