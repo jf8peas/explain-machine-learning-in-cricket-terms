@@ -137,7 +137,15 @@ model.predict_proba(X)
 
 Here's the trap that catches everyone coming from linear regression: **a logistic regression coefficient is not "runs per unit," because the model isn't linear in probability — it's linear in log-odds.** A coefficient of `0.7` on "delivery pitched in line with the stumps" doesn't mean "add 0.7 to the chance of being out." It means: add `0.7` to the log-odds, which — undoing the logarithm — means **multiply the odds by e^0.7 ≈ 2.01.** Pitching in line, all else held equal, roughly doubles the odds of the decision going against the batter. That's an **odds ratio**, and it's the native, honest unit a logistic coefficient speaks in.
 
-`model.predict_proba(X)` will hand you probabilities directly, and they're the number you'll actually report — but they're the less useful number to *reason* with. A coefficient's effect on log-odds is constant everywhere; its effect on probability is not. Near a coin-flip (probability around 0.5), a small nudge in log-odds swings the probability substantially. Out near the extremes (a probability already at 0.02 or 0.98), that exact same nudge in log-odds barely moves the probability at all — the sigmoid has gone nearly flat out there. Same coefficient, wildly different real-world impact, depending entirely on where you started. Odds ratios don't have that problem — the same multiplier applies everywhere on the curve, regardless of where you started. Know the odds before you trust the probability.
+`model.predict_proba(X)` will hand you probabilities directly, and they're the number you'll actually report. But they're the wrong number to *reason* with, and the reason is worth sitting with, because a single probability is perfectly trustworthy on its own — the problem only shows up when you try to describe what a predictor *means*.
+
+Take that same doubled-odds coefficient and watch what it does to three different deliveries:
+
+- Start at a 10% chance of out → odds `0.11` → doubled to `0.22` → new probability **18.2%.** An 8-point swing.
+- Start at a 50% chance of out → odds `1.0` → doubled to `2.0` → new probability **66.8%.** A 17-point swing.
+- Start at a 90% chance of out → odds `9.0` → doubled to `18.0` → new probability **94.8%.** A 5-point swing.
+
+Same coefficient, same "doubles the odds" effect, every single time — and three completely different-looking probability swings, purely because the sigmoid is steep near a coin-flip and flat out near the extremes. Judge the predictor by how much it moved the probability and you'd conclude it matters a lot here, a little there, for no reason connected to the model at all. The odds ratio is the number that stays honest regardless of where you started; the probability swing it produces is scenery that changes with the view.
 
 ## Grading the Verdict: Four Numbers, Two Vocabularies
 
