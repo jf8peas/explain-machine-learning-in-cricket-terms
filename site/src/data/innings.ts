@@ -317,7 +317,7 @@ print("coefficients", dict(zip(X_train.columns, model.coef_.round(2))))`,
     number: "04",
     title: "First Innings: Classical ML",
     short: "Classical ML",
-    subtitle: "Classification vs Regression · Linear & Logistic Regression · K-Nearest Neighbours · K-Means",
+    subtitle: "Regression · Classification · Clustering · Decision Trees & Ensembles",
     chapters: [
       {
         slug: "classification-vs-regression",
@@ -455,6 +455,86 @@ print(model.inertia_, model.n_iter_)`,
           { k: "Inertia", v: "812.4", s: "tightness of the piles" },
           { k: "Iterations", v: "6", s: "reshuffles to settle down" },
           { k: "Labels supplied", v: "0", s: "you name them afterwards" },
+        ],
+      },
+      {
+        slug: "decision-trees",
+        nav: "Decision Trees",
+        meta: "18 min · splits, thresholds & impurity",
+        title: "Decision Trees: One Question at a Time",
+        lede: "A DRS review never asks one big question. It asks a sequence of small, precise ones — front-foot no-ball first, then pitching, then impact, then the stumps — and only moves to the next question once the last one has an answer. A decision tree is that protocol, built from data instead of a rulebook.",
+        commentary:
+          "'I don't decide in one look. I check the front foot. Then the line. Then the impact. By the time I get to the stumps, the answer's already obvious.' — Third Umpire",
+        codeFile: "first_innings/decision_tree.py",
+        codeOut: "depth 3 · 7 leaves · test accuracy 0.81",
+        code: `from sklearn.tree import DecisionTreeClassifier
+from sklearn.model_selection import train_test_split
+
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y, test_size=0.3, shuffle=True, random_state=24
+)
+
+tree = DecisionTreeClassifier(criterion="gini", max_depth=3, random_state=24)
+tree.fit(X_train, y_train)
+
+tree.score(X_test, y_test)
+tree.predict(X_test)`,
+        stats: [
+          { k: "Root Split", v: "impact_line", s: "the single best question" },
+          { k: "Criterion", v: "Gini / MSE", s: "classification vs regression" },
+          { k: "Leaves", v: "7", s: "verdicts delivered" },
+          { k: "Weakness", v: "Instability", s: "one new row, new tree" },
+        ],
+      },
+      {
+        slug: "random-forest",
+        nav: "Random Forest",
+        meta: "16 min · bootstrapping, bagging & the wisdom of the panel",
+        title: "Random Forest: Ask the Whole Panel",
+        lede: "One umpire's read of a review can wobble. Show a panel of umpires slightly different footage each and ask for a show of hands, and the wobble mostly cancels out. A random forest is that panel — dozens of trees, each grown from a different slice of the same season, voting.",
+        commentary:
+          "'Any one of us could be wrong about this delivery. All of us being wrong, in the same direction, at the same time — that's a lot rarer.' — Panel Umpire",
+        codeFile: "first_innings/random_forest.py",
+        codeOut: "100 trees · oob_score 0.83 · test accuracy 0.85",
+        code: `from sklearn.ensemble import RandomForestClassifier
+
+forest = RandomForestClassifier(bootstrap=True, oob_score=True, random_state=24)
+forest.fit(X, y)   # no train_test_split needed — the OOB rows are the test set
+
+forest.oob_score_
+forest.oob_decision_function_`,
+        stats: [
+          { k: "n_estimators", v: "100", s: "trees on the panel (default)" },
+          { k: "Sample Seen", v: "~63%", s: "unique rows per tree, on average" },
+          { k: "Out-of-Bag", v: "~37%", s: "free validation, per tree" },
+          { k: "Verdict", v: "Majority Vote", s: "or the average, for regression" },
+        ],
+      },
+      {
+        slug: "extra-trees",
+        nav: "Extra Trees",
+        meta: "12 min · extremely randomized trees",
+        title: "Extra Trees: Turning Up the Randomness",
+        lede: "Random Forest already gave every umpire on the panel a different set of replays. Extra Trees goes one step further: show them all the same replays, but stop letting any of them study a decision carefully. Hand each one a shortlist of plausible calls, chosen at random, and make them pick the best of that shortlist and move on.",
+        commentary:
+          "'We don't have time to check every possible line. Give me three plausible ones and I'll tell you which of those three looks worst.' — Panel Umpire, running late",
+        codeFile: "first_innings/extra_trees.py",
+        codeOut: "100 trees · whole dataset per tree · test accuracy 0.84 · faster to train",
+        code: `from sklearn.model_selection import train_test_split
+from sklearn.ensemble import ExtraTreesClassifier
+
+X_train, X_test, y_train, y_test = train_test_split(X, y)
+
+extra_clf = ExtraTreesClassifier(random_state=24)
+extra_clf.fit(X_train, y_train)
+
+extra_clf.score(X_test, y_test)
+extra_clf.predict(X_test)`,
+        stats: [
+          { k: "Bootstrap", v: "Off", s: "every tree sees the whole dataset" },
+          { k: "Thresholds", v: "Random", s: "best of a random few, not all" },
+          { k: "Speed", v: "Faster", s: "skips the exhaustive threshold search" },
+          { k: "Watch The Name", v: "Trees ≠ Tree", s: "ensemble vs a single randomised tree" },
         ],
       },
     ],
