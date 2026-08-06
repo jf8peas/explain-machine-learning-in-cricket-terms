@@ -30,7 +30,6 @@ const { innings: inn, chIdx, flatIdx, prev, next } = ctx;
 const over = `${inn.index + 1}.${chIdx + 1}`;
 const eyebrow = `${inn.short} · Over ${over}`;
 const readTime = fm.meta.split(" · ")[0];
-const pct = Math.round((flatIdx / totalChapters) * 100);
 const codeLines = (fm.code ?? "").split("\n");
 ---
 
@@ -74,14 +73,17 @@ const codeLines = (fm.code ?? "").split("\n");
           class="h-1.5 w-[clamp(90px,14vw,150px)] overflow-hidden rounded-full bg-white/[0.12]"
         >
           <div
+            id="header-progress-bar"
             class="h-full rounded-full bg-gradient-to-r from-gold to-gold-light transition-[width] duration-300"
-            style={`width:${pct}%`}
+            style="width:0%"
           >
           </div>
         </div>
       </div>
-      <span class="font-mono text-[11px] font-medium text-gold"
-        >{flatIdx}/{totalChapters}</span
+      <span
+        id="header-progress-count"
+        class="font-mono text-[11px] font-medium text-gold"
+        >0/{totalChapters}</span
       >
     </div>
   </Fragment>
@@ -117,6 +119,7 @@ const codeLines = (fm.code ?? "").split("\n");
               return (
                 <a
                   href={url(`${inn.slug}/${c.slug}/`)}
+                  data-chapter-slug={c.slug}
                   class:list={[
                     "flex w-full items-center gap-[11px] rounded-[9px] p-2.5 transition-colors hover:bg-white/5",
                     on ? "bg-gold/[0.12] text-white" : "text-mist-light",
@@ -138,6 +141,13 @@ const codeLines = (fm.code ?? "").split("\n");
                       {c.meta}
                     </span>
                   </span>
+                  <span
+                    data-chapter-tick
+                    class="ml-auto hidden flex-none font-mono text-[12px] text-gold"
+                    aria-hidden="true"
+                  >
+                    ✓
+                  </span>
                 </a>
               );
             })
@@ -157,22 +167,28 @@ const codeLines = (fm.code ?? "").split("\n");
             <span class="text-[12.5px] text-slate-custom"
               >Chapters completed</span
             >
-            <span class="font-mono text-[12.5px] font-medium text-pitch"
-              >{flatIdx} / {totalChapters}</span
+            <span
+              id="lhn-chapters-completed"
+              class="font-mono text-[12.5px] font-medium text-pitch"
+              >0 / {totalChapters}</span
             >
           </div>
           <div class="flex items-baseline justify-between gap-2">
             <span class="text-[12.5px] text-slate-custom"
               >Exercises passed</span
             >
-            <span class="font-mono text-[12.5px] font-medium text-pitch"
-              >18 / 24</span
+            <span
+              id="lhn-exercises-passed"
+              class="font-mono text-[12.5px] font-medium text-pitch"
+              >0 / 24</span
             >
           </div>
           <div class="flex items-baseline justify-between gap-2">
             <span class="text-[12.5px] text-slate-custom">Streak</span>
-            <span class="font-mono text-[12.5px] font-medium text-gold-deep"
-              >6 days · not out</span
+            <span
+              id="lhn-streak"
+              class="font-mono text-[12.5px] font-medium text-gold-deep"
+              >—</span
             >
           </div>
         </div>
@@ -431,7 +447,71 @@ const codeLines = (fm.code ?? "").split("\n");
             )
           }
         </div>
+
+        <!-- Scroll-to-complete trigger — watched by the IntersectionObserver in the script below -->
+        <div
+          id="chapter-completion-trigger"
+          data-chapter-id={fm.chapter}
+          data-total-chapters={totalChapters}
+          class="h-px w-full"
+          aria-hidden="true"
+        >
+        </div>
       </article>
     </main>
   </div>
 </BaseLayout>
+
+<script>
+  import {
+    PROGRESS_EVENT,
+    TOTAL_EXERCISES,
+    initChapterCompletionTrigger,
+    loadProgress,
+  } from "../utils/progress";
+
+  const triggerEl = document.getElementById("chapter-completion-trigger");
+  const totalChapters = Number(triggerEl?.dataset.totalChapters ?? 0);
+
+  const headerBar = document.getElementById("header-progress-bar");
+  const headerCount = document.getElementById("header-progress-count");
+  const lhnChapters = document.getElementById("lhn-chapters-completed");
+  const lhnExercises = document.getElementById("lhn-exercises-passed");
+  const lhnStreak = document.getElementById("lhn-streak");
+  const chapterLinks = document.querySelectorAll("[data-chapter-slug]");
+
+  /** Re-render every progress-aware element in the Header + LHN from storage. */
+  function refreshProgressUI(): void {
+    const data = loadProgress();
+    const done = data.completedChapters.length;
+    const pct =
+      totalChapters > 0 ? Math.min(100, Math.round((done / totalChapters) * 100)) : 0;
+
+    // Header scorebug — course progress bar + count
+    if (headerBar) headerBar.style.width = `${pct}%`;
+    if (headerCount) headerCount.textContent = `${done}/${totalChapters}`;
+
+    // LHN "Match situation" card
+    if (lhnChapters) lhnChapters.textContent = `${done} / ${totalChapters}`;
+    if (lhnExercises)
+      lhnExercises.textContent = `${data.completedExercises.length} / ${TOTAL_EXERCISES}`;
+    if (lhnStreak) {
+      const n = data.streak.count;
+      lhnStreak.textContent = n > 0 ? `${n} day${n === 1 ? "" : "s"} · not out` : "—";
+    }
+
+    // LHN innings card — tick the chapters already read
+    chapterLinks.forEach((link) => {
+      const slug = link.getAttribute("data-chapter-slug");
+      const tick = link.querySelector("[data-chapter-tick]");
+      if (slug && tick) {
+        tick.classList.toggle("hidden", !data.completedChapters.includes(slug));
+      }
+    });
+  }
+
+  // Initial paint from storage, then live updates on every progress change.
+  refreshProgressUI();
+  window.addEventListener(PROGRESS_EVENT, refreshProgressUI);
+  initChapterCompletionTrigger();
+</script>
