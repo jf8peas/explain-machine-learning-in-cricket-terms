@@ -1,6 +1,7 @@
 ---
 layout: ../../layouts/MatchLayout.astro
-title: "The Machine Learning Workflow: Playing the Innings"
+title: "ML Workflow"
+subtitle: "Playing the Innings"
 innings: pre-game-preparation
 chapter: ml-workflow
 meta: "9 min · one full innings"

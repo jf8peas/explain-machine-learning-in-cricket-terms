@@ -1,6 +1,7 @@
 ---
 layout: ../../layouts/MatchLayout.astro
-title: "Agent Tools: Twelfth Man Duties"
+title: "Agent Tools"
+subtitle: "Twelfth Man Duties"
 innings: post-game
 chapter: agent-tools
 meta: "10 min · twelfth man duties"

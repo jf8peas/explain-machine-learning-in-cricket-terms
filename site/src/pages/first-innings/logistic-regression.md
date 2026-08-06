@@ -1,6 +1,7 @@
 ---
 layout: ../../layouts/MatchLayout.astro
-title: "Logistic Regression: How Plumb Was It?"
+title: "Logistic Regression"
+subtitle: "How Plumb Was It?"
 innings: first-innings
 chapter: logistic-regression
 meta: "16 min · turning an appeal into a probability"

@@ -1,6 +1,7 @@
 ---
 layout: ../../layouts/MatchLayout.astro
-title: "K-Nearest Neighbours: Who Does He Remind You Of?"
+title: "K-Nearest Neighbours"
+subtitle: "Who Does He Remind You Of?"
 innings: first-innings
 chapter: k-nearest-neighbours
 meta: "12 min · the scouting comparison"

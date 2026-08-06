@@ -1,6 +1,7 @@
 ---
 layout: ../../layouts/MatchLayout.astro
-title: "Agent Architecture: The Dressing Room"
+title: "Agent Architecture"
+subtitle: "The Dressing Room"
 innings: post-game
 chapter: architecture
 meta: "12 min · the dressing room"

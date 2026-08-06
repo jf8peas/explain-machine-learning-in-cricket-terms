@@ -1,6 +1,7 @@
 ---
 layout: ../../layouts/MatchLayout.astro
-title: "Feature Engineering: Cleaning Up the Scorecard"
+title: "Feature Engineering"
+subtitle: "Cleaning Up the Scorecard"
 innings: pre-game-preparation
 chapter: feature-engineering
 meta: "13 min · gaps, freaks & lopsided squads"

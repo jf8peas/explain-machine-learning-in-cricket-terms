@@ -1,6 +1,7 @@
 ---
 layout: ../../layouts/MatchLayout.astro
-title: "Form and Class: Underfitting, Overfitting & Finding the Sweet Spot"
+title: "Underfitting, Overfitting & Finding the Sweet Spot"
+subtitle: "Form and Class"
 innings: scoring-model-evaluation
 chapter: form-and-class
 meta: "7 min · bias, variance & generalization"

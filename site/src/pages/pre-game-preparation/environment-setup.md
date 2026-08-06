@@ -1,6 +1,7 @@
 ---
 layout: ../../layouts/MatchLayout.astro
-title: "Environment Setup: Preparing the Pitch"
+title: "Environment Setup"
+subtitle: "Preparing the Pitch"
 innings: pre-game-preparation
 chapter: environment-setup
 meta: "7 min · ground preparation"

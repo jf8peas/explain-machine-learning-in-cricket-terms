@@ -1,6 +1,7 @@
 ---
 layout: ../../layouts/MatchLayout.astro
-title: "Random Forest: Ask the Whole Panel"
+title: "Random Forest"
+subtitle: "Ask the Whole Panel"
 innings: first-innings
 chapter: random-forest
 meta: "16 min · bootstrapping, bagging & the wisdom of the panel"

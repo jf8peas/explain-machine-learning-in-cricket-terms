@@ -1,6 +1,7 @@
 ---
 layout: ../../layouts/MatchLayout.astro
-title: "Gradient Descent: Finding the Perfect Length"
+title: "Gradient Descent"
+subtitle: "Finding the Perfect Length"
 innings: scoring-model-evaluation
 chapter: gradient-descent
 meta: "15 min · loss landscapes & learning rates"

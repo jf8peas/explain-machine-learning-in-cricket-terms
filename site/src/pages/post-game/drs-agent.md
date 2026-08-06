@@ -1,6 +1,7 @@
 ---
 layout: ../../layouts/MatchLayout.astro
-title: "The 'DRS' Agent: Referring the Decision"
+title: "Reviewer Agent (LLM-as-Judge)"
+subtitle: "The 'DRS' Agent"
 innings: post-game
 chapter: drs-agent
 meta: "11 min · referring the decision"

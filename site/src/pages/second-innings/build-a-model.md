@@ -1,6 +1,7 @@
 ---
 layout: ../../layouts/MatchLayout.astro
-title: "Build a Model: Picking the Batting Order"
+title: "Build a Model"
+subtitle: "Picking the Batting Order"
 innings: second-innings
 chapter: build-a-model
 meta: "14 min · picking the order"

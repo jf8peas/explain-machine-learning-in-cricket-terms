@@ -1,6 +1,7 @@
 ---
 layout: ../../layouts/MatchLayout.astro
-title: "K-Means Clustering: How Many Piles Do You Want?"
+title: "K-Means Clustering"
+subtitle: "How Many Piles Do You Want?"
 innings: first-innings
 chapter: k-means-clustering
 meta: "13 min · sorting without a team sheet"

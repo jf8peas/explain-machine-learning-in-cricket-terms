@@ -1,6 +1,7 @@
 ---
 layout: ../../layouts/MatchLayout.astro
-title: "Linear Regression: The Arithmetic Behind the Projected Score"
+title: "Linear Regression"
+subtitle: "The Arithmetic Behind the Projected Score"
 innings: first-innings
 chapter: linear-regression
 meta: "16 min · the arithmetic behind the projected score"

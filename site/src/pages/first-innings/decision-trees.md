@@ -1,6 +1,7 @@
 ---
 layout: ../../layouts/MatchLayout.astro
-title: "Decision Trees: One Question at a Time"
+title: "Decision Trees"
+subtitle: "One Question at a Time"
 innings: first-innings
 chapter: decision-trees
 meta: "18 min · splits, thresholds & impurity"

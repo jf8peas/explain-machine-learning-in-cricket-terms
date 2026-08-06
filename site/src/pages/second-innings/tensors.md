@@ -1,6 +1,7 @@
 ---
 layout: ../../layouts/MatchLayout.astro
-title: "Tensors: The Scorecard as a Shape"
+title: "Tensors"
+subtitle: "The Scorecard as a Shape"
 innings: second-innings
 chapter: tensors
 meta: "9 min · the scorecard as a shape"

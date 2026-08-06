@@ -1,6 +1,7 @@
 ---
 layout: ../../layouts/MatchLayout.astro
-title: "The Coach's Settings: Parameters & Hyperparameters"
+title: "Parameters & Hyperparameters"
+subtitle: "The Coach's Settings"
 innings: pre-game-preparation
 chapter: the-coachs-settings
 meta: "6 min · technical tuning"

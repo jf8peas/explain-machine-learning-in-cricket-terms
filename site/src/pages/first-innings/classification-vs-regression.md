@@ -1,6 +1,7 @@
 ---
 layout: ../../layouts/MatchLayout.astro
-title: "Classification vs Regression: How Many, or Which One?"
+title: "Classification vs Regression"
+subtitle: "How Many, or Which One?"
 innings: first-innings
 chapter: classification-vs-regression
 meta: "8 min · how many, or which one"

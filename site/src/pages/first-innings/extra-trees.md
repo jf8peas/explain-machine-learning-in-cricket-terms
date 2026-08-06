@@ -1,6 +1,7 @@
 ---
 layout: ../../layouts/MatchLayout.astro
-title: "Extra Trees: Turning Up the Randomness"
+title: "Extra Trees"
+subtitle: "Turning Up the Randomness"
 innings: first-innings
 chapter: extra-trees
 meta: "12 min · extremely randomized trees"

@@ -1,6 +1,7 @@
 ---
 layout: ../../layouts/MatchLayout.astro
-title: "Model Selection: When You Can't Trial Everyone"
+title: "Model Selection"
+subtitle: "When You Can't Trial Everyone"
 innings: scoring-model-evaluation
 chapter: model-selection
 meta: "14 min · sequential selection, AIC & PCA"

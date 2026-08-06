@@ -1,6 +1,7 @@
 ---
 layout: ../../layouts/MatchLayout.astro
-title: "Trial Matches: Feature Selection & Hyperparameter Optimisation"
+title: "Feature Selection & Hyperparameter Optimisation"
+subtitle: "Trial Matches"
 innings: scoring-model-evaluation
 chapter: trial-matches
 meta: "9 min · feature selection & grid search"

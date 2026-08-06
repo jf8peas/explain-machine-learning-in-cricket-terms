@@ -1,6 +1,7 @@
 ---
 layout: ../../layouts/MatchLayout.astro
-title: "Going Beyond Linear: The Shape of an Innings"
+title: "Polynomial & Spline Features"
+subtitle: "Going Beyond Linear"
 innings: first-innings
 chapter: beyond-linear-models
 meta: "14 min · polynomials, interactions & splines"

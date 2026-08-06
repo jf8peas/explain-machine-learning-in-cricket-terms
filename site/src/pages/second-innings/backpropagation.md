@@ -1,6 +1,7 @@
 ---
 layout: ../../layouts/MatchLayout.astro
-title: "Backpropagation: The Third Umpire's Review"
+title: "Backpropagation"
+subtitle: "The Third Umpire's Review"
 innings: second-innings
 chapter: backpropagation
 meta: "13 min · the third umpire"

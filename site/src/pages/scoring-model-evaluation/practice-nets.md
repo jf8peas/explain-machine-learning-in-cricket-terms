@@ -1,6 +1,7 @@
 ---
 layout: ../../layouts/MatchLayout.astro
-title: "The Practice Nets: Dividing the Ground"
+title: "Train/Validation/Test Splits"
+subtitle: "The Practice Nets"
 innings: scoring-model-evaluation
 chapter: practice-nets
 meta: "7 min · train, validation & test splits"

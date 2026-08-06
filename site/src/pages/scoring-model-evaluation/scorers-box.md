@@ -1,6 +1,7 @@
 ---
 layout: ../../layouts/MatchLayout.astro
-title: "The Scorer's Box: Metrics, Bias & Umpire Errors"
+title: "Evaluation Metrics & Data Leakage"
+subtitle: "The Scorer's Box"
 innings: scoring-model-evaluation
 chapter: scorers-box
 meta: "7 min · metrics & leakage"
