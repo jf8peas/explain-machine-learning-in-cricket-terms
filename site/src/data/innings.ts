@@ -240,7 +240,7 @@ outliers = X[zscores.abs() > 3]`,
     number: "03",
     title: "Scoring: Model Evaluation",
     short: "Scoring",
-    subtitle: "Evaluation · Architecture · Gradient Descent",
+    subtitle: "Evaluation · Architecture · Gradient Descent · Model Selection",
     chapters: [
       {
         slug: "practice-nets",
@@ -338,6 +338,35 @@ print("coefficients", dict(zip(X_train.columns, model.coef_.round(2))))`,
           { k: "Local Min", v: "Many", s: "false floors nearby" },
           { k: "Learning Rate", v: "Step Size", s: "too big overshoots, too small crawls" },
           { k: "Stop When", v: "Barely Moving", s: "or out of overs — max_iter" }
+        ]
+      },
+      {
+        slug: "model-selection",
+        nav: "3.6 Model Selection",
+        meta: "14 min · sequential selection, AIC & PCA",
+        title: "Model Selection: When You Can't Trial Everyone",
+        lede: "Trial Matches assumed you could afford to check every combination and still have a warm-up fixture spare to judge the winner on. Sometimes you can't — too many candidate features to grid-search, or too little data to responsibly give any of it up. This chapter is what you reach for when a full trial match isn't an option.",
+        commentary:
+          "'We don't get a full trial match for every candidate this window. Give me a shortlist, and a reason attached to every name on it.' — Head of Recruitment",
+        codeFile: "scoring/model_selection.py",
+        codeOut: "forward: 3 features kept · AIC 214.6 (lower is better) · PCA: 12 features → 3 components",
+        code: `from sklearn.feature_selection import SequentialFeatureSelector
+from sklearn.linear_model import LinearRegression
+import numpy as np
+
+lm = LinearRegression()
+forward_lm = SequentialFeatureSelector(
+    estimator=lm, n_features_to_select=3, direction="forward"
+)
+forward_lm.fit(X, y)
+
+def AIC(p, L):
+    return 2 * p - 2 * np.log(L)`,
+        stats: [
+          { k: "Forward", v: "Add Best", s: "start empty, build up" },
+          { k: "Backward", v: "Cut Worst", s: "start full, trim down" },
+          { k: "AIC", v: "2p − 2ln(L)", s: "no test set required" },
+          { k: "PCA", v: "Compress", s: "many features → few components" }
         ]
       },
     ],
