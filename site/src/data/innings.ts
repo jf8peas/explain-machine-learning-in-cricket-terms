@@ -129,7 +129,7 @@ print("author registered · 1 scorer on duty")`,
     number: "02",
     title: "Pre-Game Preparation",
     short: "Pre-Game",
-    subtitle: "Workflow · Setup",
+    subtitle: "Workflow · Setup · Feature Engineering",
     chapters: [
       {
         slug: "environment-setup",
@@ -182,6 +182,37 @@ print(len(X_train), len(X_val), len(X_test))`,
           { k: "Test touches", v: "1", s: "at the very end" },
           { k: "Seed", v: "7", s: "reproducible innings" },
           { k: "Cadence", v: "2 wks", s: "one experiment cycle" },
+        ],
+      },
+      {
+        slug: "feature-engineering",
+        nav: "Feature Engineering",
+        meta: "13 min · gaps, freaks & lopsided squads",
+        title: "Feature Engineering: Cleaning Up the Scorecard",
+        lede: "The Breast Cancer squad from the last chapter was spotless — zero missing values, no freak entries, no lopsided classes. Real scorecards are never that polite. Before a model sees a single row, someone has to fill the gaps, flag the freak innings, and decide what to do about a squad that's 995 dot balls to 5 wickets.",
+        commentary:
+          "'The sheet's got a blank next to his strike rate from the away leg. Doesn't mean he didn't play — means nobody wrote it down. Big difference.' — Scorer",
+        codeFile: "pre_game/feature_engineering.py",
+        codeOut: "14 gaps filled (KNN) · 3 outliers flagged (|z| > 3) · minority upweighted 1:1",
+        code: `import numpy as np
+from sklearn.impute import SimpleImputer, KNNImputer
+
+# Fill gaps with the squad's own average...
+imp = SimpleImputer(missing_values=np.nan, strategy="mean")
+X_filled = imp.fit_transform(X)
+
+# ...or borrow from the 3 most similar players instead
+knn_imp = KNNImputer(missing_values=np.nan, n_neighbors=3)
+X_filled = knn_imp.fit_transform(X)
+
+# Flag freak values more than 3 standard deviations out
+zscores = (X["strike_rate"] - X["strike_rate"].mean()) / X["strike_rate"].std()
+outliers = X[zscores.abs() > 3]`,
+        stats: [
+          { k: "Imputation", v: "Mean / KNN", s: "fill the gap, don't drop the row" },
+          { k: "Outlier Rule", v: "|z| > 3", s: "~99% of a normal squad sits within 3σ" },
+          { k: "Downsampling", v: "Trim Majority", s: "fewer rows, balanced mix" },
+          { k: "Upweighting", v: "Clone Minority", s: "more copies, same signal" },
         ],
       },
       {

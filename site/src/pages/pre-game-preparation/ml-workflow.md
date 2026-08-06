@@ -208,4 +208,4 @@ Load the data, then `shape`, `isna`, `head`. Know your feature count, your targe
 - You know whether your task is binary or multi-class, and why that follows from the labels
 - Your `random_state` is fixed, so tomorrow's run matches today's
 
-Squad picked, innings played, scorecard signed. Next chapter, we ask whether accuracy was ever the right thing to measure.
+Squad picked, innings played, scorecard signed. That clean `isna()` result won't always be so obliging — next chapter deals with what happens when it isn't.
