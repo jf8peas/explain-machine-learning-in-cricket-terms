@@ -4,7 +4,7 @@ title: "Feature Engineering: Cleaning Up the Scorecard"
 innings: pre-game-preparation
 chapter: feature-engineering
 meta: "13 min · gaps, freaks & lopsided squads"
-lede: "The Breast Cancer squad from the last chapter was spotless — zero missing values, no freak entries, no lopsided classes. Real scorecards are never that polite. Before a model sees a single row, someone has to fill the gaps, flag the freak innings, and decide what to do about a squad that's 995 dot balls to 5 wickets."
+lede: "The Malabar Mavericks squad from the last chapter was spotless — zero missing values, no freak entries, no lopsided classes. Real scorecards are never that polite. Before a model sees a single row, someone has to fill the gaps, flag the freak innings, and decide what to do about a squad that's 995 dot balls to 5 wickets."
 commentary: "'The sheet's got a blank next to his strike rate from the away leg. Doesn't mean he didn't play — means nobody wrote it down. Big difference.' — Scorer"
 codeFile: pre_game/feature_engineering.py
 codeOut: "14 gaps filled (KNN) · 3 outliers flagged (|z| > 3) · minority upweighted 1:1"
@@ -38,7 +38,7 @@ This chapter solves three problems that come earlier than that, and matter regar
 
 ## The Gaps in the Scorecard: Imputation
 
-The Breast Cancer dataset's `isna().sum()` came back clean last chapter — a rare and slightly misleading stroke of luck. Most real scorecards have gaps: a strike rate never logged for an away leg, a bowling average missing from a rain-shortened match. **Imputation** is the process of filling those gaps with a value chosen by some deliberate strategy, rather than either leaving a blank a model can't process or throwing away an otherwise perfectly good row.
+The Malabar Mavericks' `isna().sum()` came back clean last chapter — a rare and slightly misleading stroke of luck. Most real scorecards have gaps: a strike rate never logged for an away leg, a bowling average missing from a rain-shortened match. **Imputation** is the process of filling those gaps with a value chosen by some deliberate strategy, rather than either leaving a blank a model can't process or throwing away an otherwise perfectly good row.
 
 **`SimpleImputer`** is the univariate option — it looks at nothing but the gappy column itself, and fills every blank in it with one summary statistic:
 

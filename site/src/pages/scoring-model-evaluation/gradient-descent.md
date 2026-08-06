@@ -120,7 +120,31 @@ Gradient descent doesn't know or care which part of that sum it's minimising —
 The two standard penalty shapes behave differently:
 
 - **L2 (Ridge)** penalises the sum of *squared* weights. Every weight gets nudged smaller, roughly in proportion to its size — a general instruction to tone everything down a little, with nothing banned outright.
-- **L1 (Lasso)** penalises the sum of *absolute* weights. This shape has a sharper habit: it tends to push the least useful weights all the way to exactly zero, dropping them from the model entirely rather than just shrinking them. That's regularisation doubling as feature selection — a second, automatic route to the same trimmed roster **Trial Matches** built by hand with `corr()`.
+- **L1 (Lasso)** penalises the sum of *absolute* weights. This shape has a sharper habit: it tends to push the least useful weights all the way to exactly zero, dropping them from the model entirely rather than just shrinking them. That's regularisation doubling as feature selection — a second, automatic route to the same trimmed roster **Trial Matches** built by hand with `corr()`, and a third route (alongside sequential selection and PCA) to the same too-many-features problem **Model Selection** covers.
+
+Applied to plain linear regression, these two penalties are common enough to have their own names: L2-penalised linear regression is **Ridge**, L1-penalised linear regression is **Lasso**. Both still need λ set to something, and rather than guess, `scikit-learn` will search a range of candidates via built-in cross-validation and keep the best one:
+
+```python
+import numpy as np
+from sklearn.linear_model import RidgeCV, LassoCV
+
+ridge = RidgeCV(alphas=np.linspace(0.1, 10, num=100))
+ridge.fit(X, y)
+
+lasso = LassoCV(alphas=np.linspace(0.1, 10, num=100))
+lasso.fit(X, y)
+```
+
+`alphas` is the shortlist of candidate λ values to trial; each `CV` class scores every one of them by cross-validation internally and settles on whichever strength generalises best, the same instinct as **Trial Matches**' grid search, now narrowed to a single dial.
+
+One requirement is easy to skip and expensive to skip: **standardise your features before fitting a regularised model.** The penalty term sums up coefficients directly, so it has no way of knowing that a coefficient of `40` on a feature measured in the thousands is timid while a coefficient of `40` on a feature measured in single digits is enormous — it just sees two coefficients of `40` and penalises them identically. Left unscaled, regularisation ends up punishing whichever features happen to have small raw coefficients, regardless of how much they actually matter, exactly the failure mode min-max scaling and standardisation already exist to prevent in **K-Nearest Neighbours** and **K-Means Clustering**.
+
+```python
+from sklearn.preprocessing import StandardScaler
+
+scaler = StandardScaler()
+X_scaled = scaler.fit_transform(X)
+```
 
 ## Why Walk When You Can Just Solve It?
 
@@ -187,7 +211,9 @@ print(classification_report(y_val, clf.predict(X_val)))
 - **A loss landscape can have false floors.** A local minimum looks like the answer from nearby and can still be far from the true global minimum.
 - **More dials make the landscape harder to search exhaustively** — exactly why gradient descent, not grid search, is how models with continuous parameters get tuned.
 - **Three hyperparameters govern the whole process:** learning rate, maximum iterations, and a stopping tolerance. Any one of them can end the run.
-- **Regularisation is a penalty added to the loss itself, not a separate step.** Large weights now cost something, so gradient descent only keeps them where they earn their keep. L2 shrinks everything a little; L1 can drop weights to zero outright.
+- **Regularisation is a penalty added to the loss itself, not a separate step.** Large weights now cost something, so gradient descent only keeps them where they earn their keep. L2 (Ridge) shrinks everything a little; L1 (Lasso) can drop weights to zero outright.
+- **`RidgeCV`/`LassoCV` search for the penalty strength instead of you guessing it**, scoring a shortlist of candidate `alpha` values by cross-validation and keeping the best.
+- **Standardise before you regularise.** The penalty sums coefficients directly, so features on different scales get penalised unfairly unless they're all on the same footing first.
 - **Stochastic gradient descent trades a little accuracy per step for a lot of speed** — sampling instead of scanning the whole dataset on every update.
 - **The mechanism doesn't care what it's optimising.** Swap the loss function and the same downhill walk tunes a classifier instead of a regressor.
 

@@ -51,7 +51,7 @@ Notice that evaluation appears twice. That is not a typo in the running order �
 
 Before anything else, you need players. Data collection is the scouting trip: scraping a website, querying a database, pulling from an API, or — as here — reaching for a well-known dataset that ships with the library.
 
-We will use the Breast Cancer Wisconsin (Diagnostic) dataset, a squad that scikit-learn keeps permanently on the books.
+We will use the Breast Cancer Wisconsin (Diagnostic) dataset — call this squad the Malabar Mavericks — which scikit-learn keeps permanently on the books.
 
 ```python
 from sklearn.datasets import load_breast_cancer

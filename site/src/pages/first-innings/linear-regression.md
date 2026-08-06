@@ -166,9 +166,7 @@ r2 = r2_score(y_val, preds)
 
 ## Choosing Which Reasons Belong in the Model
 
-**Trial Matches** already covered `corr()` as a general scouting report for feature selection. Linear regression adds two moves of its own, on top of that.
-
-**The straight line can be taught to bend.** A linear model is only linear in its *coefficients* — the predictors themselves can be as inventive as you like. Add `overs_faced ** 2` as its own column, and the model can now trace a curve in overs, while still technically fitting a straight line through the (now curved) features. Multiply two predictors together — `wickets_in_hand * required_run_rate` — and you've built an **interaction term**: a way of telling the model that the effect of run rate on the final score depends on how many wickets are left, rather than assuming run rate matters the same amount regardless of context. Polynomial terms, splines, interaction terms — all different ways of handing a fundamentally straight-line method something more expressive to work with.
+**Trial Matches** already covered `corr()` as a general scouting report for feature selection. Linear regression adds one move of its own, on top of that.
 
 **The outcome itself sometimes needs reshaping first.** A handful of freak overs — thirty-two off six balls, once a season — can drag a model's entire attention toward fitting the extremes at the expense of getting the ordinary case right, because the sum-of-squared-error cost function punishes big misses so heavily. A **logarithmic transform** —
 
@@ -186,6 +184,8 @@ y_transformed, lam = boxcox(y)
 ```
 
 Both exist for the same reason: a wildly skewed outcome makes for a model that's excellent at freak overs and mediocre at ordinary ones, and neither is what you actually wanted.
+
+That reshapes the outcome. The next chapter, **Going Beyond Linear**, does the equivalent for the predictors — teaching this same straight-line method to trace an actual curve, because a batting innings doesn't accumulate runs at one constant rate from over one to over fifty.
 
 ## Ground Rules for the Dressing-Room Wall
 

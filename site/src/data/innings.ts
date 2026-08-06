@@ -189,7 +189,7 @@ print(len(X_train), len(X_val), len(X_test))`,
         nav: "Feature Engineering",
         meta: "13 min · gaps, freaks & lopsided squads",
         title: "Feature Engineering: Cleaning Up the Scorecard",
-        lede: "The Breast Cancer squad from the last chapter was spotless — zero missing values, no freak entries, no lopsided classes. Real scorecards are never that polite. Before a model sees a single row, someone has to fill the gaps, flag the freak innings, and decide what to do about a squad that's 995 dot balls to 5 wickets.",
+        lede: "The Malabar Mavericks squad from the last chapter was spotless — zero missing values, no freak entries, no lopsided classes. Real scorecards are never that polite. Before a model sees a single row, someone has to fill the gaps, flag the freak innings, and decide what to do about a squad that's 995 dot balls to 5 wickets.",
         commentary:
           "'The sheet's got a blank next to his strike rate from the away leg. Doesn't mean he didn't play — means nobody wrote it down. Big difference.' — Scorer",
         codeFile: "pre_game/feature_engineering.py",
@@ -431,6 +431,30 @@ print("RMSE", round(rmse, 1), "· R²", round(r2_score(y_val, preds), 3))`,
           { k: "Cost function", v: "SSE", s: "sum of squared error" },
           { k: "R²", v: "0.78", s: "variance explained" },
           { k: "Solved via", v: "Normal Eqn", s: "(XᵀX)⁻¹XᵀY" },
+        ],
+      },
+      {
+        slug: "beyond-linear-models",
+        nav: "Going Beyond Linear",
+        meta: "14 min · polynomials, interactions & splines",
+        title: "Going Beyond Linear: The Shape of an Innings",
+        lede: "Linear Regression assumed every extra over faced was worth the same number of runs, no matter which over it was. Nobody who has ever watched an innings actually believes that — the powerplay, the middle overs, and the death all score at different rates, and a single straight line can only ever describe one of them.",
+        commentary:
+          "'You can't use the powerplay rate to explain the death overs. It's not one line. It's three.' — Batting Analyst",
+        codeFile: "first_innings/beyond_linear.py",
+        codeOut: "degree 3 → 4 columns per feature · 2 knots → 3 stitched phases",
+        code: `from sklearn.preprocessing import PolynomialFeatures, SplineTransformer
+
+poly = PolynomialFeatures(degree=3)
+poly_X = poly.fit_transform(X)
+
+spline = SplineTransformer(degree=1, n_knots=2, knots="uniform")
+spline_X = spline.fit_transform(X)`,
+        stats: [
+          { k: "Polynomial", v: "Powers", s: "one curve, whole range" },
+          { k: "Interaction", v: "A × B", s: "effect depends on context" },
+          { k: "Knots", v: "Breakpoints", s: "where the shape changes" },
+          { k: "Still Linear", v: "In Coefficients", s: "just cleverer columns" },
         ],
       },
       {

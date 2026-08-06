@@ -28,7 +28,7 @@ stats:
 
 ## A Straight Line Can't Live Between Zero and One
 
-**Linear Regression**, last chapter, fit a straight line to a target that could be any number — runs, and runs alone, with no ceiling and no floor. The DRS review from **Classification vs Regression** has a target that's nothing like that: out, or not out. Two values, and a straight line has no idea how to behave itself between them — ask a fitted line for a prediction and it will cheerfully hand back `-0.3` or `1.8`, numbers that mean nothing as a chance of anything.
+**Linear Regression** fit a straight line to a target that could be any number — runs, and runs alone, with no ceiling and no floor. The DRS review from **Classification vs Regression** has a target that's nothing like that: out, or not out. Two values, and a straight line has no idea how to behave itself between them — ask a fitted line for a prediction and it will cheerfully hand back `-0.3` or `1.8`, numbers that mean nothing as a chance of anything.
 
 **Logistic Regression** is, in the most literal sense, the classification equivalent of linear regression — same linear combination of predictors, same weights, same intercept, still found by the same downhill walk from **Gradient Descent**. What's different is what happens to that linear combination on its way out the door, and that difference is the whole chapter.
 
