@@ -95,6 +95,7 @@ const { placeholder = "Search all 24 chapters" } = Astro.props;
       // Loaded via DOM script injection so Vite/Rollup doesn't try to resolve it.
       await new Promise<void>((resolve, reject) => {
         const script = document.createElement("script");
+        script.type = "module";
         script.src = "/pagefind/pagefind.js";
         script.onload = () => resolve();
         script.onerror = () => reject(new Error("pagefind failed to load"));
