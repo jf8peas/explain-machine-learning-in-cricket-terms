@@ -279,7 +279,7 @@ const scopeOptions = [
 </script>
 
 <script>
-  import { PROGRESS_EVENT, completeExercise, loadProgress } from "../utils/progress";
+  import { PROGRESS_EVENT, passQuizChapter, loadProgress } from "../utils/progress";
 
   // ── Data injected via the bridge script above ──
   // (define:vars forces is:inline, which can't use `import`, so the data
@@ -472,6 +472,24 @@ const scopeOptions = [
     });
   }
 
+  // ── Overall score for the current plan (0-100), same weighting used on the scorecard ──
+  function computeOverallScore(): number {
+    const mcqItems = plan.filter((p) => p.t === "mcq");
+    const saItems = plan.filter((p) => p.t === "sa");
+    const mcqAsked = mcqItems.length;
+    const saAsked = saItems.length;
+
+    const correct = mcqItems.filter((p) => picks[p.key] === p.q.correctAnswerIndex).length;
+    const saTotal = saItems.reduce((sum, p) => sum + (saScores[p.key]?.score ?? 0), 0);
+    const saMax = saAsked * 3;
+
+    const mcqPct = mcqAsked ? correct / mcqAsked : 0;
+    const saPct = saMax ? saTotal / saMax : 0;
+    const wM = mcqAsked ? 0.7 : 0;
+    const wS = saAsked ? 0.3 : 0;
+    return Math.round(((mcqPct * 100 * wM) + (saPct * 100 * wS)) / (wM + wS || 1));
+  }
+
   // ── Render ──
   function render() {
     if (!setup || !running || !done) return;
@@ -586,11 +604,7 @@ const scopeOptions = [
       const saTotal = saItems.reduce((sum, p) => sum + (saScores[p.key]?.score ?? 0), 0);
       const saMax = saAsked * 3;
 
-      const mcqPct = mcqAsked ? correct / mcqAsked : 0;
-      const saPct = saMax ? saTotal / saMax : 0;
-      const wM = mcqAsked ? 0.7 : 0;
-      const wS = saAsked ? 0.3 : 0;
-      const overall = Math.round(((mcqPct * 100 * wM) + (saPct * 100 * wS)) / (wM + wS || 1));
+      const overall = computeOverallScore();
       const pctile = Math.max(2, Math.min(96, 100 - overall));
 
       if (finalScore) finalScore.textContent = overall + "%";
@@ -727,14 +741,10 @@ const scopeOptions = [
     if (cur.t === "mcq" && picks[cur.key] === undefined) return;
     if (cur.t === "sa" && !(texts[cur.key] || "").trim()) return;
 
-    // Record the exercise as passed before advancing.
-    const passed =
-      cur.t === "mcq"
-        ? picks[cur.key] === cur.q.correctAnswerIndex
-        : (saScores[cur.key]?.score ?? 0) >= 2;
-    if (passed) completeExercise(i);
-
     if (i === plan.length - 1) {
+      // A single-chapter quiz that scores >= 50% counts that chapter as passed.
+      // "All Chapters" sessions sample across chapters and don't map to one.
+      if (scope !== "all" && computeOverallScore() >= 50) passQuizChapter(scope);
       mode = "done";
       render();
     } else {

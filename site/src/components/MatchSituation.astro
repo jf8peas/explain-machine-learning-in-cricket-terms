@@ -7,11 +7,15 @@
  * The RESET button wipes chapters completed, exercises passed, and
  * streak back to zero by calling `resetProgress()` from ../utils/progress.
  *
- * NOTE: TOTAL_EXERCISES is imported in BOTH the frontmatter (for the
- * static render) and the <script> block (for the client-side refresh).
+ * The "Exercises passed" denominator is computed here, server-side, from
+ * quiz-bank.json — deliberately NOT re-exported from ../utils/progress,
+ * since that module ships to every page via the <script> below and must
+ * not bundle the question bank (and its answer key) site-wide.
  */
 import { totalChapters } from "../data/innings";
-import { TOTAL_EXERCISES } from "../utils/progress";
+import quizBank from "../data/quiz-bank.json";
+
+const totalQuizChapters = new Set((quizBank as { chapterId: string }[]).map((q) => q.chapterId)).size;
 ---
 <div id="lhn-match-situation" class="flex flex-none flex-col gap-2.5 rounded-[14px] border border-line bg-white px-4 py-3.5 shadow-[0_1px_0_rgba(11,15,13,.04)]">
   <div class="flex items-center justify-between gap-3">
@@ -40,8 +44,9 @@ import { TOTAL_EXERCISES } from "../utils/progress";
       <span class="font-sans text-[12.5px] text-slate-custom">Exercises passed</span>
       <span
         id="lhn-exercises-passed"
+        data-total={totalQuizChapters}
         class="font-mono text-[12.5px] font-medium text-pitch"
-        >0 / {TOTAL_EXERCISES}</span
+        >0 / {totalQuizChapters}</span
       >
     </div>
     <div class="flex items-baseline justify-between gap-2">
@@ -56,7 +61,7 @@ import { TOTAL_EXERCISES } from "../utils/progress";
 </div>
 
 <script>
-  import { PROGRESS_EVENT, TOTAL_EXERCISES, loadProgress, resetProgress } from "../utils/progress";
+  import { PROGRESS_EVENT, loadProgress, resetProgress } from "../utils/progress";
 
   const container = document.getElementById("lhn-match-situation");
   const resetButton = document.getElementById("lhn-reset-button") as HTMLButtonElement | null;
@@ -105,7 +110,8 @@ import { TOTAL_EXERCISES } from "../utils/progress";
     const total = Number(chaptersEl?.dataset.total ?? 28);
     const done = data.completedChapters.length;
     if (chaptersEl) chaptersEl.textContent = `${done} / ${total}`;
-    if (exercisesEl) exercisesEl.textContent = `${data.completedExercises.length} / ${data.completedExercises.length > 0 ? data.completedExercises.length : TOTAL_EXERCISES}`;
+    const exTotal = Number(exercisesEl?.dataset.total ?? 24);
+    if (exercisesEl) exercisesEl.textContent = `${data.passedQuizChapters.length} / ${exTotal}`;
     if (streakEl) {
       const n = data.streak.count;
       streakEl.textContent = n > 0 ? `${n} day${n === 1 ? "" : "s"} · not out` : "—";

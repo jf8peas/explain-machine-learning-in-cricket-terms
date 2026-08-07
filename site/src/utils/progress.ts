@@ -5,23 +5,24 @@
  *
  *   playing_xi_progress = {
  *     "completedChapters": ["the-coachs-settings", "intro-to-loss"],
- *     "completedExercises": [1, 2, 3],
+ *     "passedQuizChapters": ["the-coachs-settings"],
  *     "streak": { "count": 6, "lastActiveDate": "2026-08-06" }
  *   }
  *
  * UI components listen for the `progress-updated` CustomEvent on `window`
  * and re-render from `loadProgress()` whenever it fires. Mutations only
  * broadcast when the stored data actually changed.
+ *
+ * NOTE: this module must stay free of any import from data/quiz-bank.json.
+ * It's pulled into every page via MatchSituation.astro's client script, so
+ * bundling the full question bank (including model answers) here would ship
+ * the quiz content, and its answer key, to every visitor on every page.
+ * The "Exercises passed" denominator is computed server-side instead, see
+ * MatchSituation.astro.
  */
 
 export const STORAGE_KEY = "playing_xi_progress";
 export const PROGRESS_EVENT = "progress-updated";
-
-/**
- * Denominator for the exercises tally in the LHN "Match situation" card.
- * Placeholder until exercise content ships.
- */
-export const TOTAL_EXERCISES = 24;
 
 export interface Streak {
   /** consecutive days with at least one visit */
@@ -33,15 +34,15 @@ export interface Streak {
 export interface PlayingXIProgress {
   /** chapter slugs, e.g. "the-coachs-settings" */
   completedChapters: string[];
-  /** exercise numbers */
-  completedExercises: number[];
+  /** chapter slugs whose dedicated practice-nets quiz scored >= 50% */
+  passedQuizChapters: string[];
   streak: Streak;
 }
 
 function emptyProgress(): PlayingXIProgress {
   return {
     completedChapters: [],
-    completedExercises: [],
+    passedQuizChapters: [],
     streak: { count: 0, lastActiveDate: "" },
   };
 }
@@ -72,8 +73,8 @@ export function loadProgress(): PlayingXIProgress {
       completedChapters: Array.isArray(parsed?.completedChapters)
         ? parsed.completedChapters.filter((s): s is string => typeof s === "string")
         : [],
-      completedExercises: Array.isArray(parsed?.completedExercises)
-        ? parsed.completedExercises.filter((n): n is number => typeof n === "number")
+      passedQuizChapters: Array.isArray(parsed?.passedQuizChapters)
+        ? parsed.passedQuizChapters.filter((s): s is string => typeof s === "string")
         : [],
       streak: {
         count:
@@ -133,11 +134,11 @@ export function completeChapter(chapterId: string): PlayingXIProgress {
   return data;
 }
 
-/** Mark an exercise as passed. Duplicates are never added. */
-export function completeExercise(exercise: number): PlayingXIProgress {
+/** Mark a chapter's practice-nets quiz as passed (scored >= 50%). Duplicates are never added. */
+export function passQuizChapter(chapterId: string): PlayingXIProgress {
   const data = loadProgress();
-  if (!data.completedExercises.includes(exercise)) {
-    data.completedExercises.push(exercise);
+  if (!data.passedQuizChapters.includes(chapterId)) {
+    data.passedQuizChapters.push(chapterId);
     saveProgress(data);
     broadcast(data);
   }
@@ -164,7 +165,7 @@ export function initProgressTracking(): void {
   (window as unknown as Record<string, unknown>).playingXI = {
     loadProgress,
     completeChapter,
-    completeExercise,
+    passQuizChapter,
     isChapterComplete,
     touchStreak,
     resetProgress,
