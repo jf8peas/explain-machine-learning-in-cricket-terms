@@ -37,7 +37,7 @@ for (const inn of innings) {
 const chaptersWithQuestions = new Set(bank.map((q) => q.chapterId));
 
 const scopeOptions = [
-  { v: "all", label: "All 28 Chapters (Full Match)" },
+  { v: "all", label: "All 24 Chapters (Full Match)" },
   ...innings.flatMap((inn) =>
     inn.chapters
       .map((c, j) => ({
@@ -368,7 +368,7 @@ const scopeOptions = [
   }
 
   function scopeLabelText(): string {
-    if (scope === "all") return "All 28 Chapters (Full Match)";
+    if (scope === "all") return "All 24 Chapters (Full Match)";
     const m = CHAPTER_META[scope];
     return m ? `${m.over} ${m.nav}` : scope;
   }
