@@ -72,6 +72,7 @@ const { placeholder = "Search all 24 chapters" } = Astro.props;
   type Pagefind = {
     init: () => Promise<void>;
     search: (q: string) => Promise<{ results: PagefindResult[] }>;
+    preload: (q: string) => Promise<void>;
   };
 
   const input = document.getElementById("pagefind-search-input") as HTMLInputElement | null;
@@ -91,20 +92,19 @@ const { placeholder = "Search all 24 chapters" } = Astro.props;
     if (loaded) return null;
     loaded = true;
     try {
-      // Pagefind injects its bundle at /pagefind/pagefind.js during the build.
-      // Loaded via DOM script injection so Vite/Rollup doesn't try to resolve it.
-      await new Promise<void>((resolve, reject) => {
-        const script = document.createElement("script");
-        script.type = "module";
-        script.src = "/pagefind/pagefind.js";
-        script.onload = () => resolve();
-        script.onerror = () => reject(new Error("pagefind failed to load"));
-        document.head.appendChild(script);
-      });
-      pagefind = (window as any).pagefind as Pagefind;
+      // The generated pagefind ES module exposes named exports (search, init, ...).
+      // Dynamic import() is required — it never assigns to window.pagefind.
+      // @vite-ignore stops Vite from trying to resolve the path at build time
+      // (the bundle only exists in dist/ after the build).
+      // Rollup can't statically resolve a variable, so this dynamic
+      // import is left as-is and resolved by the browser at runtime.
+      // (A literal path + @vite-ignore is stripped by Astro's script pipeline.)
+      const pagefindModuleUrl = "/pagefind/pagefind.js";
+      pagefind = (await import(pagefindModuleUrl)) as Pagefind;
       await pagefind.init();
       return pagefind;
-    } catch {
+    } catch (e) {
+      console.warn("[SearchBar] Pagefind failed to load:", e);
       return null;
     }
   }
