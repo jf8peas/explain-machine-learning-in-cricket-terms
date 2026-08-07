@@ -114,6 +114,17 @@ const navShort: Record<string, string> = {
             >
               <style>
                 #session-nav-row::-webkit-scrollbar{width:0;height:0;display:none}
+                /* Tier 1 (≥1560px): long titles wrap to 2 lines */
+                #session-nav-row.tier-1 > a {
+                  flex: 1 1 0 !important;
+                  min-width: 0;
+                  max-width: 200px;
+                }
+                #session-nav-row.tier-1 .nav-label {
+                  white-space: normal !important;
+                  word-break: break-word;
+                  overflow-wrap: break-word;
+                }
               </style>
               {
                 innings.map((inn) => {
@@ -131,7 +142,7 @@ const navShort: Record<string, string> = {
                       <span class="flex-none font-mono text-[12px] font-medium tracking-[0.06em] text-gold">
                         {inn.number}
                       </span>
-                      <span class="font-display text-[14px] font-semibold leading-[1.24] tracking-[-0.015em] whitespace-nowrap">
+                      <span class="nav-label font-display text-[14px] font-semibold leading-[1.24] tracking-[-0.015em] whitespace-nowrap">
                         <span class="nav-label-full">{inn.title}</span>
                         <span class="nav-label-short hidden">{navShort[inn.slug] ?? inn.short}</span>
                       </span>
@@ -152,7 +163,7 @@ const navShort: Record<string, string> = {
                 <span class="flex-none font-mono text-[12px] font-medium tracking-[0.06em] text-gold">
                   07
                 </span>
-                <span class="font-display text-[14px] font-semibold leading-[1.24] tracking-[-0.015em] whitespace-nowrap">
+                <span class="nav-label font-display text-[14px] font-semibold leading-[1.24] tracking-[-0.015em] whitespace-nowrap">
                   <span class="nav-label-full">Practice Nets</span>
                   <span class="nav-label-short hidden">Nets</span>
                 </span>
@@ -276,6 +287,9 @@ const navShort: Record<string, string> = {
           for (var j = 0; j < shortLabels.length; j++) {
             shortLabels[j].classList.toggle("hidden", !short);
           }
+
+          // Tier 1 (≥1560px): enable 2-line wrapping on nav items
+          row.classList.toggle("tier-1", full);
 
           // Toggle row vs compact dropdown
           row.classList.toggle("hidden", mobile);
