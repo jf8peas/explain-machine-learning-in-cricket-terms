@@ -6,6 +6,9 @@
  *
  * The RESET button wipes chapters completed, exercises passed, and
  * streak back to zero by calling `resetProgress()` from ../utils/progress.
+ *
+ * NOTE: TOTAL_EXERCISES is imported in BOTH the frontmatter (for the
+ * static render) and the <script> block (for the client-side refresh).
  */
 import { totalChapters } from "../data/innings";
 import { TOTAL_EXERCISES } from "../utils/progress";
