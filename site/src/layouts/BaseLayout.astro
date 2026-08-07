@@ -291,6 +291,15 @@ const navShort: Record<string, string> = {
 
         applyTier();
         window.addEventListener("resize", onResize);
+
+        // Mobile dropdown — navigate when an option is chosen
+        var select = document.getElementById("session-nav-select");
+        if (select) {
+          select.addEventListener("change", function () {
+            var href = select.value;
+            if (href) window.location.href = href;
+          });
+        }
       })();
     </script>
 
