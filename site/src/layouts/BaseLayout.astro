@@ -16,6 +16,16 @@ const {
   description = "Machine learning explained in cricket terms.",
   section,
 } = Astro.props;
+
+/** Short labels for the 860–1559px tier (single row, no wrapping). */
+const navShort: Record<string, string> = {
+  about: "About",
+  "pre-game-preparation": "Pre-Game",
+  "scoring-model-evaluation": "Scoring",
+  "first-innings": "First Innings",
+  "second-innings": "Second Innings",
+  "post-game": "Post-Game",
+};
 ---
 
 <!doctype html>
@@ -94,51 +104,89 @@ const {
           </div>
         </div>
 
-        <!-- ═══ SESSION NAVIGATION (wraps to rows — no horizontal scroll) ═══ -->
+        <!-- ═══ SESSION NAVIGATION (single-row, three responsive tiers) ═══ -->
         <nav class="border-b-2 border-gold border-t border-white/[0.07] bg-pitch-dark">
-          <div
-            class="mx-auto flex max-w-[1440px] flex-wrap px-[clamp(14px,3vw,28px)]"
-          >
-            {
-              innings.map((inn) => {
-                const active = section === inn.slug;
-                return (
-                  <a
-                    href={url(`${inn.slug}/`)}
-                    class:list={[
-                      "flex flex-none items-center gap-[11px] border-b-4 px-[18px] py-[13px] text-left transition-colors hover:bg-gold/[0.08]",
-                      active
-                        ? "border-gold bg-gold/10 text-white"
-                        : "border-transparent text-[#c3d2c8]",
-                    ]}
-                  >
-                    <span class="flex-none font-mono text-[12px] font-medium tracking-[0.06em] text-gold">
-                      {inn.number}
-                    </span>
-                    <span class="max-w-[178px] font-display text-[14.5px] font-semibold leading-[1.24] tracking-[-0.015em]">
-                      {inn.title}
-                    </span>
-                  </a>
-                );
-              })
-            }
-            <!-- Practice Nets link (session 07) -->
-            <a
-              href={url("practice-nets/")}
-              class:list={[
-                "flex flex-none items-center gap-[11px] border-b-4 px-[18px] py-[13px] text-left transition-colors hover:bg-gold/[0.08]",
-                section === "practice-nets"
-                  ? "border-gold bg-gold/10 text-white"
-                  : "border-transparent text-[#c3d2c8]",
-              ]}
+          <div class="mx-auto max-w-[1440px] px-[clamp(14px,3vw,28px)]">
+            <!-- Tier 1 & 2: horizontal row (full titles ≥1560px, short labels 860–1559px) -->
+            <div
+              id="session-nav-row"
+              class="flex items-stretch overflow-x-auto"
             >
-              <span class="flex-none font-mono text-[12px] font-medium tracking-[0.06em] text-gold">
-                07
-              </span>
-              <span class="max-w-[178px] font-display text-[14.5px] font-semibold leading-[1.24] tracking-[-0.015em]">
-                Practice Nets
-              </span>
-            </a>
+              {
+                innings.map((inn) => {
+                  const active = section === inn.slug;
+                  return (
+                    <a
+                      href={url(`${inn.slug}/`)}
+                      class:list={[
+                        "flex flex-none items-center gap-[11px] border-b-4 px-[18px] py-[13px] text-left transition-colors hover:bg-gold/[0.08]",
+                        active
+                          ? "border-gold bg-gold/10 text-white"
+                          : "border-transparent text-[#c3d2c8]",
+                      ]}
+                    >
+                      <span class="flex-none font-mono text-[12px] font-medium tracking-[0.06em] text-gold">
+                        {inn.number}
+                      </span>
+                      <span class="font-display text-[14.5px] font-semibold leading-[1.24] tracking-[-0.015em] whitespace-nowrap">
+                        <span class="nav-label-full">{inn.title}</span>
+                        <span class="nav-label-short hidden">{navShort[inn.slug] ?? inn.short}</span>
+                      </span>
+                    </a>
+                  );
+                })
+              }
+              <!-- Practice Nets link (session 07) -->
+              <a
+                href={url("practice-nets/")}
+                class:list={[
+                  "flex flex-none items-center gap-[11px] border-b-4 px-[18px] py-[13px] text-left transition-colors hover:bg-gold/[0.08]",
+                  section === "practice-nets"
+                    ? "border-gold bg-gold/10 text-white"
+                    : "border-transparent text-[#c3d2c8]",
+                ]}
+              >
+                <span class="flex-none font-mono text-[12px] font-medium tracking-[0.06em] text-gold">
+                  07
+                </span>
+                <span class="font-display text-[14.5px] font-semibold leading-[1.24] tracking-[-0.015em] whitespace-nowrap">
+                  <span class="nav-label-full">Practice Nets</span>
+                  <span class="nav-label-short hidden">Nets</span>
+                </span>
+              </a>
+            </div>
+
+            <!-- Tier 3: mobile dropdown (<860px) -->
+            <div
+              id="session-nav-compact"
+              class="hidden items-center gap-2.5 py-2.5"
+            >
+              <span
+                class="flex-none font-mono text-[11px] uppercase tracking-[0.16em] text-mist"
+                >Session</span
+              >
+              <select
+                id="session-nav-select"
+                class="h-11 min-w-0 flex-1 cursor-pointer appearance-none rounded-[10px] border border-white/[0.16] bg-pitch px-3.5 font-display text-[15px] font-semibold text-white outline-none"
+              >
+                {
+                  innings.map((inn) => (
+                    <option
+                      value={url(`${inn.slug}/`)}
+                      selected={section === inn.slug}
+                    >
+                      {inn.number} {inn.title}
+                    </option>
+                  ))
+                }
+                <option
+                  value={url("practice-nets/")}
+                  selected={section === "practice-nets"}
+                >
+                  07 Practice Nets
+                </option>
+              </select>
+            </div>
           </div>
         </nav>
 
@@ -198,6 +246,53 @@ const {
         </div>
       </footer>
     </div>
+
+    <!-- Session nav responsive tiers (≥1560px full titles · 860–1559px short labels · <860px dropdown) -->
+    <script is:inline>
+      (function () {
+        if (typeof window === "undefined") return;
+        var row = document.getElementById("session-nav-row");
+        var compact = document.getElementById("session-nav-compact");
+        if (!row || !compact) return;
+
+        var FULL_MIN = 1560;
+        var SHORT_MIN = 860;
+
+        function applyTier() {
+          var w = window.innerWidth;
+          var full = w >= FULL_MIN;
+          var short = w >= SHORT_MIN && w < FULL_MIN;
+          var mobile = w < SHORT_MIN;
+
+          // Toggle the two horizontal-row label spans
+          var fullLabels = row.querySelectorAll(".nav-label-full");
+          var shortLabels = row.querySelectorAll(".nav-label-short");
+          for (var i = 0; i < fullLabels.length; i++) {
+            fullLabels[i].classList.toggle("hidden", !full);
+          }
+          for (var j = 0; j < shortLabels.length; j++) {
+            shortLabels[j].classList.toggle("hidden", !short);
+          }
+
+          // Toggle row vs compact dropdown
+          row.classList.toggle("hidden", mobile);
+          compact.classList.toggle("hidden", !mobile);
+          compact.classList.toggle("flex", mobile);
+        }
+
+        var raf = 0;
+        function onResize() {
+          if (raf) return;
+          raf = requestAnimationFrame(function () {
+            raf = 0;
+            applyTier();
+          });
+        }
+
+        applyTier();
+        window.addEventListener("resize", onResize);
+      })();
+    </script>
 
     <!-- Reading progress & daily streak tracking (localStorage) — runs on every page -->
     <script>
