@@ -1,81 +1,5 @@
 [
   {
-    "id": "mcq-environment-setup-01",
-    "type": "mcq",
-    "chapterId": "environment-setup",
-    "chapterTitle": "Environment Setup",
-    "sourceUrl": "/pre-game-preparation/environment-setup/",
-    "question": "Why does the chapter deliberately roll one shared conda environment (gb_global) instead of letting every project create its own?",
-    "options": [
-      "A) It's the only way conda supports multiple users on one machine",
-      "B) So any member of the conda group can install a package and the whole team sees it immediately, avoiding duplicated environments",
-      "C) Because pip requires exactly one global environment per machine",
-      "D) Because the Grace Blackwell hardware only supports one Python interpreter at a time"
-    ],
-    "correctAnswerIndex": 1,
-    "explanation": "Sharing one pitch means any groundstaff member can pip install a package and the whole team sees it immediately — no duplicated environments, no 'works on my machine.'"
-  },
-  {
-    "id": "mcq-environment-setup-02",
-    "type": "mcq",
-    "chapterId": "environment-setup",
-    "chapterTitle": "Environment Setup",
-    "sourceUrl": "/pre-game-preparation/environment-setup/",
-    "question": "What does the chapter call the single most important rule for any playing area, from a shared server to a laptop?",
-    "options": [
-      "A) Always use the newest version of Python available",
-      "B) Your NumPy must be vectorized, compiled against an optimised BLAS/LAPACK backend",
-      "C) Always train models on GPU rather than CPU",
-      "D) Install every package via pip rather than conda"
-    ],
-    "correctAnswerIndex": 1,
-    "explanation": "The chapter is explicit that this isn't convenience, like the earlier sections — it's the single most important rule, because an unvectorized NumPy build can be an order of magnitude slower on exactly the matrix work the course depends on."
-  },
-  {
-    "id": "mcq-environment-setup-03",
-    "type": "mcq",
-    "chapterId": "environment-setup",
-    "chapterTitle": "Environment Setup",
-    "sourceUrl": "/pre-game-preparation/environment-setup/",
-    "question": "What does python.venvPath control in the Cursor .vscode/settings.json configuration?",
-    "options": [
-      "A) It's the interpreter every new terminal and notebook starts with",
-      "B) It tells Cursor where the conda executable lives so activation commands fire",
-      "C) It's the directory Cursor scans when you open the interpreter picker, so sibling environments show up in the list",
-      "D) It automatically installs any missing packages on first run"
-    ],
-    "correctAnswerIndex": 2,
-    "explanation": "The chapter assigns each of the three settings its own job: defaultInterpreterPath is the crease itself, condaPath locates the conda executable, and venvPath is what gets scanned for the interpreter picker."
-  },
-  {
-    "id": "sa-environment-setup-01",
-    "type": "short_answer",
-    "chapterId": "environment-setup",
-    "chapterTitle": "Environment Setup",
-    "sourceUrl": "/pre-game-preparation/environment-setup/",
-    "question": "In cricket terms, why is a vectorized NumPy operation like data.sum() dramatically faster than an equivalent Python for loop, and what habit should this teach you?",
-    "modelAnswer": "A for loop pays Python's interpreter overhead on every single iteration, boxing and dispatching each value, while a vectorized call crosses into compiled C code once and then runs a tight SIMD-accelerated loop over contiguous memory — which is why operations like the @ matrix multiply can be thousands of times faster. The habit to build is: whenever you catch yourself writing a for loop over a NumPy array, stop and look for the array operation (slicing, broadcasting, np.where, masked assignment, @) that replaces it.",
-    "rubric": [
-      "Explains the for loop pays Python interpreter overhead per iteration while vectorized code enters compiled/SIMD code once",
-      "Notes the scale of the speed difference described in the text",
-      "States the practical habit of looking for the array operation that replaces the loop"
-    ]
-  },
-  {
-    "id": "sa-environment-setup-02",
-    "type": "short_answer",
-    "chapterId": "environment-setup",
-    "chapterTitle": "Environment Setup",
-    "sourceUrl": "/pre-game-preparation/environment-setup/",
-    "question": "Why does the chapter say picking the correct Jupyter kernel is 'the one step that catches people out,' and what goes wrong if you pick the wrong one?",
-    "modelAnswer": "If you select the wrong kernel, the notebook runs against a different Python interpreter than the one where your packages are actually installed, so imports fail or resolve to unexpected versions. The trap is that the resulting error rarely says the real cause is the kernel — it just looks like a broken package, sending you down the wrong debugging path.",
-    "rubric": [
-      "States that the wrong kernel means wrong or missing packages resolve",
-      "Notes the error message rarely reveals the real cause is the kernel choice",
-      "Connects this to the chapter's theme of an invisible, well-prepared environment versus an unpredictable one"
-    ]
-  },
-  {
     "id": "mcq-ml-workflow-01",
     "type": "mcq",
     "chapterId": "ml-workflow",
@@ -349,6 +273,98 @@
       "Identifies this as tuning against the test set rather than a validation set",
       "Explains that repeated re-checking against the same held-out data invalidates it as a measure of generalisation",
       "Connects to the broader discipline of keeping the test set sealed until the final evaluation"
+    ]
+  },
+  {
+    "id": "mcq-practice-nets-01",
+    "type": "mcq",
+    "chapterId": "practice-nets",
+    "chapterTitle": "Train/Validation/Test Splits",
+    "sourceUrl": "/scoring-model-evaluation/practice-nets/",
+    "question": "Why does the chapter call scoring a model on its own training data 'the cardinal sin' of machine learning, rather than just a rookie mistake?",
+    "options": [
+      "A) Because it is technically impossible to compute a score on training data",
+      "B) Because the resulting number looks wonderful, means nothing, and can follow the model all the way into production before anyone notices",
+      "C) Because scikit-learn raises an error if you try",
+      "D) Because training data is always smaller than the test set"
+    ],
+    "correctAnswerIndex": 1,
+    "explanation": "A sufficiently complex model can simply memorise the rows it was trained on and answer perfectly, which proves it has a good memory, not that it can bat — and that flattering, meaningless number can go unnoticed all the way to production."
+  },
+  {
+    "id": "mcq-practice-nets-02",
+    "type": "mcq",
+    "chapterId": "practice-nets",
+    "chapterTitle": "Train/Validation/Test Splits",
+    "sourceUrl": "/scoring-model-evaluation/practice-nets/",
+    "question": "On the validation set, who or what is doing the adjusting, and what gets adjusted?",
+    "options": [
+      "A) The algorithm adjusts model parameters, the same as on the training set",
+      "B) You (or an automated tuner) adjust hyperparameters, algorithm choice, and features — the model's weights are never fit against it",
+      "C) Nobody adjusts anything; it is treated exactly like the test set",
+      "D) The test set adjusts the validation set's class balance automatically"
+    ],
+    "correctAnswerIndex": 1,
+    "explanation": "The validation set is never seen by the algorithm during mathematical optimisation. It is read from outside the rope: you use it to decide hyperparameters, which features to keep, and when to stop training — decisions made by the selectors, not learned by the batter."
+  },
+  {
+    "id": "mcq-practice-nets-03",
+    "type": "mcq",
+    "chapterId": "practice-nets",
+    "chapterTitle": "Train/Validation/Test Splits",
+    "sourceUrl": "/scoring-model-evaluation/practice-nets/",
+    "question": "In the two-pass split code, the second call uses test_size=0.125 to carve validation out of the remaining data. Why 0.125 and not 0.1?",
+    "options": [
+      "A) It is an arbitrary scikit-learn default",
+      "B) 0.125 of the 80% left after the first cut works out to 10% of the original dataset",
+      "C) It guarantees exactly equal train and validation sets",
+      "D) It compensates for class imbalance automatically"
+    ],
+    "correctAnswerIndex": 1,
+    "explanation": "The first cut peels off 20% for the test set, leaving 80%. Taking 12.5% of that remaining 80% equals 10% of the original data — the standard arithmetic adjustment needed whenever you split twice instead of three ways at once."
+  },
+  {
+    "id": "mcq-practice-nets-04",
+    "type": "mcq",
+    "chapterId": "practice-nets",
+    "chapterTitle": "Train/Validation/Test Splits",
+    "sourceUrl": "/scoring-model-evaluation/practice-nets/",
+    "question": "According to the chapter's 'Ground Rules,' when should you fit a StandardScaler (or any imputer/encoder)?",
+    "options": [
+      "A) On the full dataset, before splitting, so every split sees identical scaling",
+      "B) On the training set only, then apply that fitted transformer to validation and test",
+      "C) Separately on each of the three splits, independently",
+      "D) On the test set only, since that is the final measure of performance"
+    ],
+    "correctAnswerIndex": 1,
+    "explanation": "Fitting a scaler on the full dataset leaks information about match day into net sessions. The rule is: split first, then fit any transformer on the training set only, and apply the already-fitted transformer to validation and test."
+  },
+  {
+    "id": "sa-practice-nets-01",
+    "type": "short_answer",
+    "chapterId": "practice-nets",
+    "chapterTitle": "Train/Validation/Test Splits",
+    "sourceUrl": "/scoring-model-evaluation/practice-nets/",
+    "question": "In cricket terms, explain the difference between what happens on the training set versus the validation set, and why the chapter insists validation is not just a 'second training set.'",
+    "modelAnswer": "The training set is read directly by the model: features and targets go in, and the optimisation algorithm (e.g. gradient descent) adjusts internal parameters like weights and biases based on it — the batter grooving footwork in the nets. The validation set is never touched by that fitting process; instead you or a tuner look at its score from outside and decide on hyperparameters, architecture, or features, the way a coach adjusts batting order or bowling plans in a warm-up fixture without the batter learning anything new. If you tuned hyperparameters directly against the training set instead, the tuner would pick whatever settings memorise that data best (infinite tree depth, zero regularisation), so the validation set exists specifically to catch that kind of hyperparameter overfitting.",
+    "rubric": [
+      "Distinguishes model parameters (fit on training set by the algorithm) from hyperparameters/decisions (tuned on validation set by you)",
+      "Explains that the validation set is never seen by the model's mathematical optimisation, only inspected from outside",
+      "States why this prevents hyperparameter overfitting compared to tuning directly against the training set"
+    ]
+  },
+  {
+    "id": "sa-practice-nets-02",
+    "type": "short_answer",
+    "chapterId": "practice-nets",
+    "chapterTitle": "Train/Validation/Test Splits",
+    "sourceUrl": "/scoring-model-evaluation/practice-nets/",
+    "question": "The chapter says leakage is 'rarely dramatic.' What is data leakage, give one example from the chapter, and how would you notice it had happened?",
+    "modelAnswer": "Data leakage is when information from outside the training set — often from the validation or test data, or from the target itself — improperly influences model fitting, giving an inflated and dishonest performance estimate. The chapter's example is fitting a StandardScaler on the full dataset before splitting, which leaks statistics from match day (test) into the net sessions (training). Other examples it gives include a target-derived feature nobody questioned, or a duplicate row landing on both sides of a split. You would notice it because the symptom is a score that feels suspiciously good — the chapter's advice is to trust that feeling, since an excellent number is almost never a gift and is usually a bill arriving later.",
+    "rubric": [
+      "Defines leakage as information from outside the training set improperly influencing the model, inflating the score",
+      "Gives a concrete example from the chapter (scaler fit before split, target-derived feature, or duplicate row across splits)",
+      "States the practical tell: a suspiciously good score should be treated with suspicion, not celebrated"
     ]
   },
   {

@@ -3,6 +3,7 @@ import BaseLayout from "./BaseLayout.astro";
 import MatchSituation from "../components/MatchSituation.astro";
 import { getChapter, innings, totalChapters, type Stat } from "../data/innings";
 import { url } from "../utils/paths";
+import quizBank from "../data/quiz-bank.json";
 
 interface Props {
   frontmatter: {
@@ -32,6 +33,11 @@ const over = `${inn.index + 1}.${chIdx + 1}`;
 const eyebrow = `${inn.short} · Over ${over}`;
 const readTime = fm.meta.split(" · ")[0];
 const codeLines = (fm.code ?? "").split("\n");
+
+// Check if the current chapter has any questions in the quiz bank
+const hasQuizQuestions = (quizBank as Array<{ chapterId: string }>).some(
+  (q) => q.chapterId === fm.chapter,
+);
 ---
 
 <BaseLayout title={fm.title} description={fm.lede} section={inn.slug}>
@@ -349,31 +355,33 @@ const codeLines = (fm.code ?? "").split("\n");
           )
         }
 
-        <!-- Practice nets callout -->
-        <div
-          class="flex flex-wrap items-center gap-5 rounded-[14px] border border-pitch bg-pitch px-6 py-[22px]"
-        >
-          <div class="flex min-w-0 flex-[1_1_260px] flex-col gap-[7px]">
-            <span
-              class="font-mono text-[10.5px] uppercase tracking-[0.18em] text-gold"
-              >Exercise · Over {over}</span
-            >
-            <span
-              class="font-display text-[clamp(20px,1.9vw,26px)] font-bold leading-[1.15] tracking-[-0.03em] text-white"
-              >Enter the practice nets</span
-            >
-            <span class="font-mono text-[12px] text-mist"
-              >15 questions * 10 multiple choice * 5 short answer</span
-            >
-          </div>
-          <a
-            href={url(`practice-nets/?chapter=${fm.chapter}`)}
-            class="inline-flex h-12 flex-none items-center gap-2.5 rounded-[10px] bg-gold px-6 font-sans text-[16px] font-semibold whitespace-nowrap text-pitch transition-colors hover:bg-gold-light"
+        <!-- Practice nets callout (only shown if this chapter has questions in the bank) -->
+        {hasQuizQuestions && (
+          <div
+            class="flex flex-wrap items-center gap-5 rounded-[14px] border border-pitch bg-pitch px-6 py-[22px]"
           >
-            Enter the practice nets
-            <span class="font-mono text-[15px]">→</span>
-          </a>
-        </div>
+            <div class="flex min-w-0 flex-[1_1_260px] flex-col gap-[7px]">
+              <span
+                class="font-mono text-[10.5px] uppercase tracking-[0.18em] text-gold"
+                >Exercise · Over {over}</span
+              >
+              <span
+                class="font-display text-[clamp(20px,1.9vw,26px)] font-bold leading-[1.15] tracking-[-0.03em] text-white"
+                >Enter the practice nets</span
+              >
+              <span class="font-mono text-[12px] text-mist"
+                >15 questions * 10 multiple choice * 5 short answer</span
+              >
+            </div>
+            <a
+              href={url(`practice-nets/?chapter=${fm.chapter}`)}
+              class="inline-flex h-12 flex-none items-center gap-2.5 rounded-[10px] bg-gold px-6 font-sans text-[16px] font-semibold whitespace-nowrap text-pitch transition-colors hover:bg-gold-light"
+            >
+              Enter the practice nets
+              <span class="font-mono text-[15px]">→</span>
+            </a>
+          </div>
+        )}
 
         <!-- Scorecard stat strip -->
         {
