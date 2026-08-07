@@ -42,7 +42,7 @@ const scopeOptions = [
     inn.chapters
       .map((c, j) => ({
         v: c.slug,
-        label: `${inn.index + 1}.${j + 1} ${c.nav}`,
+        label: `${inn.index + 1}.${j + 1} ${c.title}`,
       }))
       .filter((o) => chaptersWithQuestions.has(o.v)),
   ),
