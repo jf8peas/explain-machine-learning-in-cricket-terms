@@ -195,7 +195,7 @@ const scopeOptions = [
             </div>
           </div>
 
-          <div class="flex flex-col gap-[22px] px-[clamp(20px,2.4vw,30px)] py-[clamp(22px,2.6vw,34px)]">
+          <div id="quiz-running-body" class="flex flex-col gap-[22px] px-[clamp(20px,2.4vw,30px)] py-[clamp(22px,2.6vw,34px)]">
             <div class="flex flex-col gap-2.5">
               <span id="quiz-over" class="font-mono text-[11px] uppercase tracking-[0.16em] text-slate-custom"></span>
               <h2 id="quiz-question" class="m-0 font-display text-[clamp(22px,2.3vw,32px)] font-bold leading-[1.2] tracking-[-0.03em] text-pitch"></h2>
@@ -209,12 +209,8 @@ const scopeOptions = [
               <textarea id="quiz-answer" rows="7" placeholder="Explain it as you would to a teammate who missed the session…" class="w-full resize-y rounded-[12px] border border-line bg-white px-[18px] py-4 text-[16px] leading-[1.6] text-pitch outline-none focus:border-pitch"></textarea>
               <div class="flex flex-wrap items-center gap-3.5">
                 <span id="quiz-char-count" class="font-mono text-[12px] text-slate-custom"></span>
-                <span class="font-mono text-[12px] text-slate-custom">Marked against a 3-point rubric</span>
-                <span class="flex-1"></span>
-                <button id="quiz-submit-sa" type="button" class="inline-flex h-[46px] items-center rounded-[10px] bg-gold px-[22px] text-[15.5px] font-semibold text-pitch transition-colors hover:bg-gold-light disabled:cursor-not-allowed disabled:bg-line disabled:text-slate-custom">Submit to AI Coach</button>
+                <span class="font-mono text-[12px] text-slate-custom">0–3 points per answer · feedback on the scorecard</span>
               </div>
-              <!-- SA grading status / result -->
-              <div id="quiz-sa-status" class="hidden flex-col gap-2 rounded-[10px] border border-line bg-white px-4 py-3"></div>
             </div>
 
             <div class="flex flex-wrap items-center gap-3.5 border-t border-line pt-1.5">
@@ -222,6 +218,13 @@ const scopeOptions = [
               <span class="flex-1"></span>
               <button id="quiz-next" type="button" class="inline-flex h-[46px] items-center rounded-[10px] bg-gold px-[22px] text-[15.5px] font-semibold text-pitch transition-colors hover:bg-gold-light disabled:cursor-not-allowed disabled:bg-line disabled:text-slate-custom">Next delivery</button>
             </div>
+          </div>
+
+          <!-- Whole-set grading state (short answers graded once, at the end) -->
+          <div id="quiz-grading" class="hidden flex-col items-center gap-4 px-6 py-12">
+            <span class="h-9 w-9 flex-none animate-spin rounded-full border-[3px] border-gold border-t-transparent"></span>
+            <span class="font-mono text-[12px] uppercase tracking-[0.16em] text-slate-custom">AI Coach is reviewing your answers…</span>
+            <span id="quiz-grading-count" class="text-[14.5px] text-gray-500"></span>
           </div>
         </section>
 
@@ -304,8 +307,9 @@ const scopeOptions = [
   const saBox = document.getElementById("quiz-sa");
   const answerTa = document.getElementById("quiz-answer") as HTMLTextAreaElement | null;
   const charCount = document.getElementById("quiz-char-count");
-  const submitSa = document.getElementById("quiz-submit-sa") as HTMLButtonElement | null;
-  const saStatus = document.getElementById("quiz-sa-status");
+  const runningBody = document.getElementById("quiz-running-body");
+  const gradingBox = document.getElementById("quiz-grading");
+  const gradingCount = document.getElementById("quiz-grading-count");
   const nextBtn = document.getElementById("quiz-next") as HTMLButtonElement | null;
   const quitBtn = document.getElementById("quiz-quit");
   const finalScore = document.getElementById("quiz-final-score");
@@ -330,7 +334,7 @@ const scopeOptions = [
   let picks: Record<string, number> = {};
   let texts: Record<string, string> = {};
   let saScores: Record<string, { score: number; feedback: string }> = {};
-  let saLoading = false;
+  let isGrading = false;
 
   // ── Read ?chapter= from URL to pre-filter scope ──
   const params = new URLSearchParams(window.location.search);
@@ -387,13 +391,10 @@ const scopeOptions = [
       .replace(new RegExp(apos, "g"), amp + "#039;");
   }
 
-  // ── Grade a short answer via /api/grade ──
+  // ── Grade a single short answer via /api/grade (no UI side-effects) ──
   const API_BASE = (import.meta.env.BASE_URL || "/").replace(/\/+$/, "");
 
   async function gradeSa(key: string, q: any, answer: string): Promise<void> {
-    saLoading = true;
-    render();
-
     try {
       const res = await fetch(`${API_BASE}/api/grade`, {
         method: "POST",
@@ -419,8 +420,30 @@ const scopeOptions = [
         feedback: `Grading failed: ${err instanceof Error ? err.message : String(err)}`,
       };
     }
+  }
 
-    saLoading = false;
+  // ── Grade all short answers at once, then show the scorecard ──
+  async function submitAll(): Promise<void> {
+    if (isGrading) return;
+    isGrading = true;
+    render();
+
+    const saItems = plan.filter((p) => p.t === "sa");
+    const pending = saItems.filter((p) => saScores[p.key] === undefined);
+    if (gradingCount) gradingCount.textContent = `Grading ${pending.length} short answer${pending.length === 1 ? "" : "s"}…`;
+
+    // Grade all unanswered short answers concurrently.
+    await Promise.all(
+      pending.map((p) => gradeSa(p.key, p.q, texts[p.key] || "")),
+    );
+
+    isGrading = false;
+
+    // A single-chapter quiz that scores >= 50% counts that chapter as passed.
+    // "All Chapters" sessions sample across chapters and don't map to one.
+    if (scope !== "all" && computeOverallScore() >= 50) passQuizChapter(scope);
+
+    mode = "done";
     render();
   }
 
@@ -498,6 +521,13 @@ const scopeOptions = [
     done.classList.toggle("hidden", mode !== "done");
 
     if (mode === "q") {
+      // While grading, hide the question body and show the whole-set spinner.
+      if (runningBody) runningBody.classList.toggle("hidden", isGrading);
+      if (gradingBox) {
+        gradingBox.classList.toggle("hidden", !isGrading);
+        gradingBox.classList.toggle("flex", isGrading);
+      }
+
       const cur = plan[i];
       const total = plan.length;
       const isMcq = cur.t === "mcq";
@@ -550,47 +580,15 @@ const scopeOptions = [
         answerTa.classList.toggle("hidden", isMcq);
       }
       if (charCount) charCount.textContent = `${text.length} / 600 characters`;
-      if (submitSa) {
-        const canSubmit = text.trim().length > 0 && !saLoading && !saScore;
-        submitSa.disabled = !canSubmit;
-        submitSa.classList.toggle("hidden", isMcq);
-        submitSa.textContent = saLoading ? "Grading…" : saScore ? "Graded" : "Submit to AI Coach";
-      }
 
-      // SA status box
-      if (saStatus) {
-        saStatus.classList.toggle("hidden", isMcq || (!saLoading && !saScore));
-        saStatus.classList.toggle("flex", !isMcq && (saLoading || !!saScore));
-        if (!isMcq) {
-          if (saLoading) {
-            saStatus.innerHTML = `
-              <div class="flex items-center gap-2.5">
-                <span class="h-3.5 w-3.5 flex-none animate-spin rounded-full border-2 border-gold border-t-transparent"></span>
-                <span class="font-mono text-[12px] text-slate-custom">AI Coach is reviewing your answer…</span>
-              </div>
-            `;
-          } else if (saScore) {
-            const color = saScore.score >= 2 ? "text-[#1F5A38]" : saScore.score === 1 ? "text-gold-deep" : "text-[#8C3021]";
-            const bg = saScore.score >= 2 ? "bg-[#E4F2E8]" : saScore.score === 1 ? "bg-[#FBF6E2]" : "bg-[#FAE7E4]";
-            saStatus.innerHTML = `
-              <div class="flex items-center gap-2.5">
-                <span class="inline-flex h-6 items-center rounded-[6px] px-2.5 font-mono text-[10px] font-medium uppercase tracking-[0.14em] ${bg} ${color}">${saScore.score} / 3</span>
-                <span class="font-mono text-[12px] text-slate-custom">AI Coach verdict</span>
-              </div>
-              ${saScore.feedback ? `<p class="m-0 text-[14px] leading-[1.5] text-ink-soft">${escapeHtml(saScore.feedback)}</p>` : ""}
-            `;
-          }
-        }
-      }
-
-      // Next button
+      // Next / Submit button — visible for both MCQ and short answer
       if (nextBtn) {
         const canNext = isMcq
           ? picked !== undefined
-          : text.trim().length > 0 && (saScore !== undefined || saLoading);
+          : text.trim().length > 0;
         nextBtn.disabled = !canNext;
-        nextBtn.textContent = i === total - 1 ? "See the scorecard" : "Next delivery";
-        nextBtn.classList.toggle("hidden", !isMcq);
+        nextBtn.textContent = i === total - 1 ? "Submit answers" : "Next delivery";
+        nextBtn.classList.toggle("hidden", false);
       }
     }
 
@@ -731,7 +729,7 @@ const scopeOptions = [
     picks = {};
     texts = {};
     saScores = {};
-    saLoading = false;
+    isGrading = false;
     plan = buildPlan();
     render();
   });
@@ -742,23 +740,12 @@ const scopeOptions = [
     if (cur.t === "sa" && !(texts[cur.key] || "").trim()) return;
 
     if (i === plan.length - 1) {
-      // A single-chapter quiz that scores >= 50% counts that chapter as passed.
-      // "All Chapters" sessions sample across chapters and don't map to one.
-      if (scope !== "all" && computeOverallScore() >= 50) passQuizChapter(scope);
-      mode = "done";
-      render();
+      // Last question — grade all short answers, then show the scorecard.
+      submitAll();
     } else {
       i += 1;
       render();
     }
-  });
-
-  submitSa?.addEventListener("click", () => {
-    const cur = plan[i];
-    if (!cur || cur.t !== "sa") return;
-    const text = texts[cur.key] || "";
-    if (!text.trim() || saScores[cur.key] || saLoading) return;
-    gradeSa(cur.key, cur.q, text);
   });
 
   answerTa?.addEventListener("input", (e) => {
@@ -780,7 +767,7 @@ const scopeOptions = [
     picks = {};
     texts = {};
     saScores = {};
-    saLoading = false;
+    isGrading = false;
     plan = [];
     render();
   });
