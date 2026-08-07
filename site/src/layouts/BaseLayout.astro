@@ -2,6 +2,7 @@
 import "../styles/global.css";
 import { innings } from "../data/innings";
 import { url } from "../utils/paths";
+import SearchBar from "../components/SearchBar.astro";
 
 interface Props {
   title: string;
@@ -76,6 +77,9 @@ const {
             </div>
           </a>
 
+          <!-- Search -->
+          <SearchBar />
+
           <!-- Scorebug readout -->
           <div class="flex flex-wrap items-center py-2.5">
             <div class="flex items-center gap-2 border-l border-white/10 px-4">
@@ -90,8 +94,8 @@ const {
           </div>
         </div>
 
-        <!-- ═══ INNINGS NAVIGATION (wraps to rows — no horizontal scroll) ═══ -->
-        <nav class="border-t border-white/[0.07] bg-pitch-dark">
+        <!-- ═══ SESSION NAVIGATION (wraps to rows — no horizontal scroll) ═══ -->
+        <nav class="border-b-2 border-gold border-t border-white/[0.07] bg-pitch-dark">
           <div
             class="mx-auto flex max-w-[1440px] flex-wrap px-[clamp(14px,3vw,28px)]"
           >
@@ -102,22 +106,39 @@ const {
                   <a
                     href={url(`${inn.slug}/`)}
                     class:list={[
-                      "flex min-w-0 flex-1 basis-[140px] items-center gap-[10px] border-b-[3px] px-[14px] py-2.5 text-left transition-colors hover:bg-gold/[0.07]",
+                      "flex flex-none items-center gap-[11px] border-b-4 px-[18px] py-[13px] text-left transition-colors hover:bg-gold/[0.08]",
                       active
                         ? "border-gold bg-gold/10 text-white"
-                        : "border-transparent text-[#b9c9be]",
+                        : "border-transparent text-[#c3d2c8]",
                     ]}
                   >
-                    <span class="flex-none font-mono text-[10px] font-medium tracking-[0.1em] text-gold">
+                    <span class="flex-none font-mono text-[12px] font-medium tracking-[0.06em] text-gold">
                       {inn.number}
                     </span>
-                    <span class="line-clamp-2 font-display text-sm font-semibold leading-[1.2] tracking-[-0.01em]">
+                    <span class="max-w-[178px] font-display text-[14.5px] font-semibold leading-[1.24] tracking-[-0.015em]">
                       {inn.title}
                     </span>
                   </a>
                 );
               })
             }
+            <!-- Practice Nets link (session 07) -->
+            <a
+              href={url("practice-nets/")}
+              class:list={[
+                "flex flex-none items-center gap-[11px] border-b-4 px-[18px] py-[13px] text-left transition-colors hover:bg-gold/[0.08]",
+                section === "practice-nets"
+                  ? "border-gold bg-gold/10 text-white"
+                  : "border-transparent text-[#c3d2c8]",
+              ]}
+            >
+              <span class="flex-none font-mono text-[12px] font-medium tracking-[0.06em] text-gold">
+                07
+              </span>
+              <span class="max-w-[178px] font-display text-[14.5px] font-semibold leading-[1.24] tracking-[-0.015em]">
+                Practice Nets
+              </span>
+            </a>
           </div>
         </nav>
 

@@ -1,0 +1,2050 @@
+[
+  {
+    "id": "mcq-environment-setup-01",
+    "type": "mcq",
+    "chapterId": "environment-setup",
+    "chapterTitle": "Environment Setup",
+    "sourceUrl": "/pre-game-preparation/environment-setup/",
+    "question": "Why does the chapter deliberately roll one shared conda environment (gb_global) instead of letting every project create its own?",
+    "options": [
+      "A) It's the only way conda supports multiple users on one machine",
+      "B) So any member of the conda group can install a package and the whole team sees it immediately, avoiding duplicated environments",
+      "C) Because pip requires exactly one global environment per machine",
+      "D) Because the Grace Blackwell hardware only supports one Python interpreter at a time"
+    ],
+    "correctAnswerIndex": 1,
+    "explanation": "Sharing one pitch means any groundstaff member can pip install a package and the whole team sees it immediately — no duplicated environments, no 'works on my machine.'"
+  },
+  {
+    "id": "mcq-environment-setup-02",
+    "type": "mcq",
+    "chapterId": "environment-setup",
+    "chapterTitle": "Environment Setup",
+    "sourceUrl": "/pre-game-preparation/environment-setup/",
+    "question": "What does the chapter call the single most important rule for any playing area, from a shared server to a laptop?",
+    "options": [
+      "A) Always use the newest version of Python available",
+      "B) Your NumPy must be vectorized, compiled against an optimised BLAS/LAPACK backend",
+      "C) Always train models on GPU rather than CPU",
+      "D) Install every package via pip rather than conda"
+    ],
+    "correctAnswerIndex": 1,
+    "explanation": "The chapter is explicit that this isn't convenience, like the earlier sections — it's the single most important rule, because an unvectorized NumPy build can be an order of magnitude slower on exactly the matrix work the course depends on."
+  },
+  {
+    "id": "mcq-environment-setup-03",
+    "type": "mcq",
+    "chapterId": "environment-setup",
+    "chapterTitle": "Environment Setup",
+    "sourceUrl": "/pre-game-preparation/environment-setup/",
+    "question": "What does python.venvPath control in the Cursor .vscode/settings.json configuration?",
+    "options": [
+      "A) It's the interpreter every new terminal and notebook starts with",
+      "B) It tells Cursor where the conda executable lives so activation commands fire",
+      "C) It's the directory Cursor scans when you open the interpreter picker, so sibling environments show up in the list",
+      "D) It automatically installs any missing packages on first run"
+    ],
+    "correctAnswerIndex": 2,
+    "explanation": "The chapter assigns each of the three settings its own job: defaultInterpreterPath is the crease itself, condaPath locates the conda executable, and venvPath is what gets scanned for the interpreter picker."
+  },
+  {
+    "id": "sa-environment-setup-01",
+    "type": "short_answer",
+    "chapterId": "environment-setup",
+    "chapterTitle": "Environment Setup",
+    "sourceUrl": "/pre-game-preparation/environment-setup/",
+    "question": "In cricket terms, why is a vectorized NumPy operation like data.sum() dramatically faster than an equivalent Python for loop, and what habit should this teach you?",
+    "modelAnswer": "A for loop pays Python's interpreter overhead on every single iteration, boxing and dispatching each value, while a vectorized call crosses into compiled C code once and then runs a tight SIMD-accelerated loop over contiguous memory — which is why operations like the @ matrix multiply can be thousands of times faster. The habit to build is: whenever you catch yourself writing a for loop over a NumPy array, stop and look for the array operation (slicing, broadcasting, np.where, masked assignment, @) that replaces it.",
+    "rubric": [
+      "Explains the for loop pays Python interpreter overhead per iteration while vectorized code enters compiled/SIMD code once",
+      "Notes the scale of the speed difference described in the text",
+      "States the practical habit of looking for the array operation that replaces the loop"
+    ]
+  },
+  {
+    "id": "sa-environment-setup-02",
+    "type": "short_answer",
+    "chapterId": "environment-setup",
+    "chapterTitle": "Environment Setup",
+    "sourceUrl": "/pre-game-preparation/environment-setup/",
+    "question": "Why does the chapter say picking the correct Jupyter kernel is 'the one step that catches people out,' and what goes wrong if you pick the wrong one?",
+    "modelAnswer": "If you select the wrong kernel, the notebook runs against a different Python interpreter than the one where your packages are actually installed, so imports fail or resolve to unexpected versions. The trap is that the resulting error rarely says the real cause is the kernel — it just looks like a broken package, sending you down the wrong debugging path.",
+    "rubric": [
+      "States that the wrong kernel means wrong or missing packages resolve",
+      "Notes the error message rarely reveals the real cause is the kernel choice",
+      "Connects this to the chapter's theme of an invisible, well-prepared environment versus an unpredictable one"
+    ]
+  },
+  {
+    "id": "mcq-ml-workflow-01",
+    "type": "mcq",
+    "chapterId": "ml-workflow",
+    "chapterTitle": "ML Workflow",
+    "sourceUrl": "/pre-game-preparation/ml-workflow/",
+    "question": "In the seven-step ML workflow, why does 'evaluating model performance' appear twice?",
+    "options": [
+      "A) It's a typo in the original outline",
+      "B) The model must be evaluated once before deployment and once after, for compliance",
+      "C) You evaluate once after initial training and again after fine-tuning, so tuning decisions are validated rather than assumed",
+      "D) scikit-learn requires two separate scoring calls to compute accuracy"
+    ],
+    "correctAnswerIndex": 2,
+    "explanation": "The chapter states this directly: evaluation appearing twice is not a typo in the running order — it is the point of the exercise, since fine-tuning decisions need to be checked, not just trusted."
+  },
+  {
+    "id": "mcq-ml-workflow-02",
+    "type": "mcq",
+    "chapterId": "ml-workflow",
+    "chapterTitle": "ML Workflow",
+    "sourceUrl": "/pre-game-preparation/ml-workflow/",
+    "question": "What happens if you fail to drop the target column from X before fitting a model?",
+    "options": [
+      "A) train_test_split will throw an error automatically",
+      "B) The model simply reads the answer off the target column and reports perfect, meaningless accuracy",
+      "C) The model trains more slowly but still generalises correctly",
+      "D) scikit-learn automatically detects and removes the target column for you"
+    ],
+    "correctAnswerIndex": 1,
+    "explanation": "The chapter calls this the single most common way beginners fool themselves: leaving the answer in the question paper lets the model read it off directly."
+  },
+  {
+    "id": "mcq-ml-workflow-03",
+    "type": "mcq",
+    "chapterId": "ml-workflow",
+    "chapterTitle": "ML Workflow",
+    "sourceUrl": "/pre-game-preparation/ml-workflow/",
+    "question": "Why does the chapter warn against repeatedly tuning C against the test set and rescoring?",
+    "options": [
+      "A) Because C can only legally be tuned once",
+      "B) Because the test set of 86 rows is statistically too small to matter",
+      "C) Because doing so quietly turns the test set into a second validation set, so the resulting score no longer honestly reflects unseen performance",
+      "D) Because LinearSVC does not support repeated tuning"
+    ],
+    "correctAnswerIndex": 2,
+    "explanation": "This is the 'envelope leak' the chapter describes: tuning against the test set often enough means you're choosing settings because they flatter those specific rows."
+  },
+  {
+    "id": "mcq-ml-workflow-04",
+    "type": "mcq",
+    "chapterId": "ml-workflow",
+    "chapterTitle": "ML Workflow",
+    "sourceUrl": "/pre-game-preparation/ml-workflow/",
+    "question": "What does a high C value (e.g. C=10) do in LinearSVC, according to the bowling analogy used in this chapter?",
+    "options": [
+      "A) It makes the model train faster",
+      "B) It behaves like a bowler obsessed with never conceding a run in the nets, fitting the training points very hard",
+      "C) It disables regularisation entirely and guarantees no overfitting",
+      "D) It automatically increases the test set size"
+    ],
+    "correctAnswerIndex": 1,
+    "explanation": "High C means trying hard to fit every last training point; low C means accepting a few misses in exchange for a more repeatable, general model."
+  },
+  {
+    "id": "sa-ml-workflow-01",
+    "type": "short_answer",
+    "chapterId": "ml-workflow",
+    "chapterTitle": "ML Workflow",
+    "sourceUrl": "/pre-game-preparation/ml-workflow/",
+    "question": "Why does the chapter describe this dataset's spotless isna().sum() result as 'clean' but 'slightly misleading,' and what does the next chapter promise to cover?",
+    "modelAnswer": "A completely gap-free, well-behaved dataset is unusual — most real-world scorecards have missing values, freak outliers, and imbalanced classes. Getting a spotless dataset here is a stroke of luck specific to this curated example rather than something to expect by default, and the next chapter, Feature Engineering, covers what to do when the data is not this obliging: filling gaps, flagging outliers, and handling class imbalance.",
+    "rubric": [
+      "Notes that zero missing values is unusually clean or lucky, not the norm",
+      "States that real-world data typically has gaps, outliers, or imbalance",
+      "Connects this to Feature Engineering being the next topic"
+    ]
+  },
+  {
+    "id": "sa-ml-workflow-02",
+    "type": "short_answer",
+    "chapterId": "ml-workflow",
+    "chapterTitle": "ML Workflow",
+    "sourceUrl": "/pre-game-preparation/ml-workflow/",
+    "question": "What are the two 'beats' of train_test_split described in this chapter, and why does the order matter?",
+    "modelAnswer": "First, separate the features (X) from the target (y) — dropping the target from X is essential, because leaving the answer in the question paper lets the model cheat by reading it off directly. Second, split the remaining rows into training and test sets, holding out roughly 15 to 20 percent, using a fixed random_state so the split — and therefore your results — stays reproducible across runs.",
+    "rubric": [
+      "Describes separating X (features) from y (target), dropping the target from X",
+      "Describes splitting into train and test sets with a held-out percentage",
+      "Mentions random_state for reproducibility"
+    ]
+  },
+  {
+    "id": "mcq-feature-engineering-01",
+    "type": "mcq",
+    "chapterId": "feature-engineering",
+    "chapterTitle": "Feature Engineering",
+    "sourceUrl": "/pre-game-preparation/feature-engineering/",
+    "question": "Why might strategy=\"median\" be preferred over strategy=\"mean\" in SimpleImputer for a particular column?",
+    "options": [
+      "A) Median is always faster to compute than mean",
+      "B) Median is more robust when the column already has outliers dragging the mean around",
+      "C) Mean only works on categorical columns",
+      "D) Median requires fewer neighbours to compute"
+    ],
+    "correctAnswerIndex": 1,
+    "explanation": "The chapter calls median the sturdier option specifically when freak values are already dragging a column's mean around."
+  },
+  {
+    "id": "mcq-feature-engineering-02",
+    "type": "mcq",
+    "chapterId": "feature-engineering",
+    "chapterTitle": "Feature Engineering",
+    "sourceUrl": "/pre-game-preparation/feature-engineering/",
+    "question": "What is the key difference between SimpleImputer and KNNImputer?",
+    "options": [
+      "A) SimpleImputer fills every gap in a column with one summary statistic regardless of context; KNNImputer fills a gap using an average from the K most similar rows",
+      "B) SimpleImputer only works on numeric data; KNNImputer only works on categorical data",
+      "C) KNNImputer is always faster because it ignores the rest of the dataset",
+      "D) SimpleImputer requires a labelled target column; KNNImputer does not"
+    ],
+    "correctAnswerIndex": 0,
+    "explanation": "SimpleImputer is fast but context-blind; KNNImputer is more considered, borrowing a value from the K most similar players' cards."
+  },
+  {
+    "id": "mcq-feature-engineering-03",
+    "type": "mcq",
+    "chapterId": "feature-engineering",
+    "chapterTitle": "Feature Engineering",
+    "sourceUrl": "/pre-game-preparation/feature-engineering/",
+    "question": "According to the chapter, what should you do once a box plot or z-score flags a candidate outlier?",
+    "options": [
+      "A) Always delete it immediately to protect the model",
+      "B) Always keep it, since deleting any data point is never appropriate",
+      "C) Treat it as a question: decide whether it's a genuine freak performance worth keeping, or a data-entry error worth fixing",
+      "D) Automatically replace it with the column's mean"
+    ],
+    "correctAnswerIndex": 2,
+    "explanation": "The chapter is explicit: finding an outlier is a question, not an automatic instruction to delete — a genuine 180 not out is signal, a strike rate of 9000 is noise."
+  },
+  {
+    "id": "mcq-feature-engineering-04",
+    "type": "mcq",
+    "chapterId": "feature-engineering",
+    "chapterTitle": "Feature Engineering",
+    "sourceUrl": "/pre-game-preparation/feature-engineering/",
+    "question": "What is the key difference between downsampling and upweighting for fixing class imbalance?",
+    "options": [
+      "A) Downsampling trims the majority class, throwing away real data; upweighting clones the minority class, risking memorisation of a few examples",
+      "B) Downsampling only works on regression problems; upweighting only works on classification",
+      "C) Upweighting removes rows from the dataset; downsampling duplicates them",
+      "D) They are two names for exactly the same technique"
+    ],
+    "correctAnswerIndex": 0,
+    "explanation": "Downsampling spends data by discarding majority rows; upweighting spends originality by duplicating minority rows."
+  },
+  {
+    "id": "sa-feature-engineering-01",
+    "type": "short_answer",
+    "chapterId": "feature-engineering",
+    "chapterTitle": "Feature Engineering",
+    "sourceUrl": "/pre-game-preparation/feature-engineering/",
+    "question": "Explain the |z| greater than 3 rule of thumb for flagging outliers, including why it works and what it does NOT tell you.",
+    "modelAnswer": "The rule leans on the shape of the normal distribution: roughly 99 percent of a normally distributed column's values fall within three standard deviations of the mean, so a value with |z| greater than 3 is rare enough to be worth a second look. But the rule only flags candidates — it does not decide whether the flagged value is a genuine freak performance worth keeping as signal, or a data-entry error, like a strike rate of 9000, that should be treated as noise and fixed.",
+    "rubric": [
+      "Explains the 99-percent-within-3-standard-deviations basis of the rule",
+      "States |z| greater than 3 only flags candidates and doesn't decide signal versus noise",
+      "Gives or implies an example distinguishing a genuine outlier from a data-entry error"
+    ]
+  },
+  {
+    "id": "sa-feature-engineering-02",
+    "type": "short_answer",
+    "chapterId": "feature-engineering",
+    "chapterTitle": "Feature Engineering",
+    "sourceUrl": "/pre-game-preparation/feature-engineering/",
+    "question": "Why does the chapter warn that leaning too hard on upweighting can teach a model to 'memorise five specific deliveries extremely well' rather than actually learn the pattern of a wicket?",
+    "modelAnswer": "Upweighting only duplicates the small number of real minority examples you already have — five real wickets copied ten times is still only five deliveries' worth of genuine information. Upweight too aggressively and the model can start recognising those exact duplicated examples rather than generalising to the broader pattern of what a wicket looks like, the same overfitting failure mode ('net hero') described elsewhere in the series.",
+    "rubric": [
+      "States that upweighting only duplicates existing minority rows rather than adding new information",
+      "Connects over-reliance on upweighting to memorising specific examples, i.e. overfitting",
+      "References the fixed amount of genuine information (five deliveries) regardless of how many copies are made"
+    ]
+  },
+  {
+    "id": "mcq-the-coachs-settings-01",
+    "type": "mcq",
+    "chapterId": "the-coachs-settings",
+    "chapterTitle": "Parameters & Hyperparameters",
+    "sourceUrl": "/pre-game-preparation/the-coachs-settings/",
+    "question": "What is the mechanical 'tell' for distinguishing a parameter from a hyperparameter in scikit-learn code?",
+    "options": [
+      "A) Parameters are always integers; hyperparameters are always floats",
+      "B) Anything passed into the constructor is a hyperparameter; anything with a trailing underscore after fitting is a learned parameter",
+      "C) Parameters are set inside .fit(); hyperparameters are set inside .predict()",
+      "D) There is no reliable way to tell them apart in code"
+    ],
+    "correctAnswerIndex": 1,
+    "explanation": "The chapter describes the trailing underscore as scikit-learn politely saying 'I worked this one out myself, thank you.'"
+  },
+  {
+    "id": "mcq-the-coachs-settings-02",
+    "type": "mcq",
+    "chapterId": "the-coachs-settings",
+    "chapterTitle": "Parameters & Hyperparameters",
+    "sourceUrl": "/pre-game-preparation/the-coachs-settings/",
+    "question": "Which of the following is an example of a hyperparameter, according to this chapter?",
+    "options": [
+      "A) model.coef_ after fitting",
+      "B) model.intercept_ after fitting",
+      "C) n_neighbors=5 passed into KNeighborsClassifier's constructor",
+      "D) The split thresholds a decision tree discovers during training"
+    ],
+    "correctAnswerIndex": 2,
+    "explanation": "n_neighbors is set by the developer before training begins, making it a hyperparameter, unlike coef_ or discovered split thresholds, which are learned parameters."
+  },
+  {
+    "id": "mcq-the-coachs-settings-03",
+    "type": "mcq",
+    "chapterId": "the-coachs-settings",
+    "chapterTitle": "Parameters & Hyperparameters",
+    "sourceUrl": "/pre-game-preparation/the-coachs-settings/",
+    "question": "According to the chapter's golden rule, when should hyperparameters be tuned?",
+    "options": [
+      "A) Against the final test set, so you know the true performance",
+      "B) Against a held-out validation set, never against the final test data",
+      "C) Only once, before seeing any data at all",
+      "D) Hyperparameters should never be tuned; only defaults should be used"
+    ],
+    "correctAnswerIndex": 1,
+    "explanation": "The chapter states this rule matters enormously: a coach who keeps rerunning match day until the settings look good has stopped measuring anything."
+  },
+  {
+    "id": "mcq-the-coachs-settings-04",
+    "type": "mcq",
+    "chapterId": "the-coachs-settings",
+    "chapterTitle": "Parameters & Hyperparameters",
+    "sourceUrl": "/pre-game-preparation/the-coachs-settings/",
+    "question": "In the bowling-machine analogy, what does the 'Speed Dial' on the machine represent?",
+    "options": [
+      "A) The number of estimators in a Random Forest",
+      "B) The learning rate",
+      "C) Max tree depth",
+      "D) The k value in k-Nearest Neighbours"
+    ],
+    "correctAnswerIndex": 1,
+    "explanation": "The chapter maps the speed dial directly to the learning rate: too fast and the batter overreacts, too slow and they don't learn real match conditions."
+  },
+  {
+    "id": "sa-the-coachs-settings-01",
+    "type": "short_answer",
+    "chapterId": "the-coachs-settings",
+    "chapterTitle": "Parameters & Hyperparameters",
+    "sourceUrl": "/pre-game-preparation/the-coachs-settings/",
+    "question": "Using the cricket analogy from this chapter, explain the difference between a parameter and a hyperparameter, and give one ML example of each.",
+    "modelAnswer": "Hyperparameters are the settings a coach dials in before play begins, like a bowling machine's speed or a tree's max depth, chosen by the data scientist and fixed before training starts. Parameters are what a player's body learns automatically through repetition during the match itself, like a bowler's muscle memory — the model's internal weights and biases, calculated and updated automatically during model.fit(). For example, max_depth=5 is a hyperparameter you set; model.coef_ after fitting is a learned parameter.",
+    "rubric": [
+      "Correctly distinguishes hyperparameters, set before training and external, from parameters, learned during training and internal",
+      "Gives a valid ML example of each, such as max_depth versus coef_",
+      "References the cricket analogy of the coach's dressing room versus the player's muscle memory"
+    ]
+  },
+  {
+    "id": "sa-the-coachs-settings-02",
+    "type": "short_answer",
+    "chapterId": "the-coachs-settings",
+    "chapterTitle": "Parameters & Hyperparameters",
+    "sourceUrl": "/pre-game-preparation/the-coachs-settings/",
+    "question": "Why does the chapter say 'a coach who keeps rerunning match day until the settings look good has stopped measuring anything'? What ML mistake is being described?",
+    "modelAnswer": "This describes tuning hyperparameters against the test set instead of a validation set. Keep adjusting settings and re-checking them against the same held-out 'match day' data until the score looks good, and you are no longer getting an honest measure of generalisation — you have effectively used the test set to make decisions, so it can no longer tell you how the model performs on truly unseen data.",
+    "rubric": [
+      "Identifies this as tuning against the test set rather than a validation set",
+      "Explains that repeated re-checking against the same held-out data invalidates it as a measure of generalisation",
+      "Connects to the broader discipline of keeping the test set sealed until the final evaluation"
+    ]
+  },
+  {
+    "id": "mcq-form-and-class-01",
+    "type": "mcq",
+    "chapterId": "form-and-class",
+    "chapterTitle": "3.2 Underfitting & Overfitting",
+    "sourceUrl": "/scoring-model-evaluation/form-and-class/",
+    "question": "What is the diagnostic signature of underfitting (high bias)?",
+    "options": [
+      "A) Training score is high, validation score is low",
+      "B) Both training score and validation score are low, and roughly equal",
+      "C) Training score is low, validation score is high",
+      "D) Both scores are perfect"
+    ],
+    "correctAnswerIndex": 1,
+    "explanation": "The chapter's diagnostic sign is unmistakable: poor performance on training and validation together, both bad at the same time."
+  },
+  {
+    "id": "mcq-form-and-class-02",
+    "type": "mcq",
+    "chapterId": "form-and-class",
+    "chapterTitle": "3.2 Underfitting & Overfitting",
+    "sourceUrl": "/scoring-model-evaluation/form-and-class/",
+    "question": "Which of the following is listed as a remedy for UNDERFITTING rather than overfitting?",
+    "options": [
+      "A) More data",
+      "B) Regularisation (L1/L2, dropout, lower C)",
+      "C) A more expressive model (deeper tree, more layers, polynomial terms)",
+      "D) Early stopping"
+    ],
+    "correctAnswerIndex": 2,
+    "explanation": "Underfitting calls for more capacity: a more expressive model, better features, or less regularisation. Overfitting calls for the opposite — more data, regularisation, simplification, or early stopping."
+  },
+  {
+    "id": "mcq-form-and-class-03",
+    "type": "mcq",
+    "chapterId": "form-and-class",
+    "chapterTitle": "3.2 Underfitting & Overfitting",
+    "sourceUrl": "/scoring-model-evaluation/form-and-class/",
+    "question": "According to the chapter, what does a validation score noticeably better than the training score usually indicate?",
+    "options": [
+      "A) An unusually well-generalising model, worth celebrating",
+      "B) Almost never a triumph — usually the validation split is easier than it should be, or something leaked",
+      "C) That K in K-Nearest Neighbours was set too high",
+      "D) That the model has achieved zero bias and zero variance"
+    ],
+    "correctAnswerIndex": 1,
+    "explanation": "The chapter calls this a fourth, rare row on the diagnosis table, and warns it almost always means an easy split or a leak, not genuine skill."
+  },
+  {
+    "id": "mcq-form-and-class-04",
+    "type": "mcq",
+    "chapterId": "form-and-class",
+    "chapterTitle": "3.2 Underfitting & Overfitting",
+    "sourceUrl": "/scoring-model-evaluation/form-and-class/",
+    "question": "Where does the 'sweet spot' for model complexity sit on the training and validation error curves?",
+    "options": [
+      "A) At the point of lowest training error",
+      "B) At the point of highest training error",
+      "C) At the bottom of the validation error curve, which is not the same point as lowest training error",
+      "D) Exactly halfway between the lowest and highest validation errors"
+    ],
+    "correctAnswerIndex": 2,
+    "explanation": "The chapter is explicit: the sweet spot is the bottom of the validation curve, not the point of lowest training error, which is where the net hero lives."
+  },
+  {
+    "id": "sa-form-and-class-01",
+    "type": "short_answer",
+    "chapterId": "form-and-class",
+    "chapterTitle": "3.2 Underfitting & Overfitting",
+    "sourceUrl": "/scoring-model-evaluation/form-and-class/",
+    "question": "Using the 'net hero' analogy, explain why more training on the same data does not fix overfitting.",
+    "modelAnswer": "A net hero has memorised the specific quirks, the noise, of one bowling machine in one shed, not the general skill of batting. Training more on that same data just deepens the memorisation of those same quirks rather than teaching anything transferable — it's sending the batter back to the same shed and hoping the shed has changed. Real fixes require varying the practice conditions, such as more data, regularisation, simplification, cross-validation, or early stopping, rather than repeating the same narrow experience.",
+    "rubric": [
+      "States that overfitting is memorising noise or quirks specific to the training data, not general structure",
+      "Explains why repeating training on identical data reinforces the same memorisation rather than fixing it",
+      "Mentions at least one genuine remedy, such as more data, regularisation, simplification, or cross-validation"
+    ]
+  },
+  {
+    "id": "sa-form-and-class-02",
+    "type": "short_answer",
+    "chapterId": "form-and-class",
+    "chapterTitle": "3.2 Underfitting & Overfitting",
+    "sourceUrl": "/scoring-model-evaluation/form-and-class/",
+    "question": "A model scores 0.998 on the training set and 0.712 on validation. Diagnose the problem and explain what the 'gap' itself tells you that the training score alone does not.",
+    "modelAnswer": "This is overfitting, or high variance — the large gap between near-perfect training performance and much weaker validation performance is the signature of a model that has memorised the training data's idiosyncrasies rather than learning generalisable patterns. The size of the gap is itself the important measurement, not the training score: watching the gap tells you how much the model's apparent skill depends on quirks specific to the training set, which the raw training score alone can't reveal.",
+    "rubric": [
+      "Correctly diagnoses overfitting or high variance from the train-validation gap",
+      "States that the gap size is the diagnostic signal, not the training score alone",
+      "Suggests at least one appropriate fix, such as regularisation, more data, simplification, or cross-validation"
+    ]
+  },
+  {
+    "id": "mcq-scorers-box-01",
+    "type": "mcq",
+    "chapterId": "scorers-box",
+    "chapterTitle": "3.3 Evaluation Metrics",
+    "sourceUrl": "/scoring-model-evaluation/scorers-box/",
+    "question": "A wicket-detection model that always predicts 'Not Out' scores 94.5% accuracy. What does this reveal about accuracy as a metric?",
+    "options": [
+      "A) The model is excellent and ready for production",
+      "B) Accuracy is misleading under severe class imbalance — a model that never detects the rare positive class can still score very high",
+      "C) 94.5% accuracy is impossible without genuine skill",
+      "D) The model must be using data leakage to achieve this score"
+    ],
+    "correctAnswerIndex": 1,
+    "explanation": "The chapter's 'lazy umpire' example makes this explicit: never once raising a finger, and still scoring 94.5%."
+  },
+  {
+    "id": "mcq-scorers-box-02",
+    "type": "mcq",
+    "chapterId": "scorers-box",
+    "chapterTitle": "3.3 Evaluation Metrics",
+    "sourceUrl": "/scoring-model-evaluation/scorers-box/",
+    "question": "What does precision measure, and when should you optimise for it?",
+    "options": [
+      "A) Of all genuine positive cases, how many were caught — optimise when a false negative is expensive",
+      "B) Of everything the model flagged as positive, how much actually was positive — optimise when a false positive is expensive",
+      "C) The overall percentage of correct predictions across both classes",
+      "D) The average error size, in the same units as the target"
+    ],
+    "correctAnswerIndex": 1,
+    "explanation": "Precision is a quality question about the predicted-positive column: of everything called 'out,' how much of it actually was."
+  },
+  {
+    "id": "mcq-scorers-box-03",
+    "type": "mcq",
+    "chapterId": "scorers-box",
+    "chapterTitle": "3.3 Evaluation Metrics",
+    "sourceUrl": "/scoring-model-evaluation/scorers-box/",
+    "question": "Why is F1 the harmonic mean of precision and recall rather than the plain average of the two?",
+    "options": [
+      "A) The harmonic mean is easier to compute",
+      "B) The harmonic mean punishes a low rate in either direction, so a model can't score well by being excellent at one and careless about the other",
+      "C) The harmonic mean is required by scikit-learn's API",
+      "D) The plain average would always equal 1.0"
+    ],
+    "correctAnswerIndex": 1,
+    "explanation": "The chapter's example makes this concrete: precision 1.0 and recall 0.1 average to a respectable 0.55 but score an F1 of just 0.18."
+  },
+  {
+    "id": "mcq-scorers-box-04",
+    "type": "mcq",
+    "chapterId": "scorers-box",
+    "chapterTitle": "3.3 Evaluation Metrics",
+    "sourceUrl": "/scoring-model-evaluation/scorers-box/",
+    "question": "What is the 'classic offence' of data leakage described in this chapter regarding StandardScaler?",
+    "options": [
+      "A) Using StandardScaler at all, which is never appropriate",
+      "B) Calling fit_transform on the full dataset before splitting into train and test, so test-set statistics leak into training",
+      "C) Forgetting to import StandardScaler from sklearn.preprocessing",
+      "D) Using MinMaxScaler instead of StandardScaler"
+    ],
+    "correctAnswerIndex": 1,
+    "explanation": "fit_transform on the full X computes statistics using every row, including the ones about to be sealed in the vault — the model has been handed a whisper about match-day conditions."
+  },
+  {
+    "id": "sa-scorers-box-01",
+    "type": "short_answer",
+    "chapterId": "scorers-box",
+    "chapterTitle": "3.3 Evaluation Metrics",
+    "sourceUrl": "/scoring-model-evaluation/scorers-box/",
+    "question": "Explain the precision and recall trade-off: what happens to each metric as you lower the classification threshold from 0.5, and why?",
+    "modelAnswer": "Lowering the threshold makes the classifier more trigger-happy, flagging more cases as positive. This catches more genuine positives, so recall goes up, but it also lets through more false alarms, so precision goes down. Raising the threshold does the opposite: fewer, more confident positive calls, so precision rises while recall falls. No single setting maximises both — the choice is a deliberate decision based on which error, false positive or false negative, is more costly in context.",
+    "rubric": [
+      "Correctly states lowering the threshold increases recall and decreases precision",
+      "Correctly states raising the threshold does the opposite",
+      "Notes the threshold choice should depend on which error type is more costly, not a default"
+    ]
+  },
+  {
+    "id": "sa-scorers-box-02",
+    "type": "short_answer",
+    "chapterId": "scorers-box",
+    "chapterTitle": "3.3 Evaluation Metrics",
+    "sourceUrl": "/scoring-model-evaluation/scorers-box/",
+    "question": "Describe two 'leakage warning signs' from the chapter and explain what each one suggests is going wrong.",
+    "modelAnswer": "One warning sign is validation accuracy far above anything reported for similar problems, or a single feature with overwhelming, unjustifiable importance — both suggest a feature is inadvertently encoding information from the future or from the answer itself. Another is time-series data split randomly instead of chronologically, which lets a model train on data from after the point it is supposed to be predicting. Both point to the same underlying problem: information the model shouldn't have at prediction time sneaking into training.",
+    "rubric": [
+      "Names at least two valid warning signs from the text, such as suspiciously high validation score, overwhelming single-feature importance, a big production-versus-validation gap, duplicate rows across splits, or a random split of time-series data",
+      "Explains what each suggests is going wrong",
+      "Connects to the general definition of data leakage"
+    ]
+  },
+  {
+    "id": "mcq-trial-matches-01",
+    "type": "mcq",
+    "chapterId": "trial-matches",
+    "chapterTitle": "3.4 Feature Selection & Tuning",
+    "sourceUrl": "/scoring-model-evaluation/trial-matches/",
+    "question": "Why does the chapter warn that corr() alone is an unreliable way to decide which features to drop?",
+    "options": [
+      "A) corr() only measures linear relationships, so a feature with a strong curved or conditional relationship to the target can score near zero and still be valuable",
+      "B) corr() cannot be computed on numeric data",
+      "C) corr() always returns exactly 1.0 for irrelevant features",
+      "D) corr() requires the model to already be trained"
+    ],
+    "correctAnswerIndex": 0,
+    "explanation": "Correlation only sees straight lines — a feature valuable in only one context, like a batter who averages 58 in England, can still score near zero overall."
+  },
+  {
+    "id": "mcq-trial-matches-02",
+    "type": "mcq",
+    "chapterId": "trial-matches",
+    "chapterTitle": "3.4 Feature Selection & Tuning",
+    "sourceUrl": "/scoring-model-evaluation/trial-matches/",
+    "question": "What does a suspiciously high correlation (e.g. 0.97) between a feature and the target usually indicate?",
+    "options": [
+      "A) An excellent, trustworthy feature that should definitely be kept",
+      "B) A likely data leak — the feature may be encoding the answer or future information",
+      "C) That the feature should be squared before use",
+      "D) That the dataset needs more rows"
+    ],
+    "correctAnswerIndex": 1,
+    "explanation": "The chapter states this plainly: a suspiciously high correlation is a leak, not a gift, and warrants checking where the column came from."
+  },
+  {
+    "id": "mcq-trial-matches-03",
+    "type": "mcq",
+    "chapterId": "trial-matches",
+    "chapterTitle": "3.4 Feature Selection & Tuning",
+    "sourceUrl": "/scoring-model-evaluation/trial-matches/",
+    "question": "If you leave scoring= at its default in GridSearchCV on a severely imbalanced dataset, what is the risk?",
+    "options": [
+      "A) The search will fail to run at all",
+      "B) The search will optimise for accuracy by default, potentially finding the settings that best reproduce a lazy model that ignores the minority class",
+      "C) The search will automatically switch to F1 for imbalanced data",
+      "D) GridSearchCV requires scoring to be set manually or it throws an error"
+    ],
+    "correctAnswerIndex": 1,
+    "explanation": "Left at its default, the search will diligently hunt for the settings that best reproduce the lazy umpire, hands in pockets, 94.5%, never once raising a finger."
+  },
+  {
+    "id": "mcq-trial-matches-04",
+    "type": "mcq",
+    "chapterId": "trial-matches",
+    "chapterTitle": "3.4 Feature Selection & Tuning",
+    "sourceUrl": "/scoring-model-evaluation/trial-matches/",
+    "question": "Why is best_score_ from a GridSearchCV object described as a 'net average' that shouldn't be reported as final model performance?",
+    "options": [
+      "A) It's computed only on the training set with no validation at all",
+      "B) It's the maximum of several noisy validation measurements, and the maximum of a noisy sample is optimistically biased by the act of selection",
+      "C) It's always exactly equal to test set performance",
+      "D) best_score_ is deprecated in modern scikit-learn"
+    ],
+    "correctAnswerIndex": 1,
+    "explanation": "The winner got where it did partly on merit and partly on luck, so quoting best_score_ as the model's performance is quoting a net average."
+  },
+  {
+    "id": "sa-trial-matches-01",
+    "type": "short_answer",
+    "chapterId": "trial-matches",
+    "chapterTitle": "3.4 Feature Selection & Tuning",
+    "sourceUrl": "/scoring-model-evaluation/trial-matches/",
+    "question": "Explain why wrapping a scaler and model together in a Pipeline before running GridSearchCV prevents a subtler form of data leakage than the one covered in the previous chapter.",
+    "modelAnswer": "Without a Pipeline, if you scale features once on the whole training set and then cross-validate, the scaler has already seen every fold, including whichever fold is being held out on a given round, so its mean and standard deviation statistics quietly leak across folds. Wrapping the scaler and model in a Pipeline and searching that pipeline means the scaler gets refitted on only each fold's training portion during cross-validation, so the held-out fold stays genuinely unseen at every step.",
+    "rubric": [
+      "Explains that scaling before cross-validation lets the scaler see held-out fold data",
+      "States that wrapping in a Pipeline refits the scaler per fold, on training data only",
+      "Connects this to making leakage structurally impossible rather than a matter of discipline"
+    ]
+  },
+  {
+    "id": "sa-trial-matches-02",
+    "type": "short_answer",
+    "chapterId": "trial-matches",
+    "chapterTitle": "3.4 Feature Selection & Tuning",
+    "sourceUrl": "/scoring-model-evaluation/trial-matches/",
+    "question": "Using the LBW-review example from the chapter, where predicting a review overturn from third_umpire_ruling correlates 0.99 with the target, explain why this feature is a leak and how you would test for it in general.",
+    "modelAnswer": "third_umpire_ruling isn't a fact known at the moment of prediction — it's literally the outcome of the review itself, recorded only after the review has already happened. In production, at the exact moment the model needs to make its call, right after the on-field decision and before any review, that column would be blank, so a model trained to rely on it would fail exactly when it's needed. The general test is to ask, for any suspiciously strong feature: would I actually have this exact piece of information at the exact moment I need to make the call? If not, it isn't a real feature, it's the answer key in disguise.",
+    "rubric": [
+      "Identifies that the feature is literally the outcome, recorded after the event it's meant to predict",
+      "Explains the production failure: the feature is unavailable at actual prediction time",
+      "States the general test for leakage: would you actually have this information at the moment of prediction"
+    ]
+  },
+  {
+    "id": "mcq-gradient-descent-01",
+    "type": "mcq",
+    "chapterId": "gradient-descent",
+    "chapterTitle": "3.5 Gradient Descent",
+    "sourceUrl": "/scoring-model-evaluation/gradient-descent/",
+    "question": "What is 'the gradient' in the bowling analogy used in this chapter?",
+    "options": [
+      "A) The exact optimal length, computed in advance",
+      "B) The coach's shout — the direction and steepness of the error at the current attempt, telling you which way to correct and how urgently",
+      "C) The total number of deliveries bowled in the session",
+      "D) A synonym for the learning rate"
+    ],
+    "correctAnswerIndex": 1,
+    "explanation": "The gradient tells you whether this attempt should go fuller or shorter, and roughly how urgently — a direction, not a number."
+  },
+  {
+    "id": "mcq-gradient-descent-02",
+    "type": "mcq",
+    "chapterId": "gradient-descent",
+    "chapterTitle": "3.5 Gradient Descent",
+    "sourceUrl": "/scoring-model-evaluation/gradient-descent/",
+    "question": "What happens when the learning rate is set far too high?",
+    "options": [
+      "A) The model converges instantly with no error",
+      "B) Corrections overshoot the target, potentially oscillating or diverging rather than settling into the minimum",
+      "C) The model becomes immune to local minima",
+      "D) Training runs faster with no downside"
+    ],
+    "correctAnswerIndex": 1,
+    "explanation": "Ball two's overcorrection shows exactly this: a step so large it bounces across the valley without ever settling in it."
+  },
+  {
+    "id": "mcq-gradient-descent-03",
+    "type": "mcq",
+    "chapterId": "gradient-descent",
+    "chapterTitle": "3.5 Gradient Descent",
+    "sourceUrl": "/scoring-model-evaluation/gradient-descent/",
+    "question": "What is the key structural difference between L1 (Lasso) and L2 (Ridge) regularisation?",
+    "options": [
+      "A) L1 only works for classification; L2 only works for regression",
+      "B) L2 shrinks every weight roughly proportionally; L1 tends to push the least useful weights all the way to exactly zero, doubling as feature selection",
+      "C) L1 and L2 are two names for the exact same penalty",
+      "D) L2 removes features entirely; L1 only shrinks weights slightly"
+    ],
+    "correctAnswerIndex": 1,
+    "explanation": "L2 tones everything down a little with nothing banned outright; L1's sharper habit drops the least useful weights to zero entirely."
+  },
+  {
+    "id": "mcq-gradient-descent-04",
+    "type": "mcq",
+    "chapterId": "gradient-descent",
+    "chapterTitle": "3.5 Gradient Descent",
+    "sourceUrl": "/scoring-model-evaluation/gradient-descent/",
+    "question": "Why must features be standardised before fitting a regularised model?",
+    "options": [
+      "A) Standardisation is required by scikit-learn's API and will throw an error otherwise",
+      "B) The penalty term sums coefficients directly, so unscaled features get penalised unfairly based on their raw scale rather than their actual importance",
+      "C) Regularisation only works on integer-valued features",
+      "D) Standardising features removes the need for a learning rate"
+    ],
+    "correctAnswerIndex": 1,
+    "explanation": "Left unscaled, regularisation ends up punishing whichever features happen to have small raw coefficients, regardless of how much they actually matter."
+  },
+  {
+    "id": "sa-gradient-descent-01",
+    "type": "short_answer",
+    "chapterId": "gradient-descent",
+    "chapterTitle": "3.5 Gradient Descent",
+    "sourceUrl": "/scoring-model-evaluation/gradient-descent/",
+    "question": "Explain what a 'local minimum' is in a loss landscape, and why a bowler taking small, cautious corrections is especially vulnerable to getting stuck in one.",
+    "modelAnswer": "A local minimum is a point that's genuinely better than its immediate neighbours but not the true best possible answer, the global minimum — a shallow dip that looks like the bottom if you only compare it to nearby alternatives. A bowler taking small, timid steps will roll into that shallow dip and stop, because every small step away from it looks like a step backwards; reaching the true global minimum would require tolerating a stretch where the loss gets worse before it gets better, which cautious step-by-step correction never risks.",
+    "rubric": [
+      "Correctly defines a local minimum as better than its neighbours but not globally optimal",
+      "Explains why small or cautious steps get stuck, since every nearby step looks worse",
+      "Notes that escaping requires tolerating a temporary increase in loss"
+    ]
+  },
+  {
+    "id": "sa-gradient-descent-02",
+    "type": "short_answer",
+    "chapterId": "gradient-descent",
+    "chapterTitle": "3.5 Gradient Descent",
+    "sourceUrl": "/scoring-model-evaluation/gradient-descent/",
+    "question": "Why does gradient descent remain necessary even though linear regression has an exact closed-form solution, the normal equation?",
+    "modelAnswer": "The normal equation only works because linear regression's particular cost function happens to have a clean closed-form answer — most other models don't have that luxury. Logistic regression and every layer of a neural network have no equivalent one-shot formula, so gradient descent's iterative approach of measuring the error, finding the downhill direction, and taking a step is the only way most models get tuned at all. The normal equation's matrix inversion also becomes punishingly expensive as the number of predictors grows, whereas gradient descent's per-step cost barely notices how many dials it's turning.",
+    "rubric": [
+      "Notes that most models, such as logistic regression and neural networks, have no closed-form solution unlike plain linear regression",
+      "Mentions the scale or cost advantage of gradient descent over matrix inversion as predictors grow",
+      "Correctly frames gradient descent as the general-purpose method versus the normal equation's special case"
+    ]
+  },
+  {
+    "id": "mcq-model-selection-01",
+    "type": "mcq",
+    "chapterId": "model-selection",
+    "chapterTitle": "3.6 Model Selection",
+    "sourceUrl": "/scoring-model-evaluation/model-selection/",
+    "question": "Why can't you simply grid-search every possible subset of features when there are 40 candidates?",
+    "options": [
+      "A) scikit-learn doesn't support subsets larger than 10 features",
+      "B) There are 2^40, over a trillion, possible subsets — computationally infeasible",
+      "C) Feature subsets must always be evaluated using AIC, not grid search",
+      "D) Forward selection is illegal to combine with backward selection"
+    ],
+    "correctAnswerIndex": 1,
+    "explanation": "The chapter states this directly: a dataset with forty candidate features has over a trillion possible subsets, and nobody is grid-searching that."
+  },
+  {
+    "id": "mcq-model-selection-02",
+    "type": "mcq",
+    "chapterId": "model-selection",
+    "chapterTitle": "3.6 Model Selection",
+    "sourceUrl": "/scoring-model-evaluation/model-selection/",
+    "question": "What is the key difference between forward and backward sequential feature selection?",
+    "options": [
+      "A) Forward starts with an empty model and adds features one at a time; backward starts with all features and removes them one at a time",
+      "B) Forward is always more accurate than backward",
+      "C) Backward selection cannot be used with linear regression",
+      "D) Forward selection requires a labelled test set; backward does not"
+    ],
+    "correctAnswerIndex": 0,
+    "explanation": "Forward builds up from nothing; backward trims down from everything, arriving at the target feature count from opposite directions."
+  },
+  {
+    "id": "mcq-model-selection-03",
+    "type": "mcq",
+    "chapterId": "model-selection",
+    "chapterTitle": "3.6 Model Selection",
+    "sourceUrl": "/scoring-model-evaluation/model-selection/",
+    "question": "Why does adding a feature that barely improves model fit make AIC worse, not better?",
+    "options": [
+      "A) AIC ignores model fit entirely",
+      "B) The 2p parameter penalty outweighs the small improvement in the likelihood term -2 times ln(L)",
+      "C) AIC can only decrease, never increase",
+      "D) AIC requires a held-out validation set to compute"
+    ],
+    "correctAnswerIndex": 1,
+    "explanation": "Two terms pull in opposite directions: a barely-helpful feature's tiny fit improvement gets outweighed by the straight 2p penalty for carrying it."
+  },
+  {
+    "id": "mcq-model-selection-04",
+    "type": "mcq",
+    "chapterId": "model-selection",
+    "chapterTitle": "3.6 Model Selection",
+    "sourceUrl": "/scoring-model-evaluation/model-selection/",
+    "question": "Why can't R² alone be trusted to compare models with different numbers of features?",
+    "options": [
+      "A) R² is undefined for models with more than 3 features",
+      "B) R² never decreases when you add a feature, even a useless one, so it always favours more complex models",
+      "C) R² can only be computed for classification models",
+      "D) R² automatically corrects for the number of parameters"
+    ],
+    "correctAnswerIndex": 1,
+    "explanation": "A predictor that's pure noise will still nudge R² up by some vanishingly small amount, purely by giving the model one more thing to fit around."
+  },
+  {
+    "id": "sa-model-selection-01",
+    "type": "short_answer",
+    "chapterId": "model-selection",
+    "chapterTitle": "3.6 Model Selection",
+    "sourceUrl": "/scoring-model-evaluation/model-selection/",
+    "question": "Explain why PCA is useful when a dataset has more features than observations, and what the specific technical problem is that it solves.",
+    "modelAnswer": "When a dataset has more features than rows, for example two hundred biomechanical measurements on fifty bowlers, the normal equation's matrix inversion breaks — there simply aren't enough rows for the arithmetic to work. PCA solves this differently from feature selection: instead of choosing a subset of the original columns, it builds an entirely new, smaller set of blended components, each capturing as much of the remaining variance as possible, reducing dimensionality without requiring the original matrix inversion to succeed.",
+    "rubric": [
+      "States the specific problem: matrix inversion breaks when there are more features than rows",
+      "Explains that PCA builds new blended components rather than selecting a subset",
+      "Notes the components are ordered by how much variance they capture"
+    ]
+  },
+  {
+    "id": "sa-model-selection-02",
+    "type": "short_answer",
+    "chapterId": "model-selection",
+    "chapterTitle": "3.6 Model Selection",
+    "sourceUrl": "/scoring-model-evaluation/model-selection/",
+    "question": "What is the trade-off the chapter describes when choosing PCA over feature selection, using the decision tree split example?",
+    "modelAnswer": "PCA trades interpretability for feasibility. A decision tree splitting on a named feature like impact_line_cm means something a non-technical stakeholder can follow instantly. A split on 'component 2' instead represents some specific, uninterpretable blend of multiple original features in proportions nobody chose by hand, so while PCA solves the too-many-features problem, you lose the ability to explain what any individual model decision actually means in real-world terms.",
+    "rubric": [
+      "States the trade-off is interpretability versus feasibility or solving the dimensionality problem",
+      "Uses or paraphrases the named-feature versus component example",
+      "Notes that PCA components are unnamed blends nobody explicitly chose"
+    ]
+  },
+  {
+    "id": "mcq-classification-vs-regression-01",
+    "type": "mcq",
+    "chapterId": "classification-vs-regression",
+    "chapterTitle": "Classification vs Regression",
+    "sourceUrl": "/first-innings/classification-vs-regression/",
+    "question": "How do you determine whether a problem is regression or classification, according to this chapter?",
+    "options": [
+      "A) By looking at which algorithm you plan to use first",
+      "B) By looking at the target column: if averaging it produces a meaningful number, it's regression; if it's a fixed set of labels, it's classification",
+      "C) By counting how many features are in the dataset",
+      "D) Classification is only used when there are more than 1000 rows"
+    ],
+    "correctAnswerIndex": 1,
+    "explanation": "If it makes sense to say 'the average target was 143.6,' you're looking at regression; if averaging would produce nonsense, you're looking at classification."
+  },
+  {
+    "id": "mcq-classification-vs-regression-02",
+    "type": "mcq",
+    "chapterId": "classification-vs-regression",
+    "chapterTitle": "Classification vs Regression",
+    "sourceUrl": "/first-innings/classification-vs-regression/",
+    "question": "Why is reporting 'accuracy' on a regression problem, or 'mean absolute error' on a classification problem, described as a category error?",
+    "options": [
+      "A) Because scikit-learn will refuse to compute either",
+      "B) Because these metrics answer fundamentally different kinds of questions, and applied to the wrong task type, the resulting number is meaningless",
+      "C) Because accuracy can only be computed on training data",
+      "D) Because MAE only works for values below 1.0"
+    ],
+    "correctAnswerIndex": 1,
+    "explanation": "You'll get a number back, but it will mean nothing, since the metric was never designed to answer that kind of question."
+  },
+  {
+    "id": "mcq-classification-vs-regression-03",
+    "type": "mcq",
+    "chapterId": "classification-vs-regression",
+    "chapterTitle": "Classification vs Regression",
+    "sourceUrl": "/first-innings/classification-vs-regression/",
+    "question": "The same ball-by-ball dataset can support both regression, predicting runs this over, and classification, predicting whether a wicket falls. What determines which question is being asked?",
+    "options": [
+      "A) The choice of algorithm used",
+      "B) The number of rows in the dataset",
+      "C) Which column is selected as the target — the features and data can stay identical",
+      "D) Whether the data has been scaled"
+    ],
+    "correctAnswerIndex": 2,
+    "explanation": "Same overs, same features, same pitch — the data never tells you which question to ask, you decide that by picking the target column."
+  },
+  {
+    "id": "sa-classification-vs-regression-01",
+    "type": "short_answer",
+    "chapterId": "classification-vs-regression",
+    "chapterTitle": "Classification vs Regression",
+    "sourceUrl": "/first-innings/classification-vs-regression/",
+    "question": "Explain, using the DRS review example, why classification is judged completely differently from regression, and name two metrics appropriate to each.",
+    "modelAnswer": "Classification judges label correctness — how often the predicted category, such as Out or Not Out, matched reality, and what kind of mistake was made — using metrics like precision, recall, and accuracy. Regression judges numerical closeness — how far the predicted number was from the true value, in the same units as the target — using metrics like MAE, RMSE, or R². Applying a classification metric to a regression problem, or vice versa, produces a number that doesn't answer any meaningful question, since the two task types aren't measuring the same kind of correctness.",
+    "rubric": [
+      "Correctly distinguishes classification's label-correctness judgment from regression's numerical-closeness judgment",
+      "Names at least one valid classification metric and one valid regression metric",
+      "Explains why swapping the metrics between task types is meaningless"
+    ]
+  },
+  {
+    "id": "sa-classification-vs-regression-02",
+    "type": "short_answer",
+    "chapterId": "classification-vs-regression",
+    "chapterTitle": "Classification vs Regression",
+    "sourceUrl": "/first-innings/classification-vs-regression/",
+    "question": "Why does the chapter argue that picking the task type, regression versus classification, comes before picking either the algorithm or the metric?",
+    "modelAnswer": "The task type determines almost everything downstream: which algorithms are even applicable, since LinearRegression can't sensibly output Out or Not Out and LogisticRegression can't sensibly output a projected score, which metric makes sense to report, and how to interpret the model's raw output. Getting this decision backwards means you might end up with an algorithm that technically runs and returns a confident-looking number, but that number answers a question nobody actually asked.",
+    "rubric": [
+      "States that task type determines which algorithms are applicable",
+      "States that task type determines which metrics are meaningful",
+      "Notes the risk of a confidently wrong or meaningless answer if this is done backwards"
+    ]
+  },
+  {
+    "id": "mcq-linear-regression-01",
+    "type": "mcq",
+    "chapterId": "linear-regression",
+    "chapterTitle": "Linear Regression",
+    "sourceUrl": "/first-innings/linear-regression/",
+    "question": "Why must a categorical column with 3 categories, such as ODI, T20, and Test, be encoded with only 2 dummy variables, not 3?",
+    "options": [
+      "A) scikit-learn only supports binary columns",
+      "B) Including all 3 creates exact multicollinearity — the third column is perfectly redundant once you know the other two",
+      "C) Three dummy columns would make the model too accurate",
+      "D) pd.get_dummies() cannot generate more than 2 columns"
+    ],
+    "correctAnswerIndex": 1,
+    "explanation": "Once you know a match wasn't ODI and wasn't T20, you already know it was a Test, whether or not there's a column saying so."
+  },
+  {
+    "id": "mcq-linear-regression-02",
+    "type": "mcq",
+    "chapterId": "linear-regression",
+    "chapterTitle": "Linear Regression",
+    "sourceUrl": "/first-innings/linear-regression/",
+    "question": "Why does linear regression's cost function square each error before summing, rather than just summing the raw errors?",
+    "options": [
+      "A) Squaring makes computation faster",
+      "B) Squaring makes every miss positive so overshoot and undershoot don't cancel out, and punishes large misses far more severely than small ones",
+      "C) Squaring converts the errors into percentages",
+      "D) Squaring is only needed when using gradient descent, not the normal equation"
+    ],
+    "correctAnswerIndex": 1,
+    "explanation": "A model off by 40 runs once is judged far more harshly than one off by 10 runs four times, even though the raw total error is the same."
+  },
+  {
+    "id": "mcq-linear-regression-03",
+    "type": "mcq",
+    "chapterId": "linear-regression",
+    "chapterTitle": "Linear Regression",
+    "sourceUrl": "/first-innings/linear-regression/",
+    "question": "What does a 'funnel' shape in a residuals plot indicate?",
+    "options": [
+      "A) The model is performing perfectly",
+      "B) The spread of errors is not constant across the range of predictions, violating the zero-mean-constant-variance assumption",
+      "C) The model needs more training data only, nothing else",
+      "D) The target variable has too few unique values"
+    ],
+    "correctAnswerIndex": 1,
+    "explanation": "A widening funnel says the model's confidence should shrink as scores climb, but the model doesn't know that — a specific, fixable pattern of wrongness."
+  },
+  {
+    "id": "mcq-linear-regression-04",
+    "type": "mcq",
+    "chapterId": "linear-regression",
+    "chapterTitle": "Linear Regression",
+    "sourceUrl": "/first-innings/linear-regression/",
+    "question": "What does an R² of 0.78 mean?",
+    "options": [
+      "A) 78% of individual predictions were exactly correct",
+      "B) The model accounts for 78% of the variance in the outcome; the remaining 22% is unexplained by the predictors",
+      "C) The model is 78% accurate at classifying observations",
+      "D) 78% of the training data was used to fit the model"
+    ],
+    "correctAnswerIndex": 1,
+    "explanation": "The remaining 22% is pitch conditions, umpiring calls, and moments of pure madness the predictors were never going to see coming."
+  },
+  {
+    "id": "sa-linear-regression-01",
+    "type": "short_answer",
+    "chapterId": "linear-regression",
+    "chapterTitle": "Linear Regression",
+    "sourceUrl": "/first-innings/linear-regression/",
+    "question": "Explain why a coefficient's meaning 'depends on the company it keeps,' and why this makes it dangerous to interpret a coefficient in isolation.",
+    "modelAnswer": "A coefficient represents the change in the outcome for a one-unit change in that predictor, holding every other predictor fixed, so its value and even its sign can shift depending on what else is in the model. Two correlated predictors can split credit for the same underlying effect unpredictably, the same way two identical left-arm seamers split credit for a wicket neither fully earned alone, so reading one coefficient without knowing what else is in the model means reading a number whose actual meaning you haven't verified.",
+    "rubric": [
+      "States that a coefficient's value or sign depends on holding everything else fixed, i.e. what else is in the model",
+      "Mentions the risk from correlated or redundant predictors splitting credit unpredictably",
+      "Explains the practical danger of interpreting a coefficient in isolation"
+    ]
+  },
+  {
+    "id": "sa-linear-regression-02",
+    "type": "short_answer",
+    "chapterId": "linear-regression",
+    "chapterTitle": "Linear Regression",
+    "sourceUrl": "/first-innings/linear-regression/",
+    "question": "When should you reach for a log or Box-Cox transform on the target variable, and what problem does it solve?",
+    "modelAnswer": "Reach for a log or Box-Cox transform when the outcome variable is wildly skewed, for example a handful of freak high-scoring overs in an otherwise ordinary dataset. Because the sum-of-squared-error cost function punishes large misses heavily, an untransformed skewed target drags the model's attention toward fitting those rare extreme values well, at the cost of accuracy on the ordinary, common cases. Compressing the long tail with a log or Box-Cox transform stops the extremes from dominating and lets the model fit the typical case better.",
+    "rubric": [
+      "States the transform is for wildly skewed target or outcome variables",
+      "Explains that the squared-error cost function over-weights rare extreme values without the transform",
+      "Notes the goal is better fit on the ordinary or common cases, not just the extremes"
+    ]
+  },
+  {
+    "id": "mcq-beyond-linear-models-01",
+    "type": "mcq",
+    "chapterId": "beyond-linear-models",
+    "chapterTitle": "Polynomial & Spline Features",
+    "sourceUrl": "/first-innings/beyond-linear-models/",
+    "question": "What is the key insight that allows a 'linear' model to fit a curve?",
+    "options": [
+      "A) Linear models secretly use gradient boosting internally",
+      "B) The model only needs to be linear in its coefficients, not in the raw features — transformed columns like x squared can be added and still fit with ordinary linear regression machinery",
+      "C) Curves can only be fit using decision trees, never linear regression",
+      "D) PolynomialFeatures replaces the normal equation with a different solver"
+    ],
+    "correctAnswerIndex": 1,
+    "explanation": "The predictors can be transformed however you like before they reach the weighted sum, so the same straight-line machinery ends up tracing a curve."
+  },
+  {
+    "id": "mcq-beyond-linear-models-02",
+    "type": "mcq",
+    "chapterId": "beyond-linear-models",
+    "chapterTitle": "Polynomial & Spline Features",
+    "sourceUrl": "/first-innings/beyond-linear-models/",
+    "question": "What does PolynomialFeatures(degree=3) do when given more than one input column that often surprises people?",
+    "options": [
+      "A) It only computes powers of the first column",
+      "B) It automatically generates interaction terms between the columns as well as pure powers, whether you asked for them or not",
+      "C) It removes all but the top 3 most correlated features",
+      "D) It requires the target variable to be provided as an argument"
+    ],
+    "correctAnswerIndex": 1,
+    "explanation": "It's the single most common surprise the first time someone checks how many columns came out the other end."
+  },
+  {
+    "id": "mcq-beyond-linear-models-03",
+    "type": "mcq",
+    "chapterId": "beyond-linear-models",
+    "chapterTitle": "Polynomial & Spline Features",
+    "sourceUrl": "/first-innings/beyond-linear-models/",
+    "question": "Why do splines fit a separate low-degree polynomial to each region of the data instead of raising one global polynomial's degree?",
+    "options": [
+      "A) Splines are computationally impossible to fit with linear regression",
+      "B) A single high-degree polynomial forced to fit the whole range tends to overcorrect, wiggling wildly in regions where nothing dramatic is really happening",
+      "C) scikit-learn does not support polynomials above degree 2",
+      "D) Splines require categorical rather than numeric targets"
+    ],
+    "correctAnswerIndex": 1,
+    "explanation": "This is Form and Class's overfitting argument wearing a curve-fitting jersey — a model expressive enough to chase bends that were never really there."
+  },
+  {
+    "id": "sa-beyond-linear-models-01",
+    "type": "short_answer",
+    "chapterId": "beyond-linear-models",
+    "chapterTitle": "Polynomial & Spline Features",
+    "sourceUrl": "/first-innings/beyond-linear-models/",
+    "question": "Explain what an interaction term represents, using the wickets-in-hand and required-run-rate example from the chapter.",
+    "modelAnswer": "An interaction term, multiplying two predictors together, lets a model represent that one feature's effect depends on the value of another feature, which a plain weighted sum can't express on its own. A required run rate of twelve means something very different depending on wickets in hand — comfortable with eight wickets standing, nearly hopeless with two. Multiplying wickets_in_hand by required_run_rate gives the model a way to say the effect of run rate depends on wickets left, rather than treating run rate's effect as a fixed constant regardless of context.",
+    "rubric": [
+      "Correctly explains an interaction term as capturing 'it depends,' one feature's effect depending on another",
+      "Uses or paraphrases the wickets-in-hand and run-rate example",
+      "Notes that a plain weighted sum without interaction can't represent this"
+    ]
+  },
+  {
+    "id": "sa-beyond-linear-models-02",
+    "type": "short_answer",
+    "chapterId": "beyond-linear-models",
+    "chapterTitle": "Polynomial & Spline Features",
+    "sourceUrl": "/first-innings/beyond-linear-models/",
+    "question": "Why is fitting a spline still considered 'ordinary linear regression,' according to the chapter?",
+    "modelAnswer": "A spline can be written as a linear combination of a fixed set of basis functions — SplineTransformer builds those basis function columns for you, and once they exist as columns, fitting the model on top of them is still just an ordinary weighted sum, the exact same linear regression machinery, including the normal equation, as before. The curve-fitting flexibility comes entirely from transforming the input columns first, not from changing the underlying fitting method.",
+    "rubric": [
+      "States that a spline is a linear combination of a fixed set of basis functions",
+      "Explains SplineTransformer builds these basis columns, and standard linear regression fits on top of them",
+      "Connects this to the broader theme: transform the columns, keep the same weighted-sum machinery"
+    ]
+  },
+  {
+    "id": "mcq-logistic-regression-01",
+    "type": "mcq",
+    "chapterId": "logistic-regression",
+    "chapterTitle": "Logistic Regression",
+    "sourceUrl": "/first-innings/logistic-regression/",
+    "question": "Why can't a straight line honestly predict probability directly?",
+    "options": [
+      "A) Because probability values are always negative",
+      "B) Because probability is bounded between 0 and 1, but a linear model has no mechanism to respect that fence, and can output values like -0.3 or 1.8",
+      "C) Because probability requires integer inputs",
+      "D) Because scikit-learn does not implement probability outputs"
+    ],
+    "correctAnswerIndex": 1,
+    "explanation": "A straight line doesn't know how to stay inside a fence, which is exactly why the model is fit in log-odds instead."
+  },
+  {
+    "id": "mcq-logistic-regression-02",
+    "type": "mcq",
+    "chapterId": "logistic-regression",
+    "chapterTitle": "Logistic Regression",
+    "sourceUrl": "/first-innings/logistic-regression/",
+    "question": "A logistic regression coefficient of 0.7 on a predictor means what, precisely?",
+    "options": [
+      "A) A one-unit increase in the predictor adds 0.7 to the probability of the positive outcome",
+      "B) A one-unit increase in the predictor adds 0.7 to the log-odds, which multiplies the odds by e to the power 0.7, about 2.01",
+      "C) The predictor increases accuracy by 70%",
+      "D) The predictor is 70% correlated with the target"
+    ],
+    "correctAnswerIndex": 1,
+    "explanation": "A logistic coefficient is an odds ratio, not runs per unit — it speaks in multiplied odds, not added probability."
+  },
+  {
+    "id": "mcq-logistic-regression-03",
+    "type": "mcq",
+    "chapterId": "logistic-regression",
+    "chapterTitle": "Logistic Regression",
+    "sourceUrl": "/first-innings/logistic-regression/",
+    "question": "Why does log-loss punish a confident wrong prediction, such as predicting a 0.01 probability of 'out' when the true outcome was 'out,' so much more severely than squared error would?",
+    "options": [
+      "A) Log-loss is simply squared error multiplied by a constant",
+      "B) As the predicted probability for the true class approaches zero, the cost shoots toward infinity, while squared error only grows quadratically",
+      "C) Log-loss only applies to multi-class problems",
+      "D) Log-loss cannot be computed for confident predictions"
+    ],
+    "correctAnswerIndex": 1,
+    "explanation": "A cautious near-miss barely costs anything by comparison; log-loss is far less forgiving of confident wrongness."
+  },
+  {
+    "id": "mcq-logistic-regression-04",
+    "type": "mcq",
+    "chapterId": "logistic-regression",
+    "chapterTitle": "Logistic Regression",
+    "sourceUrl": "/first-innings/logistic-regression/",
+    "question": "The same coefficient, doubling the odds, produces an 8-point probability swing starting from 10%, a 17-point swing starting from 50%, and a 5-point swing starting from 90%. What does this demonstrate?",
+    "options": [
+      "A) The coefficient's effect is inconsistent and therefore unreliable",
+      "B) The sigmoid is steepest near 50% and flattens near the extremes, so the same odds-ratio effect produces different probability swings depending on the starting point",
+      "C) Logistic regression coefficients change value based on the baseline probability",
+      "D) This pattern only occurs when the model is overfitting"
+    ],
+    "correctAnswerIndex": 1,
+    "explanation": "The odds ratio stays honest regardless of where you started; the probability swing it produces is scenery that changes with the view."
+  },
+  {
+    "id": "sa-logistic-regression-01",
+    "type": "short_answer",
+    "chapterId": "logistic-regression",
+    "chapterTitle": "Logistic Regression",
+    "sourceUrl": "/first-innings/logistic-regression/",
+    "question": "Explain why probability, odds, and log-odds are described as 'three ways to say how sure you are,' and why log-odds specifically is the quantity a linear model predicts.",
+    "modelAnswer": "All three describe the same underlying confidence on different scales. Probability is bounded between 0 and 1. Odds, the probability of the event over the probability against it, remove the lower bound but are still capped from going negative. Log-odds, the logarithm of the odds, are unbounded in both directions, running from negative infinity to positive infinity, which exactly matches the range a linear combination of predictors can naturally produce. That's why logistic regression is linear in log-odds rather than in probability directly: only log-odds has no fence for a straight line to violate.",
+    "rubric": [
+      "Explains that all three represent the same confidence on different scales",
+      "Notes probability is bounded 0 to 1, odds are bounded below at 0 but unbounded above, and log-odds are unbounded both ways",
+      "States log-odds matches the natural range of a linear combination of predictors"
+    ]
+  },
+  {
+    "id": "sa-logistic-regression-02",
+    "type": "short_answer",
+    "chapterId": "logistic-regression",
+    "chapterTitle": "Logistic Regression",
+    "sourceUrl": "/first-innings/logistic-regression/",
+    "question": "Explain the difference between sensitivity/specificity and precision/recall, and why the chapter says they measure 'the same arithmetic in different clothes.'",
+    "modelAnswer": "Sensitivity is the statistics and medicine name for recall, TP over (TP plus FN): of every genuine positive case, how many were correctly caught. Specificity, TN over (TN plus FP), is its mirror image for the negative class, while PPV, TP over (TP plus FP), is the same formula as precision. The chapter calls them the same arithmetic in different clothes because ML and statistics or medicine independently developed the same four confusion-matrix-derived formulas under different vocabularies, so it's worth recognising both sets of names since you'll encounter either depending on the field.",
+    "rubric": [
+      "Correctly maps sensitivity to recall and PPV to precision",
+      "Notes specificity and NPV as the mirror images covering the negative class",
+      "Explains these are the same underlying confusion-matrix arithmetic under different names from different fields"
+    ]
+  },
+  {
+    "id": "mcq-k-nearest-neighbours-01",
+    "type": "mcq",
+    "chapterId": "k-nearest-neighbours",
+    "chapterTitle": "K-Nearest Neighbours",
+    "sourceUrl": "/first-innings/k-nearest-neighbours/",
+    "question": "Why is KNN described as a 'lazy learner'?",
+    "options": [
+      "A) It requires far more computation than any other model to train",
+      "B) It has no training phase — it stores the entire dataset and does all its comparison work at the moment a prediction is requested",
+      "C) It only works when the dataset is very small",
+      "D) It automatically stops training early to save time"
+    ],
+    "correctAnswerIndex": 1,
+    "explanation": "The database is the model — there is no equation to inspect afterwards, nothing that was learned in advance."
+  },
+  {
+    "id": "mcq-k-nearest-neighbours-02",
+    "type": "mcq",
+    "chapterId": "k-nearest-neighbours",
+    "chapterTitle": "K-Nearest Neighbours",
+    "sourceUrl": "/first-innings/k-nearest-neighbours/",
+    "question": "Why must features be min-max scaled before computing Euclidean distance in KNN?",
+    "options": [
+      "A) Scaling is required by the mathematical definition of a neighbour",
+      "B) Without scaling, a feature with numerically larger raw values, like strike rate, will dominate the distance calculation regardless of how informative it actually is",
+      "C) Min-max scaling converts categorical features into numeric ones automatically",
+      "D) Unscaled features cause scikit-learn to throw a runtime error"
+    ],
+    "correctAnswerIndex": 1,
+    "explanation": "Strike rate would dominate every distance calculation purely by being numerically larger, not because it's more informative."
+  },
+  {
+    "id": "mcq-k-nearest-neighbours-03",
+    "type": "mcq",
+    "chapterId": "k-nearest-neighbours",
+    "chapterTitle": "K-Nearest Neighbours",
+    "sourceUrl": "/first-innings/k-nearest-neighbours/",
+    "question": "What happens when K is set too small, such as K=1?",
+    "options": [
+      "A) The model becomes immune to outliers",
+      "B) The prediction is decided by whichever single comparison happens to be nearest, which can flip based on one unusual example — high variance, a 'net hero'",
+      "C) The model requires more training time",
+      "D) The model can only make binary predictions"
+    ],
+    "correctAnswerIndex": 1,
+    "explanation": "One unusual season from one unusual player, and the call flips — the same high-variance failure mode as overfitting."
+  },
+  {
+    "id": "mcq-k-nearest-neighbours-04",
+    "type": "mcq",
+    "chapterId": "k-nearest-neighbours",
+    "chapterTitle": "K-Nearest Neighbours",
+    "sourceUrl": "/first-innings/k-nearest-neighbours/",
+    "question": "What is the caution raised about using value_counts(normalize=True)[0] to compute accuracy?",
+    "options": [
+      "A) value_counts() cannot be used with boolean values",
+      "B) [0] sorts by frequency, not by which value means 'correct' — if the model performs worse than chance, [0] silently returns the wrong-call rate instead",
+      "C) value_counts() always returns exactly two rows",
+      "D) normalize=True converts the results into z-scores"
+    ],
+    "correctAnswerIndex": 1,
+    "explanation": "It only lands on the right number at [0] because correct calls happen to be the majority — a fragile assumption worth checking explicitly."
+  },
+  {
+    "id": "sa-k-nearest-neighbours-01",
+    "type": "short_answer",
+    "chapterId": "k-nearest-neighbours",
+    "chapterTitle": "K-Nearest Neighbours",
+    "sourceUrl": "/first-innings/k-nearest-neighbours/",
+    "question": "Explain why choosing K in KNN is described as a 'bias-variance dial,' connecting it to the underfitting and overfitting concepts from Form and Class.",
+    "modelAnswer": "A very small K, like K=1, lets one lucky or unlucky nearby comparison decide the entire prediction, which is high variance — the same net hero failure mode as overfitting, since the model is overly sensitive to one specific data point rather than a broader pattern. A very large K pulls in comparisons that aren't really similar to the new player at all, smoothing predictions toward whatever label is most common overall — high bias, the same one-trick-batter failure mode as underfitting, since the model becomes too generic to say anything specific. The right K sits in the middle and is found by trialling values against a validation set.",
+    "rubric": [
+      "Correctly connects small K to high variance or overfitting, the net hero",
+      "Correctly connects large K to high bias or underfitting, the one-trick batter",
+      "States that K should be chosen by validating against held-out data, not guessed"
+    ]
+  },
+  {
+    "id": "sa-k-nearest-neighbours-02",
+    "type": "short_answer",
+    "chapterId": "k-nearest-neighbours",
+    "chapterTitle": "K-Nearest Neighbours",
+    "sourceUrl": "/first-innings/k-nearest-neighbours/",
+    "question": "Why does the chapter say KNN is 'essentially free to set up and comparatively expensive to ask'?",
+    "modelAnswer": "There's no meaningful training step — KNN just stores the entire dataset, so setup is nearly instantaneous. But every single prediction requires computing the distance from the new point to every other point in the stored dataset, re-scanning the whole database from scratch each time a question is asked. This is the opposite trade-off from models that spend time upfront during training and then answer new questions cheaply.",
+    "rubric": [
+      "States there is no real training cost, since the dataset is simply stored",
+      "Explains that each prediction requires scanning or comparing against the entire stored dataset",
+      "Contrasts this with the more typical train-once, predict-cheaply pattern of other models"
+    ]
+  },
+  {
+    "id": "mcq-k-means-clustering-01",
+    "type": "mcq",
+    "chapterId": "k-means-clustering",
+    "chapterTitle": "K-Means Clustering",
+    "sourceUrl": "/first-innings/k-means-clustering/",
+    "question": "What fundamentally distinguishes K-Means from every other model covered earlier in this innings?",
+    "options": [
+      "A) It requires far more computational power",
+      "B) It's unsupervised — it never sees a target or label column, only how close data points are to each other",
+      "C) It can only handle two clusters at a time",
+      "D) It cannot be standardised before use"
+    ],
+    "correctAnswerIndex": 1,
+    "explanation": "Even K-Nearest Neighbours needed an existing labelled database; K-Means needs neither labels nor an answer to check against."
+  },
+  {
+    "id": "mcq-k-means-clustering-02",
+    "type": "mcq",
+    "chapterId": "k-means-clustering",
+    "chapterTitle": "K-Means Clustering",
+    "sourceUrl": "/first-innings/k-means-clustering/",
+    "question": "What does standardisation convert each raw value into before K-Means clusters the data?",
+    "options": [
+      "A) A value squeezed into the range 0 to 1",
+      "B) A z-score — how many standard deviations a value sits from the column's average",
+      "C) A rank from 1 to the number of rows",
+      "D) A one-hot encoded binary flag"
+    ],
+    "correctAnswerIndex": 1,
+    "explanation": "A strike rate two standard deviations above average and an economy rate two standard deviations below average both read as exactly 2, genuinely comparable regardless of the original units."
+  },
+  {
+    "id": "mcq-k-means-clustering-03",
+    "type": "mcq",
+    "chapterId": "k-means-clustering",
+    "chapterTitle": "K-Means Clustering",
+    "sourceUrl": "/first-innings/k-means-clustering/",
+    "question": "Why can't you just pick the value of k that minimises inertia?",
+    "options": [
+      "A) Inertia is undefined for k greater than 2",
+      "B) More clusters always drives inertia down or keeps it the same, so chasing the minimum leads straight to one cluster per data point, which is useless",
+      "C) scikit-learn caps k at 10 by default",
+      "D) Inertia can only be computed after choosing k=4"
+    ],
+    "correctAnswerIndex": 1,
+    "explanation": "Splitting any group into two smaller groups can only shrink or maintain total distance to centroids, so chasing the minimum is a trap."
+  },
+  {
+    "id": "mcq-k-means-clustering-04",
+    "type": "mcq",
+    "chapterId": "k-means-clustering",
+    "chapterTitle": "K-Means Clustering",
+    "sourceUrl": "/first-innings/k-means-clustering/",
+    "question": "What is the risk of calling distances.idxmin(axis=1) with the wrong axis value?",
+    "options": [
+      "A) It will raise a syntax error immediately",
+      "B) With the default axis of 0, it reads down a column instead of across a row, answering 'which player is closest to this centroid' instead of 'which centroid is closest to this player'",
+      "C) axis has no effect on idxmin's behaviour",
+      "D) It will only work for exactly 2 clusters"
+    ],
+    "correctAnswerIndex": 1,
+    "explanation": "Getting the axis backwards silently answers a completely different question than the one you actually want."
+  },
+  {
+    "id": "sa-k-means-clustering-01",
+    "type": "short_answer",
+    "chapterId": "k-means-clustering",
+    "chapterTitle": "K-Means Clustering",
+    "sourceUrl": "/first-innings/k-means-clustering/",
+    "question": "Explain the 'elbow method' for choosing k, and why the point of lowest inertia is NOT the right answer.",
+    "modelAnswer": "The elbow method plots inertia against different values of k and looks for the point where the curve bends, where adding more clusters stops producing large drops in inertia and starts producing only marginal improvements. The lowest inertia is never the right choice because more clusters always reduce inertia, and in the extreme, one cluster per point gives zero inertia but is meaningless. The elbow instead finds the fewest clusters that still capture real structure, before you start paying for clusters that don't actually add insight.",
+    "rubric": [
+      "Correctly describes plotting inertia versus k and looking for the bend or elbow",
+      "Explains why minimum inertia isn't the goal, since it always decreases with more clusters",
+      "States the elbow represents the point of diminishing returns"
+    ]
+  },
+  {
+    "id": "sa-k-means-clustering-02",
+    "type": "short_answer",
+    "chapterId": "k-means-clustering",
+    "chapterTitle": "K-Means Clustering",
+    "sourceUrl": "/first-innings/k-means-clustering/",
+    "question": "After running K-Means, how does the chapter say you should figure out what each numbered cluster actually represents, and why is this description 'earned, not assumed'?",
+    "modelAnswer": "Cross-tabulate the cluster numbers K-Means assigned against some descriptive label you already had but didn't feed into the model, such as a player's known role, using something like pd.crosstab with normalize='index' to see what percentage of each cluster matches each known label. If 84% of Cluster 2 turns out to already be known finishers, that's not an assumption — it's a label emerging naturally from players who happened to cluster together on their numbers alone, without the model ever having seen the role label during training.",
+    "rubric": [
+      "Describes cross-tabulating cluster assignments against an existing descriptive label not fed to the model",
+      "Mentions pd.crosstab or the general normalize-by-row approach",
+      "Explains why this makes the naming earned, since the model never saw the label"
+    ]
+  },
+  {
+    "id": "mcq-decision-trees-01",
+    "type": "mcq",
+    "chapterId": "decision-trees",
+    "chapterTitle": "Decision Trees",
+    "sourceUrl": "/first-innings/decision-trees/",
+    "question": "In scikit-learn's decision tree convention, which branch does a 'True' answer to a node's question follow?",
+    "options": [
+      "A) Right",
+      "B) Left",
+      "C) It alternates depending on tree depth",
+      "D) scikit-learn does not enforce a fixed convention"
+    ],
+    "correctAnswerIndex": 1,
+    "explanation": "The chapter calls this an unbreakable convention: True goes left, False goes right, every time."
+  },
+  {
+    "id": "mcq-decision-trees-02",
+    "type": "mcq",
+    "chapterId": "decision-trees",
+    "chapterTitle": "Decision Trees",
+    "sourceUrl": "/first-innings/decision-trees/",
+    "question": "What does a leaf in a DecisionTreeRegressor predict?",
+    "options": [
+      "A) A weighted linear combination of the features, like linear regression",
+      "B) The plain average, mean or median, of the target values that landed in that leaf during training — no weights, no intercept",
+      "C) The single closest training example's exact value",
+      "D) A probability distribution over possible values"
+    ],
+    "correctAnswerIndex": 1,
+    "explanation": "There's no weight, no intercept, no straight line being fit — just the average of everyone who answered the questions the same way."
+  },
+  {
+    "id": "mcq-decision-trees-03",
+    "type": "mcq",
+    "chapterId": "decision-trees",
+    "chapterTitle": "Decision Trees",
+    "sourceUrl": "/first-innings/decision-trees/",
+    "question": "Why don't decision trees need the K-1 dummy variable trick that linear regression requires for categorical columns?",
+    "options": [
+      "A) Trees cannot use categorical data at all",
+      "B) A tree asks each dummy column its own independent yes/no question and never inverts a matrix, so the multicollinearity that broke linear regression's coefficients doesn't affect a tree",
+      "C) scikit-learn automatically drops one dummy column for trees",
+      "D) Trees only accept ordinal-encoded categories, never one-hot encoded ones"
+    ],
+    "correctAnswerIndex": 1,
+    "explanation": "Keep all K columns; nothing is lost by it, since a tree never performs the matrix inversion that made the redundant column dangerous."
+  },
+  {
+    "id": "mcq-decision-trees-04",
+    "type": "mcq",
+    "chapterId": "decision-trees",
+    "chapterTitle": "Decision Trees",
+    "sourceUrl": "/first-innings/decision-trees/",
+    "question": "Gini impurity and entropy both aim to drive node impurity toward zero. What is the one place they genuinely differ, according to the chapter?",
+    "options": [
+      "A) Only entropy can be used for regression trees",
+      "B) Their scale — for a binary split, Gini tops out at 0.5 while entropy tops out at 1, so comparing raw Gini and entropy scores directly is meaningless",
+      "C) Gini only works with two classes; entropy works with any number",
+      "D) Entropy requires a validation set; Gini does not"
+    ],
+    "correctAnswerIndex": 1,
+    "explanation": "Same worst-case node, two different rulers — compare Gini against Gini, entropy against entropy, never across."
+  },
+  {
+    "id": "sa-decision-trees-01",
+    "type": "short_answer",
+    "chapterId": "decision-trees",
+    "chapterTitle": "Decision Trees",
+    "sourceUrl": "/first-innings/decision-trees/",
+    "question": "Explain why decision trees are described as 'wonderfully readable and wonderfully unstable' — what causes the instability, and why doesn't it undermine the readability advantage?",
+    "modelAnswer": "A tree's readability comes from the fact that every prediction can be traced as a clean sequence of yes/no questions from root to leaf, something a non-technical stakeholder can follow. The instability comes from the same exhaustive, greedy splitting process: because the tree searches for the single best threshold at each step based on exactly the rows it sees, swapping even a handful of training rows can change which threshold looks best at the root, cascading into a structurally different tree. These are separate properties — a tree drawn on any given training run is still fully readable, it's just that a different training run might draw a different, but equally readable, tree.",
+    "rubric": [
+      "Explains readability comes from the traceable sequence of yes/no questions",
+      "Explains instability comes from sensitivity of the greedy best-split search to small data changes",
+      "Notes these are somewhat independent properties, since instability doesn't remove readability"
+    ]
+  },
+  {
+    "id": "sa-decision-trees-02",
+    "type": "short_answer",
+    "chapterId": "decision-trees",
+    "chapterTitle": "Decision Trees",
+    "sourceUrl": "/first-innings/decision-trees/",
+    "question": "Explain why 'information gain' weights each child node's entropy by its share of the parent's data, rather than just comparing the children's raw entropy values.",
+    "modelAnswer": "Without weighting by how much data each child received, a split that carves off a tiny, perfectly pure sliver of just a few observations could look like a brilliant split on raw entropy alone, even though it settled almost nothing about the vast majority of the remaining data. Weighting each child's entropy by its share of the parent node's rows ensures a split is only rewarded as good if it meaningfully reduces disorder across a substantial portion of the data, not just a small, easy-to-purify corner of it.",
+    "rubric": [
+      "Explains the risk of an unweighted comparison rewarding a tiny but pure split",
+      "States the weighting is by each child's share of the parent's data",
+      "Connects this to correctly measuring how much a split actually reduces disorder overall"
+    ]
+  },
+  {
+    "id": "mcq-random-forest-01",
+    "type": "mcq",
+    "chapterId": "random-forest",
+    "chapterTitle": "Random Forest",
+    "sourceUrl": "/first-innings/random-forest/",
+    "question": "What does 'bootstrapping' mean in the context of Random Forest?",
+    "options": [
+      "A) Initializing all trees with the same random seed",
+      "B) Drawing a random sample the same size as the original training set, with replacement, for each individual tree",
+      "C) Manually specifying which rows each tree can see",
+      "D) Removing outliers before training each tree"
+    ],
+    "correctAnswerIndex": 1,
+    "explanation": "With replacement means some rows get drawn more than once, and — critically — some rows don't get drawn at all."
+  },
+  {
+    "id": "mcq-random-forest-02",
+    "type": "mcq",
+    "chapterId": "random-forest",
+    "chapterTitle": "Random Forest",
+    "sourceUrl": "/first-innings/random-forest/",
+    "question": "Roughly what percentage of training rows does a single tree in a Random Forest never see, on average, due to bootstrapping?",
+    "options": [
+      "A) 0%",
+      "B) About 37%",
+      "C) About 63%",
+      "D) 100%"
+    ],
+    "correctAnswerIndex": 1,
+    "explanation": "The probability any specific row is never picked converges toward 1/e, about 37%, giving each tree a genuinely different set of replays."
+  },
+  {
+    "id": "mcq-random-forest-03",
+    "type": "mcq",
+    "chapterId": "random-forest",
+    "chapterTitle": "Random Forest",
+    "sourceUrl": "/first-innings/random-forest/",
+    "question": "What does oob_score=True provide, and why is it described as 'free'?",
+    "options": [
+      "A) It requires an additional, separate train_test_split call",
+      "B) It scores each tree on the rows it never trained on during bootstrapping, giving an honest generalisation estimate without setting aside any data via a separate split",
+      "C) It automatically tunes n_estimators",
+      "D) It only works when bootstrap=False"
+    ],
+    "correctAnswerIndex": 1,
+    "explanation": "The 37% each tree never saw is a validation set that cost nothing to set aside, because bootstrapping set it aside automatically."
+  },
+  {
+    "id": "mcq-random-forest-04",
+    "type": "mcq",
+    "chapterId": "random-forest",
+    "chapterTitle": "Random Forest",
+    "sourceUrl": "/first-innings/random-forest/",
+    "question": "What is the main trade-off of moving from a single Decision Tree to a Random Forest?",
+    "options": [
+      "A) You gain interpretability but lose accuracy",
+      "B) You gain stability, less sensitivity to training data changes, but lose the ability to draw the whole model as one readable picture",
+      "C) Random Forest trains faster than a single tree in every case",
+      "D) There is no trade-off; Random Forest strictly dominates a single tree"
+    ],
+    "correctAnswerIndex": 1,
+    "explanation": "There is no single flowchart you can hand a non-technical stakeholder anymore — you traded a picture for a panel."
+  },
+  {
+    "id": "sa-random-forest-01",
+    "type": "short_answer",
+    "chapterId": "random-forest",
+    "chapterTitle": "Random Forest",
+    "sourceUrl": "/first-innings/random-forest/",
+    "question": "Explain why turning off bootstrapping (bootstrap=False) defeats the entire premise of a Random Forest.",
+    "modelAnswer": "The whole point of a Random Forest is that each tree sees a genuinely different slice of the data via bootstrapping, so their individual mistakes point in different, largely uncorrelated directions and cancel out when averaged or voted. If bootstrapping is turned off, every tree trains on the identical full dataset, so instead of a panel of differently-informed umpires you get a hundred copies of the same umpire making the same calls — there's no diversity left to vote away the instability that motivated building a forest in the first place.",
+    "rubric": [
+      "States that bootstrapping is what makes each tree see a different sample",
+      "Explains that without it, all trees train identically, becoming duplicate copies of each other",
+      "Connects this to losing the error-cancelling benefit of ensemble voting"
+    ]
+  },
+  {
+    "id": "sa-random-forest-02",
+    "type": "short_answer",
+    "chapterId": "random-forest",
+    "chapterTitle": "Random Forest",
+    "sourceUrl": "/first-innings/random-forest/",
+    "question": "Why does the chapter say the missing train_test_split in a Random Forest example 'isn't an exception to the rule, it's the same rule satisfied a different way'?",
+    "modelAnswer": "The general rule is that you must evaluate a model on data it never trained on. A Random Forest satisfies this without a separate train_test_split because each tree's out-of-bag rows, the roughly 37% it never saw during its own bootstrap draw, already are held-out data for that tree — there are just as many different held-out sets as there are trees, generated automatically as a side effect of bagging, rather than one shared held-out set carved out manually in advance.",
+    "rubric": [
+      "States the underlying rule: evaluate only on data the model never trained on",
+      "Explains OOB rows satisfy this per tree, automatically, via bootstrapping",
+      "Notes this replaces rather than violates the usual train and test discipline"
+    ]
+  },
+  {
+    "id": "mcq-extra-trees-01",
+    "type": "mcq",
+    "chapterId": "extra-trees",
+    "chapterTitle": "Extra Trees",
+    "sourceUrl": "/first-innings/extra-trees/",
+    "question": "What are the two things Extra Trees randomises differently from Random Forest?",
+    "options": [
+      "A) Only the number of trees and the max depth",
+      "B) By default, no bootstrapping — every tree sees the whole dataset — and thresholds are chosen from a small random subset rather than exhaustively searched",
+      "C) Only the choice of impurity criterion, Gini versus entropy",
+      "D) The target column and the feature set"
+    ],
+    "correctAnswerIndex": 1,
+    "explanation": "Extra Trees turns the randomness dial two notches further, changing both what each tree sees and how it picks thresholds."
+  },
+  {
+    "id": "mcq-extra-trees-02",
+    "type": "mcq",
+    "chapterId": "extra-trees",
+    "chapterTitle": "Extra Trees",
+    "sourceUrl": "/first-innings/extra-trees/",
+    "question": "Where does Extra Trees' diversity between trees come from, since bootstrapping is off by default?",
+    "options": [
+      "A) Each tree is trained on a different subset of the target labels",
+      "B) From randomising which candidate thresholds each split considers, since every tree already sees the same full dataset",
+      "C) Extra Trees does not actually produce diverse trees",
+      "D) Each tree uses a different impurity criterion at random"
+    ],
+    "correctAnswerIndex": 1,
+    "explanation": "What each tree sees is identical; what varies is which random handful of thresholds each split gets to choose from."
+  },
+  {
+    "id": "mcq-extra-trees-03",
+    "type": "mcq",
+    "chapterId": "extra-trees",
+    "chapterTitle": "Extra Trees",
+    "sourceUrl": "/first-innings/extra-trees/",
+    "question": "What is the practical danger of accidentally importing ExtraTreeClassifier, singular, instead of ExtraTreesClassifier, plural?",
+    "options": [
+      "A) There is no difference; they are aliases for the same class",
+      "B) The singular class is a single, unaggregated randomly-thresholded tree with no panel of other trees to average its randomness back into stability",
+      "C) The singular class trains slower than the plural version",
+      "D) The singular class requires labelled test data while the plural does not"
+    ],
+    "correctAnswerIndex": 1,
+    "explanation": "All the extra randomness Extra Trees normally survives because there are so many trees voting — remove the panel and that randomness just becomes noise."
+  },
+  {
+    "id": "sa-extra-trees-01",
+    "type": "short_answer",
+    "chapterId": "extra-trees",
+    "chapterTitle": "Extra Trees",
+    "sourceUrl": "/first-innings/extra-trees/",
+    "question": "Explain the trade-off Extra Trees makes: what quality is sacrificed at the individual tree level, and what is gained at the ensemble level?",
+    "modelAnswer": "Individually, an Extra Tree's splits are cruder than a careful Decision Tree's or a Random Forest tree's, because it only considers a small random handful of candidate thresholds rather than exhaustively searching all of them for the genuinely optimal cutoff. What's gained is speed, since no exhaustive threshold search means faster training, and useful diversity between trees, since both what each tree sees and how it decides now vary. In practice, a large enough ensemble of these cruder trees still converges on a reliable, comparably accurate vote.",
+    "rubric": [
+      "States individual trees have cruder or less optimal splits due to random threshold sampling",
+      "States the ensemble gains speed and increased diversity",
+      "Notes the ensemble still performs comparably well despite weaker individual trees"
+    ]
+  },
+  {
+    "id": "sa-extra-trees-02",
+    "type": "short_answer",
+    "chapterId": "extra-trees",
+    "chapterTitle": "Extra Trees",
+    "sourceUrl": "/first-innings/extra-trees/",
+    "question": "Why does the chapter say Extra Trees earns its place specifically when a dataset is large, compared to when you'd reach for Random Forest or a single Decision Tree instead?",
+    "modelAnswer": "A single Decision Tree is right when you need to show someone the exact reasoning as one readable picture. Random Forest is right when stability matters more than a picture, and its exhaustive per-tree threshold search is affordable. Extra Trees earns its place once the dataset is large enough that Random Forest's exhaustive threshold search at every split starts to become genuinely slow — trading a small amount of per-tree quality for a much faster ensemble becomes worth it precisely when that speed is needed most.",
+    "rubric": [
+      "Contrasts single tree for interpretability versus Random Forest for stability with exhaustive search",
+      "States Extra Trees becomes worthwhile specifically as dataset size makes exhaustive search costly",
+      "Frames this as none being strictly better, each suited to a different situation"
+    ]
+  },
+  {
+    "id": "mcq-tensors-01",
+    "type": "mcq",
+    "chapterId": "tensors",
+    "chapterTitle": "Tensors",
+    "sourceUrl": "/second-innings/tensors/",
+    "question": "In this chapter's cricket analogy, what does a rank-2 tensor, a matrix, represent?",
+    "options": [
+      "A) A single delivery",
+      "B) An over",
+      "C) An innings — overs by features",
+      "D) A whole season of matches"
+    ],
+    "correctAnswerIndex": 2,
+    "explanation": "A scalar is one delivery, a vector is an over, and a matrix is an innings, overs by features."
+  },
+  {
+    "id": "mcq-tensors-02",
+    "type": "mcq",
+    "chapterId": "tensors",
+    "chapterTitle": "Tensors",
+    "sourceUrl": "/second-innings/tensors/",
+    "question": "Why is 'axis zero' described as sacred?",
+    "options": [
+      "A) It must always contain exactly one element",
+      "B) It's the batch axis, which match you're looking at — you can shuffle or slice it, but must never reorder what it means",
+      "C) It can only hold floating-point numbers",
+      "D) TensorFlow requires axis zero to be empty by default"
+    ],
+    "correctAnswerIndex": 1,
+    "explanation": "The first axis is the batch. Shuffle it, slice it, never reorder the meaning of it."
+  },
+  {
+    "id": "mcq-tensors-03",
+    "type": "mcq",
+    "chapterId": "tensors",
+    "chapterTitle": "Tensors",
+    "sourceUrl": "/second-innings/tensors/",
+    "question": "According to the chapter, what is the usual cause of a 'mysterious shape error' in TensorFlow?",
+    "options": [
+      "A) A missing GPU driver",
+      "B) Forgetting which column, or axis, was which",
+      "C) Using float32 instead of float64",
+      "D) Training for too many epochs"
+    ],
+    "correctAnswerIndex": 1,
+    "explanation": "Nobody misreads a scorecard on purpose — they just forget which column is which, and the fix is to write the shape down first."
+  },
+  {
+    "id": "sa-tensors-01",
+    "type": "short_answer",
+    "chapterId": "tensors",
+    "chapterTitle": "Tensors",
+    "sourceUrl": "/second-innings/tensors/",
+    "question": "Explain the tensor rank hierarchy used in this chapter's cricket analogy, from a single ball up to a full season.",
+    "modelAnswer": "A single delivery is a scalar, rank 0, just one number. An over, a sequence of six deliveries, is a vector, rank 1. A full innings, overs by features, is a matrix, rank 2. Stacking multiple innings or matches together into a season produces a rank-3 tensor, a batch of matrices — the same underlying scorecard logic, just one dimension deeper at each level.",
+    "rubric": [
+      "Correctly matches scalar to ball, vector to over, matrix to innings, and rank-3 to season or batch",
+      "States the increasing dimensionality, or rank, at each level",
+      "Notes it's the same structure, just one column deeper"
+    ]
+  },
+  {
+    "id": "sa-tensors-02",
+    "type": "short_answer",
+    "chapterId": "tensors",
+    "chapterTitle": "Tensors",
+    "sourceUrl": "/second-innings/tensors/",
+    "question": "Why does the chapter recommend 'writing the shape down before you write the code' when working with tensors?",
+    "modelAnswer": "Nearly every confusing shape-related bug in TensorFlow comes from losing track of which axis represents what, for example accidentally treating the batch axis as if it were a feature axis. Explicitly writing down what each axis is meant to represent before coding helps catch these mix-ups before they turn into a hard-to-debug runtime shape error.",
+    "rubric": [
+      "States that most shape errors come from confusing which axis means what",
+      "Connects this specifically to the batch axis, axis 0, as the common culprit",
+      "Explains the practice as a preventative habit against this class of bug"
+    ]
+  },
+  {
+    "id": "mcq-backpropagation-01",
+    "type": "mcq",
+    "chapterId": "backpropagation",
+    "chapterTitle": "Backpropagation",
+    "sourceUrl": "/second-innings/backpropagation/",
+    "question": "In this chapter's analogy, what does backpropagation do after the network makes a prediction, the 'forward pass'?",
+    "options": [
+      "A) It immediately restarts training from scratch",
+      "B) It replays the decision backwards through every layer, assigning each weight its precise share of the blame, its gradient",
+      "C) It deletes the layer that caused the most error",
+      "D) It converts the loss into a probability distribution"
+    ],
+    "correctAnswerIndex": 1,
+    "explanation": "Backpropagation is the review process that walks the decision back through every official who touched it and tells each one exactly how much to adjust."
+  },
+  {
+    "id": "mcq-backpropagation-02",
+    "type": "mcq",
+    "chapterId": "backpropagation",
+    "chapterTitle": "Backpropagation",
+    "sourceUrl": "/second-innings/backpropagation/",
+    "question": "What happens if the learning rate is set too high, according to this chapter?",
+    "options": [
+      "A) Training becomes impossible to start",
+      "B) Every call gets overcorrected into a new mistake",
+      "C) The loss function stops being computed",
+      "D) The model becomes immune to further training"
+    ],
+    "correctAnswerIndex": 1,
+    "explanation": "The learning rate is how much the umpire trusts each review — too high and every call gets overcorrected into a new mistake."
+  },
+  {
+    "id": "mcq-backpropagation-03",
+    "type": "mcq",
+    "chapterId": "backpropagation",
+    "chapterTitle": "Backpropagation",
+    "sourceUrl": "/second-innings/backpropagation/",
+    "question": "According to the chapter, what does effective training actually look like?",
+    "options": [
+      "A) One large, dramatic correction that fixes everything at once",
+      "B) Ten thousand small, quiet corrections that add up to competence",
+      "C) A single epoch is always sufficient",
+      "D) Training requires no correction once initial weights are set"
+    ],
+    "correctAnswerIndex": 1,
+    "explanation": "One review does not fix an umpire — ten thousand small ones make a very good one."
+  },
+  {
+    "id": "sa-backpropagation-01",
+    "type": "short_answer",
+    "chapterId": "backpropagation",
+    "chapterTitle": "Backpropagation",
+    "sourceUrl": "/second-innings/backpropagation/",
+    "question": "Explain what 'gradient' means in this chapter's framing, and why each weight gets a different one.",
+    "modelAnswer": "The gradient is each weight's precise share of the blame for the network's overall error, computed by backpropagation walking the decision backwards through every layer that touched it. Different weights contributed differently to the final wrong, or right, call, so backpropagation assigns each one its own specific correction signal, its gradient, rather than applying one blanket correction to the whole network.",
+    "rubric": [
+      "Defines gradient as each weight's individual share of the blame or error",
+      "Explains backpropagation computes this by walking backward through the layers",
+      "States that different weights get different gradients based on their individual contribution"
+    ]
+  },
+  {
+    "id": "sa-backpropagation-02",
+    "type": "short_answer",
+    "chapterId": "backpropagation",
+    "chapterTitle": "Backpropagation",
+    "sourceUrl": "/second-innings/backpropagation/",
+    "question": "Why does the chapter compare training to 'ten thousand quiet reviews' rather than one dramatic one, and what does this imply about the learning rate?",
+    "modelAnswer": "A single review, one gradient update, only makes a small correction — real competence builds up gradually across many repeated small adjustments, not from one transformative correction. This implies the learning rate should be modest enough that each individual step is a reasonable, non-disruptive nudge; too high and each review overcorrects into a new mistake, too low and the many small corrections needed never accumulate fast enough within a reasonable training budget.",
+    "rubric": [
+      "Explains training as many small incremental corrections rather than one large one",
+      "Connects this to the learning rate needing to be a modest, appropriately-sized step",
+      "Notes the risk of too-high, overcorrection, or too-low, too slow, learning rates"
+    ]
+  },
+  {
+    "id": "mcq-build-a-model-01",
+    "type": "mcq",
+    "chapterId": "build-a-model",
+    "chapterTitle": "Build a Model",
+    "sourceUrl": "/second-innings/build-a-model/",
+    "question": "In the batting-order analogy, what does the final layer, Dense(1, activation='sigmoid'), represent?",
+    "options": [
+      "A) The openers, facing the raw input",
+      "B) The finisher — converting everything into one clean probability the scoreboard can use",
+      "C) A random dropout layer",
+      "D) The input layer"
+    ],
+    "correctAnswerIndex": 1,
+    "explanation": "The final layer is the finisher: one unit, sigmoid activation, a single probability between nought and one."
+  },
+  {
+    "id": "mcq-build-a-model-02",
+    "type": "mcq",
+    "chapterId": "build-a-model",
+    "chapterTitle": "Build a Model",
+    "sourceUrl": "/second-innings/build-a-model/",
+    "question": "What does the Dropout layer do during training, according to this chapter?",
+    "options": [
+      "A) Permanently removes a fifth of the training data",
+      "B) Randomly benches a fifth of the units on each training step, so no single unit becomes indispensable",
+      "C) Doubles the learning rate every fifth epoch",
+      "D) Removes the least important layer from the network entirely"
+    ],
+    "correctAnswerIndex": 1,
+    "explanation": "Dropout randomly benches a fifth of the players each training step, so no single unit becomes the star the whole innings depends on."
+  },
+  {
+    "id": "mcq-build-a-model-03",
+    "type": "mcq",
+    "chapterId": "build-a-model",
+    "chapterTitle": "Build a Model",
+    "sourceUrl": "/second-innings/build-a-model/",
+    "question": "The chapter describes Dropout as 'another quiet regulariser in the tradition of Gradient Descent's penalty term.' What do the two techniques have in common?",
+    "options": [
+      "A) Both directly modify the loss function's mathematical formula in exactly the same way",
+      "B) Both discourage the model from over-relying on any single component, one by shrinking large weights, the other by randomly disabling units",
+      "C) Both are only applicable to classification problems",
+      "D) Both require the model to have at least 100 layers"
+    ],
+    "correctAnswerIndex": 1,
+    "explanation": "One penalises large weights directly; the other benches units randomly — different mechanisms, the same underlying goal of preventing over-reliance."
+  },
+  {
+    "id": "sa-build-a-model-01",
+    "type": "short_answer",
+    "chapterId": "build-a-model",
+    "chapterTitle": "Build a Model",
+    "sourceUrl": "/second-innings/build-a-model/",
+    "question": "Explain the batting-order analogy for a Sequential neural network's layers, from input to output.",
+    "modelAnswer": "The first Dense layer is the openers, facing the raw, untamed input, eight features, new ball. The middle Dense layer narrows the signal down, from sixty-four to thirty-two units, building structure the way a middle order consolidates an innings. The final layer is the finisher: a single unit with a sigmoid activation, converting everything that came before into one clean probability between 0 and 1 that the calling code can actually use.",
+    "rubric": [
+      "Correctly identifies the first layer as facing raw input, the openers",
+      "Correctly identifies the middle layer as narrowing or building structure, the middle order",
+      "Correctly identifies the final sigmoid layer as producing one usable probability, the finisher"
+    ]
+  },
+  {
+    "id": "sa-build-a-model-02",
+    "type": "short_answer",
+    "chapterId": "build-a-model",
+    "chapterTitle": "Build a Model",
+    "sourceUrl": "/second-innings/build-a-model/",
+    "question": "Why is Dropout described as looking 'wasteful in the nets' but 'worth several wickets on match day'?",
+    "modelAnswer": "During training, the nets, randomly disabling a fifth of the units each step seems counterproductive, since you're deliberately throwing away some of the network's capacity on every pass. But this is exactly what prevents the network from becoming overly dependent on any single unit memorising a quirk of the training data; on new, unseen data, match day, the resulting network generalises better precisely because it never learned to over-rely on one specific component.",
+    "rubric": [
+      "Explains that Dropout looks counterproductive during training since it discards capacity each step",
+      "States the actual benefit is preventing over-reliance on any single unit, a form of regularisation",
+      "Connects this to improved generalisation on unseen or test data"
+    ]
+  },
+  {
+    "id": "mcq-architecture-01",
+    "type": "mcq",
+    "chapterId": "architecture",
+    "chapterTitle": "Agent Architecture",
+    "sourceUrl": "/post-game/architecture/",
+    "question": "In this multi-agent architecture, what is the captain's role?",
+    "options": [
+      "A) To answer every question directly using its own knowledge",
+      "B) To route each question to the appropriate specialist, without answering it directly itself",
+      "C) To execute SQL queries against the match database",
+      "D) To retrieve and describe video footage"
+    ],
+    "correctAnswerIndex": 1,
+    "explanation": "The roster defines the captain as the one who routes the question, and never answers it."
+  },
+  {
+    "id": "mcq-architecture-02",
+    "type": "mcq",
+    "chapterId": "architecture",
+    "chapterTitle": "Agent Architecture",
+    "sourceUrl": "/post-game/architecture/",
+    "question": "Why does the system enforce a max_overs hard cap on the number of steps an agent loop can take?",
+    "options": [
+      "A) To save on captain salary costs",
+      "B) To prevent endless, expensive, unproductive loops — an uncapped agent loop is described as an 'endless rain delay'",
+      "C) Because scikit-learn requires a maximum iteration count",
+      "D) To ensure exactly 8 specialists are always consulted"
+    ],
+    "correctAnswerIndex": 1,
+    "explanation": "Uncapped agent loops are expensive and going nowhere; the step cap forces the captain to declare when the answer is settled."
+  },
+  {
+    "id": "mcq-architecture-03",
+    "type": "mcq",
+    "chapterId": "architecture",
+    "chapterTitle": "Agent Architecture",
+    "sourceUrl": "/post-game/architecture/",
+    "question": "What is the analyst's specific role in this architecture?",
+    "options": [
+      "A) Routing questions to other agents",
+      "B) Keeping long-term memory across sessions, so the system doesn't relitigate the same issue repeatedly",
+      "C) Retrieving video footage only",
+      "D) Enforcing the step cap"
+    ],
+    "correctAnswerIndex": 1,
+    "explanation": "The analyst keeps memory across sessions so the side stops relitigating last week's collapse."
+  },
+  {
+    "id": "sa-architecture-01",
+    "type": "short_answer",
+    "chapterId": "architecture",
+    "chapterTitle": "Agent Architecture",
+    "sourceUrl": "/post-game/architecture/",
+    "question": "Explain why the chapter insists the captain should route questions rather than answer them directly, using the cricket analogy.",
+    "modelAnswer": "Just as a real cricket captain doesn't bowl every over themselves — they read the situation and decide which specialist bowler is right for it — the agent captain's job is to read each incoming question and decide which specialist, stats, video, or analyst, is best equipped to handle it, rather than trying to answer everything itself with general-purpose knowledge. Splitting one impossible, general-purpose job into several narrower, well-equipped specialist jobs produces more reliable results than asking one generalist to do everything.",
+    "rubric": [
+      "Uses the captain-doesn't-bowl-every-over analogy or an equivalent",
+      "Explains the captain's job is routing or deciding, not directly answering",
+      "States the benefit of splitting one big job into specialist sub-tasks"
+    ]
+  },
+  {
+    "id": "sa-architecture-02",
+    "type": "short_answer",
+    "chapterId": "architecture",
+    "chapterTitle": "Agent Architecture",
+    "sourceUrl": "/post-game/architecture/",
+    "question": "What would likely go wrong in an agent system without a max_overs-style step cap, according to the chapter's reasoning?",
+    "modelAnswer": "Without a hard cap on the number of steps or turns an agent loop can take, the system risks running indefinitely, described as an endless rain delay, burning compute and time without necessarily converging on a settled answer. The step cap forces the captain to declare when the answer is settled within a bounded budget, which is what turns an open-ended chat model into something that reliably behaves like a structured team completing a task.",
+    "rubric": [
+      "States the risk of unbounded or endless loops without a cap",
+      "Connects this to wasted cost or compute, the rain delay framing",
+      "Notes the cap forces the system toward a bounded, structured conclusion"
+    ]
+  },
+  {
+    "id": "mcq-drs-agent-01",
+    "type": "mcq",
+    "chapterId": "drs-agent",
+    "chapterTitle": "Reviewer Agent",
+    "sourceUrl": "/post-game/drs-agent/",
+    "question": "What information does the review agent deliberately NOT see, according to this chapter?",
+    "options": [
+      "A) The evidence retrieved to support the answer",
+      "B) The primary model's confidence score or chain of thought",
+      "C) The original question being asked",
+      "D) The list of allowed verdicts"
+    ],
+    "correctAnswerIndex": 1,
+    "explanation": "The review agent never sees the primary model's confidence or chain of thought — only the question, the answer, and the retrieved evidence."
+  },
+  {
+    "id": "mcq-drs-agent-02",
+    "type": "mcq",
+    "chapterId": "drs-agent",
+    "chapterTitle": "Reviewer Agent",
+    "sourceUrl": "/post-game/drs-agent/",
+    "question": "Why does the system include 'umpires_call' as a valid verdict rather than forcing a binary upheld or overturned decision?",
+    "options": [
+      "A) To make the system's output more complex for its own sake",
+      "B) So that when the evidence genuinely can't settle the question, the system can honestly escalate to a human rather than guessing",
+      "C) Because scikit-learn classifiers require at least 3 output classes",
+      "D) 'umpires_call' is simply a synonym for 'overturned'"
+    ],
+    "correctAnswerIndex": 1,
+    "explanation": "The most important verdict is the honest shrug: when the evidence cannot settle it, the system escalates to a human rather than guessing."
+  },
+  {
+    "id": "mcq-drs-agent-03",
+    "type": "mcq",
+    "chapterId": "drs-agent",
+    "chapterTitle": "Reviewer Agent",
+    "sourceUrl": "/post-game/drs-agent/",
+    "question": "What does the chapter warn happens to a review layer that is never allowed to say 'insufficient evidence'?",
+    "options": [
+      "A) It becomes more efficient and reliable",
+      "B) It will eventually invent evidence or confidence it doesn't have, letting confident nonsense into production",
+      "C) It automatically defaults to 'overturned' every time",
+      "D) It stops being able to process any requests"
+    ],
+    "correctAnswerIndex": 1,
+    "explanation": "A review layer that is not allowed to say 'insufficient evidence' will eventually invent some, and that is how confident nonsense gets into production."
+  },
+  {
+    "id": "sa-drs-agent-01",
+    "type": "short_answer",
+    "chapterId": "drs-agent",
+    "chapterTitle": "Reviewer Agent",
+    "sourceUrl": "/post-game/drs-agent/",
+    "question": "Explain why restricting the reviewer to a fixed list of verdicts, upheld, overturned, umpires_call, matters, using the DRS analogy.",
+    "modelAnswer": "Just as the DRS review protocol keeps a third umpire's decision within a fixed, well-defined set of outcomes rather than open-ended commentary, constraining the review agent's output to a fixed list of verdicts keeps its behaviour predictable and within the laws of the game — it can't produce some ambiguous, hard-to-act-on freeform response. Every possible verdict has a clear, pre-defined downstream action, retry, escalate, or accept, which only works if the verdict space is closed and known in advance.",
+    "rubric": [
+      "Connects the fixed verdict list to the DRS analogy of bounded, predictable outcomes",
+      "Explains that each verdict maps to a clear downstream action",
+      "States the benefit: predictable, actionable behaviour rather than open-ended output"
+    ]
+  },
+  {
+    "id": "sa-drs-agent-02",
+    "type": "short_answer",
+    "chapterId": "drs-agent",
+    "chapterTitle": "Reviewer Agent",
+    "sourceUrl": "/post-game/drs-agent/",
+    "question": "Why does the chapter argue that 'umpire's call,' escalating to a human, is a deliberately designed outcome rather than a failure of the system?",
+    "modelAnswer": "A review system forced to always pick between only upheld or overturned, even when the evidence is genuinely insufficient to decide, will eventually have to fabricate a level of confidence it doesn't actually have, producing confident nonsense that looks like a real decision but isn't grounded in the evidence. Allowing an honest insufficient-evidence, escalate-to-human outcome is instead the safer, more honest design: the system openly acknowledges the limits of what it can determine, rather than quietly overstepping them.",
+    "rubric": [
+      "States that forcing a binary decision when evidence is insufficient leads to fabricated confidence",
+      "Explains umpire's call as an honest acknowledgment of the system's evidentiary limits",
+      "Frames escalation to a human as a deliberate design choice, not a system failure"
+    ]
+  },
+  {
+    "id": "mcq-agent-tools-01",
+    "type": "mcq",
+    "chapterId": "agent-tools",
+    "chapterTitle": "Agent Tools",
+    "sourceUrl": "/post-game/agent-tools/",
+    "question": "According to the chapter, what should you fix first if a model keeps misusing a particular tool?",
+    "options": [
+      "A) Immediately remove the tool from the system entirely",
+      "B) The tool's description — if it's vague, fix the words before trying to fix the model",
+      "C) Retrain the entire underlying model from scratch",
+      "D) Increase the tool's timeout setting"
+    ],
+    "correctAnswerIndex": 1,
+    "explanation": "If the model keeps misusing a tool, the description is vague — fix the words before you fix the model."
+  },
+  {
+    "id": "mcq-agent-tools-02",
+    "type": "mcq",
+    "chapterId": "agent-tools",
+    "chapterTitle": "Agent Tools",
+    "sourceUrl": "/post-game/agent-tools/",
+    "question": "What three hard limits does the chapter say every tool should run with?",
+    "options": [
+      "A) A maximum cost, a maximum age, and write-only permission",
+      "B) A timeout, a row cap, and read-only access",
+      "C) A password, a rate limit, and a GPU requirement",
+      "D) A retry count, a cache TTL, and admin access"
+    ],
+    "correctAnswerIndex": 1,
+    "explanation": "Every tool runs with a timeout, a row cap, and read-only access — the boundary rope that keeps enthusiasm from reaching the carpark."
+  },
+  {
+    "id": "mcq-agent-tools-03",
+    "type": "mcq",
+    "chapterId": "agent-tools",
+    "chapterTitle": "Agent Tools",
+    "sourceUrl": "/post-game/agent-tools/",
+    "question": "What is the purpose of a tool's input schema, according to this chapter?",
+    "options": [
+      "A) To make the tool call slower and more deliberate",
+      "B) To make bad calls unrepresentable — the schema constrains what the model can even attempt to pass in",
+      "C) To automatically translate the model's output into SQL",
+      "D) To log every tool call for billing purposes"
+    ],
+    "correctAnswerIndex": 1,
+    "explanation": "A tool definition is a name, a description written like instructions to a debutant, and a schema that makes bad calls unrepresentable."
+  },
+  {
+    "id": "sa-agent-tools-01",
+    "type": "short_answer",
+    "chapterId": "agent-tools",
+    "chapterTitle": "Agent Tools",
+    "sourceUrl": "/post-game/agent-tools/",
+    "question": "Explain the three components of a tool definition described in this chapter, and what job each one does.",
+    "modelAnswer": "A tool definition has a name the model can call it by, a description written like clear instructions to a debutant, someone brand new who needs everything spelled out, so the model knows exactly when and how to use it, and a schema that constrains the input so that malformed or nonsensical calls simply aren't representable in the first place. Together these three make the tool both discoverable and safe to call correctly.",
+    "rubric": [
+      "Names all three components: name, description, and schema",
+      "Explains the description should be clear and explicit, written like instructions to a debutant",
+      "Explains the schema's job is making bad calls unrepresentable"
+    ]
+  },
+  {
+    "id": "sa-agent-tools-02",
+    "type": "short_answer",
+    "chapterId": "agent-tools",
+    "chapterTitle": "Agent Tools",
+    "sourceUrl": "/post-game/agent-tools/",
+    "question": "Why does the chapter compare hard limits like timeouts and row caps to 'the boundary rope,' and what specific failure do they guard against?",
+    "modelAnswer": "The boundary rope in cricket marks a hard physical limit on how far play can go, regardless of how enthusiastic a fielder is. Similarly, a timeout, row cap, and read-only access put a hard ceiling on what a tool call can do, guarding against the specific failure of an enthusiastic but occasionally wrong model making an expensive mistake, like an unbounded query returning huge amounts of data, running forever, or accidentally writing to data it should never touch.",
+    "rubric": [
+      "Connects the boundary rope analogy to a hard physical or structural limit",
+      "Names at least one specific guarded failure, such as a runaway query, unbounded time, or unintended writes",
+      "States the limits exist because models are enthusiastic and occasionally wrong, not malicious"
+    ]
+  }
+]

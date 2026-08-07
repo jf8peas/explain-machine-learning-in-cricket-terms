@@ -1,0 +1,214 @@
+---
+/**
+ * Header search — Pagefind-powered static search with a dropdown result panel.
+ * Mirrors the design in `design/v002/The Playing XI (Current)`.
+ */
+interface Props {
+  /** Placeholder text shown in the input */
+  placeholder?: string;
+}
+
+const { placeholder = "Search all 28 chapters" } = Astro.props;
+---
+
+<div class="relative flex-1 basis-[240px] max-w-[360px] min-w-[210px] py-2">
+  <div
+    class="flex h-[42px] items-center gap-2.5 rounded-[10px] border border-white/[0.12] bg-white/[0.07] px-3.5"
+  >
+    <span class="flex-none font-mono text-[13px] text-mist">⌕</span>
+    <input
+      id="pagefind-search-input"
+      type="text"
+      placeholder={placeholder}
+      autocomplete="off"
+      class="h-full min-w-0 flex-1 border-0 bg-transparent font-sans text-[14.5px] text-white outline-none placeholder:text-mist"
+    />
+    <button
+      id="pagefind-search-clear"
+      type="button"
+      class="flex-none cursor-pointer border-0 bg-transparent p-1 font-mono text-[10px] uppercase tracking-[0.14em] text-mist transition-colors hover:text-gold"
+    >
+      Esc
+    </button>
+  </div>
+
+  <!-- Results dropdown -->
+  <div
+    id="pagefind-search-results"
+    class="absolute left-0 right-0 top-[56px] z-40 hidden overflow-hidden rounded-[12px] bg-white shadow-[0_18px_44px_rgba(6,22,14,.32)]"
+  >
+    <div
+      id="pagefind-result-count"
+      class="bg-card px-3.5 py-2.5 font-mono text-[10.5px] uppercase tracking-[0.16em] text-slate-custom"
+    ></div>
+    <div id="pagefind-result-list" class="max-h-[420px] overflow-y-auto"></div>
+  </div>
+
+  <!-- Empty state -->
+  <div
+    id="pagefind-search-empty"
+    class="absolute left-0 right-0 top-[56px] z-40 hidden rounded-[12px] bg-white px-3.5 py-4 font-sans text-[14px] text-slate-custom shadow-[0_18px_44px_rgba(6,22,14,.32)]"
+  >
+    No chapter matches that. Try “overfit”, “tensor” or “agent”.
+  </div>
+</div>
+
+<script>
+  /**
+   * Pagefind client-side search.
+   * Loads the Pagefind bundle lazily on first focus, then runs queries
+   * as the user types. Results render into the dropdown panel.
+   */
+  type PagefindResult = {
+    id: string;
+    data: () => Promise<{
+      url: string;
+      meta: { title: string };
+      excerpt: string;
+      sub_results?: { title: string; url: string; excerpt: string }[];
+    }>;
+  };
+
+  type Pagefind = {
+    init: () => Promise<void>;
+    search: (q: string) => Promise<{ results: PagefindResult[] }>;
+  };
+
+  const input = document.getElementById("pagefind-search-input") as HTMLInputElement | null;
+  const clearBtn = document.getElementById("pagefind-search-clear") as HTMLButtonElement | null;
+  const resultsPanel = document.getElementById("pagefind-search-results") as HTMLDivElement | null;
+  const resultCount = document.getElementById("pagefind-result-count") as HTMLDivElement | null;
+  const resultList = document.getElementById("pagefind-result-list") as HTMLDivElement | null;
+  const emptyPanel = document.getElementById("pagefind-search-empty") as HTMLDivElement | null;
+
+  let pagefind: Pagefind | null = null;
+  let searchTimer: number | undefined;
+  let loaded = false;
+
+  /** Lazily load the Pagefind bundle once (first focus / first keystroke). */
+  async function ensurePagefind(): Promise<Pagefind | null> {
+    if (pagefind) return pagefind;
+    if (loaded) return null;
+    loaded = true;
+    try {
+      // Pagefind injects its bundle at /pagefind/pagefind.js during the build.
+      // Loaded via DOM script injection so Vite/Rollup doesn't try to resolve it.
+      await new Promise<void>((resolve, reject) => {
+        const script = document.createElement("script");
+        script.src = "/pagefind/pagefind.js";
+        script.onload = () => resolve();
+        script.onerror = () => reject(new Error("pagefind failed to load"));
+        document.head.appendChild(script);
+      });
+      pagefind = (window as any).pagefind as Pagefind;
+      await pagefind.init();
+      return pagefind;
+    } catch {
+      return null;
+    }
+  }
+
+  function hidePanels(): void {
+    if (resultsPanel) resultsPanel.classList.add("hidden");
+    if (emptyPanel) emptyPanel.classList.add("hidden");
+  }
+
+  function showResults(): void {
+    if (resultsPanel) resultsPanel.classList.remove("hidden");
+    if (emptyPanel) emptyPanel.classList.add("hidden");
+  }
+
+  function showEmpty(): void {
+    if (resultsPanel) resultsPanel.classList.add("hidden");
+    if (emptyPanel) emptyPanel.classList.remove("hidden");
+  }
+
+  function renderResults(results: PagefindResult[]): void {
+    if (!resultList || !resultCount) return;
+    resultList.innerHTML = "";
+
+    resultCount.textContent =
+      results.length === 1 ? "1 chapter" : `${results.length} chapters`;
+
+    for (const r of results) {
+      r.data().then((d) => {
+        const url = d.url.replace(/\/$/, "") + "/";
+        const row = document.createElement("a");
+        row.href = url;
+        row.className =
+          "flex w-full items-center gap-3 border-t border-line bg-white px-3.5 py-3 text-left transition-colors hover:bg-card";
+        row.innerHTML = `
+          <span class="flex-none rounded-[7px] bg-card px-2 py-1 font-mono text-[12px] text-slate-custom">↗</span>
+          <span class="flex min-w-0 flex-1 flex-col gap-[3px]">
+            <span class="text-[14.5px] font-medium leading-[1.25] text-pitch">${escapeHtml(d.meta.title)}</span>
+            <span class="font-mono text-[11px] text-slate-custom">${escapeHtml(d.excerpt)}</span>
+          </span>
+          <span class="flex-none font-mono text-[13px] text-gold">→</span>
+        `;
+        resultList.appendChild(row);
+      });
+    }
+  }
+
+  function escapeHtml(s: string): string {
+    const amp = String.fromCharCode(38);
+    const lt = String.fromCharCode(60);
+    const gt = String.fromCharCode(62);
+    const quot = String.fromCharCode(34);
+    const apos = String.fromCharCode(39);
+    return s
+      .replace(new RegExp(amp, "g"), amp + "amp;")
+      .replace(new RegExp(lt, "g"), amp + "lt;")
+      .replace(new RegExp(gt, "g"), amp + "gt;")
+      .replace(new RegExp(quot, "g"), amp + "quot;")
+      .replace(new RegExp(apos, "g"), amp + "#039;");
+  }
+
+  async function runSearch(q: string): Promise<void> {
+    const trimmed = q.trim();
+    if (!trimmed) {
+      hidePanels();
+      return;
+    }
+    const pf = await ensurePagefind();
+    if (!pf) return;
+    const { results } = await pf.search(trimmed);
+    if (results.length === 0) {
+      showEmpty();
+    } else {
+      showResults();
+      renderResults(results);
+    }
+  }
+
+  input?.addEventListener("focus", () => {
+    ensurePagefind();
+    if (input.value.trim()) runSearch(input.value);
+  });
+
+  input?.addEventListener("input", () => {
+    window.clearTimeout(searchTimer);
+    searchTimer = window.setTimeout(() => runSearch(input.value), 140);
+  });
+
+  input?.addEventListener("keydown", (e) => {
+    if (e.key === "Escape") {
+      input.value = "";
+      hidePanels();
+      input.blur();
+    }
+  });
+
+  clearBtn?.addEventListener("click", () => {
+    if (input) input.value = "";
+    hidePanels();
+    input?.focus();
+  });
+
+  document.addEventListener("click", (e) => {
+    const target = e.target as HTMLElement;
+    if (!target.closest("#pagefind-search-input") && !target.closest("#pagefind-search-results")) {
+      hidePanels();
+    }
+  });
+</script>

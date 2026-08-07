@@ -1,0 +1,993 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet data-dc-atomics>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,700;12..96,800&family=Geist:ital,wght@0,400;0,500;0,600;1,400&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+html,body{margin:0;padding:0}
+body{background:#ECEEEA;font-family:"Geist",ui-sans-serif,system-ui,sans-serif;color:#0B0F0D;-webkit-font-smoothing:antialiased;font-feature-settings:"tnum"}
+*{box-sizing:border-box;scrollbar-width:none;-ms-overflow-style:none}
+*::-webkit-scrollbar{width:0;height:0;display:none}
+a{color:#0B2B1A;text-decoration:none}
+a:hover{color:#8A6E00}
+@keyframes xiBlink{0%,100%{opacity:1}50%{opacity:.25}}
+::selection{background:#E2B71455}
+</style>
+</helmet>
+
+<div style="min-height:100vh;display:flex;flex-direction:column;background:#ECEEEA">
+
+  <!-- ═══ SCOREBUG HEADER ═══ -->
+  <header style="position:sticky;top:0;z-index:20;background:#0B2B1A;box-shadow:0 10px 28px rgba(6,22,14,.22)">
+    <div style="max-width:1680px;margin:0 auto;padding:0 clamp(14px,2.2vw,30px);display:flex;align-items:center;flex-wrap:wrap;gap:16px;min-height:78px">
+
+      <div style="display:flex;align-items:center;gap:16px;flex:1 1 300px;min-width:0">
+        <div style="width:48px;height:48px;flex:none;border-radius:11px;background:#E2B714;display:flex;align-items:center;justify-content:center;font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:21px;color:#0B2B1A;letter-spacing:-.04em">XI</div>
+        <div style="display:flex;flex-direction:column;gap:4px;min-width:0">
+          <span style="font-family:'Geist Mono',monospace;font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:#E2B714;font-weight:500">Broadcast Centre</span>
+          <span style="font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:clamp(18px,2vw,25px);line-height:1.05;letter-spacing:-.025em;color:#FFFFFF;text-wrap:nowrap;overflow:hidden;text-overflow:ellipsis">The Playing XI<span style="color:#9DB3A5;font-weight:600"> · ML in Cricket Terms</span></span>
+        </div>
+      </div>
+
+      <div style="position:relative;flex:1 1 240px;max-width:360px;min-width:210px;padding:8px 0">
+        <div style="display:flex;align-items:center;gap:10px;height:42px;padding:0 12px 0 14px;border-radius:10px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12)">
+          <span style="flex:none;font-family:'Geist Mono',monospace;font-size:13px;color:#8FA79A">&#9906;</span>
+          <input type="text" value="{{ q }}" onChange="{{ onSearch }}" onFocus="{{ onSearchFocus }}" onBlur="{{ onSearchBlur }}" onKeyDown="{{ onSearchKey }}" placeholder="Search all 28 chapters" style="flex:1;min-width:0;height:100%;border:0;outline:none;background:transparent;color:#FFFFFF;font-family:'Geist',sans-serif;font-size:14.5px" />
+          <button onClick="{{ onClearSearch }}" style="flex:none;border:0;background:transparent;color:#8FA79A;font-family:'Geist Mono',monospace;font-size:10px;letter-spacing:.14em;text-transform:uppercase;cursor:pointer;padding:4px" style-hover="color:#E2B714">Esc</button>
+        </div>
+
+        <sc-if value="{{ showResults }}" hint-placeholder-val="{{ false }}">
+          <div style="position:absolute;top:56px;left:0;right:0;z-index:40;background:#FFFFFF;border-radius:12px;overflow:hidden;box-shadow:0 18px 44px rgba(6,22,14,.32)">
+            <div style="padding:10px 14px;background:#F3F5F1;font-family:'Geist Mono',monospace;font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;color:#5A6B60">{{ resultCount }}</div>
+            <sc-for list="{{ results }}" as="r" hint-placeholder-count="4">
+              <button data-k="{{ r.key }}" onClick="{{ onResult }}" style="display:flex;align-items:center;gap:12px;width:100%;padding:12px 14px;border:0;border-top:1px solid #EDF0EC;background:#FFFFFF;cursor:pointer;text-align:left" style-hover="background:#F3F5F1">
+                <span style="flex:none;width:34px;height:30px;border-radius:7px;background:#F3F5F1;color:#5A6B60;display:flex;align-items:center;justify-content:center;font-family:'Geist Mono',monospace;font-size:12px">{{ r.over }}</span>
+                <span style="display:flex;flex-direction:column;gap:3px;min-width:0;flex:1">
+                  <span style="font-size:14.5px;font-weight:500;color:#0B2B1A;line-height:1.25">{{ r.nav }}</span>
+                  <span style="font-family:'Geist Mono',monospace;font-size:11px;color:#5A6B60;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ r.session }}</span>
+                </span>
+                <span style="flex:none;font-family:'Geist Mono',monospace;font-size:13px;color:#E2B714">&#8594;</span>
+              </button>
+            </sc-for>
+          </div>
+        </sc-if>
+        <sc-if value="{{ showEmpty }}" hint-placeholder-val="{{ false }}">
+          <div style="position:absolute;top:56px;left:0;right:0;z-index:40;background:#FFFFFF;border-radius:12px;padding:16px 14px;box-shadow:0 18px 44px rgba(6,22,14,.32);font-size:14px;color:#5A6B60">No chapter matches that. Try “overfit”, “tensor” or “agent”.</div>
+        </sc-if>
+      </div>
+
+      <div style="display:flex;align-items:center;gap:0;flex-wrap:wrap;padding:8px 0">
+        <div style="display:flex;align-items:center;gap:9px;padding:2px 20px">
+          <span style="width:7px;height:7px;border-radius:50%;background:#E2B714;animation:xiBlink 1.6s ease-in-out infinite"></span>
+          <span style="font-family:'Geist Mono',monospace;font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:#E5EDE7;font-weight:500">Live</span>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:4px;padding:2px 20px;border-left:1px solid rgba(255,255,255,.12)">
+          <span style="font-family:'Geist Mono',monospace;font-size:9.5px;letter-spacing:.16em;text-transform:uppercase;color:#7E968A">Session</span>
+          <span style="font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:19px;line-height:1;color:#FFFFFF;letter-spacing:-.02em">{{ bugSession }}</span>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:4px;padding:2px 20px;border-left:1px solid rgba(255,255,255,.12)">
+          <span style="font-family:'Geist Mono',monospace;font-size:9.5px;letter-spacing:.16em;text-transform:uppercase;color:#7E968A">Over</span>
+          <span style="font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:19px;line-height:1;color:#E2B714;letter-spacing:-.02em">{{ bugOver }}</span>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:4px;padding:2px 20px;border-left:1px solid rgba(255,255,255,.12)">
+          <span style="font-family:'Geist Mono',monospace;font-size:9.5px;letter-spacing:.16em;text-transform:uppercase;color:#7E968A">Read rate</span>
+          <span style="font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:19px;line-height:1;color:#FFFFFF;letter-spacing:-.02em">{{ bugRate }}</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:14px;padding:2px 0 2px 20px;border-left:1px solid rgba(255,255,255,.12)">
+          <div style="display:flex;flex-direction:column;gap:8px">
+            <span style="font-family:'Geist Mono',monospace;font-size:9.5px;letter-spacing:.16em;text-transform:uppercase;color:#7E968A">Course progress</span>
+            <div style="width:clamp(110px,15vw,190px);height:7px;border-radius:999px;background:rgba(255,255,255,.13);overflow:hidden">
+              <div style="height:100%;border-radius:999px;background:#E2B714;min-width:7px;width:{{ bugPct }}%;transition:width .35s cubic-bezier(.2,.8,.2,1)"></div>
+            </div>
+          </div>
+          <span style="font-family:'Geist Mono',monospace;font-size:12px;color:#DCE5DE;font-weight:500">{{ bugPctLabel }}</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══ SESSION NAVIGATION ═══ -->
+    <nav style="background:#0A2417;border-top:1px solid rgba(255,255,255,.06);border-bottom:2px solid #E2B714">
+      <div style="max-width:1680px;margin:0 auto;padding:0 clamp(14px,2.2vw,30px);display:flex;flex-wrap:wrap;gap:0">
+        <sc-for list="{{ sessions }}" as="s" hint-placeholder-count="6">
+          <button data-i="{{ s.i }}" onClick="{{ onSession }}" style="{{ s.navStyle }}" style-hover="background:rgba(226,183,20,.08)">
+            <span style="font-family:'Geist Mono',monospace;font-size:12px;letter-spacing:.06em;color:#E2B714;font-weight:400;flex:none">{{ s.num }}</span>
+            <span style="font-family:'Bricolage Grotesque',sans-serif;font-weight:600;font-size:14.5px;line-height:1.24;letter-spacing:-.015em;color:inherit;text-align:left;white-space:normal;max-width:178px">{{ s.title }}</span>
+          </button>
+        </sc-for>
+        <a href="./Practice Nets.dc.html" style="display:flex;align-items:center;gap:11px;padding:13px 18px;border-bottom:4px solid transparent;color:#C3D2C8;flex:none;transition:background .14s,color .14s" style-hover="background:rgba(226,183,20,.08);color:#FFFFFF">
+          <span style="font-family:'Geist Mono',monospace;font-size:12px;letter-spacing:.06em;color:#E2B714;flex:none">07</span>
+          <span style="font-family:'Bricolage Grotesque',sans-serif;font-weight:600;font-size:14.5px;line-height:1.24;letter-spacing:-.015em;color:inherit;white-space:normal;max-width:178px">Practice Nets</span>
+        </a>
+      </div>
+    </nav>
+  </header>
+
+  <!-- ═══ BODY ═══ -->
+  <div style="flex:1;max-width:1680px;width:100%;margin:0 auto;padding:clamp(16px,1.8vw,26px) clamp(14px,2.2vw,30px) 60px;display:flex;flex-wrap:wrap;gap:clamp(16px,1.6vw,24px);align-items:flex-start">
+
+    <!-- Sidebar -->
+    <aside style="flex:1 1 300px;max-width:392px;min-width:270px;display:flex;flex-direction:column;gap:16px;position:{{ asidePos }};top:{{ stickyTop }}px">
+
+      <div style="background:#123020;border-radius:16px;overflow:hidden;box-shadow:0 10px 26px rgba(6,22,14,.16)">
+        <div style="padding:18px 20px 16px;background:linear-gradient(180deg,rgba(226,183,20,.13),rgba(226,183,20,0));display:flex;flex-direction:column;gap:6px">
+          <span style="font-family:'Geist Mono',monospace;font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:#E2B714">Innings card</span>
+          <span style="font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:21px;letter-spacing:-.025em;color:#FFFFFF">{{ sessionTitle }}</span>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:2px;padding:6px 8px 12px">
+          <sc-for list="{{ chapters }}" as="ch" hint-placeholder-count="4">
+            <button data-c="{{ ch.i }}" onClick="{{ onChapter }}" style="{{ ch.rowStyle }}" style-hover="background:rgba(255,255,255,.06)">
+              <span style="width:34px;height:34px;flex:none;border-radius:9px;display:flex;align-items:center;justify-content:center;font-family:'Geist Mono',monospace;font-size:13px;background:{{ ch.numBg }};color:{{ ch.numFg }}">{{ ch.over }}</span>
+              <span style="display:flex;flex-direction:column;gap:3px;text-align:left;min-width:0;flex:1">
+                <span style="font-family:'Geist',sans-serif;font-size:15.5px;font-weight:500;color:inherit;line-height:1.25">{{ ch.nav }}</span>
+                <span style="font-family:'Geist Mono',monospace;font-size:11.5px;letter-spacing:.02em;color:#8FA79A;line-height:1.3">{{ ch.meta }}</span>
+              </span>
+              <span style="flex:none;font-size:14px;color:#9BB6A5;width:14px;text-align:right">{{ ch.tick }}</span>
+            </button>
+          </sc-for>
+        </div>
+      </div>
+
+      <div style="background:#FFFFFF;border-radius:14px;padding:18px 20px 16px;display:flex;flex-direction:column;gap:14px;box-shadow:0 1px 2px rgba(11,15,13,.06)">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:12px">
+          <span style="font-family:'Geist Mono',monospace;font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:#5A6B60">Match situation</span>
+          <button onClick="{{ onReset }}" title="Reset chapters and exercises to zero" style="{{ resetStyle }}" style-hover="border-color:#123020;color:#123020;background:#F3F5F1">{{ resetLabel }}</button>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:11px">
+          <div style="display:flex;justify-content:space-between;align-items:baseline;gap:10px">
+            <span style="font-size:15px;color:#1E2A22">Chapters completed</span>
+            <span style="font-family:'Geist Mono',monospace;font-size:14px;color:#0B2B1A">{{ statDone }}</span>
+          </div>
+          <div style="display:flex;justify-content:space-between;align-items:baseline;gap:10px">
+            <span style="font-size:15px;color:#1E2A22">Exercises passed</span>
+            <span style="font-family:'Geist Mono',monospace;font-size:14px;color:#0B2B1A">{{ statExercises }}</span>
+          </div>
+          <div style="display:flex;justify-content:space-between;align-items:baseline;gap:10px">
+            <span style="font-size:15px;color:#1E2A22">Streak</span>
+            <span style="font-family:'Geist Mono',monospace;font-size:14px;color:#8A6E00">1 day · not out</span>
+          </div>
+        </div>
+      </div>
+
+      <div style="background:#0A100C;border-top:2px solid #E2B714;border-radius:14px;overflow:hidden;box-shadow:0 10px 24px rgba(6,22,14,.18)">
+        <a href="#contact" style="display:flex;align-items:center;gap:14px;padding:16px 18px;border-bottom:1px solid rgba(255,255,255,.07);color:#FFFFFF" style-hover="background:rgba(255,255,255,.04);color:#FFFFFF">
+          <span style="width:34px;height:34px;flex:none;border-radius:8px;background:#E2B714;color:#0A100C;display:flex;align-items:center;justify-content:center;font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:14px">in</span>
+          <span style="display:flex;flex-direction:column;gap:3px;flex:1;min-width:0">
+            <span style="font-family:'Geist',sans-serif;font-size:15.5px;font-weight:500;color:#FFFFFF">Contact John Fong</span>
+            <span style="font-family:'Geist Mono',monospace;font-size:11.5px;color:#8FA79A">linkedin · /in/john-fong</span>
+          </span>
+          <span style="flex:none;font-family:'Geist Mono',monospace;font-size:13px;color:#8FA79A">&#8599;</span>
+        </a>
+        <a href="#feedback" style="display:flex;align-items:center;gap:14px;padding:16px 18px;color:#FFFFFF" style-hover="background:rgba(255,255,255,.04);color:#FFFFFF">
+          <span style="width:34px;height:34px;flex:none;border-radius:8px;background:#2A3630;color:#E5EDE7;display:flex;align-items:center;justify-content:center;font-family:'Geist Mono',monospace;font-size:12px">GH</span>
+          <span style="display:flex;flex-direction:column;gap:3px;flex:1;min-width:0">
+            <span style="font-family:'Geist',sans-serif;font-size:15.5px;font-weight:500;color:#FFFFFF">Feedback / Report Issue</span>
+            <span style="font-family:'Geist Mono',monospace;font-size:11.5px;color:#8FA79A">github issues · new</span>
+          </span>
+          <span style="flex:none;font-family:'Geist Mono',monospace;font-size:13px;color:#8FA79A">&#8599;</span>
+        </a>
+      </div>
+    </aside>
+
+    <!-- Main -->
+    <main style="flex:3 1 620px;min-width:0;background:#FFFFFF;border-radius:16px;box-shadow:0 1px 2px rgba(11,15,13,.06),0 14px 34px rgba(11,15,13,.06);overflow:hidden">
+
+      <div style="padding:clamp(26px,3vw,44px) clamp(22px,3vw,48px) clamp(30px,3.4vw,50px);background:#123020;position:relative;overflow:hidden">
+        <div style="position:absolute;inset:0;background:repeating-linear-gradient(115deg,rgba(255,255,255,.035) 0 1px,transparent 1px 26px);pointer-events:none"></div>
+        <div style="position:relative;display:flex;flex-direction:column;gap:18px">
+          <div style="display:flex;flex-wrap:wrap;gap:10px;align-items:center">
+            <span style="display:inline-flex;align-items:center;height:31px;padding:0 15px;border-radius:999px;background:#E2B714;color:#0B2B1A;font-family:'Geist Mono',monospace;font-size:12px;letter-spacing:.13em;text-transform:uppercase;white-space:nowrap">{{ eyebrow }}</span>
+            <span style="display:inline-flex;align-items:center;height:31px;padding:0 15px;border-radius:999px;border:1px solid rgba(255,255,255,.2);color:#DCE5DE;font-family:'Geist Mono',monospace;font-size:12px;letter-spacing:.13em;text-transform:uppercase;white-space:nowrap">{{ readTime }}</span>
+            <span style="display:inline-flex;align-items:center;height:31px;padding:0 15px;border-radius:999px;border:1px solid rgba(255,255,255,.2);color:#DCE5DE;font-family:'Geist Mono',monospace;font-size:12px;letter-spacing:.13em;text-transform:uppercase;white-space:nowrap">Python 3.11</span>
+          </div>
+          <h1 style="margin:0;font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:clamp(38px,5.4vw,72px);line-height:1;letter-spacing:-.04em;color:#FFFFFF;text-wrap:balance">{{ title }}</h1>
+          <p style="margin:0;font-family:'Geist',sans-serif;font-style:italic;font-weight:400;font-size:clamp(19px,1.8vw,25px);line-height:1.2;letter-spacing:-.01em;color:#E2B714">{{ subhead }}</p>
+          <p style="margin:6px 0 0;max-width:60ch;font-size:clamp(17px,1.45vw,21px);line-height:1.6;color:#E5EDE7;text-wrap:pretty">{{ lede }}</p>
+        </div>
+      </div>
+
+      <article style="padding:clamp(26px,3vw,46px) clamp(22px,3vw,48px) clamp(30px,3.4vw,48px);display:flex;flex-direction:column;gap:24px">
+
+        <sc-for list="{{ blocks }}" as="b" hint-placeholder-count="3">
+          <div style="display:flex;flex-direction:column;gap:14px">
+            <sc-if value="{{ b.isH }}" hint-placeholder-val="{{ false }}">
+              <h2 style="margin:14px 0 0;font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:clamp(23px,2.3vw,31px);line-height:1.14;letter-spacing:-.03em;color:#0B2B1A;text-wrap:balance">{{ b.text }}</h2>
+            </sc-if>
+            <sc-if value="{{ b.isP }}" hint-placeholder-val="{{ true }}">
+              <p style="margin:0;max-width:74ch;font-size:clamp(16px,1.25vw,19px);line-height:1.65;color:#1E2A22;text-wrap:pretty">{{ b.text }}</p>
+            </sc-if>
+            <sc-if value="{{ b.isList }}" hint-placeholder-val="{{ false }}">
+              <ol style="margin:0;padding-left:26px;display:flex;flex-direction:column;gap:12px">
+                <sc-for list="{{ b.items }}" as="it" hint-placeholder-count="4">
+                  <li style="font-size:clamp(16px,1.25vw,19px);line-height:1.5;color:#1E2A22;padding-left:8px"><span style="color:#1E2A22">{{ it.t }}</span></li>
+                </sc-for>
+              </ol>
+            </sc-if>
+          </div>
+        </sc-for>
+
+        <aside style="display:flex;gap:16px;padding:18px 20px;border-radius:12px;background:#F3F5F1;border-left:3px solid #E2B714">
+          <div style="flex:none;width:38px;height:38px;border-radius:50%;background:#123020;display:flex;align-items:center;justify-content:center;font-family:'Geist Mono',monospace;font-size:11px;color:#E2B714">CB</div>
+          <div style="display:flex;flex-direction:column;gap:6px;min-width:0">
+            <span style="font-family:'Geist Mono',monospace;font-size:10.5px;letter-spacing:.18em;text-transform:uppercase;color:#5A6B60">From the commentary box</span>
+            <p style="margin:0;font-size:16px;line-height:1.55;color:#0B0F0D;text-wrap:pretty">{{ commentary }}</p>
+          </div>
+        </aside>
+
+        <div style="display:flex;flex-direction:column;gap:14px">
+          <h2 style="margin:8px 0 0;font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:clamp(23px,2.3vw,31px);line-height:1.14;letter-spacing:-.03em;color:#0B2B1A">Into the nets</h2>
+          <div style="border-radius:12px;overflow:hidden;background:#08180F;box-shadow:0 12px 26px rgba(6,22,14,.16)">
+            <div style="display:flex;align-items:center;gap:11px;padding:11px 13px 11px 16px;background:#123020;border-bottom:1px solid rgba(255,255,255,.08)">
+              <span style="width:8px;height:8px;border-radius:50%;background:#E2B714;flex:none"></span>
+              <span style="font-family:'Geist Mono',monospace;font-size:12.5px;color:#DCE5DE;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ codeFile }}</span>
+              <span style="flex:1"></span>
+              <button onClick="{{ onCopy }}" style="display:inline-flex;align-items:center;height:27px;padding:0 11px;border-radius:7px;border:1px solid rgba(255,255,255,.16);background:transparent;color:#DCE5DE;font-family:'Geist Mono',monospace;font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;cursor:pointer;transition:background .12s,border-color .12s,color .12s" style-hover="background:rgba(226,183,20,.14);border-color:#E2B714;color:#E2B714">{{ copyLabel }}</button>
+            </div>
+            <div style="padding:16px 0 18px;overflow-x:auto">
+              <sc-for list="{{ codeLines }}" as="line" hint-placeholder-count="8"><div style="display:flex;gap:16px;padding:0 18px;font-family:'Geist Mono',monospace;font-size:13.5px;line-height:1.8"><span style="flex:none;width:16px;text-align:right;color:#3E5A4B;user-select:none">{{ line.n }}</span><span style="min-width:0"><sc-for list="{{ line.toks }}" as="tok" hint-placeholder-count="4"><span style="color:{{ tok.c }};white-space:pre">{{ tok.t }}</span></sc-for></span></div></sc-for>
+            </div>
+            <div style="display:flex;flex-wrap:wrap;gap:10px;padding:11px 16px;background:#0B2116;border-top:1px solid rgba(255,255,255,.06)">
+              <span style="font-family:'Geist Mono',monospace;font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:#7E968A">Output</span>
+              <span style="font-family:'Geist Mono',monospace;font-size:12.5px;color:#7FD1A6">{{ codeOut }}</span>
+            </div>
+          </div>
+        </div>
+
+        <div style="display:flex;flex-wrap:wrap;align-items:center;gap:20px;padding:22px 24px;border-radius:14px;background:#123020;border:1px solid #123020">
+          <div style="display:flex;flex-direction:column;gap:7px;flex:1 1 260px;min-width:0">
+            <span style="font-family:'Geist Mono',monospace;font-size:10.5px;letter-spacing:.18em;text-transform:uppercase;color:#E2B714">{{ quizOver }}</span>
+            <span style="font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:clamp(20px,1.9vw,26px);line-height:1.15;letter-spacing:-.03em;color:#FFFFFF">Face six deliveries</span>
+            <span style="font-family:'Geist Mono',monospace;font-size:12px;color:#8FA79A">{{ quizMeta }}</span>
+          </div>
+          <a href="./Practice Nets.dc.html" style="display:inline-flex;align-items:center;gap:10px;height:48px;padding:0 24px;border-radius:10px;background:#E2B714;color:#0B2B1A;font-family:'Geist',sans-serif;font-size:16px;font-weight:600;white-space:nowrap;transition:background .12s" style-hover="background:#F0C93A;color:#0B2B1A">Take the quiz<span style="font-family:'Geist Mono',monospace;font-size:15px">&#8594;</span></a>
+        </div>
+
+        <div style="display:flex;flex-wrap:wrap;gap:14px;padding-top:14px;border-top:1px solid #E3E7E1">
+          <button onClick="{{ onPrev }}" style="flex:1 1 240px;display:flex;align-items:center;gap:14px;padding:16px 18px;border-radius:12px;border:1px solid #DDE2DB;background:#FFFFFF;cursor:pointer;text-align:left;transition:border-color .12s,background .12s" style-hover="border-color:#123020;background:#F3F5F1">
+            <span style="font-family:'Geist Mono',monospace;font-size:16px;color:#E2B714">&#8592;</span>
+            <span style="display:flex;flex-direction:column;gap:4px;min-width:0">
+              <span style="font-family:'Geist Mono',monospace;font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;color:#5A6B60">Previous over</span>
+              <span style="font-size:15.5px;font-weight:500;color:#0B2B1A;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ prevLabel }}</span>
+            </span>
+          </button>
+          <button onClick="{{ onNext }}" style="flex:1 1 240px;display:flex;align-items:center;gap:14px;padding:16px 18px;border-radius:12px;border:1px solid #123020;background:#123020;cursor:pointer;justify-content:flex-end;transition:background .12s" style-hover="background:#0B2B1A">
+            <span style="display:flex;flex-direction:column;gap:4px;min-width:0;align-items:flex-end">
+              <span style="font-family:'Geist Mono',monospace;font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;color:#E2B714">Next over</span>
+              <span style="font-size:15.5px;font-weight:500;color:#FFFFFF;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ nextLabel }}</span>
+            </span>
+            <span style="font-family:'Geist Mono',monospace;font-size:16px;color:#E2B714">&#8594;</span>
+          </button>
+        </div>
+      </article>
+    </main>
+  </div>
+
+  <footer style="background:#0A2417;padding:20px clamp(14px,2.2vw,30px)">
+    <div style="max-width:1680px;margin:0 auto;display:flex;flex-wrap:wrap;gap:12px;align-items:center;justify-content:space-between">
+      <div style="display:flex;flex-wrap:wrap;align-items:center;gap:12px">
+        <span style="font-family:'Geist Mono',monospace;font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:#7E968A">The Playing XI</span>
+        <span style="font-family:'Geist Mono',monospace;font-size:10px;color:#3E5A4B">·</span>
+        <a href="https://www.linkedin.com/in/john-fong-04b7a120/" target="_blank" rel="noopener noreferrer" style="display:flex;align-items:center;gap:8px;border-radius:999px;border:1px solid rgba(255,255,255,.12);padding:6px 12px;font-family:'Geist Mono',monospace;font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:#DCE5DE;white-space:nowrap;transition:border-color .12s,color .12s" style-hover="border-color:#E2B714;color:#FFFFFF">
+          <svg viewBox="0 0 24 24" fill="#E2B714" width="12" height="12" aria-hidden="true"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z" /></svg>
+          Contact Me
+        </a>
+        <span style="font-family:'Geist Mono',monospace;font-size:10px;color:#3E5A4B">·</span>
+        <a href="https://github.com/jf8peas/explain-machine-learning-in-cricket-terms/issues/new" target="_blank" rel="noopener noreferrer" style="display:flex;align-items:center;gap:8px;border-radius:999px;border:1px solid rgba(255,255,255,.12);padding:6px 12px;font-family:'Geist Mono',monospace;font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:#DCE5DE;white-space:nowrap;transition:border-color .12s,color .12s" style-hover="border-color:#E2B714;color:#FFFFFF">
+          <span style="font-family:'Geist Mono',monospace;font-size:9px;font-weight:600;letter-spacing:.02em;color:#E2B714">GH</span>
+          Feedback
+        </a>
+      </div>
+      <span style="font-family:'Geist Mono',monospace;font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:#3E5A4B">Stumps drawn at 18:30</span>
+    </div>
+  </footer>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1600},&quot;showCommentary&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Content&quot;}}">
+const C = { plain:"#DDE7E0", kw:"#E2B714", str:"#7FD1A6", num:"#9FD0FF", com:"#4E6B5B", fn:"#FFFFFF" };
+const P = (t) => ({ k:"p", t });
+const H = (t) => ({ k:"h", t });
+const L = (items) => ({ k:"ol", items });
+
+const DATA = [
+  { title:"About This Site", short:"About", chapters:[
+    { nav:"Site Architecture", meta:"5 min · ground plan", title:"Site Architecture", subhead:"Walking the Ground",
+      lede:"Before a single ball is bowled, you walk the ground. This site is laid out the same way — six sessions, twenty-eight chapters, and one path through them that assumes nothing.",
+      blocks:[
+        P("Every chapter follows the same shape: a plain-language explanation, a cricket analogy that carries the intuition, a runnable Python snippet, and a short exercise. Nothing here needs a maths degree, and nothing here skips the maths that matters."),
+        H("Six sessions, in order"),
+        P("The sessions build on each other. Pre-Game sets up the environment and the workflow. Scoring teaches you to read a result before you learn to produce one. The two innings cover classical machine learning and deep learning, and Post-Game covers agents."),
+        L([{t:"About This Site — orientation and how to use it"},{t:"Pre-Game Preparation — setup, workflow, features"},{t:"Scoring: Model Evaluation — reading the numbers"},{t:"First Innings: Classical ML"},{t:"Second Innings: Deep Learning"},{t:"Post-Game: Agent Solutions"}])
+      ],
+      commentary:"Read Scoring before you read the innings. Knowing what a good result looks like changes what you build.",
+      codeFile:"site/structure.py", codeOut:"6 sessions · 28 chapters · 24 exercises",
+      code:`SESSIONS = {
+    1: ("About This Site",           3),
+    2: ("Pre-Game Preparation",      4),
+    3: ("Scoring: Model Evaluation", 5),
+    4: ("First Innings: Classical ML", 6),
+    5: ("Second Innings: Deep Learning", 5),
+    6: ("Post-Game: Agent Solutions", 5),
+}
+
+print(sum(n for _, n in SESSIONS.values()), "chapters")` },
+    { nav:"How to Use This Site", meta:"4 min · match rules", title:"How to Use This Site", subhead:"Reading the Conditions",
+      lede:"Run every snippet. Reading code is like watching highlights — pleasant, and no substitute for facing a ball yourself.",
+      blocks:[
+        P("Each chapter takes between five and fifteen minutes to read, and roughly the same again to work through the exercise. The estimates in the innings card assume you type the code rather than paste it."),
+        H("Three habits worth forming"),
+        L([{t:"Type the snippets by hand, then break them on purpose"},{t:"Write the answer down before you check it"},{t:"Return to a chapter a week later and re-explain it out loud"}])
+      ],
+      commentary:"Nobody learned to bat by reading a coaching manual on the train.",
+      codeFile:"site/exercise.py", codeOut:"exercise 2.2 · 3 assertions passed",
+      code:`def check(fn, cases):
+    for args, expected in cases:
+        got = fn(*args)
+        assert got == expected, f"{args}: {got} != {expected}"
+    print(len(cases), "assertions passed")` },
+    { nav:"Who This Is For", meta:"3 min · team sheet", title:"Who This Is For", subhead:"Naming the Squad",
+      lede:"Written for people who can already write a loop, read a function, and want the machine learning vocabulary to stop feeling like a foreign broadcast.",
+      blocks:[
+        P("You do not need statistics beyond averages and percentages. You do need patience with notation, because the notation is where most of the difficulty hides and almost none of the ideas do."),
+        H("Not for everyone"),
+        P("If you have already trained models in production, skip to Post-Game. If you have never written Python, spend a fortnight elsewhere first and come back — this site will still be here.")
+      ],
+      commentary:"Know your role in the order before you pad up.",
+      codeFile:"site/prereq.py", codeOut:"python 3.11 · loops ok · functions ok",
+      code:`# if this runs and you understand why, you are ready
+squad = ["opener", "opener", "three", "four", "five"]
+
+for position, role in enumerate(squad, start=1):
+    print(f"{position}. {role}")` }
+  ]},
+  { title:"Pre-Game: ML Fundamentals", short:"Pre-Game", chapters:[
+    { nav:"Environment Setup", meta:"7 min · kit bag", done:true, title:"Environment Setup", subhead:"The Kit Bag Check",
+      lede:"Nobody borrows a bat at the toss. Pin your versions, isolate your environment, and make the whole thing reproducible on someone else's machine before you write a line of modelling code.",
+      blocks:[
+        P("A virtual environment per project keeps a NumPy upgrade for one model from breaking three others. It costs thirty seconds and saves the afternoon you would otherwise spend reading a stack trace about binary incompatibility."),
+        H("Pin the studs"),
+        P("Loose version ranges are spikes that fall out mid-run. Lock exact versions in a lockfile, commit it, and let CI rebuild the bag from scratch on every push.")
+      ],
+      commentary:"'It works on my machine' is the batting equivalent of 'I was in, actually'.",
+      codeFile:"setup.sh", codeOut:"env ready · 14 packages pinned",
+      code:`python -m venv .venv
+source .venv/bin/activate
+
+pip install "numpy==2.1.3" "pandas==2.2.3" \\
+            "scikit-learn==1.5.2" "tensorflow==2.18.0"
+
+pip freeze > requirements.lock` },
+    { nav:"ML Workflow", meta:"11 min · match plan", rate:9, title:"ML Workflow", subhead:"Playing the Innings",
+      lede:"No selector picks a squad off a single highlight reel. They gather the scorecards, study the averages, run the nets, name an XI, and only then send them out to face a bowler they have never seen. The machine learning workflow is that same selection process, written in code.",
+      blocks:[
+        P("Machine learning lets us build mathematical models that find patterns in data on their own, and then apply those patterns to data they have never seen. That last clause is the whole game. A model that performs beautifully on the deliveries it has already faced has proved nothing — every batter looks like a century-maker against a bowling machine set to the same length."),
+        P("So the workflow is built to prevent self-deception. Seven steps, in order:"),
+        L([{t:"Data collection"},{t:"Data exploration and wrangling"},{t:"Data preparation"},{t:"Model selection"},{t:"Training"},{t:"Evaluation on data the model has never seen"},{t:"Deployment and monitoring"}]),
+        H("The split is sacred"),
+        P("The test set is the match. You do not practise on the match. Touch it once, at the very end, and record the number honestly, even when it is worse than the number you gave your captain last week.")
+      ],
+      commentary:"Rotate the strike between exploration and evaluation. Batters who only play one shot get found out by tea.",
+      codeFile:"workflow/plan.py", codeOut:"train 1600 · val 200 · test 200 (untouched)",
+      code:`from sklearn.model_selection import train_test_split
+
+# the match is played once — hold it back
+X_rest, X_test, y_rest, y_test = train_test_split(
+    X, y, test_size=0.10, random_state=7, stratify=y
+)
+X_train, X_val, y_train, y_val = train_test_split(
+    X_rest, y_rest, test_size=0.11, random_state=7
+)
+
+print(len(X_train), len(X_val), len(X_test))` },
+    { nav:"Feature Engineering", meta:"13 min · gaps, freaks & lopsided squads", title:"Feature Engineering", subhead:"Finding the Gaps",
+      lede:"Raw data is a squad of eleven bowlers. Feature engineering is the work of turning what you were given into what the model can actually use.",
+      blocks:[
+        P("Missing values are gaps in the field: you can drop the row, fill it with a median, or add a flag saying the value was absent. Which one is right depends entirely on why it went missing, and that question is answered by domain knowledge rather than by code."),
+        H("Freaks and lopsided squads"),
+        P("Outliers are the once-in-a-decade 400 not out. Sometimes they are the most informative rows you own; sometimes they are a broken sensor. Class imbalance is the lopsided squad — when 98% of your rows share one label, resampling or class weights stop the model from simply always predicting the majority."),
+        P("Scale numeric features before anything distance-based. A column measured in runs and a column measured in strike rate are not comparable until they are.")
+      ],
+      commentary:"Better features beat better models, almost every time, for far less compute.",
+      codeFile:"pre_game/features.py", codeOut:"8 features · 0 nulls · scaled",
+      code:`from sklearn.pipeline import Pipeline
+from sklearn.impute import SimpleImputer
+from sklearn.preprocessing import StandardScaler
+
+prep = Pipeline([
+    ("fill",  SimpleImputer(strategy="median")),
+    ("scale", StandardScaler()),
+])
+
+X_train_prepared = prep.fit_transform(X_train)
+X_val_prepared   = prep.transform(X_val)   # fit once, on train only` },
+    { nav:"Parameters & Hyperparameters", meta:"6 min · technical tuning", title:"Parameters & Hyperparameters", subhead:"Technical Tuning",
+      lede:"Parameters are what the model learns. Hyperparameters are what you decide before it starts. Confusing the two is the source of a remarkable amount of wasted compute.",
+      blocks:[
+        P("A batter's footwork is learned through thousands of deliveries; that is a parameter. The length of the net session is set by the coach beforehand; that is a hyperparameter. Learning rate, tree depth, number of neighbours, regularisation strength — all coach decisions."),
+        H("Search, do not guess"),
+        P("Grid search tries every combination you name. Random search samples from ranges and usually finds something comparable in a fraction of the time. Either way, tune against the validation set, never the test set.")
+      ],
+      commentary:"Tuning is coaching. It changes how the player learns, not what they have learned.",
+      codeFile:"pre_game/tuning.py", codeOut:"best: {'max_depth': 6, 'min_samples_leaf': 10}",
+      code:`from sklearn.model_selection import RandomizedSearchCV
+
+grid = {"max_depth": [3, 4, 6, 8, None],
+        "min_samples_leaf": [1, 5, 10, 25]}
+
+search = RandomizedSearchCV(tree, grid, n_iter=8, cv=5, random_state=7)
+search.fit(X_train, y_train)
+
+print(search.best_params_)` }
+  ]},
+  { title:"Scoring: Model Evaluation", short:"Scoring", chapters:[
+    { nav:"Accuracy & Its Limits", meta:"8 min · the batting average", title:"Accuracy & Its Limits", subhead:"The Batting Average",
+      lede:"Accuracy is the batting average of machine learning: a single number everyone quotes, and a single number that hides almost everything worth knowing.",
+      blocks:[
+        P("If one appeal in twenty is genuine, a model that says not out every single time is 95% accurate and completely useless. Accuracy only means something when the classes are roughly balanced and the two kinds of mistake cost about the same."),
+        H("Ask what the errors cost"),
+        P("Before quoting a score, decide which error hurts more. That decision determines which metric you should have been reading all along.")
+      ],
+      commentary:"An average of 45 tells you nothing about whether he can play spin.",
+      codeFile:"scoring/accuracy.py", codeOut:"accuracy 0.95 · but recall 0.00",
+      code:`from sklearn.metrics import accuracy_score, recall_score
+
+always_not_out = [0] * len(y_val)
+
+print("accuracy", accuracy_score(y_val, always_not_out))
+print("recall  ", recall_score(y_val, always_not_out, zero_division=0))` },
+    { nav:"Precision & Recall", meta:"10 min · appeals & dismissals", title:"Precision & Recall", subhead:"Appeals and Dismissals",
+      lede:"Precision asks how many of your appeals were correct. Recall asks how many real dismissals you appealed for. Improving one usually costs you the other.",
+      blocks:[
+        P("An over-appealing fielding side has high recall and dreadful precision. A side that appeals only for the plumbest lbw has the reverse. The threshold you choose is where you sit between those two teams, and it is a judgement about consequences rather than mathematics."),
+        H("F1 is a compromise, not an answer"),
+        P("The harmonic mean of the two is useful for comparing models quickly. It is not useful for deciding what your system should do when a false positive costs a thousand pounds and a false negative costs ten.")
+      ],
+      commentary:"Set the threshold before you see the replay. Otherwise you are just moving the stumps.",
+      codeFile:"scoring/pr.py", codeOut:"precision 0.88 · recall 0.74 · f1 0.80",
+      code:`from sklearn.metrics import precision_recall_fscore_support
+
+proba = clf.predict_proba(X_val)[:, 1]
+upheld = proba > 0.60          # your threshold, your call
+
+p, r, f1, _ = precision_recall_fscore_support(
+    y_val, upheld, average="binary"
+)
+print(round(p, 2), round(r, 2), round(f1, 2))` },
+    { nav:"The Confusion Matrix", meta:"7 min · the wagon wheel", title:"The Confusion Matrix", subhead:"The Wagon Wheel",
+      lede:"Four numbers, arranged in a square, that tell you exactly which mistakes your model makes rather than merely how many.",
+      blocks:[
+        P("True positives and true negatives are the correct calls. False positives are the appeals you should not have made; false negatives are the dismissals you let go. Every metric in the previous two chapters is arithmetic on these four cells."),
+        H("Read it before you read anything else"),
+        P("A model with a promising F1 and forty false negatives in a medical setting is not a promising model. The matrix makes that visible in a way a single score never will.")
+      ],
+      commentary:"The wagon wheel shows where the runs went. The matrix shows where the errors went.",
+      codeFile:"scoring/matrix.py", codeOut:"[[812  23]\\n [ 41 124]]",
+      code:`from sklearn.metrics import confusion_matrix
+
+tn, fp, fn, tp = confusion_matrix(y_val, upheld).ravel()
+
+print(f"missed dismissals (fn): {fn}")
+print(f"bad appeals       (fp): {fp}")` },
+    { nav:"Cross-Validation", meta:"9 min · five different pitches", title:"Cross-Validation", subhead:"Five Different Pitches",
+      lede:"One good score on one pitch is an anecdote. Cross-validation makes the model play the same innings on five surfaces and reports the average and the spread.",
+      blocks:[
+        P("K-fold splits the training data into five parts, trains on four, evaluates on the fifth, and rotates. The mean tells you how good the model is; the standard deviation tells you how much to trust the mean."),
+        H("The spread is the interesting number"),
+        P("Five scores of 0.79, 0.81, 0.80, 0.78, 0.82 is a reliable side. Scores of 0.94, 0.61, 0.88, 0.55, 0.91 average to the same place and describe a completely different, far more dangerous model.")
+      ],
+      commentary:"Away form is form. Home form is a rumour.",
+      codeFile:"scoring/cv.py", codeOut:"cv 0.80 +/- 0.015 across 5 folds",
+      code:`from sklearn.model_selection import cross_val_score
+
+scores = cross_val_score(model, X_train, y_train, cv=5, scoring="f1")
+
+print(scores.round(3))
+print("mean", scores.mean().round(3), "+/-", scores.std().round(3))` },
+    { nav:"Loss Functions", meta:"8 min · the margin of defeat", title:"Loss Functions", subhead:"The Margin of Defeat",
+      lede:"A metric is for you. A loss function is for the model — the single number it is actually trying to reduce, one small step at a time.",
+      blocks:[
+        P("Mean squared error punishes large misses disproportionately, which suits projected-score problems where being fifty runs out is far worse than twice being twenty-five out. Cross-entropy punishes confident wrong answers, which suits classification."),
+        H("Optimise the loss, report the metric"),
+        P("They are rarely the same function, and they should not be. Accuracy is not differentiable; cross-entropy is. The model needs a slope to walk down.")
+      ],
+      commentary:"Losing by one run and losing by two hundred are both losses. The loss function knows the difference.",
+      codeFile:"scoring/loss.py", codeOut:"mse 131.4 · bce 0.312",
+      code:`import tensorflow as tf
+
+mse = tf.keras.losses.MeanSquaredError()
+bce = tf.keras.losses.BinaryCrossentropy()
+
+print(float(mse(y_true_runs, y_pred_runs)))
+print(float(bce(y_true_out,  y_pred_out)))` }
+  ]},
+  { title:"First Innings: Classical ML", short:"First Innings", chapters:[
+    { nav:"Regression", meta:"12 min · predicting the chase", title:"Regression", subhead:"Predicting the Chase Total",
+      lede:"Twelve overs gone, two down, and the broadcast puts a projected score on screen. That number is a regression — a continuous prediction drawn from everything the match has told us so far.",
+      blocks:[
+        P("Linear regression fits one straight line through the scatter of past matches: given overs bowled, wickets down, and current run rate, what total tends to follow? The line will never pass through every point, and it is not supposed to. It is a summary, not a prophecy."),
+        H("Read the residuals like a fielding chart"),
+        P("Where the model is wrong tells you more than where it is right. If it under-predicts every death-overs total, the relationship has curved and your straight line is bowling a length that no longer applies.")
+      ],
+      commentary:"A projected score is a confident guess wearing a suit. Always ask it for an error bar.",
+      codeFile:"first_innings/regression.py", codeOut:"MAE 11.4 runs · R² 0.78",
+      code:`from sklearn.linear_model import LinearRegression
+from sklearn.metrics import mean_absolute_error
+
+cols = ["overs", "wickets", "run_rate"]
+model = LinearRegression().fit(X_train[cols], y_train)
+
+pred = model.predict(X_val[cols])
+print("MAE", round(mean_absolute_error(y_val, pred), 1), "runs")` },
+    { nav:"Classification", meta:"10 min · out or not out", title:"Classification", subhead:"Out or Not Out",
+      lede:"Regression asks how many. Classification asks which one, and cricket is full of which-one questions with exactly two answers and a very loud crowd.",
+      blocks:[
+        P("A classifier does not return a verdict; it returns a probability. 0.82 out is a strong appeal, 0.51 is umpire's call. Choosing where to draw the line is a decision about consequences, and it belongs to you rather than to the model."),
+        H("Logistic regression is the honest starting point"),
+        P("It is fast, it is interpretable, and its coefficients tell you which features drove the call. Beat it before you reach for anything more elaborate.")
+      ],
+      commentary:"Every classifier is a probability with a decision bolted onto the end.",
+      codeFile:"first_innings/classify.py", codeOut:"precision 0.88 · recall 0.74",
+      code:`from sklearn.linear_model import LogisticRegression
+
+clf = LogisticRegression(max_iter=1000, class_weight="balanced")
+clf.fit(X_train, y_train)
+
+proba = clf.predict_proba(X_val)[:, 1]
+print(sorted(zip(clf.coef_[0].round(2), FEATURES), reverse=True))` },
+    { nav:"Decision Trees", meta:"9 min · the field setting", title:"Decision Trees", subhead:"Setting the Field",
+      lede:"A tree is a captain asking yes-or-no questions until the field is set. Is the batter left-handed? Is it after the fifteenth over? Each answer narrows the options.",
+      blocks:[
+        P("Trees are the most readable model in the sport. You can print one, hand it to a colleague with no machine learning background, and they can follow the reasoning to any leaf."),
+        H("Readability has a price"),
+        P("Left unconstrained, a tree will keep asking questions until every training row sits alone in its own leaf. That is memorisation, and it is the subject of the last chapter in this session.")
+      ],
+      commentary:"A field setting that only works against one batter is not a plan.",
+      codeFile:"first_innings/tree.py", codeOut:"depth 4 · 11 leaves · f1 0.79",
+      code:`from sklearn.tree import DecisionTreeClassifier, export_text
+
+tree = DecisionTreeClassifier(max_depth=4, min_samples_leaf=25)
+tree.fit(X_train, y_train)
+
+print(export_text(tree, feature_names=FEATURES))` },
+    { nav:"Ensembles", meta:"11 min · the bowling attack", title:"Ensembles", subhead:"The Bowling Attack",
+      lede:"No captain opens with the same bowler at both ends. An ensemble is a varied attack: many weak models whose combined judgement beats any one of them.",
+      blocks:[
+        P("A random forest grows hundreds of trees, each on a different sample of rows and columns, then takes the vote. Gradient boosting instead builds trees in sequence, each one specialising in the deliveries the previous ones got wrong."),
+        H("The default winner on tabular data"),
+        P("For rows-and-columns problems, a boosted tree ensemble is usually the strongest model you will train all week, and it will take four lines to write.")
+      ],
+      commentary:"Pace at one end, spin at the other. Variety is the whole strategy.",
+      codeFile:"first_innings/ensemble.py", codeOut:"forest f1 0.84 · boosted f1 0.87",
+      code:`from sklearn.ensemble import RandomForestClassifier
+from sklearn.ensemble import HistGradientBoostingClassifier
+
+forest  = RandomForestClassifier(n_estimators=300, random_state=7)
+boosted = HistGradientBoostingClassifier(max_iter=300, random_state=7)
+
+for name, m in [("forest", forest), ("boosted", boosted)]:
+    m.fit(X_train, y_train)
+    print(name, round(m.score(X_val, y_val), 3))` },
+    { nav:"Clustering", meta:"9 min · finding the types", title:"Clustering", subhead:"Finding the Player Types",
+      lede:"Nobody labelled these batters as anchors or finishers. Clustering finds the groupings that were already in the data and leaves the naming to you.",
+      blocks:[
+        P("K-means asks you how many groups to look for and then finds centres that minimise the distance to their members. Scale your features first, or whichever column has the largest units will decide every cluster on its own."),
+        H("The labels are yours to write"),
+        P("The algorithm returns cluster 0, 1 and 2. Deciding that cluster 1 is the death-overs specialists is domain work, and it is the part that produces the value.")
+      ],
+      commentary:"The data knew there were three kinds of batter. It just never said so out loud.",
+      codeFile:"first_innings/cluster.py", codeOut:"3 clusters · sizes 142 / 96 / 61",
+      code:`from sklearn.cluster import KMeans
+from collections import Counter
+
+km = KMeans(n_clusters=3, n_init=10, random_state=7)
+labels = km.fit_predict(X_scaled)
+
+print(Counter(labels))` },
+    { nav:"Overfitting", meta:"11 min · playing too many shots", title:"Overfitting", subhead:"Playing Too Many Shots",
+      lede:"A model that memorises the training set is a batter who has learned one bowler's every delivery and nothing about batting. It looks magnificent in the nets and lasts four balls in the middle.",
+      blocks:[
+        P("Training accuracy 0.99, validation accuracy 0.71. That gap is the model playing shots that only work against the bowling it already knows. Nothing about the first number is encouraging once you have seen the second."),
+        H("Regularisation is shot selection"),
+        P("Limiting depth, adding a penalty, or holding back features all do the same thing: they force the model to leave the wide ones alone. Cross-validation then checks the discipline holds across five pitches rather than one lucky afternoon.")
+      ],
+      commentary:"Anyone can score in the nets. Show me the away fixture.",
+      codeFile:"first_innings/overfit.py", codeOut:"train 0.99 → cv 0.71 (±0.04)",
+      code:`from sklearn.tree import DecisionTreeClassifier
+from sklearn.model_selection import cross_val_score
+
+deep = DecisionTreeClassifier()                 # every shot, no discipline
+deep.fit(X_train, y_train)
+print("train", round(deep.score(X_train, y_train), 2))
+
+cv = cross_val_score(deep, X_train, y_train, cv=5)
+print("cv   ", round(cv.mean(), 2), "+/-", round(cv.std(), 2))` }
+  ]},
+  { title:"Second Innings: Deep Learning", short:"Second Innings", chapters:[
+    { nav:"Tensors", meta:"9 min · the scorecard as a shape", title:"Tensors", subhead:"The Scorecard as a Shape",
+      lede:"A tensor is a scorecard with more dimensions. One ball is a scalar, an over is a vector, an innings is a matrix, and a whole tournament is the rank-3 array everyone keeps getting the axes wrong on.",
+      blocks:[
+        P("Almost every deep learning error is a shape error wearing a longer traceback. (32, 6, 8) means thirty-two matches, six overs each, eight features per over — and if you transpose two of those axes the maths still runs, quietly, on nonsense."),
+        H("Batch first, always"),
+        P("Keep the batch on axis zero and the rest of the pipeline stays legible. Print shapes at every boundary; it is the cheapest debugging habit in the sport.")
+      ],
+      commentary:"Nobody misreads a scorecard on purpose. They just forget which column is which.",
+      codeFile:"second_innings/tensors.py", codeOut:"shape (32, 6, 8) · rank 3 · float32",
+      code:`import tensorflow as tf
+
+ball    = tf.constant(4.0)                      # scalar  · rank 0
+over    = tf.constant([1, 0, 4, 6, 0, 2])       # vector  · rank 1
+innings = tf.random.normal((6, 8))              # matrix  · rank 2
+season  = tf.random.normal((32, 6, 8))          # batch   · rank 3
+
+print(season.shape, tf.rank(season).numpy(), season.dtype)` },
+    { nav:"Layers & Activations", meta:"10 min · the batting order", title:"Layers & Activations", subhead:"Picking the Batting Order",
+      lede:"Layers are a batting order. Openers take the raw new ball, the middle order builds structure, and the finisher converts everything into one clean number the scoreboard can use.",
+      blocks:[
+        P("A dense layer is a weighted sum, which on its own can only ever draw a straight line. The activation function is what bends it. Without a non-linearity, ten stacked layers collapse into the arithmetic of one."),
+        H("ReLU for the middle, sigmoid at the end"),
+        P("ReLU passes positives through and zeroes negatives, which is crude and works extremely well. Sigmoid squashes the final output into a probability between nought and one.")
+      ],
+      commentary:"Everything before the finisher is just building a platform.",
+      codeFile:"second_innings/layers.py", codeOut:"params 4,417 · 4 layers",
+      code:`import tensorflow as tf
+from tensorflow.keras import layers
+
+model = tf.keras.Sequential([
+    layers.Input(shape=(8,)),
+    layers.Dense(64, activation="relu"),     # openers
+    layers.Dropout(0.2),                      # rotate the strike
+    layers.Dense(32, activation="relu"),     # middle order
+    layers.Dense(1,  activation="sigmoid"),  # the finisher
+])
+model.summary()` },
+    { nav:"Backpropagation", meta:"13 min · the third umpire", title:"Backpropagation", subhead:"The Third Umpire's Review",
+      lede:"The network makes a call. The loss function says how wrong it was. Backpropagation is the review that walks the decision back through every official who touched it and tells each one exactly how much to adjust.",
+      blocks:[
+        P("The gradient is not a vague sense that something went wrong. It is a number per weight saying which direction to move and how far, derived by the chain rule from the final error back to the first layer."),
+        H("Learning rate is how much you trust the review"),
+        P("Too high and the umpire overcorrects every session until nobody knows the rules. Too low and a hundred reviews later the decision has barely moved. Watch the loss curve: smooth descent is a good panel, a sawtooth is a panel arguing with itself.")
+      ],
+      commentary:"One review does not fix an umpire. Ten thousand small ones make a very good one.",
+      codeFile:"second_innings/backprop.py", codeOut:"epoch 10 · loss 0.312 → 0.087",
+      code:`import tensorflow as tf
+
+opt = tf.keras.optimizers.Adam(learning_rate=1e-3)
+loss_fn = tf.keras.losses.BinaryCrossentropy()
+
+for epoch in range(10):
+    with tf.GradientTape() as tape:          # record the decision
+        pred = model(X_train, training=True)
+        loss = loss_fn(y_train, pred)
+    grads = tape.gradient(loss, model.trainable_weights)
+    opt.apply_gradients(zip(grads, model.trainable_weights))` },
+    { nav:"Build a Model", meta:"14 min · the full innings", title:"Build a Model", subhead:"The Full Innings",
+      lede:"Everything from this session, assembled once, end to end: compile, fit, watch the validation curve, and stop the moment it turns.",
+      blocks:[
+        P("Early stopping is the coach declaring. When validation loss stops improving for a few epochs, further training only teaches the network the training set by heart."),
+        H("Read both curves, not one"),
+        P("Training loss falling while validation loss rises is the clearest picture of overfitting you will ever get. Restore the weights from the best epoch rather than the last one.")
+      ],
+      commentary:"Declare while you are ahead. The scoreboard does not reward extra net practice.",
+      codeFile:"second_innings/train.py", codeOut:"val_accuracy 0.891 · stopped at epoch 34",
+      code:`stop = tf.keras.callbacks.EarlyStopping(
+    monitor="val_loss", patience=5, restore_best_weights=True
+)
+
+model.compile(optimizer="adam", loss="binary_crossentropy",
+              metrics=["accuracy"])
+
+history = model.fit(X_train, y_train, epochs=200, batch_size=32,
+                    validation_data=(X_val, y_val), callbacks=[stop])` },
+    { nav:"Saving & Serving", meta:"8 min · match day", title:"Saving & Serving", subhead:"Match Day",
+      lede:"A trained model that lives only in a notebook has not been deployed. It has been rehearsed.",
+      blocks:[
+        P("Save the model and the preprocessing pipeline together. A network served with features scaled differently from training will produce confident nonsense and no error message at all."),
+        H("Version everything that shipped"),
+        P("Model file, pipeline, feature list, and the metrics from the day you shipped. When performance drifts in three months, that record is the only way to tell what changed.")
+      ],
+      commentary:"The nets do not count. Only the middle counts.",
+      codeFile:"second_innings/serve.py", codeOut:"saved · model_v3.keras + prep_v3.joblib",
+      code:`import joblib
+
+model.save("artifacts/model_v3.keras")
+joblib.dump(prep, "artifacts/prep_v3.joblib")
+
+# serving: the same two objects, in the same order, always
+def predict(raw_row):
+    return float(model(prep.transform([raw_row]))[0][0])` }
+  ]},
+  { title:"Post-Game: Agent Solutions", short:"Post-Game", chapters:[
+    { nav:"Agent Architecture", meta:"12 min · the dressing room", title:"Agent Architecture", subhead:"The Dressing Room",
+      lede:"A single model is one player. An agent system is a dressing room: a captain who decides, specialists who execute, and an analyst who remembers what happened in the last six matches.",
+      blocks:[
+        P("The orchestrator captains — it reads the situation and decides who bowls next. Specialists do one job well. Memory is the analyst's laptop. Tools are the equipment. Confusion about which component holds which responsibility is the source of nearly every runaway agent loop."),
+        H("Every agent needs a declared over limit"),
+        P("Bowlers have quotas for a reason. Cap the steps, the tokens, and the tool calls, then log every decision. An agent without a scorecard cannot be reviewed, and an agent that cannot be reviewed will not be trusted in production.")
+      ],
+      commentary:"The captain does not bowl every over. That is the entire idea.",
+      codeFile:"post_game/dressing_room.py", codeOut:"turn 3/8 · handoff → stats specialist",
+      code:`ROSTER = {
+    "captain": "routes the question, never answers it",
+    "stats":   "queries the match database",
+    "video":   "retrieves and describes footage",
+    "analyst": "long-term memory across sessions",
+}
+
+def play(question, max_overs=8):
+    for over in range(max_overs):
+        role, task = captain.decide(question, memory)
+        memory.append((role, AGENTS[role].run(task)))
+        if captain.is_settled(memory):
+            return captain.summarise(memory)` },
+    { nav:"The 'DRS' Agent", meta:"11 min · referring the decision", title:"The 'DRS' Agent", subhead:"Referring the Decision",
+      lede:"DRS exists because confident officials are sometimes wrong. A review agent is the same institution in software: a second model whose only job is to check the first one's work against the evidence.",
+      blocks:[
+        P("The reviewer must be given the source material — retrieved documents, tool output, the original query — and asked whether the answer is supported. Asking a model to grade its own confidence produces a more eloquent version of the same mistake."),
+        H("Three outcomes, never two"),
+        P("Upheld, overturned, or umpire's call. That third option is what makes the system honest: when the evidence genuinely does not decide the matter, escalating to a human is the correct output rather than a failure.")
+      ],
+      commentary:"Umpire's call is not indecision. It is a system that knows the limits of its own cameras.",
+      codeFile:"post_game/drs_agent.py", codeOut:"verdict: umpire's call · escalated",
+      code:`VERDICTS = ("upheld", "overturned", "umpires_call")
+
+def review(question, answer, evidence):
+    verdict = reviewer.judge(
+        question=question, answer=answer,
+        evidence=evidence,        # the footage, not the opinion
+        allowed=VERDICTS,
+    )
+    if verdict == "overturned":
+        return primary.retry(question, hint=reviewer.reason)
+    if verdict == "umpires_call":
+        return escalate_to_human(question, answer, evidence)
+    return answer` },
+    { nav:"Agent Tools", meta:"10 min · twelfth man duties", title:"Agent Tools", subhead:"Twelfth Man Duties",
+      lede:"Tools are the twelfth man: not in the XI, but the reason the XI can keep going. A retrieval call, a SQL query, a calculator — each one does the errand the model should never attempt from memory.",
+      blocks:[
+        P("The description is the whole interface. Name what the tool does, what it needs, and what it returns, in one plain sentence. A vague description produces a model that calls the tool at the wrong moment and then blames the result."),
+        H("Never let a tool run without a boundary"),
+        P("Timeouts, row limits, read-only credentials. The tool is the only part of the system touching the real world, so it is the only part where a mistake costs something other than tokens.")
+      ],
+      commentary:"Do not ask the batter to fetch their own drinks mid-over.",
+      codeFile:"post_game/tools.py", codeOut:"match_stats(...) → 12 rows in 240ms",
+      code:`TOOLS = [{
+    "name": "match_stats",
+    "description": "Return per-over runs and wickets for one match id.",
+    "input_schema": {
+        "type": "object",
+        "properties": {"match_id": {"type": "string"}},
+        "required": ["match_id"],
+    },
+}]
+
+def match_stats(match_id, timeout=5, limit=50):
+    return db.readonly.query(OVER_SQL, match_id, timeout=timeout)[:limit]` },
+    { nav:"Memory & Context", meta:"9 min · the analyst's laptop", title:"Memory & Context", subhead:"The Analyst's Laptop",
+      lede:"Context is what the agent can see this ball. Memory is what it can recall from earlier in the tour. They are different problems with different failure modes.",
+      blocks:[
+        P("Short-term context fills up and the earliest turns fall out the back, usually the ones containing the original instruction. Summarise as you go rather than waiting for the window to overflow."),
+        H("Retrieve, do not remember"),
+        P("Long-term memory works best as a searchable store the agent queries on demand. Stuffing every past session into the prompt is expensive and makes the model worse at finding the one line that mattered.")
+      ],
+      commentary:"The analyst does not recite the whole tour. They pull up the one over you asked about.",
+      codeFile:"post_game/memory.py", codeOut:"context 4.2k tokens · 3 memories recalled",
+      code:`def build_context(question, budget=6000):
+    recalled = store.search(question, k=3)      # retrieve, don't recall
+    running  = summarise(history) if len(history) > 12 else history
+
+    ctx = SYSTEM + format(recalled) + format(running)
+    return trim(ctx, budget)` },
+    { nav:"Evaluating Agents", meta:"12 min · the post-match report", title:"Evaluating Agents", subhead:"The Post-Match Report",
+      lede:"Accuracy does not survive contact with agents. There is rarely one correct answer, and the route the agent took matters as much as where it arrived.",
+      blocks:[
+        P("Build a fixed set of scenarios with known good outcomes and run them on every change. Score the final answer, but also score the trajectory: how many steps, which tools, how many retries, what it cost."),
+        H("A rubric beats a vibe"),
+        P("Written criteria applied by a judge model give you a repeatable number. Sample those judgements by hand every week, because a judge that has quietly drifted will happily certify a system that has quietly broken.")
+      ],
+      commentary:"Score the innings and the shot selection. One of them predicts next week.",
+      codeFile:"post_game/eval.py", codeOut:"24 scenarios · 21 passed · avg 4.2 steps",
+      code:`results = []
+for case in SCENARIOS:
+    out = play(case.question)
+    results.append({
+        "passed": judge(case.rubric, out.answer),
+        "steps":  out.steps,
+        "cost":   out.tokens * PRICE,
+    })
+
+print(sum(r["passed"] for r in results), "/", len(results))` }
+  ]}
+];
+
+const KW = /^(?:def|class|import|from|return|if|elif|else|for|in|as|with|not|and|or|None|True|False|lambda|print|self|while|try|except|pass|source|python|pip)$/;
+
+function tokenize(src) {
+  return src.split("\n").map((raw, i) => {
+    const line = raw.replace(/\t/g, "    ");
+    const toks = [];
+    if (!line.trim()) { toks.push({ t: "\u00a0", c: C.plain }); return { n: i + 1, toks }; }
+    const re = /(#.*$)|("(?:[^"\\]|\\.)*"|'(?:[^'\\]|\\.)*')|\b(\d+(?:\.\d+)?(?:e-?\d+)?)\b|\b([A-Za-z_]\w*)\b/g;
+    let last = 0, m;
+    while ((m = re.exec(line))) {
+      if (m.index > last) toks.push({ t: line.slice(last, m.index), c: C.plain });
+      let c = C.plain;
+      if (m[1]) c = C.com;
+      else if (m[2]) c = C.str;
+      else if (m[3]) c = C.num;
+      else if (KW.test(m[4])) c = C.kw;
+      else if (line[re.lastIndex] === "(") c = C.fn;
+      toks.push({ t: m[0], c });
+      last = re.lastIndex;
+    }
+    if (last < line.length) toks.push({ t: line.slice(last), c: C.plain });
+    return { n: i + 1, toks };
+  });
+}
+
+const TOTAL = DATA.reduce((n, g) => n + g.chapters.length, 0);
+const INITIAL_DONE = [];
+DATA.forEach((g, i) => g.chapters.forEach((c, j) => { if (c.done) INITIAL_DONE.push(i + "." + j); }));
+
+class Component extends DCLogic {
+  state = { s: 1, ch: 1, copied: false, done: INITIAL_DONE.slice(), exercises: 0, justReset: false, q: "", open: false };
+
+  search(q) {
+    const t = q.trim().toLowerCase();
+    if (!t) return [];
+    const hits = [];
+    DATA.forEach((g, i) => g.chapters.forEach((c, j) => {
+      const hay = [c.nav, c.title, c.subhead, c.lede, g.title, c.meta].join(" ").toLowerCase();
+      const bodyHit = c.blocks.some(b => (b.t || "").toLowerCase().indexOf(t) >= 0);
+      if (hay.indexOf(t) >= 0 || bodyHit) {
+        const rank = c.nav.toLowerCase().indexOf(t) === 0 ? 0 : (hay.indexOf(t) >= 0 ? 1 : 2);
+        hits.push({ s: i, ch: j, g, c, rank });
+      }
+    }));
+    return hits.sort((a, b) => a.rank - b.rank).slice(0, 7);
+  }
+
+  reset() {
+    this.setState({ done: [], exercises: 0, justReset: true });
+    clearTimeout(this._rt);
+    this._rt = setTimeout(() => this.setState({ justReset: false }), 1600);
+  }
+
+  pick(s, ch) { this.setState({ s, ch, copied: false }); }
+
+  componentDidMount() {
+    this._measure = () => {
+      const h = document.querySelector("header");
+      if (h) this.setState({ headH: Math.round(h.getBoundingClientRect().height) + 14, wide: window.innerWidth >= 1000 });
+    };
+    this._measure();
+    setTimeout(this._measure, 300);
+    window.addEventListener("resize", this._measure);
+  }
+
+  componentWillUnmount() { window.removeEventListener("resize", this._measure); }
+
+  step(dir) {
+    const flat = this.flat();
+    const at = flat.findIndex(f => f.s === this.state.s && f.ch === this.state.ch);
+    const nxt = flat[(at + dir + flat.length) % flat.length];
+    this.pick(nxt.s, nxt.ch);
+  }
+
+  flat() {
+    const out = [];
+    DATA.forEach((g, i) => g.chapters.forEach((c, j) => out.push({ s: i, ch: j, g, c })));
+    return out;
+  }
+
+  renderVals() {
+    const { s, ch } = this.state;
+    const g = DATA[s], c = g.chapters[ch];
+    const flat = this.flat();
+    const at = flat.findIndex(f => f.s === s && f.ch === ch);
+    const prev = flat[(at - 1 + flat.length) % flat.length];
+    const next = flat[(at + 1) % flat.length];
+    const over = (s + 1) + "." + (ch + 1);
+    const done = this.state.done;
+    const COMPLETED = done.length;
+
+    const hits = this.search(this.state.q);
+    const showPanel = this.state.open && this.state.q.trim().length > 0;
+
+    return {
+      q: this.state.q,
+      showResults: showPanel && hits.length > 0,
+      showEmpty: showPanel && hits.length === 0,
+      resultCount: hits.length + (hits.length === 1 ? " chapter" : " chapters"),
+      results: hits.map(h => ({
+        key: h.s + "." + h.ch,
+        over: (h.s + 1) + "." + (h.ch + 1),
+        nav: h.c.nav,
+        session: h.g.title,
+        sub: h.c.subhead
+      })),
+      onSearch: (e) => this.setState({ q: e.target.value, open: true }),
+      onSearchFocus: () => this.setState({ open: true }),
+      onSearchBlur: () => setTimeout(() => this.setState({ open: false }), 140),
+      onSearchKey: (e) => { if (e.key === "Escape") this.setState({ q: "", open: false }); },
+      onClearSearch: () => this.setState({ q: "", open: false }),
+      onResult: (e) => {
+        const p = e.currentTarget.dataset.k.split(".");
+        this.setState({ q: "", open: false, copied: false, s: +p[0], ch: +p[1] });
+      },
+      onReset: () => this.reset(),
+      resetLabel: this.state.justReset ? "Cleared" : "Reset",
+      resetStyle: "display:inline-flex;align-items:center;height:26px;padding:0 11px;border-radius:7px;border:1px solid " +
+        (this.state.justReset ? "#E2B714" : "#DDE2DB") + ";background:" + (this.state.justReset ? "#FBF3D6" : "transparent") +
+        ";color:" + (this.state.justReset ? "#8A6E00" : "#5A6B60") +
+        ";font-family:'Geist Mono',monospace;font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;cursor:pointer;transition:background .12s,border-color .12s,color .12s",
+      stickyTop: this.state.headH || 170,
+      asidePos: this.state.wide === false ? "static" : "sticky",
+      bugSession: (s + 1) + " / 6",
+      bugOver: over,
+      bugRate: (c.rate ?? parseInt(c.meta, 10)) + " min",
+      bugPct: Math.round((COMPLETED / TOTAL) * 100),
+      bugPctLabel: COMPLETED + "/" + TOTAL,
+      sessions: DATA.map((x, i) => {
+        const on = i === s;
+        return {
+          i: String(i), num: "0" + (i + 1), title: x.title,
+          navStyle: "display:flex;align-items:center;gap:11px;padding:13px 18px;background:" +
+            (on ? "rgba(226,183,20,.1)" : "transparent") +
+            ";border:0;border-bottom:4px solid " + (on ? "#E2B714" : "transparent") +
+            ";color:" + (on ? "#FFFFFF" : "#C3D2C8") + ";cursor:pointer;flex:none;transition:background .14s,border-color .14s,color .14s"
+        };
+      }),
+      sessionTitle: g.title,
+      chapters: g.chapters.map((x, j) => {
+        const on = j === ch;
+        return {
+          i: String(j), nav: x.nav, meta: x.meta, over: (s + 1) + "." + (j + 1),
+          tick: done.indexOf(s + "." + j) >= 0 ? "\u2713" : "",
+          numBg: on ? "#E2B714" : "rgba(255,255,255,.07)",
+          numFg: on ? "#0B2B1A" : "#8FA79A",
+          rowStyle: "display:flex;align-items:center;gap:13px;width:100%;padding:11px 12px;border:0;border-radius:11px;background:" +
+            (on ? "rgba(226,183,20,.1)" : "transparent") + ";color:" + (on ? "#FFFFFF" : "#D6E0D9") +
+            ";cursor:pointer;transition:background .14s,color .14s"
+        };
+      }),
+      statDone: COMPLETED + " / " + TOTAL,
+      statExercises: this.state.exercises + " / 24",
+      eyebrow: g.short + " · Over " + over,
+      readTime: (c.rate ?? parseInt(c.meta, 10)) + " min · one full innings",
+      title: c.title,
+      subhead: c.subhead,
+      lede: c.lede,
+      blocks: c.blocks.map(b => ({
+        isH: b.k === "h", isP: b.k === "p", isList: b.k === "ol",
+        text: b.t || "", items: b.items || []
+      })),
+      commentary: c.commentary,
+      codeFile: c.codeFile,
+      codeOut: c.codeOut,
+      codeLines: tokenize(c.code),
+      prevLabel: prev.c.nav,
+      nextLabel: next.c.nav,
+      copyLabel: this.state.copied ? "Copied" : "Copy",
+      quizOver: "Exercise · Over " + over,
+      quizMeta: "6 questions · pass mark 4 of 6 · no time limit",
+      onSession: (e) => this.pick(+e.currentTarget.dataset.i, 0),
+      onChapter: (e) => this.pick(s, +e.currentTarget.dataset.c),
+      onPrev: () => this.step(-1),
+      onNext: () => this.step(1),
+      onCopy: () => {
+        try { navigator.clipboard && navigator.clipboard.writeText(c.code); } catch (err) {}
+        this.setState({ copied: true });
+        setTimeout(() => this.setState({ copied: false }), 1400);
+      }
+    };
+  }
+}
+</script>
+</body>
+</html>

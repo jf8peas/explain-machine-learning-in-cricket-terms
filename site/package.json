@@ -10,7 +10,11 @@
     "astro": "astro"
   },
   "dependencies": {
-    "astro": "^5.13.0"
+    "@astrojs/check": "^0.9.10",
+    "astro": "^5.13.0",
+    "astro-pagefind": "^2.0.1",
+    "pagefind": "^1.5.2",
+    "typescript": "^5.9.3"
   },
   "devDependencies": {
     "@tailwindcss/typography": "^0.5.16",

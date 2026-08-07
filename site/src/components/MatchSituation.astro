@@ -1,0 +1,122 @@
+---
+/**
+ * Standard "Match situation" card — the shared top-right LHN container
+ * used on every page (chapter pages, innings home, practice nets).
+ * Mirrors `design/v002/The Playing XI (Current)`.
+ *
+ * The RESET button wipes chapters completed, exercises passed, and
+ * streak back to zero by calling `resetProgress()` from ../utils/progress.
+ */
+import { totalChapters } from "../data/innings";
+import { TOTAL_EXERCISES } from "../utils/progress";
+---
+<div id="lhn-match-situation" class="flex flex-none flex-col gap-2.5 rounded-[14px] border border-line bg-white px-4 py-3.5 shadow-[0_1px_0_rgba(11,15,13,.04)]">
+  <div class="flex items-center justify-between gap-3">
+    <span class="font-mono text-[9.5px] uppercase tracking-[0.16em] text-slate-custom"
+      >Match situation</span
+    >
+    <button
+      id="lhn-reset-button"
+      type="button"
+      title="Reset chapters and exercises to zero"
+      class="inline-flex h-[26px] flex-none items-center rounded-[7px] border border-line bg-transparent px-[11px] font-mono text-[10.5px] uppercase tracking-[0.16em] text-slate-custom transition-colors duration-150 hover:border-pitch hover:bg-card hover:text-pitch"
+    >
+      Reset
+    </button>
+  </div>
+  <div class="flex flex-col gap-2">
+    <div class="flex items-baseline justify-between gap-2">
+      <span class="font-sans text-[12.5px] text-slate-custom">Chapters completed</span>
+      <span
+        id="lhn-chapters-completed"
+        class="font-mono text-[12.5px] font-medium text-pitch"
+        >0 / {totalChapters}</span
+      >
+    </div>
+    <div class="flex items-baseline justify-between gap-2">
+      <span class="font-sans text-[12.5px] text-slate-custom">Exercises passed</span>
+      <span
+        id="lhn-exercises-passed"
+        class="font-mono text-[12.5px] font-medium text-pitch"
+        >0 / {TOTAL_EXERCISES}</span
+      >
+    </div>
+    <div class="flex items-baseline justify-between gap-2">
+      <span class="font-sans text-[12.5px] text-slate-custom">Streak</span>
+      <span
+        id="lhn-streak"
+        class="font-mono text-[12.5px] font-medium text-gold-deep"
+        >—</span
+      >
+    </div>
+  </div>
+</div>
+
+<script>
+  import { PROGRESS_EVENT, loadProgress, resetProgress } from "../utils/progress";
+
+  const container = document.getElementById("lhn-match-situation");
+  const resetButton = document.getElementById("lhn-reset-button") as HTMLButtonElement | null;
+  const chaptersEl = document.getElementById("lhn-chapters-completed");
+  const exercisesEl = document.getElementById("lhn-exercises-passed");
+  const streakEl = document.getElementById("lhn-streak");
+
+  /** Flash the Reset button to a gold "Cleared" state for 1.6s (matches the design mock). */
+  function flashResetConfirmation(): void {
+    if (!resetButton) return;
+    resetButton.textContent = "Cleared";
+    resetButton.classList.remove(
+      "border-line",
+      "bg-transparent",
+      "text-slate-custom",
+      "hover:border-pitch",
+      "hover:bg-card",
+      "hover:text-pitch",
+    );
+    resetButton.classList.add(
+      "border-gold",
+      "bg-[#FBF3D6]",
+      "text-gold-deep",
+    );
+    window.setTimeout(() => {
+      resetButton.textContent = "Reset";
+      resetButton.classList.add(
+        "border-line",
+        "bg-transparent",
+        "text-slate-custom",
+        "hover:border-pitch",
+        "hover:bg-card",
+        "hover:text-pitch",
+      );
+      resetButton.classList.remove(
+        "border-gold",
+        "bg-[#FBF3D6]",
+        "text-gold-deep",
+      );
+    }, 1600);
+  }
+
+  /** Re-render every progress-aware element in the card from storage. */
+  function refresh(): void {
+    const data = loadProgress();
+    const total = Number(chaptersEl?.dataset.total ?? 28);
+    const done = data.completedChapters.length;
+    if (chaptersEl) chaptersEl.textContent = `${done} / ${total}`;
+    if (exercisesEl) exercisesEl.textContent = `${data.completedExercises.length} / ${data.completedExercises.length > 0 ? data.completedExercises.length : TOTAL_EXERCISES}`;
+    if (streakEl) {
+      const n = data.streak.count;
+      streakEl.textContent = n > 0 ? `${n} day${n === 1 ? "" : "s"} · not out` : "—";
+    }
+  }
+
+  // Listen for the shared progress event (fires on reset, chapter completion, etc.)
+  window.addEventListener(PROGRESS_EVENT, refresh);
+
+  resetButton?.addEventListener("click", () => {
+    resetProgress();
+    flashResetConfirmation();
+  });
+
+  // Initial paint from storage.
+  refresh();
+</script>

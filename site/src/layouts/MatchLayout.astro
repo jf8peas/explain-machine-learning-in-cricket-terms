@@ -1,5 +1,6 @@
 ---
 import BaseLayout from "./BaseLayout.astro";
+import MatchSituation from "../components/MatchSituation.astro";
 import { getChapter, innings, totalChapters, type Stat } from "../data/innings";
 import { url } from "../utils/paths";
 
@@ -155,44 +156,7 @@ const codeLines = (fm.code ?? "").split("\n");
         </div>
       </div>
 
-      <div
-        class="flex flex-none flex-col gap-2.5 rounded-[14px] border border-line bg-white px-4 py-3.5"
-      >
-        <span
-          class="font-mono text-[9.5px] uppercase tracking-[0.16em] text-slate-custom"
-          >Match situation</span
-        >
-        <div class="flex flex-col gap-2">
-          <div class="flex items-baseline justify-between gap-2">
-            <span class="text-[12.5px] text-slate-custom"
-              >Chapters completed</span
-            >
-            <span
-              id="lhn-chapters-completed"
-              class="font-mono text-[12.5px] font-medium text-pitch"
-              >0 / {totalChapters}</span
-            >
-          </div>
-          <div class="flex items-baseline justify-between gap-2">
-            <span class="text-[12.5px] text-slate-custom"
-              >Exercises passed</span
-            >
-            <span
-              id="lhn-exercises-passed"
-              class="font-mono text-[12.5px] font-medium text-pitch"
-              >0 / 24</span
-            >
-          </div>
-          <div class="flex items-baseline justify-between gap-2">
-            <span class="text-[12.5px] text-slate-custom">Streak</span>
-            <span
-              id="lhn-streak"
-              class="font-mono text-[12.5px] font-medium text-gold-deep"
-              >—</span
-            >
-          </div>
-        </div>
-      </div>
+      <MatchSituation />
 
       <!-- Pinned LHN footer — external links -->
       <div
@@ -385,6 +349,32 @@ const codeLines = (fm.code ?? "").split("\n");
           )
         }
 
+        <!-- Practice nets callout -->
+        <div
+          class="flex flex-wrap items-center gap-5 rounded-[14px] border border-pitch bg-pitch px-6 py-[22px]"
+        >
+          <div class="flex min-w-0 flex-[1_1_260px] flex-col gap-[7px]">
+            <span
+              class="font-mono text-[10.5px] uppercase tracking-[0.18em] text-gold"
+              >Exercise · Over {over}</span
+            >
+            <span
+              class="font-display text-[clamp(20px,1.9vw,26px)] font-bold leading-[1.15] tracking-[-0.03em] text-white"
+              >Enter the practice nets</span
+            >
+            <span class="font-mono text-[12px] text-mist"
+              >15 questions * 10 multiple choice * 5 short answer</span
+            >
+          </div>
+          <a
+            href={url(`practice-nets/?chapter=${fm.chapter}`)}
+            class="inline-flex h-12 flex-none items-center gap-2.5 rounded-[10px] bg-gold px-6 font-sans text-[16px] font-semibold whitespace-nowrap text-pitch transition-colors hover:bg-gold-light"
+          >
+            Enter the practice nets
+            <span class="font-mono text-[15px]">→</span>
+          </a>
+        </div>
+
         <!-- Scorecard stat strip -->
         {
           fm.stats && fm.stats.length > 0 && (
@@ -465,7 +455,6 @@ const codeLines = (fm.code ?? "").split("\n");
 <script>
   import {
     PROGRESS_EVENT,
-    TOTAL_EXERCISES,
     initChapterCompletionTrigger,
     loadProgress,
   } from "../utils/progress";
@@ -475,12 +464,9 @@ const codeLines = (fm.code ?? "").split("\n");
 
   const headerBar = document.getElementById("header-progress-bar");
   const headerCount = document.getElementById("header-progress-count");
-  const lhnChapters = document.getElementById("lhn-chapters-completed");
-  const lhnExercises = document.getElementById("lhn-exercises-passed");
-  const lhnStreak = document.getElementById("lhn-streak");
   const chapterLinks = document.querySelectorAll("[data-chapter-slug]");
 
-  /** Re-render every progress-aware element in the Header + LHN from storage. */
+  /** Re-render the Header progress + LHN innings card ticks from storage. */
   function refreshProgressUI(): void {
     const data = loadProgress();
     const done = data.completedChapters.length;
@@ -490,15 +476,6 @@ const codeLines = (fm.code ?? "").split("\n");
     // Header scorebug — course progress bar + count
     if (headerBar) headerBar.style.width = `${pct}%`;
     if (headerCount) headerCount.textContent = `${done}/${totalChapters}`;
-
-    // LHN "Match situation" card
-    if (lhnChapters) lhnChapters.textContent = `${done} / ${totalChapters}`;
-    if (lhnExercises)
-      lhnExercises.textContent = `${data.completedExercises.length} / ${TOTAL_EXERCISES}`;
-    if (lhnStreak) {
-      const n = data.streak.count;
-      lhnStreak.textContent = n > 0 ? `${n} day${n === 1 ? "" : "s"} · not out` : "—";
-    }
 
     // LHN innings card — tick the chapters already read
     chapterLinks.forEach((link) => {
