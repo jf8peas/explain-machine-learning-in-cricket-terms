@@ -279,7 +279,7 @@ const scopeOptions = [
 </script>
 
 <script>
-  import { PROGRESS_EVENT, loadProgress } from "../utils/progress";
+  import { PROGRESS_EVENT, completeExercise, loadProgress } from "../utils/progress";
 
   // ── Data injected via the bridge script above ──
   // (define:vars forces is:inline, which can't use `import`, so the data
@@ -726,6 +726,14 @@ const scopeOptions = [
     const cur = plan[i];
     if (cur.t === "mcq" && picks[cur.key] === undefined) return;
     if (cur.t === "sa" && !(texts[cur.key] || "").trim()) return;
+
+    // Record the exercise as passed before advancing.
+    const passed =
+      cur.t === "mcq"
+        ? picks[cur.key] === cur.q.correctAnswerIndex
+        : (saScores[cur.key]?.score ?? 0) >= 2;
+    if (passed) completeExercise(i);
+
     if (i === plan.length - 1) {
       mode = "done";
       render();
