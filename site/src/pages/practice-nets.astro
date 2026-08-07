@@ -357,9 +357,9 @@ const scopeOptions = [
     const mcqs = items.filter((q: any) => q.type === "mcq");
     const sas = items.filter((q: any) => q.type === "short_answer");
 
-    // For "all" scope, pick 10 MCQs and 5 SAs (shuffled)
-    const selectedMcqs = scope === "all" ? shuffle(mcqs).slice(0, 10) : mcqs;
-    const selectedSas = scope === "all" ? shuffle(sas).slice(0, 5) : sas;
+    // Every quiz — chapter-scoped or "All Chapters" — is 10 MCQs and 5 SAs (shuffled).
+    const selectedMcqs = shuffle(mcqs).slice(0, 10);
+    const selectedSas = shuffle(sas).slice(0, 5);
 
     return [
       ...selectedMcqs.map((q: any, idx: number) => ({ t: "mcq" as const, q, key: "mcq" + idx })),

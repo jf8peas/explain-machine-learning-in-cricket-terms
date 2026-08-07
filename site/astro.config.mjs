@@ -11,6 +11,7 @@ export default defineConfig({
   adapter: vercel(),
   base: '/',
   vite: {
+    // @ts-ignore
     plugins: [tailwindcss()],
   },
   integrations: [pagefind()],
