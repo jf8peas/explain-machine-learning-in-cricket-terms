@@ -5,7 +5,7 @@ subtitle: "Picking the Batting Order"
 innings: second-innings
 chapter: build-a-model
 meta: "14 min · picking the order"
-lede: "Layers are a batting order. Openers take the raw new ball, the middle order builds structure, and the finisher converts everything into one clean number the scoreboard can use."
+lede: "Building a neural network is picking a batting order. Layers are the lineup: openers take the raw new ball, the middle order builds structure, and the finisher converts everything into one clean number the scoreboard can use."
 commentary: "A finisher with a sigmoid on the end. Everything before it is just building a platform."
 codeFile: second_innings/model.py
 codeOut: "val_accuracy 0.891 · params 4,417"

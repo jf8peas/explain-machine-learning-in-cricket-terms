@@ -5,7 +5,7 @@ subtitle: "Going Beyond Linear"
 innings: first-innings
 chapter: beyond-linear-models
 meta: "14 min · polynomials, interactions & splines"
-lede: "Linear Regression assumed every extra over faced was worth the same number of runs, no matter which over it was. Nobody who has ever watched an innings actually believes that — the powerplay, the middle overs, and the death all score at different rates, and a single straight line can only ever describe one of them."
+lede: "Linear Regression assumed every extra over faced was worth the same number of runs, no matter which over it was. Nobody who has ever watched an innings actually believes that — the powerplay, the middle overs, and the death all score at different rates, and a single straight line can only ever describe one of them. Polynomial and spline features are how you let the line bend."
 commentary: "'You can't use the powerplay rate to explain the death overs. It's not one line. It's three.' — Batting Analyst"
 codeFile: first_innings/beyond_linear.py
 codeOut: "degree 3 → 4 columns per feature · 2 knots → 3 stitched phases"

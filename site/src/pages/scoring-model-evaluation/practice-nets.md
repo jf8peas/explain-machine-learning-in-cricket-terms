@@ -5,7 +5,7 @@ subtitle: "The Practice Nets"
 innings: scoring-model-evaluation
 chapter: practice-nets
 meta: "7 min · train, validation & test splits"
-lede: "You don't judge a batter's match readiness by how well they hit gentle throw-downs in the nets. Before you can trust a single number your model reports, you have to divide the ground — nets, warm-up fixture, and a Match Day sealed in the vault."
+lede: "You don't judge a batter's match readiness by how well they hit gentle throw-downs in the nets. A proper train/validation/test split is how you divide the ground before you trust a single number your model reports — nets, warm-up fixture, and a Match Day sealed in the vault."
 commentary: "'In the nets, everyone looks like Bradman. Match day on a green wicket is where you find out who can actually bat.' — Head Coach"
 codeFile: scoring/train_test_split.py
 codeOut: "train: 80% (net practice) · val: 10% (center wicket) · test: 10% (match day)"

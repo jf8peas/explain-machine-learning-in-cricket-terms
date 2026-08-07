@@ -5,7 +5,7 @@ subtitle: "The 'DRS' Agent"
 innings: post-game
 chapter: drs-agent
 meta: "11 min · referring the decision"
-lede: "DRS exists because confident officials are sometimes wrong. A review agent is the same institution in software: a second model whose only job is to check the first one's work against the evidence."
+lede: "DRS exists because confident officials are sometimes wrong. An LLM-as-judge reviewer agent is the same institution in software: a second model whose only job is to check the first one's work against the evidence."
 commentary: "Umpire's call is not indecision. It is a system that knows the limits of its own cameras."
 codeFile: post_game/drs_agent.py
 codeOut: "verdict: umpire's call · escalated to human"

@@ -5,7 +5,7 @@ subtitle: "Form and Class"
 innings: scoring-model-evaluation
 chapter: form-and-class
 meta: "7 min · bias, variance & generalization"
-lede: "The ground is divided, the numbers are in, and now four people in a small room have to decide who can actually bat. One candidate has a single shot. One has memorised a bowling machine. Somewhere between them is the player you want."
+lede: "The ground is divided, the numbers are in, and now four people in a small room have to decide who can actually bat. One candidate has a single shot — underfitting. One has memorised a bowling machine — overfitting. Somewhere between them is the player you want."
 commentary: "'Form is temporary. Class is permanent. Our job tonight is to work out which one we're looking at.' — Chair of Selectors"
 codeFile: scoring/bias_variance.py
 codeOut: "depth 1: 0.8912 · depth 5: 0.9401 ← sweet spot · depth None: 0.9138"

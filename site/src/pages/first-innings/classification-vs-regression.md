@@ -5,7 +5,7 @@ subtitle: "How Many, or Which One?"
 innings: first-innings
 chapter: classification-vs-regression
 meta: "8 min · how many, or which one"
-lede: "Every number on the broadcast graphic is answering one of exactly two questions. Get the question wrong and the cleverest model in the ground will hand you a beautifully confident answer to something nobody asked."
+lede: "Every number on the broadcast graphic is answering one of exactly two questions: classification or regression. Get the question wrong and the cleverest model in the ground will hand you a beautifully confident answer to something nobody asked."
 commentary: "'Is that a projected total or a review verdict? Because you've built a magnificent model for the wrong scoreboard.' — Match Analyst"
 codeFile: first_innings/task_type.py
 codeOut: "regression → 9.3 runs this over · classification → 'No Wicket' (p=0.82)"

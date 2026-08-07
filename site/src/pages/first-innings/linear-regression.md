@@ -5,7 +5,7 @@ subtitle: "The Arithmetic Behind the Projected Score"
 innings: first-innings
 chapter: linear-regression
 meta: "16 min · the arithmetic behind the projected score"
-lede: "The broadcast's projected score looks like a single confident number appearing out of nowhere. Underneath it is a straight line drawn through every match in the archive, a handful of weighted reasons added together, and rather more arithmetic than the commentator lets on."
+lede: "The broadcast's projected score looks like a single confident number appearing out of nowhere. Underneath it is linear regression: a straight line drawn through every match in the archive, a handful of weighted reasons added together, and rather more arithmetic than the commentator lets on."
 commentary: "'The number isn't a guess. It's a hundred old matches, weighted and added up, wearing a very confident jacket.' — Data Analyst"
 codeFile: first_innings/linear_regression.py
 codeOut: "intercept 4.2 · overs +14.8 · wickets −9.1 · run_rate +11.3 · RMSE 11.4 · R² 0.78"

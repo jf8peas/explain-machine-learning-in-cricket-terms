@@ -5,7 +5,7 @@ subtitle: "The Dressing Room"
 innings: post-game
 chapter: architecture
 meta: "12 min · the dressing room"
-lede: "A single model is one player. An agent system is a dressing room — a captain who decides, specialists who execute, and an analyst who remembers what happened in the last six matches."
+lede: "A single model is one player. Agent architecture is the dressing room around them — a captain who decides, specialists who execute, and an analyst who remembers what happened in the last six matches."
 commentary: "The captain does not bowl every over. That is the entire idea."
 codeFile: post_game/dressing_room.py
 codeOut: "turn 3/8 · handoff → stats_specialist"

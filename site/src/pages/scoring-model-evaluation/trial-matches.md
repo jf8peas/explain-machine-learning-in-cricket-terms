@@ -5,7 +5,7 @@ subtitle: "Trial Matches"
 innings: scoring-model-evaluation
 chapter: trial-matches
 meta: "9 min · feature selection & grid search"
-lede: "Forty names on the whiteboard and eleven places in the side. Optimisation is the unglamorous work of finding the best combination — which players make the sheet, and what conditions you set for them — and then, finally, opening the vault to see whether you got it right."
+lede: "Forty names on the whiteboard and eleven places in the side. Feature selection and hyperparameter optimisation are the unglamorous work of finding the best combination — which players make the sheet, and what conditions you set for them — and then, finally, opening the vault to see whether you got it right."
 commentary: "'Everyone has an opinion on the XI. Only one of us has to write eleven names down and sign it.' — Chairman of Selectors"
 codeFile: scoring/grid_search.py
 codeOut: "90 fits · best: n_neighbors=7, metric='manhattan' · cv f1 0.847 · test f1 0.831"
