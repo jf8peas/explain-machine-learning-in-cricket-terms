@@ -7,7 +7,7 @@ import vercel from '@astrojs/vercel';
 // https://astro.build/config
 export default defineConfig({
   site: 'https://explain-machine-learning-in-cricket.vercel.app',
-  output: 'server',
+  output: 'static',
   adapter: vercel(),
   base: '/',
   vite: {
