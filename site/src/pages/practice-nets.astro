@@ -274,12 +274,19 @@ const scopeOptions = [
   </div>
 </BaseLayout>
 
-<script define:vars={{ bank, chapterMeta: Object.fromEntries(chapterMeta) }}>
+<script define:vars={{ bank, chapterMeta: Object.fromEntries(chapterMeta) }} is:inline>
+  window.__QUIZ_DATA__ = { bank, chapterMeta };
+</script>
+
+<script>
   import { PROGRESS_EVENT, loadProgress } from "../utils/progress";
 
-  // ── Data injected from the Astro frontmatter ──
-  const BANK = bank as any[];
-  const CHAPTER_META = chapterMeta as Record<string, { nav: string; over: string; innings: string; url: string }>;
+  // ── Data injected via the bridge script above ──
+  // (define:vars forces is:inline, which can't use `import`, so the data
+  // hand-off happens through window.__QUIZ_DATA__ instead.)
+  const QUIZ_DATA = (window as any).__QUIZ_DATA__;
+  const BANK = QUIZ_DATA.bank as any[];
+  const CHAPTER_META = QUIZ_DATA.chapterMeta as Record<string, { nav: string; over: string; innings: string; url: string }>;
 
   // ── DOM refs ──
   const setup = document.getElementById("quiz-setup");
@@ -535,7 +542,7 @@ const scopeOptions = [
       // SA status box
       if (saStatus) {
         saStatus.classList.toggle("hidden", isMcq || (!saLoading && !saScore));
-        saStatus.classList.toggle("flex", !isMcq && (saLoading || saScore));
+        saStatus.classList.toggle("flex", !isMcq && (saLoading || !!saScore));
         if (!isMcq) {
           if (saLoading) {
             saStatus.innerHTML = `
