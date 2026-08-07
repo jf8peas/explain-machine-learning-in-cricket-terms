@@ -141,7 +141,7 @@ plt.axhline(0, linestyle="--")
 
 A **residuals plot** — predicted score along the bottom, the size of the miss up the side — is the model's version of a spray chart. What you want to see is scattered rain: misses bouncing randomly above and below zero, roughly the same spread whether the projected score was 90 or 190. That's the textbook assumption behind linear regression's residuals — **zero mean and constant variance** across the range of predictions.
 
-![Two residuals plots side by side. The left, labelled Healthy, shows points scattered randomly above and below a dashed zero line with roughly constant spread across the full range of predicted scores. The right, labelled Unhealthy, shows the same kind of scatter but fanning out into a widening funnel — tight near low predictions, wildly spread near high ones.](/explain-machine-learning-in-cricket-terms/images/residuals-plot.png)
+![Two residuals plots side by side. The left, labelled Healthy, shows points scattered randomly above and below a dashed zero line with roughly constant spread across the full range of predicted scores. The right, labelled Unhealthy, shows the same kind of scatter but fanning out into a widening funnel — tight near low predictions, wildly spread near high ones.](/images/residuals-plot.png)
 
 Left plot, nobody would look twice — that's what a trustworthy model's misses look like: no shape, no drift, just noise. Right plot is the same model on a bad day: the spread visibly widens as the predicted score climbs, which is exactly the **funnel** pattern worth watching for.
 

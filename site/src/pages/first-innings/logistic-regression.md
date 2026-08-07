@@ -78,7 +78,7 @@ def sigmoid(z):
     return 1 / (1 + np.exp(-z))
 ```
 
-![A line chart titled The sigmoid: log-odds squeezed into a probability. An S-shaped curve rises from near zero on the left to near one on the right, flattening at both ends and crossing the midpoint exactly at Z equals zero, probability 0.5. Four points from the earlier probability, odds and log-odds table are marked on the curve: Z equals negative 2.94 at probability 0.05, Z equals 0 at probability 0.50, Z equals 1.10 at probability 0.75, and Z equals 2.94 at probability 0.95.](/explain-machine-learning-in-cricket-terms/images/sigmoid.png)
+![A line chart titled The sigmoid: log-odds squeezed into a probability. An S-shaped curve rises from near zero on the left to near one on the right, flattening at both ends and crossing the midpoint exactly at Z equals zero, probability 0.5. Four points from the earlier probability, odds and log-odds table are marked on the curve: Z equals negative 2.94 at probability 0.05, Z equals 0 at probability 0.50, Z equals 1.10 at probability 0.75, and Z equals 2.94 at probability 0.95.](/images/sigmoid.png)
 
 Same four shouts from the table a moment ago, now sitting on the curve. The middle of the S is the steep part — near `Z = 0`, a small nudge in log-odds swings the probability substantially, which is exactly why a dead-even shout is the most sensitive point on the whole curve. Out at the flat ends, near-certainty in either direction, that same size nudge barely moves the probability at all — the umpire's already made up their mind, and no small scrap of new evidence is going to shift it much further.
 
