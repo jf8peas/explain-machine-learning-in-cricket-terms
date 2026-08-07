@@ -34,13 +34,17 @@ for (const inn of innings) {
   });
 }
 
+const chaptersWithQuestions = new Set(bank.map((q) => q.chapterId));
+
 const scopeOptions = [
   { v: "all", label: "All 28 Chapters (Full Match)" },
   ...innings.flatMap((inn) =>
-    inn.chapters.map((c, j) => ({
-      v: c.slug,
-      label: `${inn.index + 1}.${j + 1} ${c.nav}`,
-    })),
+    inn.chapters
+      .map((c, j) => ({
+        v: c.slug,
+        label: `${inn.index + 1}.${j + 1} ${c.nav}`,
+      }))
+      .filter((o) => chaptersWithQuestions.has(o.v)),
   ),
 ];
 ---
@@ -324,7 +328,8 @@ const scopeOptions = [
   // ── Read ?chapter= from URL to pre-filter scope ──
   const params = new URLSearchParams(window.location.search);
   const chapterParam = params.get("chapter");
-  if (chapterParam && CHAPTER_META[chapterParam]) {
+  const hasQuestions = (chId: string) => BANK.some((q: any) => q.chapterId === chId);
+  if (chapterParam && CHAPTER_META[chapterParam] && hasQuestions(chapterParam)) {
     scope = chapterParam;
     if (scopeSel) scopeSel.value = chapterParam;
   }
