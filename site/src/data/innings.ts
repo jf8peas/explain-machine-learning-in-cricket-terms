@@ -129,7 +129,7 @@ print("author registered · 1 scorer on duty")`,
     slug: "pre-game-preparation",
     index: 1,
     number: "02",
-    title: "Pre-Game Preparation: ML Fundamentals",
+    title: "Pre-Game: ML Fundamentals",
     short: "Pre-Game",
     subtitle: "Workflow · Setup · Feature Engineering",
     chapters: [
