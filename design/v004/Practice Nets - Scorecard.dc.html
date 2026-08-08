@@ -1,0 +1,676 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet data-dc-atomics>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,700;12..96,800&family=Geist:ital,wght@0,400;0,500;0,600;1,400&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+html,body{margin:0;padding:0}
+body{background:#ECEEEA;font-family:"Geist",ui-sans-serif,system-ui,sans-serif;color:#0B0F0D;-webkit-font-smoothing:antialiased;font-feature-settings:"tnum"}
+*{box-sizing:border-box;scrollbar-width:none;-ms-overflow-style:none}
+*::-webkit-scrollbar{width:0;height:0;display:none}
+a{color:#0B2B1A;text-decoration:none}
+a:hover{color:#8A6E00}
+input,textarea,select{font-family:inherit}
+@keyframes xiBlink{0%,100%{opacity:1}50%{opacity:.25}}
+::selection{background:#E2B71455}
+</style>
+</helmet>
+
+<div style="min-height:100vh;display:flex;flex-direction:column;background:#ECEEEA">
+
+  <!-- ═══ SCOREBUG HEADER ═══ -->
+  <header style="position:sticky;top:0;z-index:20;background:#0B2B1A;box-shadow:0 10px 28px rgba(6,22,14,.22)">
+    <div style="max-width:1680px;margin:0 auto;padding:0 clamp(14px,2.2vw,30px);display:flex;align-items:center;flex-wrap:wrap;gap:16px;min-height:78px">
+
+      <div style="display:flex;align-items:center;gap:16px;flex:1 1 300px;min-width:0">
+        <div style="width:48px;height:48px;flex:none;border-radius:11px;background:#E2B714;display:flex;align-items:center;justify-content:center;font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:21px;color:#0B2B1A;letter-spacing:-.04em">XI</div>
+        <div style="display:flex;flex-direction:column;gap:4px;min-width:0">
+          <span style="font-family:'Geist Mono',monospace;font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:#E2B714;font-weight:500">Broadcast Centre</span>
+          <span style="font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:clamp(18px,2vw,25px);line-height:1.05;letter-spacing:-.025em;color:#FFFFFF;text-wrap:nowrap;overflow:hidden;text-overflow:ellipsis">The Playing XI<span style="color:#9DB3A5;font-weight:600"> · ML in Cricket Terms</span></span>
+        </div>
+      </div>
+
+      <div style="position:relative;flex:1 1 240px;max-width:360px;min-width:210px;padding:8px 0">
+        <div style="display:flex;align-items:center;gap:10px;height:42px;padding:0 12px 0 14px;border-radius:10px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12)">
+          <span style="flex:none;font-family:'Geist Mono',monospace;font-size:13px;color:#8FA79A">&#9906;</span>
+          <input type="text" value="{{ q }}" onChange="{{ onSearch }}" onFocus="{{ onSearchFocus }}" onBlur="{{ onSearchBlur }}" onKeyDown="{{ onSearchKey }}" placeholder="Search all 28 chapters" style="flex:1;min-width:0;height:100%;border:0;outline:none;background:transparent;color:#FFFFFF;font-family:'Geist',sans-serif;font-size:14.5px" />
+          <button onClick="{{ onClearSearch }}" style="flex:none;border:0;background:transparent;color:#8FA79A;font-family:'Geist Mono',monospace;font-size:10px;letter-spacing:.14em;text-transform:uppercase;cursor:pointer;padding:4px" style-hover="color:#E2B714">Esc</button>
+        </div>
+
+        <sc-if value="{{ showResults }}" hint-placeholder-val="{{ false }}">
+          <div style="position:absolute;top:56px;left:0;right:0;z-index:40;background:#FFFFFF;border-radius:12px;overflow:hidden;box-shadow:0 18px 44px rgba(6,22,14,.32)">
+            <div style="padding:10px 14px;background:#F3F5F1;font-family:'Geist Mono',monospace;font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;color:#5A6B60">{{ resultCount }}</div>
+            <sc-for list="{{ results }}" as="r" hint-placeholder-count="4">
+              <button data-k="{{ r.key }}" onClick="{{ onResult }}" style="display:flex;align-items:center;gap:12px;width:100%;padding:12px 14px;border:0;border-top:1px solid #EDF0EC;background:#FFFFFF;cursor:pointer;text-align:left" style-hover="background:#F3F5F1">
+                <span style="flex:none;width:34px;height:30px;border-radius:7px;background:#F3F5F1;color:#5A6B60;display:flex;align-items:center;justify-content:center;font-family:'Geist Mono',monospace;font-size:12px">{{ r.over }}</span>
+                <span style="display:flex;flex-direction:column;gap:3px;min-width:0;flex:1">
+                  <span style="font-size:14.5px;font-weight:500;color:#0B2B1A;line-height:1.25">{{ r.nav }}</span>
+                  <span style="font-family:'Geist Mono',monospace;font-size:11px;color:#5A6B60;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ r.session }}</span>
+                </span>
+                <span style="flex:none;font-family:'Geist Mono',monospace;font-size:13px;color:#E2B714">&#8594;</span>
+              </button>
+            </sc-for>
+          </div>
+        </sc-if>
+        <sc-if value="{{ showEmpty }}" hint-placeholder-val="{{ false }}">
+          <div style="position:absolute;top:56px;left:0;right:0;z-index:40;background:#FFFFFF;border-radius:12px;padding:16px 14px;box-shadow:0 18px 44px rgba(6,22,14,.32);font-size:14px;color:#5A6B60">No chapter matches that. Try “overfit”, “tensor” or “agent”.</div>
+        </sc-if>
+      </div>
+
+      <div style="display:flex;align-items:center;gap:0;flex-wrap:wrap;padding:8px 0">
+        <div style="display:flex;align-items:center;gap:9px;padding:2px 20px">
+          <span style="width:7px;height:7px;border-radius:50%;background:#E2B714;animation:xiBlink 1.6s ease-in-out infinite"></span>
+          <span style="font-family:'Geist Mono',monospace;font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:#E5EDE7;font-weight:500">Live</span>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:4px;padding:2px 20px;border-left:1px solid rgba(255,255,255,.12)">
+          <span style="font-family:'Geist Mono',monospace;font-size:9.5px;letter-spacing:.16em;text-transform:uppercase;color:#7E968A">Session</span>
+          <span style="font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:19px;line-height:1;color:#FFFFFF;letter-spacing:-.02em">{{ bugSession }}</span>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:4px;padding:2px 20px;border-left:1px solid rgba(255,255,255,.12)">
+          <span style="font-family:'Geist Mono',monospace;font-size:9.5px;letter-spacing:.16em;text-transform:uppercase;color:#7E968A">Over</span>
+          <span style="font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:19px;line-height:1;color:#E2B714;letter-spacing:-.02em">{{ bugOver }}</span>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:4px;padding:2px 20px;border-left:1px solid rgba(255,255,255,.12)">
+          <span style="font-family:'Geist Mono',monospace;font-size:9.5px;letter-spacing:.16em;text-transform:uppercase;color:#7E968A">Read rate</span>
+          <span style="font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:19px;line-height:1;color:#FFFFFF;letter-spacing:-.02em">{{ bugRate }}</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:14px;padding:2px 0 2px 20px;border-left:1px solid rgba(255,255,255,.12)">
+          <div style="display:flex;flex-direction:column;gap:8px">
+            <span style="font-family:'Geist Mono',monospace;font-size:9.5px;letter-spacing:.16em;text-transform:uppercase;color:#7E968A">Course progress</span>
+            <div style="width:clamp(110px,15vw,190px);height:7px;border-radius:999px;background:rgba(255,255,255,.13);overflow:hidden">
+              <div style="height:100%;border-radius:999px;background:#E2B714;min-width:7px;width:{{ bugPct }}%;transition:width .35s cubic-bezier(.2,.8,.2,1)"></div>
+            </div>
+          </div>
+          <span style="font-family:'Geist Mono',monospace;font-size:12px;color:#DCE5DE;font-weight:500">{{ bugPctLabel }}</span>
+        </div>
+      </div>
+    </div>
+
+    <nav style="background:#0A2417;border-top:1px solid rgba(255,255,255,.06);border-bottom:2px solid #E2B714">
+      <div style="max-width:1680px;margin:0 auto;padding:0 clamp(14px,2.2vw,30px)">
+        <sc-if value="{{ navCompact }}" hint-placeholder-val="{{ false }}">
+          <div style="display:flex;align-items:center;gap:10px;padding:10px 0 12px">
+            <span style="flex:none;font-family:'Geist Mono',monospace;font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:#7E968A">Session</span>
+            <select value="{{ navValue }}" onChange="{{ onNavSelect }}" style="flex:1;min-width:0;height:44px;padding:0 14px;border-radius:10px;border:1px solid rgba(255,255,255,.16);background:#0B2116;color:#FFFFFF;font-family:'Bricolage Grotesque',sans-serif;font-weight:600;font-size:15px;cursor:pointer;appearance:none">
+              <sc-for list="{{ navOptions }}" as="o" hint-placeholder-count="7"><option value="{{ o.v }}">{{ o.label }}</option></sc-for>
+            </select>
+          </div>
+        </sc-if>
+        <sc-if value="{{ navRow }}" hint-placeholder-val="{{ true }}">
+        <div data-nav-row="1" style="display:flex;align-items:stretch;gap:0;overflow-x:auto">
+        <sc-for list="{{ sessions }}" as="s" hint-placeholder-count="6">
+          <a href="./The Playing XI (Current).dc.html" style="display:flex;align-items:center;gap:10px;padding:14px 16px;border-bottom:4px solid transparent;color:#C3D2C8;flex:none;transition:background .14s,color .14s" style-hover="background:rgba(226,183,20,.08);color:#FFFFFF">
+            <span style="font-family:'Geist Mono',monospace;font-size:12px;letter-spacing:.06em;color:#E2B714;flex:none">{{ s.num }}</span>
+            <span style="font-family:'Bricolage Grotesque',sans-serif;font-weight:600;font-size:14.5px;line-height:1;letter-spacing:-.015em;color:inherit;white-space:nowrap">{{ s.label }}</span>
+          </a>
+        </sc-for>
+        <span style="display:flex;align-items:center;gap:10px;padding:14px 16px;background:rgba(226,183,20,.1);border-bottom:4px solid #E2B714;color:#FFFFFF;flex:none">
+          <span style="font-family:'Geist Mono',monospace;font-size:12px;letter-spacing:.06em;color:#E2B714">07</span>
+          <span style="font-family:'Bricolage Grotesque',sans-serif;font-weight:600;font-size:14.5px;line-height:1;letter-spacing:-.015em;white-space:nowrap">{{ netsLabel }}</span>
+        </span>
+        </div>
+        </sc-if>
+      </div>
+    </nav>
+  </header>
+
+  <!-- ═══ BODY ═══ -->
+  <div style="flex:1;max-width:1680px;width:100%;margin:0 auto;padding:clamp(16px,1.8vw,26px) clamp(14px,2.2vw,30px) 60px;display:flex;flex-wrap:wrap;gap:clamp(16px,1.6vw,24px);align-items:flex-start">
+
+    <!-- LHN -->
+    <aside style="flex:1 1 300px;max-width:392px;min-width:270px;display:flex;flex-direction:column;gap:16px;position:{{ asidePos }};top:{{ stickyTop }}px">
+      <div style="background:#123020;border-radius:16px;overflow:hidden;box-shadow:0 10px 26px rgba(6,22,14,.16)">
+        <div style="padding:18px 20px 16px;background:linear-gradient(180deg,rgba(226,183,20,.13),rgba(226,183,20,0));display:flex;flex-direction:column;gap:6px">
+          <span style="font-family:'Geist Mono',monospace;font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:#E2B714">Nets card</span>
+          <span style="font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:21px;letter-spacing:-.025em;color:#FFFFFF">Today's Session</span>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:2px;padding:6px 8px 12px">
+          <sc-for list="{{ netRows }}" as="r" hint-placeholder-count="3">
+            <div style="{{ r.rowStyle }}">
+              <span style="width:34px;height:34px;flex:none;border-radius:9px;display:flex;align-items:center;justify-content:center;font-family:'Geist Mono',monospace;font-size:13px;background:{{ r.numBg }};color:{{ r.numFg }}">{{ r.num }}</span>
+              <span style="display:flex;flex-direction:column;gap:3px;text-align:left;min-width:0;flex:1">
+                <span style="font-size:15.5px;font-weight:500;color:inherit;line-height:1.25">{{ r.name }}</span>
+                <span style="font-family:'Geist Mono',monospace;font-size:11.5px;color:#8FA79A;line-height:1.3">{{ r.meta }}</span>
+              </span>
+              <span style="flex:none;font-size:14px;color:#9BB6A5;width:14px;text-align:right">{{ r.tick }}</span>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+
+      <div style="background:#FFFFFF;border-radius:14px;padding:18px 20px 16px;display:flex;flex-direction:column;gap:14px;box-shadow:0 1px 2px rgba(11,15,13,.06)">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:12px">
+          <span style="font-family:'Geist Mono',monospace;font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:#5A6B60">Nets form</span>
+          <button onClick="{{ onResetForm }}" style="{{ resetStyle }}" style-hover="border-color:#123020;color:#123020;background:#F3F5F1">{{ resetLabel }}</button>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:11px">
+          <div style="display:flex;justify-content:space-between;align-items:baseline;gap:10px">
+            <span style="font-size:15px;color:#1E2A22">Sessions this week</span>
+            <span style="font-family:'Geist Mono',monospace;font-size:14px;color:#0B2B1A">{{ formSessions }}</span>
+          </div>
+          <div style="display:flex;justify-content:space-between;align-items:baseline;gap:10px">
+            <span style="font-size:15px;color:#1E2A22">Questions faced</span>
+            <span style="font-family:'Geist Mono',monospace;font-size:14px;color:#0B2B1A">{{ formFaced }}</span>
+          </div>
+          <div style="display:flex;justify-content:space-between;align-items:baseline;gap:10px">
+            <span style="font-size:15px;color:#1E2A22">Best score</span>
+            <span style="font-family:'Geist Mono',monospace;font-size:14px;color:#8A6E00">{{ formBest }}</span>
+          </div>
+        </div>
+      </div>
+
+      <div style="background:#0A100C;border-top:2px solid #E2B714;border-radius:14px;overflow:hidden;box-shadow:0 10px 24px rgba(6,22,14,.18)">
+        <a href="#contact" style="display:flex;align-items:center;gap:14px;padding:16px 18px;border-bottom:1px solid rgba(255,255,255,.07);color:#FFFFFF" style-hover="background:rgba(255,255,255,.04);color:#FFFFFF">
+          <span style="width:34px;height:34px;flex:none;border-radius:8px;background:#E2B714;color:#0A100C;display:flex;align-items:center;justify-content:center;font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:14px">in</span>
+          <span style="display:flex;flex-direction:column;gap:3px;flex:1;min-width:0">
+            <span style="font-size:15.5px;font-weight:500;color:#FFFFFF">Contact John Fong</span>
+            <span style="font-family:'Geist Mono',monospace;font-size:11.5px;color:#8FA79A">linkedin · /in/john-fong</span>
+          </span>
+          <span style="flex:none;font-family:'Geist Mono',monospace;font-size:13px;color:#8FA79A">&#8599;</span>
+        </a>
+        <a href="#feedback" style="display:flex;align-items:center;gap:14px;padding:16px 18px;color:#FFFFFF" style-hover="background:rgba(255,255,255,.04);color:#FFFFFF">
+          <span style="width:34px;height:34px;flex:none;border-radius:8px;background:#2A3630;color:#E5EDE7;display:flex;align-items:center;justify-content:center;font-family:'Geist Mono',monospace;font-size:12px">GH</span>
+          <span style="display:flex;flex-direction:column;gap:3px;flex:1;min-width:0">
+            <span style="font-size:15.5px;font-weight:500;color:#FFFFFF">Feedback / Report Issue</span>
+            <span style="font-family:'Geist Mono',monospace;font-size:11.5px;color:#8FA79A">github issues · new</span>
+          </span>
+          <span style="flex:none;font-family:'Geist Mono',monospace;font-size:13px;color:#8FA79A">&#8599;</span>
+        </a>
+      </div>
+    </aside>
+
+    <!-- MAIN -->
+    <main style="flex:3 1 620px;min-width:0;background:#FFFFFF;border-radius:16px;box-shadow:0 1px 2px rgba(11,15,13,.06),0 14px 34px rgba(11,15,13,.06);overflow:hidden">
+
+      <!-- Hero -->
+      <div style="padding:clamp(26px,3vw,44px) clamp(22px,3vw,48px) clamp(30px,3.4vw,50px);background:#123020;position:relative;overflow:hidden">
+        <div style="position:absolute;inset:0;background:repeating-linear-gradient(115deg,rgba(255,255,255,.035) 0 1px,transparent 1px 26px);pointer-events:none"></div>
+        <div style="position:relative;display:flex;flex-direction:column;gap:16px">
+          <span style="display:inline-flex;align-self:flex-start;align-items:center;height:31px;padding:0 15px;border-radius:999px;background:#E2B714;color:#0B2B1A;font-family:'Geist Mono',monospace;font-size:12px;letter-spacing:.13em;text-transform:uppercase">Quiz hub · /practice-nets</span>
+          <h1 style="margin:0;font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:clamp(38px,5.4vw,72px);line-height:1;letter-spacing:-.04em;color:#FFFFFF;text-wrap:balance">The Practice Nets</h1>
+          <p style="margin:0;max-width:58ch;font-size:clamp(17px,1.45vw,21px);line-height:1.6;color:#E5EDE7;text-wrap:pretty">Test your machine learning knowledge across chapters. Practice makes perfect before you head out to the middle!</p>
+        </div>
+      </div>
+
+      <article style="padding:clamp(26px,3vw,46px) clamp(22px,3vw,48px) clamp(30px,3.4vw,48px);display:flex;flex-direction:column;gap:clamp(16px,1.6vw,22px)">
+
+      <!-- ── SETUP: two formats ── -->
+      <sc-if value="{{ isSetup }}" hint-placeholder-val="{{ true }}">
+        <label style="display:flex;flex-wrap:wrap;align-items:flex-end;gap:16px;padding:20px 22px;border-radius:14px;background:#F6F8F6;border:1px solid #E3E7E1">
+          <span style="display:flex;flex-direction:column;gap:9px;flex:1 1 320px;min-width:260px">
+            <span style="font-family:'Geist Mono',monospace;font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;color:#5A6B60">Scope</span>
+            <select value="{{ scope }}" onChange="{{ onScope }}" style="width:100%;height:50px;padding:0 14px;border-radius:10px;border:1px solid #DDE2DB;background:#FFFFFF;color:#0B2B1A;font-size:15.5px;cursor:pointer;appearance:none">
+              <sc-for list="{{ scopeOptions }}" as="o" hint-placeholder-count="6"><option value="{{ o.v }}">{{ o.label }}</option></sc-for>
+            </select>
+          </span>
+          <span style="flex:1 1 240px;min-width:220px;font-size:14.5px;line-height:1.5;color:#475569;padding-bottom:14px;text-wrap:pretty">Pick a single chapter to drill, or the full match for everything.</span>
+        </label>
+
+
+        <div style="display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:18px;width:100%;padding:20px 24px;border-radius:14px;border:1px solid #E3E7E1;background:#F6F8F6">
+          <span style="display:flex;flex-direction:column;gap:5px;flex:1 1 300px;min-width:0">
+            <span style="font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:19px;letter-spacing:-.02em;color:#0B2B1A">Face the full 15</span>
+            <span style="font-family:'Geist Mono',monospace;font-size:12px;color:#5A6B60">10 multiple choice questions, then 5 short answer questions · one scorecard</span>
+          </span>
+          <button data-m="full" onClick="{{ onStart }}" style="flex:none;display:inline-flex;align-items:center;justify-content:center;gap:10px;height:52px;padding:0 36px;border-radius:11px;border:0;background:#E2B714;color:#0B2B1A;font-size:16.5px;font-weight:600;cursor:pointer;transition:background .12s" style-hover="background:#F0C93A">Start<span style="font-family:'Geist Mono',monospace;font-size:15px">&#8594;</span></button>
+        </div>
+      </sc-if>
+
+      <!-- ── ACTIVE QUESTION ── -->
+      <sc-if value="{{ isRunning }}" hint-placeholder-val="{{ false }}">
+        <section style="background:#F6F8F6;border:1px solid #E3E7E1;border-radius:14px;overflow:hidden">
+          <div style="padding:20px clamp(20px,2.4vw,30px) 18px;border-bottom:1px solid #E3E7E1;display:flex;flex-direction:column;gap:14px">
+            <div style="display:flex;flex-wrap:wrap;align-items:center;gap:12px">
+              <span style="display:inline-flex;align-items:center;height:28px;padding:0 13px;border-radius:7px;background:#E2B714;color:#0B2B1A;font-family:'Geist Mono',monospace;font-size:11px;letter-spacing:.14em;text-transform:uppercase">[ {{ phaseLabel }} ]</span>
+              <span style="font-family:'Geist Mono',monospace;font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:#5A6B60">{{ scopeLabel }}</span>
+              <span style="flex:1"></span>
+              <span style="font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:17px;letter-spacing:-.02em;color:#0B2B1A">{{ counterLabel }}</span>
+            </div>
+            <div style="height:8px;border-radius:999px;background:#E3E7E1;overflow:hidden">
+              <div style="height:100%;border-radius:999px;background:#E2B714;width:{{ qPct }}%;transition:width .3s cubic-bezier(.2,.8,.2,1)"></div>
+            </div>
+          </div>
+
+          <div style="padding:clamp(22px,2.6vw,34px) clamp(20px,2.4vw,30px);display:flex;flex-direction:column;gap:22px">
+            <div style="display:flex;flex-direction:column;gap:9px">
+              <span style="font-family:'Geist Mono',monospace;font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:#5A6B60">{{ qOver }}</span>
+              <h2 style="margin:0;font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:clamp(22px,2.3vw,32px);line-height:1.2;letter-spacing:-.03em;color:#0B2B1A;text-wrap:pretty">{{ qText }}</h2>
+            </div>
+
+            <sc-if value="{{ isMcq }}" hint-placeholder-val="{{ true }}">
+              <div style="display:flex;flex-direction:column;gap:11px">
+                <sc-for list="{{ options }}" as="o" hint-placeholder-count="4">
+                  <button data-o="{{ o.i }}" onClick="{{ onPick }}" style="{{ o.style }}" style-hover="border-color:#123020;background:#FFFFFF">
+                    <span style="{{ o.keyStyle }}">{{ o.key }}</span>
+                    <span style="flex:1;min-width:0;font-size:16px;line-height:1.45;color:inherit;text-align:left">{{ o.text }}</span>
+                    <span style="flex:none;font-family:'Geist Mono',monospace;font-size:14px;color:#8A6E00;width:16px;text-align:right">{{ o.tick }}</span>
+                  </button>
+                </sc-for>
+              </div>
+            </sc-if>
+
+            <sc-if value="{{ isSa }}" hint-placeholder-val="{{ false }}">
+              <div style="display:flex;flex-direction:column;gap:12px">
+                <textarea value="{{ answer }}" onChange="{{ onAnswer }}" placeholder="Explain it as you would to a teammate who missed the session…" rows="7" style="width:100%;padding:16px 18px;border-radius:12px;border:1px solid #DDE2DB;background:#FFFFFF;color:#0B2B1A;font-size:16px;line-height:1.6;resize:vertical;outline:none"></textarea>
+                <div style="display:flex;flex-wrap:wrap;align-items:center;gap:14px">
+                  <span style="font-family:'Geist Mono',monospace;font-size:12px;color:{{ countColor }}">{{ charCount }}</span>
+                  <span style="font-family:'Geist Mono',monospace;font-size:12px;color:#5A6B60">Marked against a 4-point rubric</span>
+                  <span style="flex:1"></span>
+                  <button onClick="{{ onNext }}" style="{{ submitStyle }}" style-hover="background:#F0C93A;color:#0B2B1A">Submit to AI Coach</button>
+                </div>
+              </div>
+            </sc-if>
+
+            <div style="display:flex;flex-wrap:wrap;align-items:center;gap:14px;padding-top:6px;border-top:1px solid #E3E7E1">
+              <button onClick="{{ onQuit }}" style="height:44px;padding:0 16px;border-radius:10px;border:1px solid #DDE2DB;background:transparent;color:#5A6B60;font-family:'Geist Mono',monospace;font-size:11px;letter-spacing:.14em;text-transform:uppercase;cursor:pointer" style-hover="border-color:#123020;color:#123020">Leave the nets</button>
+              <span style="flex:1"></span>
+              <sc-if value="{{ isMcq }}" hint-placeholder-val="{{ true }}">
+                <button onClick="{{ onNext }}" style="{{ nextStyle }}" style-hover="background:#F0C93A;color:#0B2B1A">{{ nextLabel }}</button>
+              </sc-if>
+            </div>
+          </div>
+        </section>
+      </sc-if>
+
+      <!-- ── SCORECARD ── -->
+      <sc-if value="{{ isDone }}" hint-placeholder-val="{{ false }}">
+        <section style="background:#F6F8F6;border:1px solid #E3E7E1;border-radius:14px;overflow:hidden">
+          <div style="padding:clamp(24px,2.8vw,36px) clamp(20px,2.4vw,32px);display:flex;flex-wrap:wrap;gap:28px;align-items:flex-end;border-bottom:1px solid #E3E7E1;background:linear-gradient(180deg,#FBF6E2,#F6F8F6)">
+            <div style="display:flex;flex-direction:column;gap:8px;flex:1 1 260px;min-width:0">
+              <span style="font-family:'Geist Mono',monospace;font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:#8A6E00">Post-session scorecard</span>
+              <span style="font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:clamp(46px,6vw,84px);line-height:.92;letter-spacing:-.045em;color:#0B2B1A">{{ finalScore }}</span>
+              <span style="font-size:16.5px;color:#475569">{{ percentileLine }}</span>
+            </div>
+            <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:20px;flex:1 1 300px">
+              <sc-for list="{{ resultStats }}" as="st" hint-placeholder-count="3">
+                <div style="display:flex;flex-direction:column;gap:6px">
+                  <span style="font-family:'Geist Mono',monospace;font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:#5A6B60">{{ st.k }}</span>
+                  <span style="font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:25px;line-height:1;letter-spacing:-.03em;color:#0B2B1A">{{ st.v }}</span>
+                  <span style="font-size:12.5px;color:#6B7280">{{ st.s }}</span>
+                </div>
+              </sc-for>
+            </div>
+          </div>
+
+          <div style="padding:clamp(22px,2.6vw,32px) clamp(20px,2.4vw,32px);display:flex;flex-direction:column;gap:22px">
+            <div style="display:flex;gap:16px;padding:20px 22px;border-radius:14px;background:#FFFFFF;border:1px solid #E3E7E1;border-left:3px solid #E2B714">
+              <span style="flex:none;width:44px;height:44px;border-radius:50%;background:#E2B714;display:flex;align-items:center;justify-content:center">
+                <svg width="22" height="22" viewBox="0 0 24 24" aria-hidden="true"><g stroke="#0B2B1A" stroke-width="2" stroke-linecap="round"><line x1="6" y1="7" x2="6" y2="21" /><line x1="12" y1="7" x2="12" y2="21" /><line x1="18" y1="7" x2="18" y2="21" /><line x1="4" y1="5" x2="10" y2="5" /><line x1="14" y1="5" x2="20" y2="5" /></g></svg>
+              </span>
+              <div style="display:flex;flex-direction:column;gap:10px;min-width:0">
+                <span style="font-family:'Geist Mono',monospace;font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:#8A6E00">Dressing Room Commentary</span>
+                <p style="margin:0;font-size:16.5px;line-height:1.6;color:#0B0F0D;text-wrap:pretty">{{ coachOne }}</p>
+                <p style="margin:0;font-size:16.5px;line-height:1.6;color:#475569;text-wrap:pretty">{{ coachTwo }}</p>
+              </div>
+            </div>
+
+            <div style="display:flex;flex-direction:column;gap:12px">
+              <div style="display:flex;flex-wrap:wrap;align-items:baseline;gap:12px">
+                <span style="font-family:'Geist Mono',monospace;font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:#5A6B60">Ball-by-ball review</span>
+                <span style="font-family:'Geist Mono',monospace;font-size:11.5px;color:#8A6E00">{{ reviewSummary }}</span>
+              </div>
+              <sc-for list="{{ review }}" as="r" hint-placeholder-count="4">
+                <div style="{{ r.rowStyle }}">
+                  <span style="flex:none;width:26px;font-family:'Geist Mono',monospace;font-size:12px;color:#8A8F8B">{{ r.n }}</span>
+                  <span style="display:flex;flex-direction:column;gap:6px;flex:1 1 380px;min-width:0">
+                    <span style="font-family:'Geist Mono',monospace;font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:#5A6B60">{{ r.over }} · {{ r.phase }}</span>
+                    <span style="font-size:15.5px;font-weight:500;line-height:1.4;color:#0B2B1A;text-wrap:pretty">{{ r.q }}</span>
+                    <span style="font-size:14.5px;line-height:1.5;color:#475569;text-wrap:pretty">{{ r.detail }}</span>
+                    <span style="font-family:'Geist Mono',monospace;font-size:12px;color:#8A6E00">{{ r.fix }}</span>
+                  </span>
+                  <span style="{{ r.badgeStyle }}">{{ r.verdict }}</span>
+                </div>
+              </sc-for>
+            </div>
+
+            <div style="display:flex;flex-direction:column;gap:10px">
+              <span style="font-family:'Geist Mono',monospace;font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:#5A6B60">Back to the nets on</span>
+              <sc-for list="{{ weakSpots }}" as="w" hint-placeholder-count="2">
+                <a href="./The Playing XI (Current).dc.html" style="display:flex;align-items:center;gap:13px;padding:13px 15px;border-radius:11px;background:#FFFFFF;border:1px solid #E3E7E1;color:#0B2B1A" style-hover="background:#FBF6E2;color:#0B2B1A">
+                  <span style="flex:none;width:44px;height:30px;border-radius:7px;background:#F3F5F1;color:#5A6B60;display:flex;align-items:center;justify-content:center;font-family:'Geist Mono',monospace;font-size:12px">{{ w.over }}</span>
+                  <span style="flex:1;min-width:0;font-size:15.5px;font-weight:500;color:#0B2B1A">{{ w.name }}</span>
+                  <span style="flex:none;font-family:'Geist Mono',monospace;font-size:12px;color:#5A6B60">{{ w.note }}</span>
+                  <span style="flex:none;font-family:'Geist Mono',monospace;font-size:14px;color:#8A6E00">&#8594;</span>
+                </a>
+              </sc-for>
+            </div>
+
+            <div style="display:flex;flex-wrap:wrap;gap:14px;padding-top:6px">
+              <button onClick="{{ onAgain }}" style="flex:1 1 240px;display:inline-flex;align-items:center;justify-content:center;gap:10px;height:54px;border-radius:11px;border:0;background:#E2B714;color:#0B2B1A;font-size:17px;font-weight:600;cursor:pointer;transition:background .12s" style-hover="background:#F0C93A">Another Net Session<span style="font-family:'Geist Mono',monospace;font-size:15px">&#8594;</span></button>
+              <a href="./The Playing XI (Current).dc.html" style="flex:1 1 200px;display:inline-flex;align-items:center;justify-content:center;height:54px;border-radius:11px;border:1px solid #DDE2DB;color:#123020;font-size:16px;font-weight:500" style-hover="border-color:#123020;color:#123020">Back to the chapters</a>
+            </div>
+          </div>
+        </section>
+      </sc-if>
+      </article>
+    </main>
+  </div>
+
+  <footer style="background:#0A2417;padding:20px clamp(14px,2.2vw,30px)">
+    <div style="max-width:1680px;margin:0 auto;display:flex;flex-wrap:wrap;gap:12px;align-items:center;justify-content:space-between">
+      <div style="display:flex;flex-wrap:wrap;align-items:center;gap:12px">
+        <span style="font-family:'Geist Mono',monospace;font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:#7E968A">The Playing XI</span>
+        <span style="font-family:'Geist Mono',monospace;font-size:10px;color:#3E5A4B">·</span>
+        <a href="https://www.linkedin.com/in/john-fong-04b7a120/" target="_blank" rel="noopener noreferrer" style="display:flex;align-items:center;gap:8px;border-radius:999px;border:1px solid rgba(255,255,255,.12);padding:6px 12px;font-family:'Geist Mono',monospace;font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:#DCE5DE;white-space:nowrap;transition:border-color .12s,color .12s" style-hover="border-color:#E2B714;color:#FFFFFF">
+          <svg viewBox="0 0 24 24" fill="#E2B714" width="12" height="12" aria-hidden="true"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z" /></svg>
+          Contact Me
+        </a>
+        <span style="font-family:'Geist Mono',monospace;font-size:10px;color:#3E5A4B">·</span>
+        <a href="https://github.com/jf8peas/explain-machine-learning-in-cricket-terms/issues/new" target="_blank" rel="noopener noreferrer" style="display:flex;align-items:center;gap:8px;border-radius:999px;border:1px solid rgba(255,255,255,.12);padding:6px 12px;font-family:'Geist Mono',monospace;font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:#DCE5DE;white-space:nowrap;transition:border-color .12s,color .12s" style-hover="border-color:#E2B714;color:#FFFFFF">
+          <span style="font-family:'Geist Mono',monospace;font-size:9px;font-weight:600;letter-spacing:.02em;color:#E2B714">GH</span>
+          Feedback
+        </a>
+      </div>
+      <span style="font-family:'Geist Mono',monospace;font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:#3E5A4B">Nets close at 20:00</span>
+    </div>
+  </footer>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1600}}">
+const SESSIONS = ["About This Site","Pre-Game: ML Fundamentals","Scoring: Model Evaluation","First Innings: Classical ML","Second Innings: Deep Learning","Post-Game: Agent Solutions"];
+
+const CHAPTERS = [
+  ["1.1","Site Architecture"],["1.2","How to Use This Site"],["1.3","Who This Is For"],
+  ["2.1","Environment Setup"],["2.2","ML Workflow"],["2.3","Feature Engineering"],["2.4","Parameters & Hyperparameters"],
+  ["3.1","Accuracy & Its Limits"],["3.2","Precision & Recall"],["3.3","The Confusion Matrix"],["3.4","Cross-Validation"],["3.5","Loss Functions"],
+  ["4.1","Regression"],["4.2","Classification"],["4.3","Decision Trees"],["4.4","Ensembles"],["4.5","Clustering"],["4.6","Overfitting"],
+  ["5.1","Tensors"],["5.2","Layers & Activations"],["5.3","Backpropagation"],["5.4","Build a Model"],["5.5","Saving & Serving"],
+  ["6.1","Agent Architecture"],["6.2","The 'DRS' Agent"],["6.3","Agent Tools"],["6.4","Memory & Context"],["6.5","Evaluating Agents"]
+];
+
+const MCQ = [
+  { over:"2.2 ML Workflow", q:"Why is the test set held back until the very end of the workflow?",
+    a:["Because it is usually the largest split","Because touching it repeatedly turns it into practice data and stops it measuring generalisation","Because scikit-learn requires it","Because it speeds up training"], correct:1 },
+  { over:"4.6 Overfitting", q:"Training accuracy is 0.99 and validation accuracy is 0.71. What is the diagnosis?",
+    a:["The model has underfit","The validation set is too small","The model has overfit the training data","The learning rate is too low"], correct:2 },
+  { over:"3.1 Accuracy & Its Limits", q:"One appeal in twenty is genuine. A model that always predicts 'not out' scores what accuracy?",
+    a:["50%","5%","95%","Undefined"], correct:2 },
+  { over:"3.2 Precision & Recall", q:"A fielding side that appeals for everything has which profile?",
+    a:["High recall, low precision","High precision, low recall","High both","Low both"], correct:0 },
+  { over:"4.1 Regression", q:"Which problem is a regression rather than a classification?",
+    a:["Deciding whether a batter is out","Projecting the final score of an innings","Labelling a delivery as spin or pace","Grouping batters into player types"], correct:1 },
+  { over:"5.1 Tensors", q:"A tensor with shape (32, 6, 8) has which rank?",
+    a:["1","2","3","8"], correct:2 },
+  { over:"5.2 Layers & Activations", q:"What happens if you stack dense layers with no activation function?",
+    a:["Training diverges immediately","The stack collapses into a single linear transformation","Gradients become undefined","Nothing — it is standard practice"], correct:1 },
+  { over:"5.3 Backpropagation", q:"What does the gradient of the loss with respect to a weight tell you?",
+    a:["How confident the model is","Which direction to move that weight, and how far","The final accuracy","Which layer to delete"], correct:1 },
+  { over:"2.4 Parameters & Hyperparameters", q:"Which of these is a hyperparameter?",
+    a:["A dense layer's weight matrix","A tree's split thresholds","The learning rate","The logistic regression coefficients"], correct:2 },
+  { over:"6.2 The 'DRS' Agent", q:"Why does a review agent need a third verdict alongside upheld and overturned?",
+    a:["To reduce token cost","So genuinely undecidable cases escalate to a human instead of being forced","Because models cannot output binary values","To speed up retries"], correct:1 }
+];
+
+const SA = [
+  { over:"2.2 ML Workflow", q:"Explain, in your own words, why a model that scores well on its training data has proved nothing." },
+  { over:"3.3 The Confusion Matrix", q:"A screening model has good F1 but forty false negatives. Explain why you would reject it." },
+  { over:"3.4 Cross-Validation", q:"Two models both average 0.80 across five folds; one has a standard deviation of 0.02 and the other 0.18. Which would you ship, and why?" },
+  { over:"5.4 Build a Model", q:"Describe what early stopping does and what you would watch to decide when to stop." },
+  { over:"6.1 Agent Architecture", q:"Why does an agent system need a declared step limit, and what should be logged at each step?" }
+];
+
+const CHAPTER_PAGE = "./The Playing XI (Current).dc.html";
+const SHORT = ["About","Pre-Game","Scoring","First Innings","Second Innings","Post-Game"];
+
+const SAMPLE_ANSWERS = [
+  "Because it has only seen those deliveries. Scoring well on them shows memory, not that it will read a bowler it has never faced.",
+  "Forty missed cases is forty people told they are fine when they are not. F1 hides that because it averages the two error types.",
+  "The one with 0.02 spread — same average but it behaves the same on every pitch, so I can predict what it does next week.",
+  "It stops training when validation loss stops improving. I would watch the gap between train and validation loss.",
+  "So it cannot loop forever. Log the role, the tool called, the result and the cost at every step."
+];
+
+const SA_MARKS = [4, 3, 4, 4, 3];
+
+class Component extends DCLogic {
+  state = { mode:"setup", scope:"all", i:0, picks:{}, answer:"", texts:{}, faced:0, sessions:2, reset:false, plan:[], q:"", open:false };
+
+  componentDidMount() {
+    this._measure = () => {
+      const h = document.querySelector("header");
+      if (h) this.setState({ headH: Math.round(h.getBoundingClientRect().height) + 14, w: window.innerWidth, navMode: "full" });
+    };
+    this._measure();
+    setTimeout(this._measure, 300);
+    window.addEventListener("resize", this._measure);
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(this._measure);
+
+    const picks = {};
+    MCQ.forEach((q, i) => { picks["mcq" + i] = (i === 2 || i === 7) ? (q.correct + 1) % 4 : q.correct; });
+    const texts = {};
+    SA.forEach((q, i) => { texts["sa" + i] = SAMPLE_ANSWERS[i]; });
+    this.setState({ mode:"done", plan:this.buildPlan("full"), picks, texts, faced:15, sessions:3 });
+  }
+
+  componentWillUnmount() { window.removeEventListener("resize", this._measure); }
+
+  componentDidUpdate() {
+    const mode = this.state.navMode || "full";
+    if (mode === "compact") return;
+    const row = document.querySelector("[data-nav-row]");
+    if (row && row.scrollWidth > row.clientWidth + 2) {
+      this.setState({ navMode: mode === "full" ? "short" : "compact" });
+    }
+  }
+
+  chapterHits(q) {
+    const t = q.trim().toLowerCase();
+    if (!t) return [];
+    return CHAPTERS
+      .filter(c => (c[1] + " " + SESSIONS[+c[0].split(".")[0] - 1]).toLowerCase().indexOf(t) >= 0)
+      .slice(0, 7)
+      .map(c => ({ key: c[0], over: c[0], nav: c[1], session: SESSIONS[+c[0].split(".")[0] - 1] }));
+  }
+
+  buildPlan(kind) {
+    if (kind === "mcq") return MCQ.map((q, i) => ({ t:"mcq", q, i }));
+    if (kind === "sa") return SA.map((q, i) => ({ t:"sa", q, i }));
+    return MCQ.map((q, i) => ({ t:"mcq", q, i })).concat(SA.map((q, i) => ({ t:"sa", q, i })));
+  }
+
+  resetForm() {
+    this.setState({ faced:0, sessions:0, reset:true });
+    clearTimeout(this._t);
+    this._t = setTimeout(() => this.setState({ reset:false }), 1600);
+  }
+
+  renderVals() {
+    const st = this.state;
+    const plan = st.plan;
+    const total = plan.length;
+    const cur = plan[st.i];
+    const running = st.mode === "q" && !!cur;
+    const isMcq = running && cur.t === "mcq";
+    const isSa = running && cur.t === "sa";
+    const key = running ? cur.t + cur.i : "";
+    const picked = st.picks[key];
+    const text = st.texts[key] || "";
+    const scopeLabel = st.scope === "all"
+      ? "All 28 Chapters (Full Match)"
+      : (() => { const c = CHAPTERS.find(x => x[0] === st.scope); return c[0] + " " + c[1]; })();
+    const mcqDone = Object.keys(st.picks).length;
+    const saDone = Object.keys(st.texts).filter(k => (st.texts[k] || "").trim()).length;
+    const correct = Object.keys(st.picks).filter(k => {
+      const idx = +k.replace("mcq", "");
+      return st.picks[k] === MCQ[idx].correct;
+    }).length;
+    const mcqAsked = plan.filter(p => p.t === "mcq").length;
+    const saAsked = plan.filter(p => p.t === "sa").length;
+    const mcqPct = mcqAsked ? correct / mcqAsked : 0;
+    const saMarks = plan.filter(p => p.t === "sa").map(p => SA_MARKS[p.i]);
+    const saAvg = saMarks.length ? saMarks.reduce((a, b) => a + b, 0) / saMarks.length : 0;
+    const wM = mcqAsked ? 0.7 : 0, wS = saAsked ? 0.3 : 0;
+    const overall = Math.round(((mcqPct * 100 * wM) + ((saAvg / 4) * 100 * wS)) / (wM + wS || 1));
+    const percentile = Math.max(2, Math.min(96, 100 - overall));
+
+    const hits = this.chapterHits(st.q);
+    const navW = st.w || (typeof window !== "undefined" ? window.innerWidth : 1600);
+    const navMode = st.navMode || "full";
+    const navCompact = navMode === "compact" || navW < 700;
+    const navFull = navMode === "full" && navW >= 700;
+    const btn = (solid) => "height:46px;padding:0 22px;border-radius:10px;border:" + (solid ? "0" : "1px solid #DDE2DB") +
+      ";background:" + (solid ? "#E2B714" : "transparent") + ";color:" + (solid ? "#0B2B1A" : "#A3AFA8") +
+      ";font-size:15.5px;font-weight:600;cursor:" + (solid ? "pointer" : "not-allowed") + ";transition:background .12s,color .12s";
+
+    return {
+      sessions: SESSIONS.map((t, i) => ({ num: "0" + (i + 1), title: t, label: navFull ? t : SHORT[i] })),
+      navRow: !navCompact,
+      navCompact,
+      netsLabel: navFull ? "Practice Nets" : "Nets",
+      navValue: "nets",
+      navOptions: SESSIONS.map((t, i) => ({ v: "s" + i, label: "0" + (i + 1) + "  " + t }))
+        .concat([{ v: "nets", label: "07  Practice Nets" }]),
+      onNavSelect: (e) => { if (e.target.value !== "nets") window.location.href = CHAPTER_PAGE; },
+      scope: st.scope,
+      scopeLabel,
+      scopeOptions: [{ v:"all", label:"All 28 Chapters (Full Match)" }].concat(CHAPTERS.map(c => ({ v:c[0], label:c[0] + " " + c[1] }))),
+
+      stickyTop: st.headH || 170,
+      asidePos: st.wide === false ? "static" : "sticky",
+      bugSession: "2 / 6",
+      bugOver: "2.2",
+      bugRate: "9 min",
+      bugPct: 4,
+      bugPctLabel: "1/28",
+
+      q: st.q,
+      showResults: st.open && st.q.trim().length > 0 && hits.length > 0,
+      showEmpty: st.open && st.q.trim().length > 0 && hits.length === 0,
+      resultCount: hits.length + (hits.length === 1 ? " chapter" : " chapters"),
+      results: hits,
+      onSearch: (e) => this.setState({ q: e.target.value, open: true }),
+      onSearchFocus: () => this.setState({ open: true }),
+      onSearchBlur: () => setTimeout(() => this.setState({ open: false }), 140),
+      onSearchKey: (e) => { if (e.key === "Escape") this.setState({ q: "", open: false }); },
+      onClearSearch: () => this.setState({ q: "", open: false }),
+      onResult: () => { window.location.href = CHAPTER_PAGE; },
+
+      netRows: [
+        { num:"01", name:"Throw Downs", meta: MCQ.length + " mcq · one right answer", tick: st.mode === "done" && mcqAsked ? "\u2713" : "", on: isMcq },
+        { num:"02", name:"Net Session", meta: SA.length + " short answers · ai marked", tick: st.mode === "done" && saAsked ? "\u2713" : "", on: isSa },
+        { num:"03", name:"Scorecard", meta:"score · commentary · next steps", tick: st.mode === "done" ? "\u2713" : "", on: st.mode === "done" }
+      ].map(r => ({
+        num:r.num, name:r.name, meta:r.meta, tick:r.tick,
+        numBg: r.on ? "#E2B714" : "rgba(255,255,255,.07)",
+        numFg: r.on ? "#0B2B1A" : "#8FA79A",
+        rowStyle: "display:flex;align-items:center;gap:13px;width:100%;padding:11px 12px;border-radius:11px;background:" +
+          (r.on ? "rgba(226,183,20,.1)" : "transparent") + ";color:" + (r.on ? "#FFFFFF" : "#D6E0D9")
+      })),
+      formSessions: st.sessions + " / 5",
+      formFaced: st.faced + " / 340",
+      formBest: st.sessions ? "84%" : "—",
+      resetLabel: st.reset ? "Cleared" : "Reset",
+      resetStyle: "height:26px;padding:0 11px;border-radius:7px;border:1px solid " + (st.reset ? "#E2B714" : "#DDE2DB") +
+        ";background:" + (st.reset ? "#FBF3D6" : "transparent") + ";color:" + (st.reset ? "#8A6E00" : "#5A6B60") +
+        ";font-family:'Geist Mono',monospace;font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;cursor:pointer;transition:background .12s,border-color .12s,color .12s",
+
+      isSetup: st.mode === "setup",
+      isRunning: running,
+      isDone: st.mode === "done",
+      isMcq, isSa,
+
+      phaseLabel: isMcq ? "Throw Downs" : "Net Session",
+      counterLabel: "Question " + (st.i + 1) + " of " + total,
+      qPct: total ? Math.round(((st.i + 1) / total) * 100) : 0,
+      qOver: running ? cur.q.over : "",
+      qText: running ? cur.q.q : "",
+      options: isMcq ? cur.q.a.map((t, i) => {
+        const on = picked === i;
+        return {
+          i: String(i), text: t, key: "ABCD"[i], tick: on ? "\u2713" : "",
+          style: "display:flex;align-items:center;gap:14px;width:100%;padding:16px 18px;border-radius:12px;border:1px solid " +
+            (on ? "#E2B714" : "#DDE2DB") + ";background:" + (on ? "#FBF6E2" : "#FFFFFF") +
+            ";color:" + (on ? "#0B2B1A" : "#1E2A22") + ";cursor:pointer;text-align:left;transition:border-color .12s,background .12s",
+          keyStyle: "flex:none;width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-family:'Geist Mono',monospace;font-size:13px;background:" +
+            (on ? "#E2B714" : "#F3F5F1") + ";color:" + (on ? "#0B2B1A" : "#5A6B60")
+        };
+      }) : [],
+      answer: text,
+      charCount: text.length + " / 600 characters",
+      countColor: text.length > 600 ? "#8A6E00" : "#5A6B60",
+      submitStyle: btn(text.trim().length > 0),
+      nextStyle: btn(picked !== undefined),
+      nextLabel: st.i === total - 1 ? "See the scorecard" : "Next delivery",
+
+      finalScore: overall + "%",
+      percentileLine: overall >= 50
+        ? "Top " + percentile + "% of net sessions logged this week."
+        : "Bottom " + (100 - percentile) + "% of net sessions logged this week. Worth another go.",
+      resultStats: [].concat(
+        mcqAsked ? [{ k:"Throw Downs", v: correct + " / " + mcqAsked, s:"multiple choice" }] : [],
+        saAsked ? [{ k:"Net Session", v: saAvg.toFixed(1) + " / 4", s:"rubric average" }] : [],
+        [{ k:"Time at the crease", v: (4 + total) + " min", s:"across " + total + (total === 1 ? " delivery" : " deliveries") }]
+      ),
+      reviewSummary: correct + " of " + mcqAsked + " multiple choice right · " +
+        saMarks.reduce((a, b) => a + b, 0) + " of " + (saMarks.length * 4) + " rubric points · " + overall + "% overall",
+      review: plan.map((p, n) => {
+        if (p.t === "mcq") {
+          const chosen = st.picks["mcq" + p.i];
+          const ok = chosen === p.q.correct;
+          return {
+            n: String(n + 1), over: p.q.over, q: p.q.q, phase: "Throw down",
+            verdict: ok ? "Right" : "Wrong",
+            detail: ok ? p.q.a[p.q.correct] : "You said: " + p.q.a[chosen],
+            fix: ok ? "" : "Right answer: " + p.q.a[p.q.correct],
+            badgeStyle: "flex:none;display:inline-flex;align-items:center;height:24px;padding:0 10px;border-radius:6px;font-family:'Geist Mono',monospace;font-size:10px;letter-spacing:.14em;text-transform:uppercase;background:" +
+              (ok ? "#E4F2E8" : "#FAE7E4") + ";color:" + (ok ? "#1F5A38" : "#8C3021"),
+            rowStyle: "display:flex;flex-wrap:wrap;gap:12px;padding:14px 16px;border-radius:11px;background:#FFFFFF;border:1px solid #E3E7E1;border-left:3px solid " +
+              (ok ? "#4C9A6A" : "#C4543F")
+          };
+        }
+        const mark = SA_MARKS[p.i];
+        return {
+          n: String(n + 1), over: p.q.over, q: p.q.q, phase: "Net session",
+          verdict: mark + " / 4",
+          detail: "You wrote: " + (st.texts["sa" + p.i] || "—"),
+          fix: mark === 4 ? "" : "Coach: name the failure mode before the fix.",
+          badgeStyle: "flex:none;display:inline-flex;align-items:center;height:24px;padding:0 10px;border-radius:6px;font-family:'Geist Mono',monospace;font-size:10px;letter-spacing:.14em;text-transform:uppercase;background:" +
+            (mark === 4 ? "#E4F2E8" : "#FBF6E2") + ";color:" + (mark === 4 ? "#1F5A38" : "#8A6E00"),
+          rowStyle: "display:flex;flex-wrap:wrap;gap:12px;padding:14px 16px;border-radius:11px;background:#FFFFFF;border:1px solid #E3E7E1;border-left:3px solid " +
+            (mark === 4 ? "#4C9A6A" : "#E2B714")
+        };
+      }),
+      coachOne: overall >= 80
+        ? "Solid session. Your definitions are quick and your written answers name the mechanism rather than the metric, which is the part most people skip."
+        : "Reasonable session. You are quick on definitions and slower on the questions that ask why a number is misleading, which is where the marks sit.",
+      coachTwo: "Two habits for next time: state the failure mode before the fix, and when a question mentions a score, say what the errors cost before you say whether the score is good.",
+      weakSpots: [
+        { over:"3.1", name:"Accuracy & Its Limits", note:"1 dropped" },
+        { over:"5.3", name:"Backpropagation", note:"slow" }
+      ],
+
+      onScope: (e) => this.setState({ scope: e.target.value }),
+      onStart: (e) => this.setState({ mode:"q", i:0, picks:{}, texts:{}, plan:this.buildPlan(e.currentTarget.dataset.m) }),
+      onPick: (e) => {
+        const picks = Object.assign({}, st.picks);
+        picks[key] = +e.currentTarget.dataset.o;
+        this.setState({ picks });
+      },
+      onAnswer: (e) => {
+        const texts = Object.assign({}, st.texts);
+        texts[key] = e.target.value;
+        this.setState({ texts });
+      },
+      onNext: () => {
+        if (isMcq && picked === undefined) return;
+        if (isSa && !text.trim()) return;
+        if (st.i === total - 1) this.setState({ mode:"done", faced: st.faced + total, sessions: st.sessions + 1 });
+        else this.setState({ i: st.i + 1 });
+      },
+      onQuit: () => this.setState({ mode:"setup", i:0 }),
+      onAgain: () => this.setState({ mode:"setup", i:0, picks:{}, texts:{}, plan:[] }),
+      onResetForm: () => this.resetForm()
+    };
+  }
+}
+</script>
+</body>
+</html>

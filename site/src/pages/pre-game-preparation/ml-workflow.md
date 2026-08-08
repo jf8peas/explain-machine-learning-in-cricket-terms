@@ -91,11 +91,11 @@ Because every row carries a verdict, this is **supervised** machine learning. Th
 
 Ours are categorical, so the model is a **classifier**. And because there are exactly two labels — malignant or benign — this is **binary classification**. Three or more labels and it becomes **multi-class classification**: not just *out*, but *bowled, caught, LBW, or run out*.
 
-## Naming the XI and Sealing the Envelope: Data Preparation
+## The Nets and the Middle: Data Preparation
 
 Here is the step that separates honest work from wishful thinking.
 
-You cannot judge a batter on the deliveries they practised against. So before training begins, we split the squad in two: most of them go to the nets, and a small group is sealed in an envelope and not opened until match day.
+You cannot judge a batter on how they handle throwdowns from their own net bowlers. Net bowlers are known quantities — same squad, same run-ups, same handful of lengths, session after session. The only honest examination is the middle: bowlers you've never faced, on a pitch worn into grooves nobody practised on. So before training begins, we split the squad in two: most of them go to the nets, and a separate group is set aside to stand in for the middle — untouched until the model has finished training.
 
 ```python
 from sklearn.model_selection import train_test_split
@@ -112,11 +112,11 @@ Read this in two beats.
 
 **First, separate the stats from the verdicts.** `X` holds the 30 features — everything the model is allowed to see. `y` holds the target. Dropping `target` from `X` is not housekeeping; if you leave the answer in the question paper, the model will simply read it off and report perfect accuracy. This is the single most common way beginners fool themselves.
 
-**Second, split.** `test_size=0.15` seals 15% of the squad in the envelope. The convention is **15% to 20%** — enough players in the envelope for the result to mean something, but not so many that the nets go empty. With 569 rows that gives us **483 for training and 86 for testing**.
+**Second, split.** `test_size=0.15` sets aside 15% of the squad for the middle. The convention is **15% to 20%** — enough rows held back for the result to mean something, but not so many that the nets go empty. With 569 rows that gives us **483 in the nets and 86 in the middle**.
 
 `random_state=417` fixes the shuffle. Any integer will do; what matters is that you use the *same* one every time, so your split is reproducible and your results are comparable across runs. Without it, every execution reshuffles the squad and your accuracy wanders for reasons that have nothing to do with your model.
 
-The data used to train is the **training set**. The data in the envelope is the **test set**. From this moment until step five, the test set does not exist.
+The data used to train is the **training set** — the nets. The data held back is the **test set** — the middle. From this moment until step five, the test set does not exist. You don't get to peek at how the innings in the middle goes before you've finished practising for it.
 
 ## Net Sessions: Building and Training the Model
 
@@ -133,8 +133,9 @@ Two lines, two distinct actions — and the distinction is worth holding onto.
 
 The first line **builds** the model. Nothing has been learned yet; this is a bowler with a run-up and an action, marking out their steps. The arguments are the settings you chose *before* any ball was bowled:
 
-- `penalty="l2"` and `loss="squared_hinge"` describe how the model is punished for getting things wrong — the coach's standard for what counts as a bad ball.
-- `C=10` controls how hard it tries to fit every last training point. High `C` means a bowler obsessed with never conceding a run in the nets; low `C` means one willing to leak a few in exchange for a repeatable action.
+- `loss="squared_hinge"` sets how sharply the model is punished for getting a training point wrong.
+- `penalty="l2"` names the *shape* of **regularisation** applied on top of that loss — a standing instruction that discourages the model from leaning too hard on any single feature, independent of how good its predictions look.
+- `C=10` is that regularisation's *strength* — the regularisation parameter — and it runs backwards from what you'd guess: a high `C` **weakens** the penalty and lets the model chase every last training point, while a low `C` **strengthens** it and forces a simpler, more conservative fit. High `C` is a bowler obsessed with never conceding a run in the nets; low `C` is one willing to leak a few in exchange for a repeatable action. We'll open up regularisation properly — why L2 looks the way it does, and what it's actually doing to the loss — in **Gradient Descent**; for now, treat `C` as the dial between "fits the nets perfectly" and "plays it safe."
 - `random_state=417` again pins down internal randomness so the run is reproducible.
 
 The second line, `.fit()`, is the net session itself. The model works through all 483 training observations, adjusting its internal parameters until it finds the boundary that best separates malignant from benign.
@@ -143,7 +144,7 @@ One practical note: `LinearSVC` on raw, unscaled features will often print a con
 
 ## Match Day: Evaluating the Performance
 
-Open the envelope.
+Walk out to the middle.
 
 ```python
 model.score(X_test, y_test)
@@ -154,7 +155,7 @@ model.score(X_test, y_test)
 
 **0.9651.** Roughly 83 of 86 correct on players it has never faced.
 
-This number means something precisely because the test set was sealed. The model had no opportunity to memorise these rows. What we are measuring is not recall — it is judgement.
+This number means something precisely because the test set was untouched — 86 deliveries the model never saw in the nets, from an attack it never faced. The model had no opportunity to memorise these rows. What we are measuring is not recall — it is judgement.
 
 Accuracy is the natural first metric and the right one to learn on, though it is not the last word. When one class vastly outnumbers the other, a lazy model that always predicts the majority can post an impressive accuracy while being useless. Precision, recall, and the confusion matrix are the follow-up questions, and they come later in the series.
 
@@ -162,7 +163,7 @@ Accuracy is the natural first metric and the right one to learn on, though it is
 
 Every model comes with dials. Fine-tuning is the captain walking down the pitch mid-over and shifting the field — same bowler, same batter, different setting.
 
-For `LinearSVC`, `C` is the obvious dial to turn:
+For `LinearSVC`, `C` — the regularisation strength — is the obvious dial to turn:
 
 ```python
 for C in [10, 1, 0.1, 0.01]:
@@ -177,11 +178,13 @@ for C in [10, 1, 0.1, 0.01]:
 # 0.01  0.9535
 ```
 
-A useful and slightly deflating result: loosening `C` all the way down to 0.01 makes things *worse*, and everything above that is flat. This dataset is comfortably linearly separable, so the model is not especially sensitive to the setting.
+A useful and slightly deflating result: tightening the regularisation — dropping `C` all the way down to 0.01 — makes things *worse*, and everything above that is flat. This dataset is comfortably linearly separable, so the model is not especially sensitive to the setting.
 
 That is a real finding, not a failed experiment. Tuning does not always buy you anything, and reporting "the default was fine" is a perfectly respectable outcome. The alternative — turning dials until a number goes up and then claiming credit — is how people end up with models that shine in a notebook and fold in production.
 
-Which brings up the honest caveat. Tune against the test set often enough and you have quietly let the envelope leak: you are now choosing settings *because* they flatter those 86 rows. The professional fix is a third split — a validation set — or cross-validation, which rotates the held-out portion through the training data. For now, know that it exists and that this is the problem it solves.
+Which brings up the honest caveat. Tune against the test set often enough and you have quietly turned the middle into another net session: you are now choosing settings *because* they flatter those 86 rows, not because they are good settings.
+
+The professional fix is a validation set, and cricket already has the analogy built in. Once the toss is called and the opposition's team sheet is out, the coach and support staff don't send you back to face the same net bowlers bowling the same lengths as always — they have throwdown specialists mimic what's actually coming, informed by the pitch report and the scouting notes on the bowlers you're about to face. That's a validation set: a rehearsal shaped by real information, used to tune your technique, that still stops short of the middle itself. Cross-validation just runs that rehearsal several times over, rotating which slice of the nets stands in for the rehearsal each time. For now, know that it exists and that this is the problem it solves.
 
 ## The Final Match-Day Workflow
 

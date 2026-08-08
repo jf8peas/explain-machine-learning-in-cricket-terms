@@ -45,7 +45,7 @@
       "Because LinearSVC does not support repeated tuning"
     ],
     "correctAnswerIndex": 2,
-    "explanation": "This is the 'envelope leak' the chapter describes: tuning against the test set often enough means you're choosing settings because they flatter those specific rows."
+    "explanation": "This is the chapter's warning about turning the middle into another net session: tuning against the test set often enough means you're choosing settings because they flatter those specific rows."
   },
   {
     "id": "mcq-ml-workflow-04",
