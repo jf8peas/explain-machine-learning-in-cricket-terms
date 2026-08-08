@@ -50,3 +50,45 @@ body {
 ::selection {
   background: #e2b71455;
 }
+
+/* ─── Primary code block (Into the nets) — right-edge fade + styled scrollbar ─── */
+.primary-code-block {
+  position: relative;
+}
+
+/* Right-edge gradient fade indicator — sits above the code text but stops
+   just above the scrollbar track so the scrollbar stays fully visible. */
+.primary-code-block::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 12px;
+  width: 48px;
+  background: linear-gradient(to right, transparent, rgba(6, 22, 14, 0.95));
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* Touch-friendly horizontal scrollbar for the primary code block only. */
+.primary-code-block .code-scroll {
+  -webkit-overflow-scrolling: touch;
+}
+
+.primary-code-block .code-scroll::-webkit-scrollbar {
+  height: 8px;
+}
+
+.primary-code-block .code-scroll::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.06);
+  border-radius: 4px;
+}
+
+.primary-code-block .code-scroll::-webkit-scrollbar-thumb {
+  background: rgba(234, 179, 8, 0.5);
+  border-radius: 4px;
+}
+
+.primary-code-block .code-scroll::-webkit-scrollbar-thumb:hover {
+  background: rgba(234, 179, 8, 0.7);
+}
