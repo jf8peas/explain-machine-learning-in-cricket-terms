@@ -25,6 +25,7 @@ stats:
   - { k: "IDE Wire", v: "Cursor", s: "Remote-SSH connected" }
 ---
 
+<!-- ui: code-block scrollbar & fade enhancement -->
 A groundskeeper arrives long before the players. The roller comes out, the creases get painted, the stumps go in straight. By the time the first ball is bowled, nobody thinks about the pitch — and that is exactly the point. A well-prepared deck is invisible.
 
 Your development environment works the same way. Spend an hour now rolling it flat, and you will never think about it again. Skip it, and every notebook you open will bounce unpredictably.
