@@ -13,7 +13,7 @@
       "scikit-learn requires two separate scoring calls to compute accuracy"
     ],
     "correctAnswerIndex": 2,
-    "explanation": "The chapter states this directly: evaluation appearing twice is not a typo in the running order — it is the point of the exercise, since fine-tuning decisions need to be checked, not just trusted."
+    "explanation": "The chapter states this directly: the first score is a baseline before any tuning, and the second score exists to check whether the fine-tuning in step six actually helped, rather than just trusting that it did."
   },
   {
     "id": "mcq-ml-workflow-02",
@@ -40,7 +40,7 @@
     "question": "Why does the chapter warn against repeatedly tuning C against the test set and rescoring?",
     "options": [
       "Because C can only legally be tuned once",
-      "Because the test set of 86 rows is statistically too small to matter",
+      "Because the test set of 15 rows is statistically too small to matter",
       "Because doing so quietly turns the test set into a second validation set, so the resulting score no longer honestly reflects unseen performance",
       "Because LinearSVC does not support repeated tuning"
     ],
@@ -69,15 +69,15 @@
     "chapterId": "ml-workflow",
     "chapterTitle": "2.2 ML Workflow",
     "sourceUrl": "/pre-game-preparation/ml-workflow/",
-    "question": "Why does the chapter recommend passing as_frame=True when loading the dataset with load_breast_cancer?",
+    "question": "Why does this chapter use a simulated dataset (the Malabar Mavericks) instead of scraping real player statistics?",
     "options": [
-      "It reduces the memory footprint of the dataset",
-      "It returns the data as a pandas DataFrame with column names preserved, rather than a bare NumPy array",
-      "It automatically splits the data into train and test sets",
-      "It converts the target variable from categorical to continuous"
+      "Real cricket statistics cannot be represented as numbers",
+      "So every number quoted in the chapter can be verified by actually running the code, without misrepresenting any real player's actual record",
+      "scikit-learn does not support datasets built from CSV files",
+      "Simulated data trains faster than real data"
     ],
     "correctAnswerIndex": 1,
-    "explanation": "The chapter states as_frame=True hands the data over as a DataFrame rather than a bare NumPy array, so column names are available at every step that follows."
+    "explanation": "The chapter is explicit that the career figures are simulated from a hidden quality score specifically so the workflow can be taught honestly, with real, reproducible numbers, without attaching those numbers to any actual player."
   },
   {
     "id": "mcq-ml-workflow-06",
@@ -85,10 +85,10 @@
     "chapterId": "ml-workflow",
     "chapterTitle": "2.2 ML Workflow",
     "sourceUrl": "/pre-game-preparation/ml-workflow/",
-    "question": "What makes this chapter's breast cancer classification task a supervised learning problem?",
+    "question": "What makes this chapter's squad-selection classification task a supervised learning problem?",
     "options": [
       "The model is trained without ever looking at a target column",
-      "Every row in the dataset already carries a known, correct label (malignant or benign) for the model to learn from",
+      "Every row in the dataset already carries a known, correct label (selected or not selected) for the model to learn from",
       "The dataset has more than two possible output classes",
       "The model updates its predictions in real time as new data arrives"
     ],
@@ -109,7 +109,7 @@
       "Multi-class classification cannot use a train/test split"
     ],
     "correctAnswerIndex": 1,
-    "explanation": "The chapter's example is explicit: malignant-or-benign is binary because there are exactly two labels, while three or more labels makes it multi-class."
+    "explanation": "The chapter's example is explicit: selected-or-not is binary because there are exactly two labels, while three or more labels makes it multi-class."
   },
   {
     "id": "mcq-ml-workflow-08",
@@ -117,15 +117,15 @@
     "chapterId": "ml-workflow",
     "chapterTitle": "2.2 ML Workflow",
     "sourceUrl": "/pre-game-preparation/ml-workflow/",
-    "question": "Why might LinearSVC print a convergence warning when trained on this chapter's raw, unscaled features, and what does the chapter suggest as the proper fix?",
+    "question": "This chapter's features range from single digits (catches) to the thousands (runs, balls_faced), yet LinearSVC converges without a warning here. What does the chapter say about this, and what's the proper fix when a scale gap does cause trouble?",
     "options": [
       "The dataset has too few rows for LinearSVC to work at all",
-      "The features range from fractions of a unit to the thousands, which makes it hard for the optimiser to settle; StandardScaler is the proper fix",
+      "It converges cleanly on this particular dataset, but a wide spread of feature scales can still slow the optimiser down elsewhere; StandardScaler is the proper fix when it does",
       "The target column contains missing values, which StandardScaler fills in",
       "random_state was not set, and StandardScaler fixes randomness"
     ],
     "correctAnswerIndex": 1,
-    "explanation": "The chapter notes the wide range of feature magnitudes causes the optimiser to struggle, and names StandardScaler as the tool to fix it properly."
+    "explanation": "The chapter is explicit that this dataset happens to converge cleanly despite the scale gap, but names StandardScaler as the proper fix for when scale differences do slow the optimiser down."
   },
   {
     "id": "mcq-ml-workflow-09",
@@ -133,15 +133,15 @@
     "chapterId": "ml-workflow",
     "chapterTitle": "2.2 ML Workflow",
     "sourceUrl": "/pre-game-preparation/ml-workflow/",
-    "question": "In the chapter's tuning experiment, accuracy stayed identical for C values of 10, 1, and 0.1, then dropped at C=0.01. What does the chapter say this result demonstrates?",
+    "question": "In the chapter's tuning experiment, accuracy slides from 0.9333 at C=10 down to 0.8000 at C=0.01. What does the chapter say you should take from this, given the test set is only 15 rows?",
     "options": [
       "That the experiment failed and should be discarded",
-      "That tuning does not always improve results, and concluding 'the default was fine' is a legitimate, honest outcome",
+      "That each step in the table is worth exactly one player out of fifteen, so the ranking is fragile and shouldn't be over-read as a stable trend",
       "That LinearSVC cannot be tuned using a for loop",
       "That C should always be set as low as possible for best accuracy"
     ],
     "correctAnswerIndex": 1,
-    "explanation": "The chapter calls this a real finding, not a failed experiment: the dataset is comfortably linearly separable, so it isn't especially sensitive to C, and reporting that is respectable."
+    "explanation": "The chapter is explicit that fifteen rows is not a lot of evidence — one swapped call in the split could rearrange the table — which is exactly why it leads into the case for a validation set or cross-validation."
   },
   {
     "id": "mcq-ml-workflow-10",
@@ -165,10 +165,10 @@
     "chapterId": "ml-workflow",
     "chapterTitle": "2.2 ML Workflow",
     "sourceUrl": "/pre-game-preparation/ml-workflow/",
-    "question": "Why does the chapter describe this dataset's spotless isna().sum() result as 'clean' but 'slightly misleading,' and what does the next chapter promise to cover?",
-    "modelAnswer": "A completely gap-free, well-behaved dataset is unusual — most real-world scorecards have missing values, freak outliers, and imbalanced classes. Getting a spotless dataset here is a stroke of luck specific to this curated example rather than something to expect by default, and the next chapter, Feature Engineering, covers what to do when the data is not this obliging: filling gaps, flagging outliers, and handling class imbalance.",
+    "question": "Why does this chapter's isna().sum() result come back spotless, and what does the next chapter promise to cover?",
+    "modelAnswer": "The Malabar Mavericks dataset is simulated specifically to be clean, so that this first pass through the workflow can focus on the mechanics of the seven steps without also having to handle missing values, outliers, or imbalance at the same time. It is built that way on purpose, not a stroke of luck you should expect from real-world data. The next chapter, Feature Engineering, covers what to do when the data is not this obliging: filling gaps, flagging outliers, and handling class imbalance.",
     "rubric": [
-      "Notes that zero missing values is unusually clean or lucky, not the norm",
+      "Notes that the dataset was deliberately built clean for this chapter, not luck",
       "States that real-world data typically has gaps, outliers, or imbalance",
       "Connects this to Feature Engineering being the next topic"
     ]
@@ -221,12 +221,12 @@
     "chapterId": "ml-workflow",
     "chapterTitle": "2.2 ML Workflow",
     "sourceUrl": "/pre-game-preparation/ml-workflow/",
-    "question": "The chapter's tuning experiment showed identical accuracy across C=10, 1, 0.1, and a drop only at C=0.01. What does this result tell you about hyperparameter tuning in general, and what would be a reasonable next step given this outcome?",
-    "modelAnswer": "It shows that tuning a hyperparameter doesn't guarantee improvement: for a dataset that is already easy for the model to separate, a wide range of settings can perform equally well, and pushing a regularisation parameter too far in one direction can eventually hurt performance. A reasonable next step is to accept that the default or a mid-range value (like C=10 or C=1) is adequate here rather than searching further for marginal gains, and to be honest in reporting that tuning didn't meaningfully change the outcome instead of manufacturing a difference by overfitting to the test set.",
+    "question": "The chapter's tuning experiment shows accuracy sliding from 0.9333 at C=10 down to 0.8000 at C=0.01, on a test set of only 15 rows. What does this result tell you about hyperparameter tuning on small hold-out sets, and what would be a reasonable next step given this outcome?",
+    "modelAnswer": "It shows that a hyperparameter ranking measured on a small test set can be fragile: with only 15 rows, each step in the table is worth exactly one player, so a single different call in the train/test split could plausibly reorder which C looks best. A reasonable next step is to treat C=10 as a lead worth investigating rather than a settled answer, and to check it properly with a validation set or cross-validation instead of trusting or repeatedly re-querying the same 15-row test set.",
     "rubric": [
-      "States that tuning doesn't always improve results / a range of settings can perform equally well",
-      "Notes the drop at the extreme low value shows tuning can matter at some point",
-      "Suggests a reasonable next step, such as accepting the untuned/default result rather than over-searching"
+      "States that small hold-out sets make tuning results fragile / easily reordered by one row",
+      "Connects the 15-row test set size to how much each step in the table is actually worth",
+      "Suggests a reasonable next step, such as validation/cross-validation rather than trusting or repeatedly querying the small test set"
     ]
   },
   {

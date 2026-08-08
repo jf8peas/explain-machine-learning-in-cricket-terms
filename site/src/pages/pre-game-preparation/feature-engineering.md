@@ -39,7 +39,7 @@ This chapter solves three problems that come earlier than that, and matter regar
 
 ## The Gaps in the Scorecard: Imputation
 
-The Malabar Mavericks' `isna().sum()` came back clean last chapter — a rare and slightly misleading stroke of luck. Most real scorecards have gaps: a strike rate never logged for an away leg, a bowling average missing from a rain-shortened match. **Imputation** is the process of filling those gaps with a value chosen by some deliberate strategy, rather than either leaving a blank a model can't process or throwing away an otherwise perfectly good row.
+The Malabar Mavericks' `isna().sum()` came back clean last chapter — because that squad was built clean on purpose, to keep a first pass through the workflow simple. Most real scorecards have gaps: a strike rate never logged for an away leg, a bowling average missing from a rain-shortened match. **Imputation** is the process of filling those gaps with a value chosen by some deliberate strategy, rather than either leaving a blank a model can't process or throwing away an otherwise perfectly good row.
 
 **`SimpleImputer`** is the univariate option — it looks at nothing but the gappy column itself, and fills every blank in it with one summary statistic:
 
