@@ -51,44 +51,76 @@ body {
   background: #e2b71455;
 }
 
-/* ─── Primary code block (Into the nets) — right-edge fade + styled scrollbar ─── */
-.primary-code-block {
+/* ─── Primary content code blocks (markdown ``` blocks in .prose) — right-edge fade + styled scrollbar ─── */
+.prose pre {
   position: relative;
 }
 
+/* ─── "Into the Nets" bottom code block — explicitly reset to default, untouched ─── */
+.nets-code-block {
+  position: static;
+}
+
+.nets-code-block::after {
+  content: none;
+}
+
+.nets-code-block .overflow-x-auto {
+  -webkit-overflow-scrolling: auto;
+}
+
+.nets-code-block .overflow-x-auto::-webkit-scrollbar {
+  height: auto;
+}
+
+.nets-code-block .overflow-x-auto::-webkit-scrollbar-track {
+  background: initial;
+  border-radius: initial;
+}
+
+.nets-code-block .overflow-x-auto::-webkit-scrollbar-thumb {
+  background: initial;
+  border-radius: initial;
+}
+
+.nets-code-block .overflow-x-auto::-webkit-scrollbar-thumb:hover {
+  background: initial;
+}
+
 /* Right-edge gradient fade indicator — sits above the code text but stops
-   just above the scrollbar track so the scrollbar stays fully visible. */
-.primary-code-block::after {
+   just above the scrollbar track so the scrollbar stays fully visible.
+   The gradient fades to the .astro-code github-dark background (#24292e). */
+.prose pre::after {
   content: "";
   position: absolute;
   top: 0;
   right: 0;
   bottom: 12px;
   width: 48px;
-  background: linear-gradient(to right, transparent, rgba(6, 22, 14, 0.95));
+  background: linear-gradient(to right, transparent, rgba(36, 41, 46, 0.95));
   pointer-events: none;
   z-index: 1;
 }
 
-/* Touch-friendly horizontal scrollbar for the primary code block only. */
-.primary-code-block .code-scroll {
+/* Touch-friendly horizontal scrollbar for primary content code blocks only. */
+.prose pre {
   -webkit-overflow-scrolling: touch;
 }
 
-.primary-code-block .code-scroll::-webkit-scrollbar {
+.prose pre::-webkit-scrollbar {
   height: 8px;
 }
 
-.primary-code-block .code-scroll::-webkit-scrollbar-track {
+.prose pre::-webkit-scrollbar-track {
   background: rgba(255, 255, 255, 0.06);
   border-radius: 4px;
 }
 
-.primary-code-block .code-scroll::-webkit-scrollbar-thumb {
+.prose pre::-webkit-scrollbar-thumb {
   background: rgba(234, 179, 8, 0.5);
   border-radius: 4px;
 }
 
-.primary-code-block .code-scroll::-webkit-scrollbar-thumb:hover {
+.prose pre::-webkit-scrollbar-thumb:hover {
   background: rgba(234, 179, 8, 0.7);
 }
