@@ -476,13 +476,21 @@ const hasQuizQuestions = (quizBank as Array<{ chapterId: string }>).some(
 
   /**
    * Scroll the inner Innings Card container so the active chapter stays in
-   * view. Pure `scrollIntoView` can also scroll the whole browser window, so
-   * we compute the delta manually and only adjust the container's scrollTop.
+   * view. Only triggers when:
+   *  1. The user arrived via a Next/Prev Over click (sessionStorage flag).
+   *  2. The active item is actually clipped above or below the container.
+   *
    * Runs only in the browser (Astro <script> is not executed during SSR),
    * and we keep the `typeof window` guard for extra SSR safety.
    */
   function scrollActiveChapterIntoView(): void {
     if (typeof window === "undefined") return;
+
+    // Trigger Condition 1: only proceed if the user clicked Next/Prev Over
+    const viaOver = sessionStorage.getItem("nav-over") === "true";
+    sessionStorage.removeItem("nav-over"); // clear so refreshes don't retrigger
+    if (!viaOver) return;
+
     const scroller = document.getElementById("innings-card-scroll");
     if (!scroller) return;
 
@@ -497,15 +505,14 @@ const hasQuizQuestions = (quizBank as Array<{ chapterId: string }>).some(
     );
     if (!active) return;
 
-    const rect = active.getBoundingClientRect();
-    const scrollRect = scroller.getBoundingClientRect();
+    // Trigger Condition 2: only scroll if the active item is out of view
+    const containerRect = scroller.getBoundingClientRect();
+    const itemRect = active.getBoundingClientRect();
+    const isAbove = itemRect.top < containerRect.top;
+    const isBelow = itemRect.bottom > containerRect.bottom;
 
-    if (rect.top < scrollRect.top) {
-      // Active item sits above the visible area → scroll up.
-      scroller.scrollBy({ top: rect.top - scrollRect.top, behavior: "smooth" });
-    } else if (rect.bottom > scrollRect.bottom) {
-      // Active item sits below the visible area → scroll down.
-      scroller.scrollBy({ top: rect.bottom - scrollRect.bottom, behavior: "smooth" });
+    if (isAbove || isBelow) {
+      active.scrollIntoView({ behavior: "smooth", block: "nearest" });
     }
   }
 
@@ -534,6 +541,16 @@ const hasQuizQuestions = (quizBank as Array<{ chapterId: string }>).some(
   refreshProgressUI();
   window.addEventListener(PROGRESS_EVENT, refreshProgressUI);
   initChapterCompletionTrigger();
+
+  // Flag sessionStorage when the user clicks a Next/Prev Over link,
+  // so the scroll logic only fires on nav-footer navigation.
+  const overNav = document.querySelector<HTMLElement>(".mt-0\\.5");
+  if (overNav) {
+    overNav.addEventListener("click", (e: MouseEvent) => {
+      const link = (e.target as HTMLElement).closest("a[href]");
+      if (link) sessionStorage.setItem("nav-over", "true");
+    });
+  }
 
   // Keep the active chapter in full view inside the scrollable Innings Card.
   // Defer so layout/fonts settle before measuring the scroll container.
