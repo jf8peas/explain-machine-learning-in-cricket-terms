@@ -203,4 +203,4 @@ That reshapes the outcome. The next chapter, **Going Beyond Linear**, does the e
 
 The projected score was never a guess. It was always this — a straight line, a handful of weighted reasons, and a cost function quietly working out the arithmetic in the background, long before the number ever reached the screen.
 
-<!-- touch: trigger fresh Vercel deploy of auto-scroll innings card -->
+<!-- touch: trigger fresh Vercel deploy of footer <860px hide -->
