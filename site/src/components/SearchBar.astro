@@ -36,7 +36,7 @@ const { placeholder = "Search all 24 chapters" } = Astro.props;
   <!-- Results dropdown -->
   <div
     id="pagefind-search-results"
-    class="absolute left-0 right-0 top-[56px] z-40 hidden overflow-hidden rounded-[12px] bg-white shadow-[0_18px_44px_rgba(6,22,14,.32)]"
+    class="absolute left-0 right-0 top-[56px] z-[100] hidden overflow-hidden rounded-[12px] bg-white shadow-[0_18px_44px_rgba(6,22,14,.32)]"
   >
     <div
       id="pagefind-result-count"
@@ -48,7 +48,7 @@ const { placeholder = "Search all 24 chapters" } = Astro.props;
   <!-- Empty state -->
   <div
     id="pagefind-search-empty"
-    class="absolute left-0 right-0 top-[56px] z-40 hidden rounded-[12px] bg-white px-3.5 py-4 font-sans text-[14px] text-slate-custom shadow-[0_18px_44px_rgba(6,22,14,.32)]"
+    class="absolute left-0 right-0 top-[56px] z-[100] hidden rounded-[12px] bg-white px-3.5 py-4 font-sans text-[14px] text-slate-custom shadow-[0_18px_44px_rgba(6,22,14,.32)]"
   >
     No chapter matches that. Try “overfit”, “tensor” or “agent”.
   </div>
