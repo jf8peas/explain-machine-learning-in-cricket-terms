@@ -51,40 +51,9 @@ body {
   background: #e2b71455;
 }
 
-/* ─── Primary content code blocks (markdown ``` blocks in .prose) — right-edge fade + styled scrollbar ─── */
+/* ─── Primary content code blocks (markdown ``` blocks in .prose) — right-edge fade ─── */
 .prose pre {
   position: relative;
-}
-
-/* ─── "Into the Nets" bottom code block — explicitly reset to default, untouched ─── */
-.nets-code-block {
-  position: static;
-}
-
-.nets-code-block::after {
-  content: none;
-}
-
-.nets-code-block .overflow-x-auto {
-  -webkit-overflow-scrolling: auto;
-}
-
-.nets-code-block .overflow-x-auto::-webkit-scrollbar {
-  height: auto;
-}
-
-.nets-code-block .overflow-x-auto::-webkit-scrollbar-track {
-  background: initial;
-  border-radius: initial;
-}
-
-.nets-code-block .overflow-x-auto::-webkit-scrollbar-thumb {
-  background: initial;
-  border-radius: initial;
-}
-
-.nets-code-block .overflow-x-auto::-webkit-scrollbar-thumb:hover {
-  background: initial;
 }
 
 /* Right-edge gradient fade indicator — sits above the code text but stops
@@ -102,25 +71,30 @@ body {
   z-index: 1;
 }
 
-/* Touch-friendly horizontal scrollbar for primary content code blocks only. */
-.prose pre {
+/* ─── Custom gold horizontal scrollbar — ALL code blocks (main content + Into the Nets) ─── */
+pre,
+.nets-code-block .overflow-x-auto {
   -webkit-overflow-scrolling: touch;
 }
 
-.prose pre::-webkit-scrollbar {
-  height: 8px;
+pre::-webkit-scrollbar,
+.nets-code-block .overflow-x-auto::-webkit-scrollbar {
+  height: 6px; /* 75% of standard 8px scrollbar */
 }
 
-.prose pre::-webkit-scrollbar-track {
-  background: rgba(255, 255, 255, 0.06);
-  border-radius: 4px;
+pre::-webkit-scrollbar-track,
+.nets-code-block .overflow-x-auto::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 3px;
 }
 
-.prose pre::-webkit-scrollbar-thumb {
-  background: rgba(234, 179, 8, 0.5);
-  border-radius: 4px;
+pre::-webkit-scrollbar-thumb,
+.nets-code-block .overflow-x-auto::-webkit-scrollbar-thumb {
+  background: rgba(234, 179, 8, 0.5); /* Gold/amber accent */
+  border-radius: 3px;
 }
 
-.prose pre::-webkit-scrollbar-thumb:hover {
-  background: rgba(234, 179, 8, 0.7);
+pre::-webkit-scrollbar-thumb:hover,
+.nets-code-block .overflow-x-auto::-webkit-scrollbar-thumb:hover {
+  background: rgba(234, 179, 8, 0.8);
 }
