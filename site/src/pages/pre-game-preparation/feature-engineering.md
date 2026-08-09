@@ -5,7 +5,7 @@ subtitle: "Cleaning Up the Scorecard"
 innings: pre-game-preparation
 chapter: feature-engineering
 meta: "13 min · gaps, freaks & lopsided squads"
-lede: "The Malabar Mavericks squad from the last chapter was spotless — zero missing values, no freak entries, no lopsided classes. Real scorecards are never that polite. Before a model sees a single row, someone has to fill the gaps, flag the freak innings, and decide what to do about a squad that's 995 dot balls to 5 wickets."
+lede: "The Malabar Mavericks squad from the last chapter was spotless — zero missing values, no freak entries, no lopsided classes. Real scorecards are never that polite. Before a model sees a single row, someone has to fill the gaps, flag the freak innings, and decide what to do about the series of 995 dot balls to 5 wickets."
 commentary: "'The sheet's got a blank next to his strike rate from the away leg. Doesn't mean he didn't play — means nobody wrote it down. Big difference.' — Scorer"
 codeFile: pre_game/feature_engineering.py
 codeOut: "14 gaps filled (KNN) · 3 outliers flagged (|z| > 3) · minority upweighted 1:1"
@@ -66,7 +66,7 @@ The trade-off between the two is the same trade-off you'd expect: `SimpleImputer
 
 ## The Freak Innings: Detecting Outliers
 
-An **outlier** is a data point sitting far from the rest of the observations — the club match where someone hit 180 not out against schoolboy bowling, sitting in the same column as a season of entirely ordinary 30s and 40s. Left alone, that single freak innings can drag a mean, blow out a standard deviation, and — as **Linear Regression**'s discussion of the sum-of-squared-error cost function will warn later in this series — pull an entire model's attention toward accommodating one delivery nobody will ever see again.
+An **outlier** is a data point sitting far from the rest of the observations — the club match where someone hit 180 not out against schoolkid bowling, sitting in the same column as a season of entirely ordinary 30s and 40s. Left alone, that single freak innings can drag a mean, blow out a standard deviation, and — as **Linear Regression**'s discussion of the sum-of-squared-error cost function will warn later in this series — pull an entire model's attention toward accommodating one delivery nobody will ever see again.
 
 **Box plots** are the standard way to see this at a glance, and they're built entirely from **quartiles** — the 25th, 50th, and 75th percentile of a column:
 
@@ -105,7 +105,7 @@ The two techniques below fix the same problem a different way — by rebalancing
 
 ![A bar chart titled "The Lopsided Squad" with three panels on a shared log-scale y-axis of deliveries. The Original panel shows 995 no-wicket deliveries against 5 wickets, a 199 to 1 ratio. The Downsampling panel shows 5 no-wicket deliveries against 5 wickets, a 1 to 1 ratio, with the majority bar shrunk down to match the minority. The Upweighting panel shows 995 no-wicket deliveries against 50 wickets, roughly 20 to 1, with the minority bar grown to ten times its original height while the majority is unchanged.](/images/class-imbalance.png)
 
-A more considered version of the same idea, worth knowing the name of even without a full deep-dive here, is **SMOTE** — you'll see it again in **The Scorer's Box** as a resampler needing the same fit-after-split discipline as any scaler. Rather than duplicating existing minority examples exactly, SMOTE generates new synthetic ones by interpolating between real minority neighbours — the same nearest-neighbours instinct as `KNNImputer`, aimed at manufacturing plausible new data rather than filling a gap in old data.
+A more considered version of the same idea, worth knowing the name of even without a full deep-dive here, is **Synthetic Minotiry Over-smaling Technique (SMOTE)** — you'll see it again in **The Scorer's Box** as a resampler needing the same fit-after-split discipline as any scaler. Rather than duplicating existing minority examples exactly, SMOTE generates new synthetic ones by interpolating between real minority neighbours — the same nearest-neighbours instinct as `KNNImputer`, aimed at manufacturing plausible new data rather than filling a gap in old data.
 
 ## Ground Rules for the Dressing-Room Wall
 
