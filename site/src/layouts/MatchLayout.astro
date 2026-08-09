@@ -104,6 +104,7 @@ const hasQuizQuestions = (quizBank as Array<{ chapterId: string }>).some(
       class="flex min-w-[240px] max-w-full flex-[1_1_258px] flex-col gap-3.5 lg:sticky lg:top-[152px] lg:max-h-[calc(100vh-170px)] lg:max-w-[320px]"
     >
       <div
+        id="innings-card-scroll"
         class="min-h-0 flex-1 overflow-y-auto rounded-[14px] bg-pitch shadow-[0_2px_0_rgba(6,22,14,.06),0_10px_26px_rgba(6,22,14,.14)]"
       >
 
@@ -127,6 +128,7 @@ const hasQuizQuestions = (quizBank as Array<{ chapterId: string }>).some(
                 <a
                   href={url(`${inn.slug}/${c.slug}/`)}
                   data-chapter-slug={c.slug}
+                  aria-current={on ? "page" : undefined}
                   class:list={[
                     "flex w-full items-center gap-[11px] rounded-[9px] p-2.5 transition-colors hover:bg-white/5",
                     on ? "bg-gold/[0.12] text-white" : "text-mist-light",
@@ -472,6 +474,41 @@ const hasQuizQuestions = (quizBank as Array<{ chapterId: string }>).some(
   const headerCount = document.getElementById("header-progress-count");
   const chapterLinks = document.querySelectorAll("[data-chapter-slug]");
 
+  /**
+   * Scroll the inner Innings Card container so the active chapter stays in
+   * view. Pure `scrollIntoView` can also scroll the whole browser window, so
+   * we compute the delta manually and only adjust the container's scrollTop.
+   * Runs only in the browser (Astro <script> is not executed during SSR),
+   * and we keep the `typeof window` guard for extra SSR safety.
+   */
+  function scrollActiveChapterIntoView(): void {
+    if (typeof window === "undefined") return;
+    const scroller = document.getElementById("innings-card-scroll");
+    if (!scroller) return;
+
+    // Match the active chapter link against the current route path.
+    // Normalise a trailing "/" so base-path links still match reliably.
+    const current = window.location.pathname.replace(/\/+$/, "");
+    const active = Array.from(
+      scroller.querySelectorAll<HTMLAnchorElement>("[data-chapter-slug]"),
+    ).find(
+      (el) =>
+        (el.getAttribute("href") ?? "").replace(/\/+$/, "") === current,
+    );
+    if (!active) return;
+
+    const rect = active.getBoundingClientRect();
+    const scrollRect = scroller.getBoundingClientRect();
+
+    if (rect.top < scrollRect.top) {
+      // Active item sits above the visible area → scroll up.
+      scroller.scrollBy({ top: rect.top - scrollRect.top, behavior: "smooth" });
+    } else if (rect.bottom > scrollRect.bottom) {
+      // Active item sits below the visible area → scroll down.
+      scroller.scrollBy({ top: rect.bottom - scrollRect.bottom, behavior: "smooth" });
+    }
+  }
+
   /** Re-render the Header progress + LHN innings card ticks from storage. */
   function refreshProgressUI(): void {
     const data = loadProgress();
@@ -497,4 +534,8 @@ const hasQuizQuestions = (quizBank as Array<{ chapterId: string }>).some(
   refreshProgressUI();
   window.addEventListener(PROGRESS_EVENT, refreshProgressUI);
   initChapterCompletionTrigger();
+
+  // Keep the active chapter in full view inside the scrollable Innings Card.
+  // Defer so layout/fonts settle before measuring the scroll container.
+  window.setTimeout(scrollActiveChapterIntoView, 60);
 </script>
