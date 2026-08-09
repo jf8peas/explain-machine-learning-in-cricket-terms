@@ -49,7 +49,7 @@ Sometimes you want exactly that cross-term, deliberately, without the rest of a 
 
 ## Splines: A Different Curve for Every Phase
 
-The obvious next move — just keep raising the polynomial's degree until the curve bends however it needs to — has a real cost. A single polynomial forced to describe the powerplay, the middle overs, *and* the death all at once tends to overcorrect: pushed higher in degree to capture the death-overs surge, it starts wiggling wildly in the middle overs where nothing dramatic was happening at all. That's **Form and Class**'s overfitting argument again, wearing a curve-fitting jersey — a model expressive enough to chase every bend in the training data, including bends that were never really there.
+The obvious next move — just keep raising the polynomial's degree until the curve bends however it needs to — has a real cost. A single polynomial forced to describe the powerplay, the middle overs, *and* the death all at once tends to overcorrect: pushed higher in degree to capture the death-overs surge, it starts wiggling wildly in the middle overs where nothing dramatic was happening at all. That's **Underfitting, Overfitting & Finding the Sweet Spot**'s overfitting argument again, wearing a curve-fitting jersey — a model expressive enough to chase every bend in the training data, including bends that were never really there.
 
 **Splines** fix this by refusing to use one polynomial for the whole range at all. Instead, the range gets cut into pieces — say, overs 1–6, overs 7–40, overs 41–50 — with a separate, low-degree polynomial fitted to each piece. The cut points are called **knots**, and a spline's defining rule is that the pieces have to meet at each knot smoothly: no visible seam, no jump, no kink, just one curve quietly changing its personality as it crosses from the powerplay's polynomial into the middle-overs' polynomial into the death-overs' polynomial.
 
@@ -77,7 +77,7 @@ All three do the same underlying trick as **Linear Regression**'s dummy variable
 - **A linear model only needs to be linear in its coefficients**, not in the raw features. Polynomial terms, interaction terms, and splines are all just cleverer columns feeding the same weighted sum.
 - **`PolynomialFeatures` adds interactions automatically**, not just pure powers — check the column count if that surprises you.
 - **An interaction term says "it depends."** Reach for one when a feature's effect genuinely changes depending on another feature's value.
-- **A single high-degree polynomial can overfit by wiggling everywhere to fit a bend that only exists in one region.** That's Form and Class's overfitting problem, applied to curve-fitting.
+- **A single high-degree polynomial can overfit by wiggling everywhere to fit a bend that only exists in one region.** That's the overfitting problem from Underfitting, Overfitting & Finding the Sweet Spot, applied to curve-fitting.
 - **Splines fit a different low-degree polynomial per region, stitched smoothly at knots**, rather than forcing one global curve to describe every phase at once.
 - **Fitting a spline is still linear regression** — against `d + k − 1` basis functions instead of the raw feature, courtesy of `SplineTransformer` building them for you.
 

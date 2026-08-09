@@ -5,7 +5,7 @@ subtitle: "When You Can't Trial Everyone"
 innings: scoring-model-evaluation
 chapter: model-selection
 meta: "14 min · sequential selection, AIC & PCA"
-lede: "Trial Matches assumed you could afford to check every combination and still have a warm-up fixture spare to judge the winner on. Sometimes you can't — too many candidate features to grid-search, or too little data to responsibly give any of it up. Model selection methods like sequential feature selection, AIC, and PCA are what you reach for when a full trial match isn't an option."
+lede: "Feature Selection & Hyperparameter Optimisation assumed you could afford to check every combination and still have a warm-up fixture spare to judge the winner on. Sometimes you can't — too many candidate features to grid-search, or too little data to responsibly give any of it up. Model selection methods like sequential feature selection, AIC, and PCA are what you reach for when a full trial match isn't an option."
 commentary: "'We don't get a full trial match for every candidate this window. Give me a shortlist, and a reason attached to every name on it.' — Head of Recruitment"
 codeFile: scoring/model_selection.py
 codeOut: "forward: 3 features kept · AIC 214.6 (lower is better) · PCA: 12 features → 3 components"
@@ -29,9 +29,9 @@ stats:
   - { k: "PCA", v: "Compress", s: "many features → few components" }
 ---
 
-## Trial Matches Assumed You Could Afford Every Trial
+## Feature Selection & Hyperparameter Optimisation Assumed You Could Afford Every Trial
 
-**Trial Matches** solved feature and hyperparameter selection the expensive way, on purpose: try every combination, score each one honestly on a validation slice, keep the winner. That approach is only as good as two assumptions holding — that you have enough spare data to carve out a validation set without starving the model of training rows, and enough patience or compute to actually check every combination worth checking.
+**Feature Selection & Hyperparameter Optimisation** solved feature and hyperparameter selection the expensive way, on purpose: try every combination, score each one honestly on a validation slice, keep the winner. That approach is only as good as two assumptions holding — that you have enough spare data to carve out a validation set without starving the model of training rows, and enough patience or compute to actually check every combination worth checking.
 
 Both assumptions can fail. A dataset with forty rows can't spare 15% for validation without leaving almost nothing to train on. A dataset with forty candidate features has over a trillion possible subsets — nobody is grid-searching that. This chapter is what selectors reach for when a proper trial match, for every candidate, simply isn't on the table.
 
@@ -60,7 +60,7 @@ backward_lm = SequentialFeatureSelector(
 backward_lm.fit(X, y)
 ```
 
-Neither direction is strictly better, and the difference is about what each approach gets to *see*. Forward selection builds up from an empty side, so early on it can only ever judge a feature in isolation or alongside a small handful of others — it can miss a predictor that's mediocre alone but excellent in combination, the exact nightwatchman problem **Trial Matches** already warned about. Backward selection starts with the full squad already on the page, so every removal decision is made with the complete picture in view — more thorough, and more expensive, since the first several rounds are trained on the largest, slowest version of the model. Forward selection is the cheaper habit; backward selection is the more careful one.
+Neither direction is strictly better, and the difference is about what each approach gets to *see*. Forward selection builds up from an empty side, so early on it can only ever judge a feature in isolation or alongside a small handful of others — it can miss a predictor that's mediocre alone but excellent in combination, the exact nightwatchman problem **Feature Selection & Hyperparameter Optimisation** already warned about. Backward selection starts with the full squad already on the page, so every removal decision is made with the complete picture in view — more thorough, and more expensive, since the first several rounds are trained on the largest, slowest version of the model. Forward selection is the cheaper habit; backward selection is the more careful one.
 
 ## Judging a Team Without a Fresh Match
 
@@ -110,4 +110,4 @@ The cost is exactly what you'd expect from trading two hundred named stats for t
 
 ---
 
-Trial Matches worked because there was enough data and enough patience to check everything and still hold a fair trial for the winner. This chapter was for the seasons without that luxury — building a side one name at a time, judging it without a spare fixture to test it on, or compressing two hundred stats down to the three that actually mattered. Different constraints, same job: naming a side you can defend.
+Feature Selection & Hyperparameter Optimisation worked because there was enough data and enough patience to check everything and still hold a fair trial for the winner. This chapter was for the seasons without that luxury — building a side one name at a time, judging it without a spare fixture to test it on, or compressing two hundred stats down to the three that actually mattered. Different constraints, same job: naming a side you can defend.

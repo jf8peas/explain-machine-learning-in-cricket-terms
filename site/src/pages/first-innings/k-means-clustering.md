@@ -110,7 +110,7 @@ The fitted model carries its own summary of how the sort went:
 
 ## How Many Piles Should You Even Ask For?
 
-Nothing stops you asking for `n_clusters=1` (everyone in one giant, meaningless pile) or `n_clusters=200` (every player gets their own personal pile of one — perfectly tight, and utterly useless, the clustering equivalent of the net hero from **Form and Class** who's memorised the training data and generalises to nothing). The right number sits somewhere in between, and **inertia** is how you find it.
+Nothing stops you asking for `n_clusters=1` (everyone in one giant, meaningless pile) or `n_clusters=200` (every player gets their own personal pile of one — perfectly tight, and utterly useless, the clustering equivalent of the net hero from **Underfitting, Overfitting & Finding the Sweet Spot** who's memorised the training data and generalises to nothing). The right number sits somewhere in between, and **inertia** is how you find it.
 
 Inertia is the sum of squared distances from every player to their own pile's captain:
 

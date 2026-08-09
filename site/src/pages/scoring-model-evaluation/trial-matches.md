@@ -94,7 +94,7 @@ Say you're building a model to help a captain decide whether to send an LBW shou
 
 ## Axis Two: Hyperparameter Optimisation — Dialling In the Conditions
 
-You know from **The Coach's Settings** what a hyperparameter is: the dials you set before play, as opposed to the muscle memory the model develops during it. What that chapter deliberately left open was the hard part.
+You know from **Parameters & Hyperparameters** what a hyperparameter is: the dials you set before play, as opposed to the muscle memory the model develops during it. What that chapter deliberately left open was the hard part.
 
 **Hyperparameter optimisation** — or tuning — is the process of searching those dial settings for the combination that maximises performance. Not the settings that feel right. Not the defaults, which were chosen by library authors who have never seen your data. The ones that measurably win.
 
@@ -128,7 +128,7 @@ Note what it is scoring *on*: folds of `X_train`. The vault stays shut throughou
 
 Now the parameter that decides whether any of this was worth doing.
 
-**The Scorer's Box** established that a metric is a choice — that precision, recall, and F1 answer different questions, and that accuracy on imbalanced data is a confidence trick. All of that was, until this moment, a matter of what you *report*.
+**Evaluation Metrics & Data Leakage** established that a metric is a choice — that precision, recall, and F1 answer different questions, and that accuracy on imbalanced data is a confidence trick. All of that was, until this moment, a matter of what you *report*.
 
 `scoring=` is where it stops being about reporting and starts steering the search. Eighteen candidate sides are about to be ranked, and this one string decides what "best" means. Leave it at the default:
 

@@ -1385,15 +1385,15 @@
     "chapterId": "the-coachs-settings",
     "chapterTitle": "2.4 Parameters & Hyperparameters",
     "sourceUrl": "/pre-game-preparation/the-coachs-settings/",
-    "question": "What is the mechanical 'tell' for distinguishing a parameter from a hyperparameter in scikit-learn code?",
+    "question": "In the code `model = LinearSVC(C=10)` followed later by `model.coef_`, what is the mechanical rule for telling which one is the hyperparameter and which is the learned parameter?",
     "options": [
-      "Parameters are always integers; hyperparameters are always floats",
-      "Anything passed into the constructor is a hyperparameter; anything with a trailing underscore after fitting is a learned parameter",
-      "Parameters are set inside .fit(); hyperparameters are set inside .predict()",
-      "There is no reliable way to tell them apart in code"
+      "C is a hyperparameter because it's passed into the constructor before fitting; coef_ is a learned parameter because it only exists, with a trailing underscore, after .fit() has run",
+      "Both are hyperparameters, since both configure the model",
+      "C is learned during fitting, and coef_ is set manually by the developer",
+      "There is no reliable way to distinguish them from the code alone"
     ],
-    "correctAnswerIndex": 1,
-    "explanation": "The chapter describes the trailing underscore as scikit-learn politely saying 'I worked this one out myself, thank you.'"
+    "correctAnswerIndex": 0,
+    "explanation": "The chapter's rule is mechanical: anything passed into the constructor is a hyperparameter, and anything carrying a trailing underscore after fitting, like coef_, is a learned parameter scikit-learn worked out itself."
   },
   {
     "id": "mcq-the-coachs-settings-02",
@@ -1401,15 +1401,15 @@
     "chapterId": "the-coachs-settings",
     "chapterTitle": "2.4 Parameters & Hyperparameters",
     "sourceUrl": "/pre-game-preparation/the-coachs-settings/",
-    "question": "Which of the following is an example of a hyperparameter, according to this chapter?",
+    "question": "Which of the following best defines a hyperparameter, as the chapter uses the term?",
     "options": [
-      "model.coef_ after fitting",
-      "model.intercept_ after fitting",
-      "n_neighbors=5 passed into KNeighborsClassifier's constructor",
-      "The split thresholds a decision tree discovers during training"
+      "An external setting specified by the developer before training begins, which controls how the model learns",
+      "An internal value the model computes automatically while minimising loss during training",
+      "Any number that appears inside a trained model's prediction formula",
+      "A value that can only be set after training has completed"
     ],
-    "correctAnswerIndex": 2,
-    "explanation": "n_neighbors is set by the developer before training begins, making it a hyperparameter, unlike coef_ or discovered split thresholds, which are learned parameters."
+    "correctAnswerIndex": 0,
+    "explanation": "The chapter defines hyperparameters as external settings the developer specifies before training begins, controlling how the model learns rather than what it learns."
   },
   {
     "id": "mcq-the-coachs-settings-03",
@@ -1417,15 +1417,15 @@
     "chapterId": "the-coachs-settings",
     "chapterTitle": "2.4 Parameters & Hyperparameters",
     "sourceUrl": "/pre-game-preparation/the-coachs-settings/",
-    "question": "According to the chapter's golden rule, when should hyperparameters be tuned?",
+    "question": "Which of the following best defines a parameter, as the chapter uses the term?",
     "options": [
-      "Against the final test set, so you know the true performance",
-      "Against a held-out validation set, never against the final test data",
-      "Only once, before seeing any data at all",
-      "Hyperparameters should never be tuned; only defaults should be used"
+      "A setting chosen by the developer and fixed before .fit() is called",
+      "An internal configuration variable the model learns automatically from the training data during fitting",
+      "A rule that decides how many cross-validation folds to use",
+      "A value passed into a model's constructor"
     ],
     "correctAnswerIndex": 1,
-    "explanation": "The chapter states this rule matters enormously: a coach who keeps rerunning match day until the settings look good has stopped measuring anything."
+    "explanation": "The chapter defines parameters as internal configuration variables the model learns automatically from the training data during the fitting process."
   },
   {
     "id": "mcq-the-coachs-settings-04",
@@ -1433,18 +1433,226 @@
     "chapterId": "the-coachs-settings",
     "chapterTitle": "2.4 Parameters & Hyperparameters",
     "sourceUrl": "/pre-game-preparation/the-coachs-settings/",
-    "question": "In the bowling-machine analogy, what does the 'Speed Dial' on the machine represent?",
+    "question": "In `KNeighborsClassifier(n_neighbors=5, weights='distance', algorithm='auto')`, why is `n_neighbors=5` classified as a hyperparameter rather than a parameter?",
     "options": [
-      "The number of estimators in a Random Forest",
-      "The learning rate",
-      "Max tree depth",
-      "The k value in k-Nearest Neighbours"
+      "Because it is set by the developer before training begins, rather than learned from the training data",
+      "Because it carries a trailing underscore",
+      "Because KNeighborsClassifier has no learnable parameters",
+      "Because it only takes effect after .fit() has completed"
     ],
-    "correctAnswerIndex": 1,
-    "explanation": "The chapter maps the speed dial directly to the learning rate: too fast and the batter overreacts, too slow and they don't learn real match conditions."
+    "correctAnswerIndex": 0,
+    "explanation": "n_neighbors is passed into the constructor before training begins, making it a hyperparameter — nothing about it is learned from the training data."
   },
   {
     "id": "mcq-the-coachs-settings-05",
+    "type": "mcq",
+    "chapterId": "the-coachs-settings",
+    "chapterTitle": "2.4 Parameters & Hyperparameters",
+    "sourceUrl": "/pre-game-preparation/the-coachs-settings/",
+    "question": "In that same `KNeighborsClassifier` call, `weights='distance'` and `algorithm='auto'` are also hyperparameters. What do all three arguments have in common that makes them hyperparameters?",
+    "options": [
+      "They are all floating-point numbers",
+      "They are all external configuration chosen by the developer before training, rather than learned from the training data",
+      "They all become available only after calling .fit()",
+      "They are all optional and have no effect on the model"
+    ],
+    "correctAnswerIndex": 1,
+    "explanation": "The chapter's mechanical tell is that anything passed into the constructor before training is a hyperparameter; none of these three are learned from data during fitting."
+  },
+  {
+    "id": "mcq-the-coachs-settings-06",
+    "type": "mcq",
+    "chapterId": "the-coachs-settings",
+    "chapterTitle": "2.4 Parameters & Hyperparameters",
+    "sourceUrl": "/pre-game-preparation/the-coachs-settings/",
+    "question": "For a decision tree, which of the following is a learned parameter rather than a hyperparameter?",
+    "options": [
+      "max_depth",
+      "min_samples_split",
+      "The specific split thresholds chosen at each node",
+      "random_state"
+    ],
+    "correctAnswerIndex": 2,
+    "explanation": "The chapter states that in decision trees, parameters are the specific split thresholds chosen at each node — discovered during training, unlike max_depth, min_samples_split, or random_state, which are all fixed beforehand as hyperparameters."
+  },
+  {
+    "id": "mcq-the-coachs-settings-07",
+    "type": "mcq",
+    "chapterId": "the-coachs-settings",
+    "chapterTitle": "2.4 Parameters & Hyperparameters",
+    "sourceUrl": "/pre-game-preparation/the-coachs-settings/",
+    "question": "In `DecisionTreeClassifier(max_depth=5, min_samples_split=10, random_state=42)`, what does the `min_samples_split=10` hyperparameter control?",
+    "options": [
+      "The minimum number of samples required at a node before it's allowed to split further",
+      "The number of trees built in the forest",
+      "How many training rows are dropped before fitting begins",
+      "The learning rate used during gradient descent"
+    ],
+    "correctAnswerIndex": 0,
+    "explanation": "The chapter's code comment states this directly: min_samples_split sets the minimum samples required to split a node."
+  },
+  {
+    "id": "mcq-the-coachs-settings-08",
+    "type": "mcq",
+    "chapterId": "the-coachs-settings",
+    "chapterTitle": "2.4 Parameters & Hyperparameters",
+    "sourceUrl": "/pre-game-preparation/the-coachs-settings/",
+    "question": "After calling `model.fit(X_train, y_train)`, what do `model.coef_` and `model.intercept_` represent?",
+    "options": [
+      "Hyperparameters the developer set before training, now displayed for reference",
+      "The learned weights and bias the algorithm worked out for itself during fitting to minimise loss",
+      "A record of which rows were used for validation",
+      "The number of iterations the optimiser ran before stopping"
+    ],
+    "correctAnswerIndex": 1,
+    "explanation": "The chapter describes coef_ and intercept_ as learned during .fit() — nobody instructs those numbers; they're what the algorithm works out automatically while minimising loss."
+  },
+  {
+    "id": "mcq-the-coachs-settings-09",
+    "type": "mcq",
+    "chapterId": "the-coachs-settings",
+    "chapterTitle": "2.4 Parameters & Hyperparameters",
+    "sourceUrl": "/pre-game-preparation/the-coachs-settings/",
+    "question": "In the formula ŷ = w₁x₁ + w₂x₂ + b, which symbols does the chapter label as learned?",
+    "options": [
+      "x₁ and x₂ only",
+      "w₁, w₂, and b",
+      "ŷ only",
+      "None of the symbols are learned"
+    ],
+    "correctAnswerIndex": 1,
+    "explanation": "The chapter's diagram labels the weights (w₁, w₂) and the bias (b) as learned, since the algorithm calculates and updates these automatically to minimise loss."
+  },
+  {
+    "id": "mcq-the-coachs-settings-10",
+    "type": "mcq",
+    "chapterId": "the-coachs-settings",
+    "chapterTitle": "2.4 Parameters & Hyperparameters",
+    "sourceUrl": "/pre-game-preparation/the-coachs-settings/",
+    "question": "Why doesn't a developer set a model's weights and bias by hand?",
+    "options": [
+      "Because scikit-learn forbids it by raising an error",
+      "Because the algorithm calculates and updates them automatically during training to minimise loss",
+      "Because weights and bias only exist for decision trees",
+      "Because they are technically hyperparameters, not parameters"
+    ],
+    "correctAnswerIndex": 1,
+    "explanation": "The chapter states the algorithm calculates and updates these weights automatically to minimise loss — you do not set parameters manually."
+  },
+  {
+    "id": "mcq-the-coachs-settings-11",
+    "type": "mcq",
+    "chapterId": "the-coachs-settings",
+    "chapterTitle": "2.4 Parameters & Hyperparameters",
+    "sourceUrl": "/pre-game-preparation/the-coachs-settings/",
+    "question": "In `LinearSVC(C=10, penalty=\"l2\", max_iter=1000)`, what does `max_iter` control, and what's the risk if it's set too low?",
+    "options": [
+      "It controls regularisation strength; too low a value weakens regularisation",
+      "It caps the number of optimisation iterations during fitting; too low a value may cause the optimiser to stop before converging, leaving the model under-trained",
+      "It sets how many rows are used for training; too low causes underfitting from insufficient data",
+      "It is a learned parameter set automatically by .fit()"
+    ],
+    "correctAnswerIndex": 1,
+    "explanation": "The chapter describes max_iter as capping how long the optimisation runs; too few iterations can prevent the optimiser from converging."
+  },
+  {
+    "id": "mcq-the-coachs-settings-12",
+    "type": "mcq",
+    "chapterId": "the-coachs-settings",
+    "chapterTitle": "2.4 Parameters & Hyperparameters",
+    "sourceUrl": "/pre-game-preparation/the-coachs-settings/",
+    "question": "The code comment on `LinearSVC(C=10)` describes C as controlling 'how hard to fit the training data.' Based on that, what would increasing C generally do?",
+    "options": [
+      "Push the model to fit the training data more closely, which can increase the risk of overfitting",
+      "Force the model to ignore the training data entirely",
+      "Convert C from a hyperparameter into a learned parameter",
+      "Have no effect on how the model fits the data"
+    ],
+    "correctAnswerIndex": 0,
+    "explanation": "C is the chapter's example of a regularisation-strength hyperparameter — pushing it higher lets the model fit the training data more aggressively, trading away some generalisation."
+  },
+  {
+    "id": "mcq-the-coachs-settings-13",
+    "type": "mcq",
+    "chapterId": "the-coachs-settings",
+    "chapterTitle": "2.4 Parameters & Hyperparameters",
+    "sourceUrl": "/pre-game-preparation/the-coachs-settings/",
+    "question": "What does the `penalty` hyperparameter in `LinearSVC(penalty=\"l2\")` control?",
+    "options": [
+      "The number of training epochs",
+      "What kind of restraint, or regularisation, is imposed on the model",
+      "The number of features considered at each split",
+      "The size of the held-out validation set"
+    ],
+    "correctAnswerIndex": 1,
+    "explanation": "The chapter's code comment describes penalty as 'what kind of restraint to impose' — it selects the type of regularisation applied during fitting."
+  },
+  {
+    "id": "mcq-the-coachs-settings-14",
+    "type": "mcq",
+    "chapterId": "the-coachs-settings",
+    "chapterTitle": "2.4 Parameters & Hyperparameters",
+    "sourceUrl": "/pre-game-preparation/the-coachs-settings/",
+    "question": "In a Random Forest, what does the `n_estimators` hyperparameter control?",
+    "options": [
+      "How many trees are built in the forest",
+      "How many samples are required to split a node",
+      "How deep any individual tree is allowed to grow",
+      "Which features each tree is allowed to consider"
+    ],
+    "correctAnswerIndex": 0,
+    "explanation": "The chapter identifies the Number of Estimators / Trees (n) as the hyperparameter that decides how many trees get built in a Random Forest."
+  },
+  {
+    "id": "mcq-the-coachs-settings-15",
+    "type": "mcq",
+    "chapterId": "the-coachs-settings",
+    "chapterTitle": "2.4 Parameters & Hyperparameters",
+    "sourceUrl": "/pre-game-preparation/the-coachs-settings/",
+    "question": "In a Random Forest, what does the `max_features` hyperparameter restrict?",
+    "options": [
+      "How many trees vote on the final prediction",
+      "Which and how many input features a tree is allowed to consider when choosing a split",
+      "How many training iterations the forest runs",
+      "The minimum depth every tree must reach"
+    ],
+    "correctAnswerIndex": 1,
+    "explanation": "The chapter frames this as narrowing the toolbox a tree is allowed to use, limiting which inputs a model is allowed to split on — exactly what max_features restricts."
+  },
+  {
+    "id": "mcq-the-coachs-settings-16",
+    "type": "mcq",
+    "chapterId": "the-coachs-settings",
+    "chapterTitle": "2.4 Parameters & Hyperparameters",
+    "sourceUrl": "/pre-game-preparation/the-coachs-settings/",
+    "question": "What does the `max_depth` hyperparameter control in a decision tree, and when must it be set?",
+    "options": [
+      "It caps how deep the tree is allowed to grow, and it must be fixed before training begins",
+      "It records how deep the tree actually grew, and it's only available after training",
+      "It sets the number of features used at each split, decided during training",
+      "It has no effect on tree structure, only on prediction speed"
+    ],
+    "correctAnswerIndex": 0,
+    "explanation": "max_depth constrains how far a tree can grow, and as a hyperparameter it must be fixed before the first split happens, not discovered afterward."
+  },
+  {
+    "id": "mcq-the-coachs-settings-17",
+    "type": "mcq",
+    "chapterId": "the-coachs-settings",
+    "chapterTitle": "2.4 Parameters & Hyperparameters",
+    "sourceUrl": "/pre-game-preparation/the-coachs-settings/",
+    "question": "According to the chapter, what happens if a model's learning rate is set too high, versus too low?",
+    "options": [
+      "Too high causes the model to overreact and miss useful signal; too low means the model doesn't get properly tested against real conditions",
+      "Too high causes underfitting; too low causes overfitting",
+      "Learning rate has no effect on training outcomes",
+      "Too high speeds up convergence with no downside; too low always improves accuracy"
+    ],
+    "correctAnswerIndex": 0,
+    "explanation": "The chapter states that too fast a learning rate makes the batter overreact and miss every cue, while too slow means nothing about the technique gets properly tested."
+  },
+  {
+    "id": "mcq-the-coachs-settings-18",
     "type": "mcq",
     "chapterId": "the-coachs-settings",
     "chapterTitle": "2.4 Parameters & Hyperparameters",
@@ -1457,26 +1665,42 @@
       "Random Search requires a validation set, while Grid Search does not"
     ],
     "correctAnswerIndex": 0,
-    "explanation": "The chapter defines Grid Search as testing every combination on a checklist, and Random Search as randomly sampling settings to quickly discover high-performing configurations without testing every single combination."
+    "explanation": "The chapter defines Grid Search as testing every combination on a checklist, and Random Search as randomly sampling settings to discover high-performing configurations without testing every single combination."
   },
   {
-    "id": "mcq-the-coachs-settings-06",
+    "id": "mcq-the-coachs-settings-19",
     "type": "mcq",
     "chapterId": "the-coachs-settings",
     "chapterTitle": "2.4 Parameters & Hyperparameters",
     "sourceUrl": "/pre-game-preparation/the-coachs-settings/",
-    "question": "How does Bayesian Optimization, as described in the chapter, differ from Grid Search and Random Search?",
+    "question": "What does Random Search do differently from Grid Search, per the chapter?",
     "options": [
-      "It tests every possible combination exhaustively, like Grid Search",
-      "It uses the results of past tuning runs to intelligently predict which combination is likely to perform best next, rather than searching exhaustively or randomly",
-      "It does not require any training data at all",
-      "It can only be used to tune the learning rate"
+      "It tests every combination on a checklist exhaustively",
+      "It randomly samples settings across a range to quickly discover high-performing configurations without testing every combination",
+      "It only works for decision trees",
+      "It requires no training data at all"
     ],
     "correctAnswerIndex": 1,
-    "explanation": "The chapter describes Bayesian Optimization as using past net session results to intelligently predict which hyperparameter combination will yield the highest performance next."
+    "explanation": "The chapter describes Random Search as randomly sampling settings across a range, unlike Grid Search's exhaustive checklist."
   },
   {
-    "id": "mcq-the-coachs-settings-07",
+    "id": "mcq-the-coachs-settings-20",
+    "type": "mcq",
+    "chapterId": "the-coachs-settings",
+    "chapterTitle": "2.4 Parameters & Hyperparameters",
+    "sourceUrl": "/pre-game-preparation/the-coachs-settings/",
+    "question": "How does the chapter describe Bayesian Optimisation?",
+    "options": [
+      "Testing every possible combination on a fixed checklist",
+      "Randomly guessing settings with no memory of past attempts",
+      "Using the results of past tuning runs to intelligently predict which hyperparameter combination will yield the highest performance next",
+      "A technique that only works with neural networks"
+    ],
+    "correctAnswerIndex": 2,
+    "explanation": "The chapter describes Bayesian Optimisation as using past results to intelligently predict which combination will perform best next, unlike the exhaustive or purely random approaches of Grid and Random Search."
+  },
+  {
+    "id": "mcq-the-coachs-settings-21",
     "type": "mcq",
     "chapterId": "the-coachs-settings",
     "chapterTitle": "2.4 Parameters & Hyperparameters",
@@ -1492,52 +1716,148 @@
     "explanation": "cv=5 tells GridSearchCV to evaluate each candidate combination using 5-fold cross-validation, rather than a single train/validation split."
   },
   {
-    "id": "mcq-the-coachs-settings-08",
+    "id": "mcq-the-coachs-settings-22",
     "type": "mcq",
     "chapterId": "the-coachs-settings",
     "chapterTitle": "2.4 Parameters & Hyperparameters",
     "sourceUrl": "/pre-game-preparation/the-coachs-settings/",
-    "question": "Per the chapter's quick-reference table, what is the stated goal of tuning hyperparameters, as distinct from the goal of learning parameters?",
+    "question": "In GridSearchCV(model, {\"C\": [0.01, 0.1, 1, 10, 100]}, cv=5), what is being searched over?",
     "options": [
-      "Both share the identical goal of minimising prediction error on training data",
-      "Parameters aim to minimise prediction error on training data; hyperparameters aim to prevent underfitting/overfitting and promote generalisation",
-      "Hyperparameters aim to maximise training accuracy; parameters aim to maximise test accuracy",
-      "Neither has a defined goal — both are chosen arbitrarily"
+      "Five different models entirely",
+      "Five candidate values for the hyperparameter C",
+      "Five different training sets",
+      "Five different random states"
     ],
     "correctAnswerIndex": 1,
-    "explanation": "The chapter's table states parameters minimise prediction error on training data, while hyperparameters exist to prevent underfitting/overfitting and promote generalisation."
+    "explanation": "The dictionary {\"C\": [0.01, 0.1, 1, 10, 100]} gives GridSearchCV five candidate values of the hyperparameter C to test."
   },
   {
-    "id": "mcq-the-coachs-settings-09",
+    "id": "mcq-the-coachs-settings-23",
     "type": "mcq",
     "chapterId": "the-coachs-settings",
     "chapterTitle": "2.4 Parameters & Hyperparameters",
     "sourceUrl": "/pre-game-preparation/the-coachs-settings/",
-    "question": "In KNeighborsClassifier(n_neighbors=5, weights='distance', algorithm='auto'), why are all three arguments classified as hyperparameters rather than parameters?",
+    "question": "After calling `grid.fit(X_train, y_train)` on a `GridSearchCV`, what do `grid.best_params_` and `grid.best_score_` represent?",
     "options": [
-      "Because they are all set before training begins as external configuration chosen by the developer, rather than learned from the training data",
-      "Because they all have a trailing underscore in their names",
-      "Because KNeighborsClassifier has no learnable parameters at all",
-      "Because they only take effect after .fit() has completed"
+      "The hyperparameter combination that scored best during the search, and its corresponding cross-validated score",
+      "The learned weights and bias of the final model",
+      "The full list of every combination that was tried",
+      "The size of the training and test sets used"
     ],
     "correctAnswerIndex": 0,
-    "explanation": "The chapter's mechanical tell is that anything passed into the constructor before training is a hyperparameter; none of these three are learned from data during fitting."
+    "explanation": "The chapter's code prints grid.best_params_ and grid.best_score_ right after fitting the search — the winning hyperparameter combination and the score it achieved."
   },
   {
-    "id": "mcq-the-coachs-settings-10",
+    "id": "mcq-the-coachs-settings-24",
     "type": "mcq",
     "chapterId": "the-coachs-settings",
     "chapterTitle": "2.4 Parameters & Hyperparameters",
     "sourceUrl": "/pre-game-preparation/the-coachs-settings/",
-    "question": "In LinearSVC(C=10, penalty=\"l2\", max_iter=1000), what role does max_iter play, and what might happen if it were set too low for a given dataset?",
+    "question": "How do the goals of learning parameters and choosing hyperparameters differ?",
     "options": [
-      "It controls regularisation strength; too low a value would weaken regularisation",
-      "It caps the number of optimisation iterations during fitting; too low a value may cause the optimiser to stop before converging, leaving the model under-trained",
-      "It sets how many rows are used for training; too low a value causes underfitting from insufficient data",
-      "It is a learned parameter set automatically by .fit(), not something the developer configures"
+      "Parameters aim to minimise prediction error on the training data; hyperparameters aim to prevent underfitting/overfitting and promote generalisation",
+      "Both share the identical goal of maximising training accuracy",
+      "Hyperparameters aim to maximise training error; parameters aim to minimise it",
+      "Neither has a defined goal"
+    ],
+    "correctAnswerIndex": 0,
+    "explanation": "Parameters are optimised directly to reduce training error during fitting; hyperparameters exist to keep that fitting process from over- or under-fitting, so results generalise beyond the training data."
+  },
+  {
+    "id": "mcq-the-coachs-settings-25",
+    "type": "mcq",
+    "chapterId": "the-coachs-settings",
+    "chapterTitle": "2.4 Parameters & Hyperparameters",
+    "sourceUrl": "/pre-game-preparation/the-coachs-settings/",
+    "question": "What does the chapter's 'one rule to carry forward' say about when hyperparameters should be tuned?",
+    "options": [
+      "Against the final test data, so you know true performance",
+      "Against a held-out set kept separate from the data used for the final evaluation, never against that final evaluation data itself",
+      "Only once, before seeing any data at all",
+      "Hyperparameters should never be tuned; only defaults should be used"
     ],
     "correctAnswerIndex": 1,
-    "explanation": "The chapter describes max_iter as 'how long the session runs', a hyperparameter set before training that caps optimisation iterations; too few iterations can prevent the optimiser from converging."
+    "explanation": "The chapter states hyperparameters are tuned against a closed-doors trial match — never against the real scorecard from match day, i.e. a held-out validation set, never the final test data."
+  },
+  {
+    "id": "mcq-the-coachs-settings-26",
+    "type": "mcq",
+    "chapterId": "the-coachs-settings",
+    "chapterTitle": "2.4 Parameters & Hyperparameters",
+    "sourceUrl": "/pre-game-preparation/the-coachs-settings/",
+    "question": "Why does the chapter warn against repeatedly adjusting settings until they flatter the same evaluation data you'll use for your final judgement?",
+    "options": [
+      "Because doing so quietly selects settings that happen to fit that specific data, rather than settings that are genuinely good — the resulting score no longer honestly measures generalisation",
+      "Because it makes the code run slower",
+      "Because scikit-learn will throw an error if you do this",
+      "Because it converts hyperparameters into learned parameters"
+    ],
+    "correctAnswerIndex": 0,
+    "explanation": "A coach who keeps adjusting the drill until it flatters the trial match has built a team good at beating the trial match, not good at cricket — the same leakage problem as tuning against your test set."
+  },
+  {
+    "id": "mcq-the-coachs-settings-27",
+    "type": "mcq",
+    "chapterId": "the-coachs-settings",
+    "chapterTitle": "2.4 Parameters & Hyperparameters",
+    "sourceUrl": "/pre-game-preparation/the-coachs-settings/",
+    "question": "Which of the following pairs are BOTH hyperparameters of a Random Forest, fixed before training begins?",
+    "options": [
+      "n_estimators and max_features",
+      "n_estimators and the split feature chosen at each node",
+      "max_features and the final vote each tree casts",
+      "The split feature chosen at each node and the vote each tree casts"
+    ],
+    "correctAnswerIndex": 0,
+    "explanation": "n_estimators and max_features are both external settings decided before fitting; the split feature at each node and each tree's final vote are outcomes produced by training, not hyperparameters."
+  },
+  {
+    "id": "mcq-the-coachs-settings-28",
+    "type": "mcq",
+    "chapterId": "the-coachs-settings",
+    "chapterTitle": "2.4 Parameters & Hyperparameters",
+    "sourceUrl": "/pre-game-preparation/the-coachs-settings/",
+    "question": "Which of the following statements about hyperparameters is FALSE?",
+    "options": [
+      "They are passed into a model's constructor",
+      "They are learned automatically by the algorithm during .fit()",
+      "They are set before training begins",
+      "They shape the conditions under which the model is allowed to learn"
+    ],
+    "correctAnswerIndex": 1,
+    "explanation": "Hyperparameters are the opposite of learned — they're fixed externally before .fit() runs. Being 'learned automatically during .fit()' is the definition of a parameter, not a hyperparameter."
+  },
+  {
+    "id": "mcq-the-coachs-settings-29",
+    "type": "mcq",
+    "chapterId": "the-coachs-settings",
+    "chapterTitle": "2.4 Parameters & Hyperparameters",
+    "sourceUrl": "/pre-game-preparation/the-coachs-settings/",
+    "question": "Which of the following statements about parameters is FALSE?",
+    "options": [
+      "They are learned automatically during training",
+      "They typically carry a trailing underscore in scikit-learn, such as coef_",
+      "They must be specified by the developer before .fit() is called",
+      "Examples include weights, biases, and a decision tree's split thresholds"
+    ],
+    "correctAnswerIndex": 2,
+    "explanation": "Parameters are the opposite of pre-specified — they don't exist until training produces them. Requiring developer specification before .fit() describes a hyperparameter, not a parameter."
+  },
+  {
+    "id": "mcq-the-coachs-settings-30",
+    "type": "mcq",
+    "chapterId": "the-coachs-settings",
+    "chapterTitle": "2.4 Parameters & Hyperparameters",
+    "sourceUrl": "/pre-game-preparation/the-coachs-settings/",
+    "question": "The chapter's opening code example labels one block '# Hyperparameters: Set by the coach BEFORE training' and another '# Parameters: Learned by the model DURING training'. What distinction are these two comments establishing?",
+    "options": [
+      "That hyperparameters and parameters are interchangeable terms for the same thing",
+      "That hyperparameters are fixed before .fit() runs, while parameters only come into existence as a result of .fit() running",
+      "That hyperparameters are set after training completes",
+      "That parameters must always be set manually by the developer"
+    ],
+    "correctAnswerIndex": 1,
+    "explanation": "The two comments mark the same timing split the whole chapter is built on: hyperparameters exist before .fit() is called, parameters are produced by calling it."
   },
   {
     "id": "sa-the-coachs-settings-01",
@@ -1559,8 +1879,8 @@
     "chapterId": "the-coachs-settings",
     "chapterTitle": "2.4 Parameters & Hyperparameters",
     "sourceUrl": "/pre-game-preparation/the-coachs-settings/",
-    "question": "Why does the chapter say 'a coach who keeps rerunning match day until the settings look good has stopped measuring anything'? What ML mistake is being described?",
-    "modelAnswer": "This describes tuning hyperparameters against the test set instead of a validation set. Keep adjusting settings and re-checking them against the same held-out 'match day' data until the score looks good, and you are no longer getting an honest measure of generalisation — you have effectively used the test set to make decisions, so it can no longer tell you how the model performs on truly unseen data.",
+    "question": "Explain the chapter's rule that hyperparameters should be tuned against a held-out set separate from your final evaluation data, and describe concretely what goes wrong if that rule is broken.",
+    "modelAnswer": "Hyperparameters should be tuned against a validation set, never against the final test set. If you instead keep adjusting settings and rechecking them against the test set until the score looks good, you're no longer measuring genuine, unseen performance — you're selecting settings because they happen to flatter that specific data. Once that's happened, the eventual test score is no longer an honest measurement: it's biased upward, because the test set was used, indirectly, to make decisions during development rather than being reserved purely for a final check.",
     "rubric": [
       "Identifies this as tuning against the test set rather than a validation set",
       "Explains that repeated re-checking against the same held-out data invalidates it as a measure of generalisation",
@@ -1587,7 +1907,7 @@
     "chapterId": "the-coachs-settings",
     "chapterTitle": "2.4 Parameters & Hyperparameters",
     "sourceUrl": "/pre-game-preparation/the-coachs-settings/",
-    "question": "Using the chapter's quick-reference table, explain why 'minimise prediction error on training data' is a safe goal for learning parameters but would be a risky goal for choosing hyperparameters.",
+    "question": "Explain why minimising prediction error on the training data is a safe objective for learning a model's parameters, but a risky objective for choosing its hyperparameters.",
     "modelAnswer": "Parameters are optimised directly against the training data during fitting, so driving down training error is literally what that process is for. But if hyperparameters were also chosen purely to minimise training error, you would end up selecting settings, like very little regularisation or unlimited tree depth, that let the model fit the training data as closely as possible, which pushes toward overfitting: memorising the training set rather than learning a pattern that holds up on new data. That's why hyperparameters instead aim to prevent underfitting or overfitting and promote generalisation, evaluated against a separate validation set rather than the training data.",
     "rubric": [
       "Explains that parameters are optimised directly against training data, so minimising training error is their intended job",
@@ -1610,355 +1930,21 @@
     ]
   },
   {
-    "id": "mcq-the-coachs-settings-11",
-    "type": "mcq",
-    "chapterId": "the-coachs-settings",
-    "chapterTitle": "2.4 Parameters & Hyperparameters",
-    "sourceUrl": "/pre-game-preparation/the-coachs-settings/",
-    "question": "The chapter opens with two types of adjustment happening when preparing a squad. What are they?",
-    "options": [
-      "Strategic decisions made in the dressing room before play, and on-field physical adaptations made as players face actual bowling",
-      "Batting decisions and bowling decisions",
-      "Pre-season training and post-season review",
-      "Selection decisions and captaincy decisions"
-    ],
-    "correctAnswerIndex": 0,
-    "explanation": "The chapter opens by contrasting strategic decisions made in the dressing room before players cross the boundary line with on-field physical adaptations made as players face actual bowling — the exact distinction that separates hyperparameters from parameters."
-  },
-  {
-    "id": "mcq-the-coachs-settings-12",
-    "type": "mcq",
-    "chapterId": "the-coachs-settings",
-    "chapterTitle": "2.4 Parameters & Hyperparameters",
-    "sourceUrl": "/pre-game-preparation/the-coachs-settings/",
-    "question": "What is the chapter's cricket analogy for a model's parameters?",
-    "options": [
-      "The scoreboard operator, who only records what already happened",
-      "A bowler's muscle memory — micro-adjustments to wrist position, release point, and seam angle learned through repetition, not manually set by the coach",
-      "The umpire's decision on lbw appeals",
-      "The groundskeeper preparing the pitch before the match"
-    ],
-    "correctAnswerIndex": 1,
-    "explanation": "The chapter compares parameters to a bowler's muscle memory: the coach doesn't manually move the bowler's fingers on every ball, the bowler's body learns the optimal angles through repetition, the same way a model's weights are learned rather than set."
-  },
-  {
-    "id": "mcq-the-coachs-settings-13",
-    "type": "mcq",
-    "chapterId": "the-coachs-settings",
-    "chapterTitle": "2.4 Parameters & Hyperparameters",
-    "sourceUrl": "/pre-game-preparation/the-coachs-settings/",
-    "question": "In the chapter's prediction formula ŷ = w₁x₁ + w₂x₂ + b, which symbols are labelled as learned?",
-    "options": [
-      "x₁ and x₂ only",
-      "w₁, w₂, and b",
-      "ŷ only",
-      "None of the symbols are learned; all are set by the coach"
-    ],
-    "correctAnswerIndex": 1,
-    "explanation": "The chapter's diagram labels the weights (w₁, w₂) and the bias (b) as learned, since the algorithm calculates and updates these automatically to minimize loss."
-  },
-  {
-    "id": "mcq-the-coachs-settings-14",
-    "type": "mcq",
-    "chapterId": "the-coachs-settings",
-    "chapterTitle": "2.4 Parameters & Hyperparameters",
-    "sourceUrl": "/pre-game-preparation/the-coachs-settings/",
-    "question": "What does the chapter mean by calling model.coef_ and model.intercept_ 'the residue of thousands of deliveries'?",
-    "options": [
-      "They are random values reset on every prediction",
-      "They are the numbers the model worked out for itself during fitting, with nobody instructing what they should be",
-      "They must be manually calculated by the developer after training",
-      "They represent the number of rows dropped during cleaning"
-    ],
-    "correctAnswerIndex": 1,
-    "explanation": "The chapter says nobody instructed those numbers — they are the residue of thousands of deliveries, meaning they emerge automatically from the fitting process rather than being set by a person."
-  },
-  {
-    "id": "mcq-the-coachs-settings-15",
-    "type": "mcq",
-    "chapterId": "the-coachs-settings",
-    "chapterTitle": "2.4 Parameters & Hyperparameters",
-    "sourceUrl": "/pre-game-preparation/the-coachs-settings/",
-    "question": "In the chapter's bowling-machine analogy, what does 'Slip Cordon Width' map to?",
-    "options": [
-      "Learning Rate (η)",
-      "Max Tree Depth (d)",
-      "Number of Estimators (n) in Random Forest",
-      "k in K-Nearest Neighbours"
-    ],
-    "correctAnswerIndex": 1,
-    "explanation": "The chapter maps Slip Cordon Width, how wide the fielding practice grid extends, to Max Tree Depth."
-  },
-  {
-    "id": "mcq-the-coachs-settings-16",
-    "type": "mcq",
-    "chapterId": "the-coachs-settings",
-    "chapterTitle": "2.4 Parameters & Hyperparameters",
-    "sourceUrl": "/pre-game-preparation/the-coachs-settings/",
-    "question": "In the chapter's bowling-machine analogy, 'Number of Bowling Lanes' maps to which hyperparameter?",
-    "options": [
-      "Learning Rate (η)",
-      "Max Tree Depth (d)",
-      "Number of Estimators / Trees (n) in Random Forest",
-      "k in K-Nearest Neighbours"
-    ],
-    "correctAnswerIndex": 2,
-    "explanation": "The chapter maps Number of Bowling Lanes, how many bowlers run in at once, to the Number of Estimators / Trees in Random Forest."
-  },
-  {
-    "id": "mcq-the-coachs-settings-17",
-    "type": "mcq",
-    "chapterId": "the-coachs-settings",
-    "chapterTitle": "2.4 Parameters & Hyperparameters",
-    "sourceUrl": "/pre-game-preparation/the-coachs-settings/",
-    "question": "What real-world field decisions does the chapter use to illustrate hyperparameters chosen before the ball is bowled?",
-    "options": [
-      "Which batter scored the most runs last season",
-      "Three slips and a gully, fielders inside the circle for the powerplay, and spin from the Pavilion End",
-      "The final scoreline of the match",
-      "The umpire's decision to award a boundary"
-    ],
-    "correctAnswerIndex": 1,
-    "explanation": "The chapter uses field restrictions — three slips and a gully, fielders inside the circle for the powerplay, spin from the Pavilion End — as decisions made before the ball is bowled, by a human, that shape what the bowler can learn."
-  },
-  {
-    "id": "mcq-the-coachs-settings-18",
-    "type": "mcq",
-    "chapterId": "the-coachs-settings",
-    "chapterTitle": "2.4 Parameters & Hyperparameters",
-    "sourceUrl": "/pre-game-preparation/the-coachs-settings/",
-    "question": "According to the chapter, what is 'the whole job description of a hyperparameter'?",
-    "options": [
-      "To bowl the ball itself",
-      "To decide the conditions under which the ball is bowled, the way a captain does not bowl but sets the conditions",
-      "To score the runs",
-      "To replace the need for training data entirely"
-    ],
-    "correctAnswerIndex": 1,
-    "explanation": "The chapter states it directly: the captain does not bowl the ball, the captain decides the conditions under which the ball is bowled — that is the whole job description of a hyperparameter."
-  },
-  {
-    "id": "mcq-the-coachs-settings-19",
-    "type": "mcq",
-    "chapterId": "the-coachs-settings",
-    "chapterTitle": "2.4 Parameters & Hyperparameters",
-    "sourceUrl": "/pre-game-preparation/the-coachs-settings/",
-    "question": "The chapter says scikit-learn signals a learned parameter in a specific, mechanical way. What is it?",
-    "options": [
-      "Learned parameters are always named starting with an underscore",
-      "Learned parameters always carry a trailing underscore, like model.coef_",
-      "Learned parameters are stored in a separate file from hyperparameters",
-      "Learned parameters are always floating-point numbers, while hyperparameters are always integers"
-    ],
-    "correctAnswerIndex": 1,
-    "explanation": "The chapter states the mechanical tell plainly: anything with a trailing underscore after fitting is a learned parameter, like model.coef_ — scikit-learn 'politely' telling you it worked that one out itself."
-  },
-  {
-    "id": "mcq-the-coachs-settings-20",
-    "type": "mcq",
-    "chapterId": "the-coachs-settings",
-    "chapterTitle": "2.4 Parameters & Hyperparameters",
-    "sourceUrl": "/pre-game-preparation/the-coachs-settings/",
-    "question": "Per the chapter's quick-reference table, what is given as an example of a hyperparameter?",
-    "options": [
-      "Weights (w)",
-      "Bias (b)",
-      "Tree splits",
-      "L2 penalty (λ)"
-    ],
-    "correctAnswerIndex": 3,
-    "explanation": "The quick-reference table lists Learning rate (η), k in kNN, Max Depth, and L2 penalty (λ) as hyperparameter examples, and weights, bias, and tree splits as parameter examples."
-  },
-  {
-    "id": "mcq-the-coachs-settings-21",
-    "type": "mcq",
-    "chapterId": "the-coachs-settings",
-    "chapterTitle": "2.4 Parameters & Hyperparameters",
-    "sourceUrl": "/pre-game-preparation/the-coachs-settings/",
-    "question": "Per the chapter's quick-reference table, what is the stated goal of setting hyperparameters well?",
-    "options": [
-      "Minimize prediction error on training data",
-      "Prevent underfitting/overfitting and promote generalization",
-      "Maximize the number of features used",
-      "Guarantee zero error on the test set"
-    ],
-    "correctAnswerIndex": 1,
-    "explanation": "The table lists 'minimize prediction error on training data' as the goal of parameters, and 'prevent underfitting/overfitting and promote generalization' as the goal of hyperparameters."
-  },
-  {
-    "id": "mcq-the-coachs-settings-22",
-    "type": "mcq",
-    "chapterId": "the-coachs-settings",
-    "chapterTitle": "2.4 Parameters & Hyperparameters",
-    "sourceUrl": "/pre-game-preparation/the-coachs-settings/",
-    "question": "What does Random Search do differently from Grid Search, per the chapter?",
-    "options": [
-      "It tests every combination on a checklist exhaustively",
-      "It randomly samples settings across a range to quickly discover high-performing configurations without testing every combination",
-      "It only works for decision trees",
-      "It requires no training data at all"
-    ],
-    "correctAnswerIndex": 1,
-    "explanation": "The chapter describes Random Search as randomly sampling settings across a range to quickly discover high-performing configurations without testing every single combination, unlike Grid Search's exhaustive checklist."
-  },
-  {
-    "id": "mcq-the-coachs-settings-23",
-    "type": "mcq",
-    "chapterId": "the-coachs-settings",
-    "chapterTitle": "2.4 Parameters & Hyperparameters",
-    "sourceUrl": "/pre-game-preparation/the-coachs-settings/",
-    "question": "How does the chapter describe Bayesian Optimization?",
-    "options": [
-      "Testing every possible combination on a fixed checklist",
-      "Randomly guessing settings with no memory of past attempts",
-      "Using past net session results to intelligently predict which hyperparameter combination will yield the highest performance next",
-      "A technique that only works with neural networks"
-    ],
-    "correctAnswerIndex": 2,
-    "explanation": "The chapter describes Bayesian Optimization as using past net session results to intelligently predict which hyperparameter combination will perform best next, unlike the exhaustive or purely random approaches of Grid and Random Search."
-  },
-  {
-    "id": "mcq-the-coachs-settings-24",
-    "type": "mcq",
-    "chapterId": "the-coachs-settings",
-    "chapterTitle": "2.4 Parameters & Hyperparameters",
-    "sourceUrl": "/pre-game-preparation/the-coachs-settings/",
-    "question": "In GridSearchCV(model, {\"C\": [0.01, 0.1, 1, 10, 100]}, cv=5), what is being searched over?",
-    "options": [
-      "Five different models entirely",
-      "Five candidate values for the hyperparameter C",
-      "Five different training sets",
-      "Five different random states"
-    ],
-    "correctAnswerIndex": 1,
-    "explanation": "The dictionary {\"C\": [0.01, 0.1, 1, 10, 100]} gives GridSearchCV five candidate values of the hyperparameter C to test."
-  },
-  {
-    "id": "mcq-the-coachs-settings-25",
-    "type": "mcq",
-    "chapterId": "the-coachs-settings",
-    "chapterTitle": "2.4 Parameters & Hyperparameters",
-    "sourceUrl": "/pre-game-preparation/the-coachs-settings/",
-    "question": "What 'one rule to carry forward' does the chapter emphasise about tuning hyperparameters?",
-    "options": [
-      "Hyperparameters should always be set to their default values",
-      "Hyperparameters are tuned against a held-out validation set — never against your final test data",
-      "Hyperparameters can only be tuned once per project",
-      "Hyperparameters must always be integers"
-    ],
-    "correctAnswerIndex": 1,
-    "explanation": "The chapter states this as a rule that matters enormously: hyperparameters are tuned against a held-out validation set, never against your final test data — a coach who reruns match day until the settings look good has stopped measuring anything."
-  },
-  {
-    "id": "mcq-the-coachs-settings-26",
-    "type": "mcq",
-    "chapterId": "the-coachs-settings",
-    "chapterTitle": "2.4 Parameters & Hyperparameters",
-    "sourceUrl": "/pre-game-preparation/the-coachs-settings/",
-    "question": "Which two later chapters does this chapter point to for the full discipline of validation-based tuning?",
-    "options": [
-      "Linear Regression and Logistic Regression",
-      "The Practice Nets and Form and Class",
-      "Tensors and Backpropagation",
-      "Agent Tools and Agent Architecture"
-    ],
-    "correctAnswerIndex": 1,
-    "explanation": "The chapter names The Practice Nets, where the ground gets divided properly, and Form and Class, where you work out whether the settings you chose produced a batter who can actually travel."
-  },
-  {
-    "id": "mcq-the-coachs-settings-27",
-    "type": "mcq",
-    "chapterId": "the-coachs-settings",
-    "chapterTitle": "2.4 Parameters & Hyperparameters",
-    "sourceUrl": "/pre-game-preparation/the-coachs-settings/",
-    "question": "Per the chapter's mapping, what does 'Neighbor Count' on the bowling machine correspond to?",
-    "options": [
-      "Learning Rate (η)",
-      "k in K-Nearest Neighbours",
-      "Max Tree Depth (d)",
-      "Number of Estimators (n) in Random Forest"
-    ],
-    "correctAnswerIndex": 1,
-    "explanation": "The chapter maps Neighbor Count, how many previous deliveries to analyze before selecting a shot, to k in K-Nearest Neighbours."
-  },
-  {
-    "id": "mcq-the-coachs-settings-28",
-    "type": "mcq",
-    "chapterId": "the-coachs-settings",
-    "chapterTitle": "2.4 Parameters & Hyperparameters",
-    "sourceUrl": "/pre-game-preparation/the-coachs-settings/",
-    "question": "What does the chapter say the Speed Dial on the bowling machine represents, and what happens if it's set too fast?",
-    "options": [
-      "It represents the number of trees, and too fast means overfitting instantly",
-      "It represents Learning Rate; too fast and the batter overreacts and misses",
-      "It represents the test set size; too fast means the test set becomes too small",
-      "It represents k in KNN; too fast means too many neighbours are counted"
-    ],
-    "correctAnswerIndex": 1,
-    "explanation": "The chapter maps the Speed Dial to Learning Rate, noting that too fast and the batter overreacts and misses, while too slow and they don't learn real match conditions."
-  },
-  {
-    "id": "mcq-the-coachs-settings-29",
-    "type": "mcq",
-    "chapterId": "the-coachs-settings",
-    "chapterTitle": "2.4 Parameters & Hyperparameters",
-    "sourceUrl": "/pre-game-preparation/the-coachs-settings/",
-    "question": "In decision trees, what does the chapter identify as an example of a learned parameter?",
-    "options": [
-      "max_depth",
-      "min_samples_split",
-      "The specific split thresholds chosen at each node",
-      "random_state"
-    ],
-    "correctAnswerIndex": 2,
-    "explanation": "The chapter states that in decision trees, parameters are the specific split thresholds chosen at each node — discovered during training, unlike max_depth, min_samples_split, or random_state, which are all set beforehand as hyperparameters."
-  },
-  {
-    "id": "mcq-the-coachs-settings-30",
-    "type": "mcq",
-    "chapterId": "the-coachs-settings",
-    "chapterTitle": "2.4 Parameters & Hyperparameters",
-    "sourceUrl": "/pre-game-preparation/the-coachs-settings/",
-    "question": "Why does the chapter say 'a coach who keeps rerunning match day until the settings look good has stopped measuring anything'?",
-    "options": [
-      "Because match day results are always random and meaningless",
-      "Because repeatedly tuning against your final test data quietly lets your settings be chosen because they flatter that specific data, rather than because they're genuinely good",
-      "Because a coach is not allowed to change settings after the first match",
-      "Because match day never produces measurable results"
-    ],
-    "correctAnswerIndex": 1,
-    "explanation": "The chapter's rule is that tuning against a held-out validation set, not the final test data, keeps the eventual test score an honest measurement rather than a number that's been quietly chosen to flatter itself."
-  },
-  {
     "id": "sa-the-coachs-settings-06",
     "type": "short_answer",
     "chapterId": "the-coachs-settings",
     "chapterTitle": "2.4 Parameters & Hyperparameters",
     "sourceUrl": "/pre-game-preparation/the-coachs-settings/",
-    "question": "Explain the chapter's muscle-memory analogy for parameters, and connect it to what model.coef_ and model.intercept_ actually represent.",
-    "modelAnswer": "The chapter compares parameters to a bowler's muscle memory: as a fast bowler runs in, their body makes micro-adjustments to wrist position, release point, and seam angle based on feedback, without the coach manually moving their fingers on every ball. In the same way, model.coef_ and model.intercept_ are the weights and bias a model works out for itself during .fit(), adjusted automatically to minimise loss rather than set by a person. Neither the bowler's exact wrist angle nor the model's exact coefficients are specified in advance — both emerge from repeated exposure to the task.",
+    "question": "Explain what model.coef_ and model.intercept_ represent after model.fit() runs, and why neither is something a developer specifies directly.",
+    "modelAnswer": "model.coef_ and model.intercept_ are the weights and bias a linear model works out for itself while fitting: the algorithm searches for the values that minimise loss on the training data, adjusting them automatically rather than having them handed to it. Neither is passed into the constructor and neither has a value before .fit() is called — they're produced by training, not configured before it. That's why scikit-learn marks them with a trailing underscore: it's a signal that the model, not the developer, worked these numbers out.",
     "rubric": [
-      "Describes the muscle-memory analogy accurately",
-      "Connects coef_/intercept_ to weights and bias learned during fit",
-      "States that neither is manually set, both emerge from the process"
+      "States that coef_ and intercept_ are the weights and bias learned during fitting to minimise loss",
+      "Explains neither is set manually or exists before .fit() is called",
+      "Connects this to the trailing-underscore convention as the marker of a learned value"
     ]
   },
   {
     "id": "sa-the-coachs-settings-07",
-    "type": "short_answer",
-    "chapterId": "the-coachs-settings",
-    "chapterTitle": "2.4 Parameters & Hyperparameters",
-    "sourceUrl": "/pre-game-preparation/the-coachs-settings/",
-    "question": "Using the bowling-machine analogy, explain what at least three of the chapter's hyperparameter mappings represent and why each is set before training rather than learned.",
-    "modelAnswer": "The Speed Dial maps to Learning Rate: it's fixed before training because it controls how large a step the optimiser takes on each update, and that choice has to be made before any learning happens. Slip Cordon Width maps to Max Tree Depth: it constrains how far a tree is allowed to grow, a boundary that has to exist before the tree starts splitting. Number of Bowling Lanes maps to the Number of Estimators in a Random Forest: it decides how many trees get built, a structural decision made before any individual tree is trained. In every case, the setting shapes the conditions under which learning happens, rather than being discovered by the learning process itself.",
-    "rubric": [
-      "Correctly explains at least three of the analogy mappings",
-      "Explains why each is fixed in advance rather than learned",
-      "Ties the explanation back to the general hyperparameter-vs-parameter distinction"
-    ]
-  },
-  {
-    "id": "sa-the-coachs-settings-08",
     "type": "short_answer",
     "chapterId": "the-coachs-settings",
     "chapterTitle": "2.4 Parameters & Hyperparameters",
@@ -1972,17 +1958,31 @@
     ]
   },
   {
+    "id": "sa-the-coachs-settings-08",
+    "type": "short_answer",
+    "chapterId": "the-coachs-settings",
+    "chapterTitle": "2.4 Parameters & Hyperparameters",
+    "sourceUrl": "/pre-game-preparation/the-coachs-settings/",
+    "question": "Compare Grid Search, Random Search, and Bayesian Optimisation as described in the chapter, including one advantage or disadvantage of each.",
+    "modelAnswer": "Grid Search tests every combination of settings on a fixed checklist — thorough, but it can be slow since it checks combinations exhaustively even when many are clearly poor. Random Search instead samples settings randomly across a range, which can find high-performing configurations faster without testing everything, at the cost of no guarantee of covering the best combination. Bayesian Optimisation goes a step further, using the results of past tuning runs to intelligently predict which combination is worth trying next, generally needing fewer total trials than either Grid or Random Search but adding more complexity to set up.",
+    "rubric": [
+      "Describes Grid Search's exhaustive checklist approach",
+      "Describes Random Search's random sampling approach",
+      "Describes Bayesian Optimisation's use of past results to guide future choices, with at least one trade-off mentioned"
+    ]
+  },
+  {
     "id": "sa-the-coachs-settings-09",
     "type": "short_answer",
     "chapterId": "the-coachs-settings",
     "chapterTitle": "2.4 Parameters & Hyperparameters",
     "sourceUrl": "/pre-game-preparation/the-coachs-settings/",
-    "question": "Compare Grid Search, Random Search, and Bayesian Optimization as described in the chapter, including one advantage or disadvantage of each.",
-    "modelAnswer": "Grid Search tests every combination of settings on a fixed checklist — thorough, but it can be slow since it checks combinations exhaustively even when many are clearly poor. Random Search instead samples settings randomly across a range, which can find high-performing configurations faster without testing everything, at the cost of no guarantee of covering the best combination. Bayesian Optimization goes a step further, using the results of past net sessions to intelligently predict which combination is worth trying next, generally needing fewer total trials than either Grid or Random Search but adding more complexity to set up.",
+    "question": "In LinearSVC(C=10, penalty=\"l2\", max_iter=1000), explain what each of the three hyperparameters — C, penalty, and max_iter — controls, and why all three must be decided before .fit() is called.",
+    "modelAnswer": "C controls how hard the model tries to fit the training data — a higher C fits more closely, at greater risk of overfitting, while a lower C keeps the model more restrained. penalty selects the type of regularisation restraint applied, such as 'l2', which shapes how the model is penalised for complexity. max_iter caps how many optimisation iterations the fitting process is allowed to run before stopping, and setting it too low risks the optimiser stopping before it converges. All three are passed into the constructor, which fixes them before training starts — none of them are values the algorithm discovers from the data the way coef_ or intercept_ are.",
     "rubric": [
-      "Describes Grid Search's exhaustive checklist approach",
-      "Describes Random Search's random sampling approach",
-      "Describes Bayesian Optimization's use of past results to guide future choices, with at least one trade-off mentioned"
+      "Correctly explains what C controls, including the overfitting trade-off",
+      "Correctly explains what penalty and max_iter each control",
+      "Explains why all three must be fixed before .fit() rather than learned"
     ]
   },
   {
@@ -1991,12 +1991,12 @@
     "chapterId": "the-coachs-settings",
     "chapterTitle": "2.4 Parameters & Hyperparameters",
     "sourceUrl": "/pre-game-preparation/the-coachs-settings/",
-    "question": "Explain the chapter's rule that hyperparameters should be tuned against a validation set, never the final test data, and what goes wrong if that rule is broken.",
-    "modelAnswer": "The chapter's rule is that hyperparameters are tuned against a held-out validation set, never against the final test data. If you instead keep adjusting settings and rechecking against the test set until the number looks good, you're no longer measuring genuine, unseen performance — you're selecting settings because they happen to flatter that specific test data. The chapter compares this to a coach rerunning match day until the settings look good, which has, at that point, stopped measuring anything honest; the test score you end up with no longer tells you how the model will do on data it hasn't seen.",
+    "question": "Explain what the n_estimators and max_features hyperparameters control in a Random Forest, and why both must be fixed before training begins rather than learned.",
+    "modelAnswer": "n_estimators controls how many individual trees get built as part of the forest. max_features restricts which, and how many, input features any single tree is allowed to consider when choosing where to split. Both have to be decided before training starts because they define the structure of the training process itself — how many trees will be built, and how limited each tree's view of the data will be — rather than being values the algorithm could discover partway through fitting. Once training begins, the forest is already committed to that structure; neither setting could sensibly emerge from the data the way a split threshold or a coefficient does.",
     "rubric": [
-      "States the rule: tune against validation, not the final test set",
-      "Explains what breaks if the rule is violated (test score becomes dishonest/flattered)",
-      "References the chapter's 'rerunning match day' framing or equivalent"
+      "Correctly explains what n_estimators controls",
+      "Correctly explains what max_features controls",
+      "Explains why both must be structural, pre-training decisions rather than learned outputs"
     ]
   },
   {
@@ -2005,12 +2005,12 @@
     "chapterId": "the-coachs-settings",
     "chapterTitle": "2.4 Parameters & Hyperparameters",
     "sourceUrl": "/pre-game-preparation/the-coachs-settings/",
-    "question": "The chapter says 'the captain does not bowl the ball, the captain decides the conditions under which the ball is bowled.' Explain what this means for the relationship between hyperparameters and parameters.",
-    "modelAnswer": "The captain (the developer) never directly performs the learning itself — that's the bowler's (the model's) job, adjusting its own technique ball by ball. What the captain controls instead is the setup: the field placements, the bowling plan, the conditions the bowler operates within. In the same way, a hyperparameter never directly becomes a learned weight or split threshold; it shapes the boundaries and constraints within which the model's own parameters get adjusted during training. Hyperparameters set the stage; parameters are what happens on it.",
+    "question": "Explain the difference in who sets a value and when it's set, for a parameter versus a hyperparameter.",
+    "modelAnswer": "A hyperparameter is defined manually by the developer, and it has to be set before training even begins — it's an argument to the model's constructor. A parameter, by contrast, is learned automatically by the algorithm itself, and it doesn't come into existence until training happens, produced during the call to .fit(). The distinction is both about who is responsible (the developer versus the algorithm) and about timing (before fitting starts versus during it) — a hyperparameter has to already be decided before .fit() is called, while a parameter doesn't exist yet at that point.",
     "rubric": [
-      "Explains that the developer/captain sets conditions, not the learning outcome itself",
-      "Explains that the model/bowler does the actual adapting within those conditions",
-      "Connects this clearly back to the hyperparameter-shapes-parameter relationship"
+      "States hyperparameters are set manually by the developer before training",
+      "States parameters are learned automatically by the algorithm during fitting",
+      "Notes both the 'who' and 'when' distinction clearly"
     ]
   },
   {
@@ -2019,12 +2019,12 @@
     "chapterId": "the-coachs-settings",
     "chapterTitle": "2.4 Parameters & Hyperparameters",
     "sourceUrl": "/pre-game-preparation/the-coachs-settings/",
-    "question": "Using the chapter's quick-reference table, explain the difference in 'who sets it' and 'when is it set' between parameters and hyperparameters.",
-    "modelAnswer": "According to the table, parameters are learned automatically by the algorithm, and they're set during training when model.fit() runs. Hyperparameters, by contrast, are defined manually by the developer or coach, and they're set before training even begins. The distinction is both about who is responsible (the algorithm versus the person) and about timing (during fitting versus before it starts) — a hyperparameter has to already be decided before .fit() is called, while a parameter doesn't exist yet at that point.",
+    "question": "Explain why every hyperparameter has to be decided before .fit() is called, while a parameter like coef_ doesn't exist yet at that point.",
+    "modelAnswer": "A hyperparameter configures how the training process itself will run — how fast it updates, how deep a tree can grow, how many trees get built — so it has to be fixed in advance for that process to even start; there's no version of .fit() that could work without already knowing these settings. A parameter, by contrast, is an output of running .fit(): it's the specific weights, bias, or split thresholds the algorithm settles on while minimising loss against the training data. Since a parameter is a result of the fitting process, it logically cannot exist before that process has run, whereas a hyperparameter must exist before it, because it's one of the inputs the process depends on.",
     "rubric": [
-      "States parameters are learned by the algorithm during fit",
-      "States hyperparameters are set manually by the developer before training",
-      "Notes both the 'who' and 'when' distinction from the table"
+      "Explains hyperparameters configure the training process and must exist before it can run",
+      "Explains parameters are outputs of .fit() and cannot exist before it runs",
+      "Clearly connects the input-versus-output framing to the before/during timing distinction"
     ]
   },
   {
@@ -2033,12 +2033,12 @@
     "chapterId": "the-coachs-settings",
     "chapterTitle": "2.4 Parameters & Hyperparameters",
     "sourceUrl": "/pre-game-preparation/the-coachs-settings/",
-    "question": "The chapter lists field restrictions (three slips and a gully, powerplay circle fielders, spin from the Pavilion End) as a cricket example of hyperparameters. Explain why these count as hyperparameters rather than parameters.",
-    "modelAnswer": "Field restrictions are all decisions made before the ball is bowled, by a human (the captain), and they shape the conditions the bowler operates within — exactly matching the definition of a hyperparameter as something set in advance that constrains how the model can behave. They are not something the bowler adapts or discovers during the delivery itself; nothing about a bowler's action changes where the fielders are standing. That makes them structurally identical to something like max_depth or C: fixed externally, before the process starts, shaping what's possible rather than being learned from what happens.",
+    "question": "Explain what happens during training if the learning rate is set too high, and what happens if it's set too low.",
+    "modelAnswer": "If the learning rate is too high, the model overreacts to each update and can overshoot, missing the useful signal in the data rather than converging on it — the equivalent of a batter overreacting to a ball arriving too fast and missing every cue. If it's set too low, updates are too small for the model to properly learn from what it's seeing within a reasonable number of iterations — nothing about the underlying pattern gets properly tested or absorbed. Both failure modes come from the same source: the learning rate controls the size of each update step, and it has to be tuned to a middle ground for training to actually work.",
     "rubric": [
-      "States field restrictions are set in advance, by a human, before the ball is bowled",
-      "Explains they constrain behaviour rather than being discovered during play",
-      "Draws the parallel to an ML hyperparameter like max_depth or C"
+      "Explains the failure mode of a learning rate set too high (overshooting/missing signal)",
+      "Explains the failure mode of a learning rate set too low (insufficient learning)",
+      "States that learning rate controls the size of each update step"
     ]
   },
   {
@@ -2048,7 +2048,7 @@
     "chapterTitle": "2.4 Parameters & Hyperparameters",
     "sourceUrl": "/pre-game-preparation/the-coachs-settings/",
     "question": "Give three different examples from the chapter of a hyperparameter, each from a different algorithm, and state what each one controls.",
-    "modelAnswer": "In K-Nearest Neighbours, n_neighbors (k) controls how many previous deliveries, or nearby data points, are consulted before making a decision. In Decision Trees, max_depth controls how deep the tree is allowed to grow, constraining its complexity. In LinearSVC, C controls how hard the model tries to fit every training point, trading off against a simpler, more general decision boundary via its L2 penalty. All three are set in the constructor before .fit() is called, and all three shape how the model is allowed to learn rather than being learned themselves.",
+    "modelAnswer": "In K-Nearest Neighbours, n_neighbors (k) controls how many nearby data points are consulted before making a prediction. In Decision Trees, max_depth controls how deep the tree is allowed to grow, constraining its complexity. In LinearSVC, C controls how hard the model tries to fit every training point, trading off against a simpler, more general decision boundary. All three are set in the constructor before .fit() is called, and all three shape how the model is allowed to learn rather than being learned themselves.",
     "rubric": [
       "Gives a correct hyperparameter example from KNN, a tree-based model, and one other algorithm",
       "States accurately what each hyperparameter controls",
@@ -2061,12 +2061,12 @@
     "chapterId": "the-coachs-settings",
     "chapterTitle": "2.4 Parameters & Hyperparameters",
     "sourceUrl": "/pre-game-preparation/the-coachs-settings/",
-    "question": "Why does the chapter treat the parameter/hyperparameter distinction as 'fundamental,' setting up chapters as far ahead as The Practice Nets and Form and Class?",
-    "modelAnswer": "Nearly every later technique in the series involves either learning something automatically from data (a parameter) or a setting a person chooses beforehand to shape that learning (a hyperparameter), and confusing the two leads to real mistakes — like tuning something that was never meant to be tuned, or expecting a model to 'discover' a setting that has to be supplied. The chapter flags The Practice Nets and Form and Class specifically because proper hyperparameter tuning requires a validation set and a way to judge whether a chosen setting actually generalises, both of which depend on getting the parameter/hyperparameter distinction straight first — you can't responsibly tune what you don't know is tunable.",
+    "question": "Explain why correctly telling parameters and hyperparameters apart is a prerequisite for doing proper hyperparameter tuning with a validation set.",
+    "modelAnswer": "Tools like GridSearchCV work by trying different hyperparameter combinations, refitting the model for each one, and comparing the resulting validation scores — that process only makes sense applied to hyperparameters, values fixed before training that you can systematically vary and re-run. A parameter isn't something you'd sweep with a search: it's produced fresh, automatically, every time the model is fit, so there's nothing to 'search over' for it. If you don't clearly know which of a model's settings are hyperparameters, you risk trying to tune something that's actually learned automatically, or assuming a hyperparameter will be discovered by the model when it actually has to be supplied — both of which break the entire tuning workflow.",
     "rubric": [
-      "Explains why the distinction underlies most later ML techniques",
-      "Notes that confusing the two leads to concrete mistakes",
-      "Connects this to why validation-based tuning (Practice Nets, Form and Class) depends on getting the distinction right first"
+      "Explains that tuning tools like grid search operate specifically on hyperparameters, re-fitting the model for each combination",
+      "Explains why a parameter cannot meaningfully be searched over, since it's produced anew by each fit",
+      "States the concrete failure mode of confusing the two: trying to tune a learned value, or expecting a hyperparameter to be learned"
     ]
   },
   {

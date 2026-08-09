@@ -284,4 +284,4 @@ Build the habit of opening the ledger. The headline number is for the crowd.
 
 You now have an honest way to score a side. Which raises the question the whole innings has been circling: given that you can measure a model properly, how do you go and find a *better* one?
 
-Next chapter: **Trial Matches** — feature selection, hyperparameter search, and the one moment the vault is allowed to open.
+Next chapter: **Feature Selection & Hyperparameter Optimisation** — feature selection, hyperparameter search, and the one moment the vault is allowed to open.

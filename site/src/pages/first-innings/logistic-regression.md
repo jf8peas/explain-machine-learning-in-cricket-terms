@@ -150,7 +150,7 @@ Same coefficient, same "doubles the odds" effect, every single time — and thre
 
 ## Grading the Verdict: Four Numbers, Two Vocabularies
 
-**The Scorer's Box** already gave you precision and recall. Evaluating a logistic regression classifier the way statisticians traditionally do adds two more numbers to the same confusion matrix, under different names:
+**Evaluation Metrics & Data Leakage** already gave you precision and recall. Evaluating a logistic regression classifier the way statisticians traditionally do adds two more numbers to the same confusion matrix, under different names:
 
 | Stats name | Same as | Formula | Question it answers |
 |---|---|---|---|
@@ -169,7 +169,7 @@ accuracy_score(y_val, predictions)
 confusion_matrix(y_val, predictions)
 ```
 
-`accuracy_score` gives you the plain correct-over-total figure — still vulnerable to the class-imbalance trap **The Scorer's Box** warned about, since "not out" vastly outnumbers "out" across an innings. `confusion_matrix` gives you the raw counts everything else in this table is arithmetic on.
+`accuracy_score` gives you the plain correct-over-total figure — still vulnerable to the class-imbalance trap **Evaluation Metrics & Data Leakage** warned about, since "not out" vastly outnumbers "out" across an innings. `confusion_matrix` gives you the raw counts everything else in this table is arithmetic on.
 
 ## A Quick Scout Before You Model Anything
 
@@ -182,11 +182,11 @@ deliveries.groupby("given_out").agg({
 })
 ```
 
-If deliveries given out show a noticeably different average seam deviation than deliveries that weren't, that's a feature worth including. If the two groups look identical, that column probably isn't carrying much signal — the same instinct as `corr()` in **Trial Matches**, just split-apply-combined across categories instead of measured as a single linear number.
+If deliveries given out show a noticeably different average seam deviation than deliveries that weren't, that's a feature worth including. If the two groups look identical, that column probably isn't carrying much signal — the same instinct as `corr()` in **Feature Selection & Hyperparameter Optimisation**, just split-apply-combined across categories instead of measured as a single linear number.
 
 ## Overfitting Hasn't Gone Anywhere
 
-Everything **Form and Class** taught about overfitting applies here without a single change. A logistic regression with too many predictors, or predictors too aggressively engineered, will learn the specific noise of the training deliveries rather than the underlying relationship between conditions and dismissals — evidenced, exactly as before, by training accuracy that looks superb next to validation accuracy that doesn't. Regularisation, from **Gradient Descent**, is the standard fix, and it applies to logistic regression's log-odds exactly as it applied to linear regression's raw coefficients.
+Everything **Underfitting, Overfitting & Finding the Sweet Spot** taught about overfitting applies here without a single change. A logistic regression with too many predictors, or predictors too aggressively engineered, will learn the specific noise of the training deliveries rather than the underlying relationship between conditions and dismissals — evidenced, exactly as before, by training accuracy that looks superb next to validation accuracy that doesn't. Regularisation, from **Gradient Descent**, is the standard fix, and it applies to logistic regression's log-odds exactly as it applied to linear regression's raw coefficients.
 
 ## Beyond Out or Not Out: Multi-Class
 

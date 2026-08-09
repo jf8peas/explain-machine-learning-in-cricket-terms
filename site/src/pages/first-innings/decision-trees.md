@@ -105,7 +105,7 @@ Gini = 1 − Σ(pᵢ)²
 
 Where `pᵢ` is the proportion of class `i` in the node. A node that's 100% one class scores `0` — there's only one label to guess, so a random guess is never wrong. The threshold with the **lowest** resulting Gini is the one the tree picks.
 
-The goal, split after split, is to drive Gini all the way to `0` on every node — every leaf perfectly pure, every observation inside it sharing one label. Chase that goal without any restraint, though, and you already know where it leads: **Form and Class**'s net hero, carving the training set into smaller and smaller pure little pockets until every leaf holds one delivery and the tree has stopped learning cricket and started memorising a season. `max_depth` and `min_samples_leaf` exist precisely to stop a tree from reaching `0` everywhere.
+The goal, split after split, is to drive Gini all the way to `0` on every node — every leaf perfectly pure, every observation inside it sharing one label. Chase that goal without any restraint, though, and you already know where it leads: **Underfitting, Overfitting & Finding the Sweet Spot**'s net hero, carving the training set into smaller and smaller pure little pockets until every leaf holds one delivery and the tree has stopped learning cricket and started memorising a season. `max_depth` and `min_samples_leaf` exist precisely to stop a tree from reaching `0` everywhere.
 
 **Entropy**, borrowed from information theory, scores a node a different way — not "how often would a random guess be wrong," but **how much information, randomness, or disorder the node's class mix contains**. High entropy is a coin flip: genuinely unpredictable. Low entropy is close to a foregone conclusion — high order, easy to call.
 
@@ -244,13 +244,13 @@ print(export_text(tree, feature_names=list(X.columns)))
 
 Decision trees have real, structural advantages over almost everything else in this innings. They're easy to read and explain to someone non-technical — no other model in First Innings can be handed to a stakeholder as a single picture. They make no assumptions about the shape of the data — no straight-line assumption to check, unlike **Linear Regression**. And the same algorithm handles both regression and classification, just by swapping the criterion.
 
-The disadvantage is one you've already met, in different clothes, back in **Form and Class**: decision trees **overfit** with real enthusiasm. Left ungoverned, a tree will keep splitting until every leaf is perfectly pure — which usually just means it's memorised the training set, net hero style, one delivery at a time. `max_depth`, `min_samples_leaf`, and the rest of a tree's hyperparameters exist to hold that instinct back.
+The disadvantage is one you've already met, in different clothes, back in **Underfitting, Overfitting & Finding the Sweet Spot**: decision trees **overfit** with real enthusiasm. Left ungoverned, a tree will keep splitting until every leaf is perfectly pure — which usually just means it's memorised the training set, net hero style, one delivery at a time. `max_depth`, `min_samples_leaf`, and the rest of a tree's hyperparameters exist to hold that instinct back.
 
 There's a second, sharper problem, and it's the one this chapter ends on: **decision trees are extremely sensitive to small changes in the training data.** Swap out a handful of matches, or even a few rows, and the tree that gets grown can look structurally different — a different root question, different splits, a different verdict for the same delivery. A model this easily rattled by which matches happened to be in the sample is not a model you'd want making a final call alone.
 
 ## Cross-Validating a Wobbly Tree
 
-Given that instability, a single train/test split's score might just be the luck of which rows landed where. **Cross-validation** — hinted at back in **Practice Nets**, and standard practice for anything this twitchy — repeats the fit-and-score cycle across several different folds and reports the whole spread:
+Given that instability, a single train/test split's score might just be the luck of which rows landed where. **Cross-validation** — hinted at back in **Train/Validation/Test Splits**, and standard practice for anything this twitchy — repeats the fit-and-score cycle across several different folds and reports the whole spread:
 
 ```python
 from sklearn.model_selection import cross_val_score
@@ -294,7 +294,7 @@ That `squared=False` is the same RMSE flag flagged as deprecated back in **Linea
 
 ## Tuning the Tree
 
-`max_depth`, `min_samples_leaf`, and `criterion` are exactly the kind of dials **Trial Matches** already taught you to search rather than guess — `GridSearchCV` for an exhaustive sweep, `RandomizedSearchCV` when the grid gets too big to check in full:
+`max_depth`, `min_samples_leaf`, and `criterion` are exactly the kind of dials **Feature Selection & Hyperparameter Optimisation** already taught you to search rather than guess — `GridSearchCV` for an exhaustive sweep, `RandomizedSearchCV` when the grid gets too big to check in full:
 
 ```python
 from sklearn.model_selection import GridSearchCV
@@ -322,7 +322,7 @@ Nothing new in the mechanics — same `best_params_` / `best_estimator_` / `best
 - **Categorical features need encoding; the classification target doesn't.** And unlike linear regression, dummy columns don't need one dropped — trees don't suffer multicollinearity.
 - **Trees are wonderfully readable and wonderfully unstable.** The same property — asking one clean sequence of questions — that makes them easy to explain is what makes them rattle at the slightest change in the training data.
 - **Cross-validate before you trust a single score**, and reach for `cross_validate` or `make_scorer` the moment one metric or one predefined scorer isn't enough.
-- **Tune `max_depth` and friends with a search, not a guess** — the exact same `GridSearchCV` machinery from Trial Matches, now pointed at a tree.
+- **Tune `max_depth` and friends with a search, not a guess** — the exact same `GridSearchCV` machinery from Feature Selection & Hyperparameter Optimisation, now pointed at a tree.
 
 ---
 

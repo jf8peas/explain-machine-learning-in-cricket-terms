@@ -124,7 +124,7 @@ model.coef_
 
 **Each coefficient** is the change in the average outcome for a one-unit change in that predictor, with every other predictor held fixed. `run_rate: +11.3` means: for two otherwise-identical situations, one over's worth of extra run rate is associated with 11.3 more runs in the final projection. For a categorical dummy, "one unit" means switching from the reference category to that one — the T20 coefficient, if Test was dropped as reference, is the gap between a Test-match baseline and a T20 one, all else held equal.
 
-That "all else held equal" clause is doing a lot of work, and it's the reason coefficient interpretation is dangerous to do casually. A predictor's coefficient can flip sign entirely depending on what else shares the model with it — the same trap **Trial Matches** described for two identical left-arm seamers splitting credit for a wicket neither fully earned alone. Read a coefficient in isolation and you're reading a number whose meaning depends entirely on company you haven't checked.
+That "all else held equal" clause is doing a lot of work, and it's the reason coefficient interpretation is dangerous to do casually. A predictor's coefficient can flip sign entirely depending on what else shares the model with it — the same trap **Feature Selection & Hyperparameter Optimisation** described for two identical left-arm seamers splitting credit for a wicket neither fully earned alone. Read a coefficient in isolation and you're reading a number whose meaning depends entirely on company you haven't checked.
 
 ## Checking Whether You Can Trust It: Residuals
 
@@ -167,7 +167,7 @@ r2 = r2_score(y_val, preds)
 
 ## Choosing Which Reasons Belong in the Model
 
-**Trial Matches** already covered `corr()` as a general scouting report for feature selection. Linear regression adds one move of its own, on top of that.
+**Feature Selection & Hyperparameter Optimisation** already covered `corr()` as a general scouting report for feature selection. Linear regression adds one move of its own, on top of that.
 
 **The outcome itself sometimes needs reshaping first.** A handful of freak overs — thirty-two off six balls, once a season — can drag a model's entire attention toward fitting the extremes at the expense of getting the ordinary case right, because the sum-of-squared-error cost function punishes big misses so heavily. A **logarithmic transform** —
 
@@ -186,7 +186,7 @@ y_transformed, lam = boxcox(y)
 
 Both exist for the same reason: a wildly skewed outcome makes for a model that's excellent at freak overs and mediocre at ordinary ones, and neither is what you actually wanted.
 
-That reshapes the outcome. The next chapter, **Going Beyond Linear**, does the equivalent for the predictors — teaching this same straight-line method to trace an actual curve, because a batting innings doesn't accumulate runs at one constant rate from over one to over fifty.
+That reshapes the outcome. The next chapter, **Polynomial & Spline Features**, does the equivalent for the predictors — teaching this same straight-line method to trace an actual curve, because a batting innings doesn't accumulate runs at one constant rate from over one to over fifty.
 
 ## Ground Rules for the Dressing-Room Wall
 

@@ -5,7 +5,7 @@ subtitle: "Finding the Perfect Length"
 innings: scoring-model-evaluation
 chapter: gradient-descent
 meta: "15 min · loss landscapes & learning rates"
-lede: "Trial Matches searched for good settings by trying combinations and keeping the winner. Most models don't get that luxury — their real dials aren't a short list you can grid-search, they're numbers that could be anything. Gradient Descent is how a model finds good settings anyway: not by trying everything, but by feeling which way is downhill and taking a step."
+lede: "Feature Selection & Hyperparameter Optimisation searched for good settings by trying combinations and keeping the winner. Most models don't get that luxury — their real dials aren't a short list you can grid-search, they're numbers that could be anything. Gradient Descent is how a model finds good settings anyway: not by trying everything, but by feeling which way is downhill and taking a step."
 commentary: "'You don't need the pitch report. You need to know: did that miss short, or did it miss full? Adjust, and bowl again.' — Bowling Coach"
 codeFile: scoring/gradient_descent.py
 codeOut: "same destination, different road: intercept 4.1 · overs +14.6 · wickets −9.0 · run_rate +11.2"
@@ -32,7 +32,7 @@ stats:
 
 ## Not Every Dial Has a Team Sheet
 
-Grid search, from **Trial Matches**, works by trying candidates and keeping the best one — a finite shortlist of `n_neighbors` or `max_depth` values, trialled and ranked. That approach quietly depends on the dial having a short list to begin with.
+Grid search, from **Feature Selection & Hyperparameter Optimisation**, works by trying candidates and keeping the best one — a finite shortlist of `n_neighbors` or `max_depth` values, trialled and ranked. That approach quietly depends on the dial having a short list to begin with.
 
 Most of the numbers a model actually tunes don't. A linear regression's coefficients aren't chosen from `{1, 2, 3}` — they could be `14.6183...` or `-9.047...` or anything in between, and there's no whiteboard long enough to write out every candidate. You cannot grid-search a number line. What you can do is start somewhere, check whether you're too high or too low, and adjust — which is exactly what a bowler does every time they walk back to their mark.
 
@@ -69,7 +69,7 @@ That "nearby" is the catch. A slightly-too-short length might, on a two-paced pi
 
 A bowler taking cautious, one-step-at-a-time corrections from the left edge of that curve rolls straight into the shallow dip and stops — every neighbouring length looks worse, so there's no local signal telling them to keep going. Reaching the true minimum means tolerating a stretch where the loss goes back *up* before it comes back down, which is exactly why "always take the step that looks best right now" isn't quite the whole strategy real optimisers use.
 
-With one dial — just length — the landscape is a single curve, and it's hard to miss a deep valley by much. Real models tune dozens or thousands of dials simultaneously — length *and* line *and* pace *and* seam position — and the landscape becomes a surface with folds and false floors in every direction at once. This is the same explosion **Trial Matches** hit when the grid went from two dials to four: exhaustively checking every combination stopped being possible long before you ran out of dials worth tuning. Gradient descent doesn't check every combination either. It just always knows, from wherever it's currently standing, which direction is downhill.
+With one dial — just length — the landscape is a single curve, and it's hard to miss a deep valley by much. Real models tune dozens or thousands of dials simultaneously — length *and* line *and* pace *and* seam position — and the landscape becomes a surface with folds and false floors in every direction at once. This is the same explosion **Feature Selection & Hyperparameter Optimisation** hit when the grid went from two dials to four: exhaustively checking every combination stopped being possible long before you ran out of dials worth tuning. Gradient descent doesn't check every combination either. It just always knows, from wherever it's currently standing, which direction is downhill.
 
 ## Learning Rate: How Big a Step Is Too Big?
 
@@ -108,7 +108,7 @@ Run this against overs/wickets/run-rate data and the coefficients it settles on 
 
 ## Regularisation: Making the Model Pay for Trying Too Hard
 
-**Form and Class** told you to reach for "regularisation" when a model is overfitting, and left the word doing a lot of unexplained work. Here's what it actually is, now that you've seen the loss function up close: **regularisation is an extra term bolted directly onto the loss, penalising the weights themselves for being large or numerous — not just the predictions for being wrong.**
+**Underfitting, Overfitting & Finding the Sweet Spot** told you to reach for "regularisation" when a model is overfitting, and left the word doing a lot of unexplained work. Here's what it actually is, now that you've seen the loss function up close: **regularisation is an extra term bolted directly onto the loss, penalising the weights themselves for being large or numerous — not just the predictions for being wrong.**
 
 Ordinary loss asks one question: how far off were the predictions? A regularised loss asks two, and adds them together:
 
@@ -116,12 +116,12 @@ Loss_regularised = Loss_original + λ · penalty(weights)
 
 Gradient descent doesn't know or care which part of that sum it's minimising — it just walks downhill on the total. Which means a weight can no longer grow huge for free, chasing one quirky net session's worth of deliveries, unless shrinking the raw prediction error by that much is worth the penalty it now costs to carry a weight that size. It's the coach who marks a batter down not just for runs scored, but for technique that only works against one specific bowling machine — an elaborate, over-fitted trigger movement has to earn its keep against the penalty, not just against the scoreboard.
 
-λ (in `sklearn`'s `LogisticRegression`, its inverse, `C`) is the dial that decides how much the penalty matters relative to the error. A small `C` — strong regularisation — tells the model that carrying large weights is expensive, so it had better be worth it. That's the fix **Form and Class** was gesturing at with "lower `C`" for an overfitting model, and now you know why it works: it's not a separate correction bolted on afterward, it's a change to the exact number gradient descent has been walking downhill on the whole time.
+λ (in `sklearn`'s `LogisticRegression`, its inverse, `C`) is the dial that decides how much the penalty matters relative to the error. A small `C` — strong regularisation — tells the model that carrying large weights is expensive, so it had better be worth it. That's the fix **Underfitting, Overfitting & Finding the Sweet Spot** was gesturing at with "lower `C`" for an overfitting model, and now you know why it works: it's not a separate correction bolted on afterward, it's a change to the exact number gradient descent has been walking downhill on the whole time.
 
 The two standard penalty shapes behave differently:
 
 - **L2 (Ridge)** penalises the sum of *squared* weights. Every weight gets nudged smaller, roughly in proportion to its size — a general instruction to tone everything down a little, with nothing banned outright.
-- **L1 (Lasso)** penalises the sum of *absolute* weights. This shape has a sharper habit: it tends to push the least useful weights all the way to exactly zero, dropping them from the model entirely rather than just shrinking them. That's regularisation doubling as feature selection — a second, automatic route to the same trimmed roster **Trial Matches** built by hand with `corr()`, and a third route (alongside sequential selection and PCA) to the same too-many-features problem **Model Selection** covers.
+- **L1 (Lasso)** penalises the sum of *absolute* weights. This shape has a sharper habit: it tends to push the least useful weights all the way to exactly zero, dropping them from the model entirely rather than just shrinking them. That's regularisation doubling as feature selection — a second, automatic route to the same trimmed roster **Feature Selection & Hyperparameter Optimisation** built by hand with `corr()`, and a third route (alongside sequential selection and PCA) to the same too-many-features problem **Model Selection** covers.
 
 Applied to plain linear regression, these two penalties are common enough to have their own names: L2-penalised linear regression is **Ridge**, L1-penalised linear regression is **Lasso**. Both still need λ set to something, and rather than guess, `scikit-learn` will search a range of candidates via built-in cross-validation and keep the best one:
 
@@ -136,7 +136,7 @@ lasso = LassoCV(alphas=np.linspace(0.1, 10, num=100))
 lasso.fit(X, y)
 ```
 
-`alphas` is the shortlist of candidate λ values to trial; each `CV` class scores every one of them by cross-validation internally and settles on whichever strength generalises best, the same instinct as **Trial Matches**' grid search, now narrowed to a single dial.
+`alphas` is the shortlist of candidate λ values to trial; each `CV` class scores every one of them by cross-validation internally and settles on whichever strength generalises best, the same instinct as **Feature Selection & Hyperparameter Optimisation**'s grid search, now narrowed to a single dial.
 
 One requirement is easy to skip and expensive to skip: **standardise your features before fitting a regularised model.** The penalty term sums up coefficients directly, so it has no way of knowing that a coefficient of `40` on a feature measured in the thousands is timid while a coefficient of `40` on a feature measured in single digits is enormous — it just sees two coefficients of `40` and penalises them identically. Left unscaled, regularisation ends up punishing whichever features happen to have small raw coefficients, regardless of how much they actually matter, exactly the failure mode min-max scaling and standardisation already exist to prevent in **K-Nearest Neighbours** and **K-Means Clustering**.
 
@@ -203,7 +203,7 @@ clf.fit(X_train, y_train)
 print(classification_report(y_val, clf.predict(X_val)))
 ```
 
-`classification_report` is the same tool from **The Scorer's Box** — precision, recall, and F1 haven't changed. What's changed is only what's underneath the model doing the tuning: still a bowler adjusting length by feel, just aiming at a different kind of stumps.
+`classification_report` is the same tool from **Evaluation Metrics & Data Leakage** — precision, recall, and F1 haven't changed. What's changed is only what's underneath the model doing the tuning: still a bowler adjusting length by feel, just aiming at a different kind of stumps.
 
 ## Ground Rules for the Dressing-Room Wall
 
@@ -220,4 +220,4 @@ print(classification_report(y_val, clf.predict(X_val)))
 
 ---
 
-Trial Matches searched over a short list and kept the winner. This chapter's bowler had no such list — just a length, a miss, a direction to correct in, and enough overs to get there. That's the trick underneath the projected score's coefficients, underneath a classifier's decision boundary, and — several chapters from now, in Second Innings — underneath every single layer of a network learning to bat.
+Feature Selection & Hyperparameter Optimisation searched over a short list and kept the winner. This chapter's bowler had no such list — just a length, a miss, a direction to correct in, and enough overs to get there. That's the trick underneath the projected score's coefficients, underneath a classifier's decision boundary, and — several chapters from now, in Second Innings — underneath every single layer of a network learning to bat.

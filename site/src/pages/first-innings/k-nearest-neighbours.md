@@ -109,7 +109,7 @@ With the numbers finally comparable, the algorithm itself is four steps — a sc
 
 ## Choosing K Is Choosing How Much to Trust the Nearest Voice
 
-K isn't free to ignore, and the failure modes on either side will look familiar from **Form and Class**.
+K isn't free to ignore, and the failure modes on either side will look familiar from **Underfitting, Overfitting & Finding the Sweet Spot**.
 
 Set K too small — K=1, say — and the new player's label is decided by whichever single comparison happens to be nearest, fluke or not. One unusual season from one unusual player, and the call flips. That's a **net hero**: high variance, memorising a single close match instead of reading the wider pattern.
 
@@ -119,7 +119,7 @@ The sweet spot, as ever, sits in the middle, and you find it the same way you fo
 
 ## Setting Aside a Test Panel
 
-You already know why held-out data matters from **The Practice Nets**. Here's the same idea, written the manual way — cutting a training and test set with `sample()` and `drop()` instead of `train_test_split`:
+You already know why held-out data matters from **Train/Validation/Test Splits**. Here's the same idea, written the manual way — cutting a training and test set with `sample()` and `drop()` instead of `train_test_split`:
 
 ```python
 train_df = squad_df.sample(frac=0.85, random_state=417)
