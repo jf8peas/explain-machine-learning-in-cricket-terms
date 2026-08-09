@@ -475,21 +475,40 @@ const hasQuizQuestions = (quizBank as Array<{ chapterId: string }>).some(
   const chapterLinks = document.querySelectorAll("[data-chapter-slug]");
 
   /**
-   * Scroll the inner Innings Card container so the active chapter stays in
-   * view. Only triggers when:
-   *  1. The user arrived via a Next/Prev Over click (sessionStorage flag).
-   *  2. The active item is actually clipped above or below the container.
-   *
-   * Runs only in the browser (Astro <script> is not executed during SSR),
-   * and we keep the `typeof window` guard for extra SSR safety.
+   * Persist the LHN container's scroll position so a full page reload
+   * doesn't reset it to the top.
+   */
+  function saveLhnScroll(): void {
+    if (typeof window === "undefined") return;
+    const scroller = document.getElementById("innings-card-scroll");
+    if (scroller) sessionStorage.setItem("lhn_scroll_pos", String(scroller.scrollTop));
+  }
+
+  /**
+   * Restore the LHN container's previous scroll position (immediately, no
+   * smooth animation) so navigation feels seamless. Clamped so a shorter
+   * page can't overshoot the scrollable area.
+   */
+  function restoreLhnScroll(): void {
+    if (typeof window === "undefined") return;
+    const scroller = document.getElementById("innings-card-scroll");
+    if (!scroller) return;
+
+    const saved = Number(sessionStorage.getItem("lhn_scroll_pos"));
+    if (Number.isNaN(saved)) return;
+
+    const max = scroller.scrollHeight - scroller.clientHeight;
+    scroller.scrollTop = Math.min(Math.max(saved, 0), Math.max(max, 0));
+    sessionStorage.removeItem("lhn_scroll_pos");
+  }
+
+  /**
+   * After the LHN scroll position is restored, only auto-scroll the active
+   * chapter into view if it is actually clipped above or below the container.
+   * If it is already fully visible, leave the restored scroll position alone.
    */
   function scrollActiveChapterIntoView(): void {
     if (typeof window === "undefined") return;
-
-    // Trigger Condition 1: only proceed if the user clicked Next/Prev Over
-    const viaOver = sessionStorage.getItem("nav-over") === "true";
-    sessionStorage.removeItem("nav-over"); // clear so refreshes don't retrigger
-    if (!viaOver) return;
 
     const scroller = document.getElementById("innings-card-scroll");
     if (!scroller) return;
@@ -505,7 +524,7 @@ const hasQuizQuestions = (quizBank as Array<{ chapterId: string }>).some(
     );
     if (!active) return;
 
-    // Trigger Condition 2: only scroll if the active item is out of view
+    // Only scroll if the active item is out of the container's visible area
     const containerRect = scroller.getBoundingClientRect();
     const itemRect = active.getBoundingClientRect();
     const isAbove = itemRect.top < containerRect.top;
@@ -542,17 +561,15 @@ const hasQuizQuestions = (quizBank as Array<{ chapterId: string }>).some(
   window.addEventListener(PROGRESS_EVENT, refreshProgressUI);
   initChapterCompletionTrigger();
 
-  // Flag sessionStorage when the user clicks a Next/Prev Over link,
-  // so the scroll logic only fires on nav-footer navigation.
-  const overNav = document.querySelector<HTMLElement>(".mt-0\\.5");
-  if (overNav) {
-    overNav.addEventListener("click", (e: MouseEvent) => {
-      const link = (e.target as HTMLElement).closest("a[href]");
-      if (link) sessionStorage.setItem("nav-over", "true");
-    });
-  }
+  // Restore the LHN scroll position immediately (no jump), and save it
+  // whenever the user navigates away so the next page starts in the same spot.
+  restoreLhnScroll();
+  window.addEventListener("beforeunload", saveLhnScroll);
 
-  // Keep the active chapter in full view inside the scrollable Innings Card.
-  // Defer so layout/fonts settle before measuring the scroll container.
-  window.setTimeout(scrollActiveChapterIntoView, 60);
+  // After layout/fonts settle, re-clamp the restored position and only
+  // auto-scroll the active chapter if it's clipped out of view.
+  window.setTimeout(() => {
+    restoreLhnScroll();
+    scrollActiveChapterIntoView();
+  }, 60);
 </script>
