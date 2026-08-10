@@ -83,11 +83,11 @@ Fair question. Both sets influence the final model. But they operate at complete
 
 **Direct fitting versus indirect tuning.** The training set is read *by the model*: raw features `X` and targets `y` go in, gradients come out, internal equations get set. The validation set is never seen by the algorithm during mathematical optimisation. You look at the score from outside the rope and decide: *should I stop training early? Should I add more trees to this forest?* The batter learns in the nets. In the warm-up fixture, the batter learns nothing new — **the selectors do**.
 
-**Preventing hyperparameter overfitting.** Suppose you had only a training set and tuned hyperparameters directly against it. The tuner would cheerfully pick whatever settings memorise that data best: tree depth set to infinity, regularisation (the overfitting penalty properly defined in **Gradient Descent**) set to zero, every knob turned to "flatter me."
+**Preventing hyperparameter overfitting.** Hand a tuner only the training set, and it will happily pick whichever settings memorise that data best — tree depth pushed to infinity, regularisation (properly defined in **Gradient Descent**, and introduced in **Parameters & Hyperparameters**) dialled down to nothing, every knob turned to flatter the very rows it's being scored against. More flexibility can only ever help a model fit deliveries it's already seen; it can never hurt that score. Judge a hyperparameter search on training data alone, then, and it will keep cranking every dial until the model has essentially memorised its own net session.
 
-This is what happens when you let a batter choose their own net conditions. They will pick the length they like, the pace they like, and the surface they like, and their average will be magnificent and entirely fictional.
+It's the same failure as letting a batter pick their own net conditions: easy pace, friendly length, a flat deck. They will middle everything, and their net average will be magnificent and entirely fictional, because nobody has tested whether any of it survives a real bowler.
 
-The validation set is the sanity check. It forces you to choose settings that hold up on deliveries the model's weights have never directly memorised — which is a different question from "which settings score highest in the shed," and a much better one.
+That's what the validation set is for — a batch of deliveries the model's weights have never touched. Score your hyperparameter settings there instead, and the question changes from *what scores best in the nets* to *what actually holds up against a ball it hasn't memorised*, which is the only version of that question worth asking.
 
 ## Cutting the Ground in Two Passes
 

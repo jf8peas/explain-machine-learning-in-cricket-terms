@@ -111,6 +111,13 @@ model = LinearSVC(
 )
 ```
 
+"Restraint" and "toolbox" are doing a lot of work above, so it's worth putting an exact number on what each of these dials actually controls:
+
+* **Regularisation strength (`C`)** decides how hard the model is allowed to chase every single training point. A high `C` says *fit this data as closely as you possibly can, whatever it costs* — loose cones, and the bowler gets away with anything that lands somewhere near the money, memorising the specific deliveries it happened to see. A low `C` says *keep it simple*, penalising the model for bending its decision boundary too far just to accommodate one unusual case. Tight cones make a bowler earn every ball; a low `C` makes a model earn every twist in its own shape.
+* **The penalty shape (`penalty="l2"`)** decides *how* that restraint gets applied. L2 — the default, and the one shown above — discourages every weight from growing too large, nudging all of them down a little rather than eliminating any single one outright: the whole squad gets told to tone it down, nobody gets dropped. Its sterner alternative, L1, can push a weight all the way to exactly zero, cutting that feature from the model entirely rather than just quieting it.
+* **`n_estimators`** is the most literal of the bunch: it's simply how many trees get built for a Random Forest to vote with — the number of bowling lanes running at once, no more, no less.
+* **`max_features`** decides how many of the available columns any single tree is even allowed to look at when choosing a split, forcing it to make do with a random subset rather than surveying every stat on the sheet — the underarm-only rule, written in code.
+
 The coach does not run in and bowl the ball, or middle the shot, or dive for the catch. The coach decides the conditions the player trains under. That is the whole job description of a hyperparameter.
 
 ---
@@ -137,7 +144,18 @@ How does a coach know which combination of machine speed, cones, and imagined fi
 
 * **Grid Search:** Testing every combination of settings on a checklist (e.g., trying tree depths of `3, 5, 10` paired with learning rates of `0.01, 0.1`).
 * **Random Search:** Randomly sampling settings across a range to quickly discover high-performing configurations without testing every single combination.
-* **Bayesian Optimisation:** Using past net session results to intelligently predict which hyperparameter combination will yield the highest performance in the next session.
+* **Bayesian Optimisation:** Learning from every previous attempt to decide which combination is worth trying next, rather than working through a checklist or a random sample blind to its own results so far.
+
+Grid and random search both burn expensive trials on combinations a coach could have ruled out after the very first over — neither one remembers what the last attempt taught it before picking the next. **Bayesian Optimisation** is the sequential alternative: an intelligent strategy for hunting down the best setting of a function that's expensive to test and impossible to see the shape of in advance — exactly the situation with a hyperparameter combination, where every single trial costs a full model fit. After each attempt, it updates a probabilistic model — a running belief about where the good settings are likely to be — and uses that belief, not a blind guess or a fixed checklist, to choose where to test next.
+
+Picture a bowler working out a new batter ball by ball, rather than bowling to a fixed plan:
+
+1. **Ball one, a yorker.** Full and straight. Blocked out, no drama — the coach notes: *safe there.*
+2. **Ball two, a bouncer.** Short and quick. The batter takes a risky hook and nearly gets caught — the coach notes: *dangerous there, but risky for us too.*
+3. **The update.** The mental map just changed: short is high-reward but high-variance, and nobody's tested a length just back-of-a-length outside off yet — that gap is still a total unknown.
+4. **Ball three, back-of-a-length outside off.** Not the safest repeat (another yorker) and not a gamble on the same risky area again (another bouncer) — it's the ball that trades off what's already known against what's still worth finding out.
+
+That trade-off — lean on what's worked, but keep probing the areas you haven't tested — is what an **acquisition function** formalises. Applied to hyperparameters instead of overs, tools like `scikit-optimize`'s `BayesSearchCV` do exactly this: use every previous combination's score to decide which combination is worth the cost of actually training next, rather than working through a checklist blind to its own results so far.
 
 In practice, the checklist approach looks like this:
 
@@ -153,9 +171,11 @@ grid.fit(X_train, y_train)
 print(grid.best_params_, grid.best_score_)
 ```
 
+Minimising error on the training data is exactly the right goal for a *parameter* — it's the one, well-defined job `model.fit()` is doing, and there's no other target worth aiming at. Point that same goal at a *hyperparameter*, though, and it stops being safe. Every dial in this chapter only has one direction to turn if "lowest training error" is all that's being scored: deeper trees, a higher `C`, the cones taken away entirely, every neighbour but the single nearest one ignored. More flexibility can only ever help a model fit the exact deliveries it's already seen — it can never hurt training error — so a search judged purely against the training set will keep cranking every dial toward maximum flexibility until the model has essentially memorised that one net session, ball for ball: flawless against the deliveries it trained on, and hopeless the moment an unfamiliar one arrives. Hyperparameters need a different scoreboard, one that rewards a setting for generalising rather than for memorising, which is exactly why they get judged against a held-out slice of data instead of the training set itself.
+
 One rule to carry forward, and it matters enormously: **hyperparameters are tuned against a closed-doors trial match — never against the real scorecard from match day.** A coach who keeps adjusting the drill until it flatters the trial match has just built a team that's good at beating the trial match, not good at cricket.
 
-That is a whole discipline of its own, and it gets its own chapter. See **Train/Validation/Test Splits** in Innings 3, where we divide the ground properly, and **Underfitting, Overfitting & Finding the Sweet Spot**, where we work out whether the settings you chose produced a batter who can actually perform.
+That is a whole discipline of its own, and it gets its own chapter. See **Train/Validation/Test Splits** in model evaluation, where we divide the ground properly, and **Underfitting, Overfitting & Finding the Sweet Spot**, where we work out whether the settings you chose produced a batter who can actually perform.
 
 ---
 
@@ -165,7 +185,8 @@ That is a whole discipline of its own, and it gets its own chapter. See **Train/
 - **The coach fixes the conditions, not the technique.** Machine speed, target cones, the imagined field, underarm-only throws — every one of these constrains the drill, and none of them touches a player's wrist position or backlift directly.
 - **Parameters are the residue of the reps.** Weights (*w*), biases (*b*), tree splits — `model.coef_`, `model.intercept_` — nobody hands these numbers over; they're what the repetition leaves behind.
 - **Max depth, regularisation strength, feature count, and neighbour count are all the same idea wearing different kit:** a rule fixed before the first ball that decides how much freedom the model has to fit what it sees.
-- **Grid search, random search, and Bayesian optimisation are three systematic ways of trying different drills**, rather than guessing at a machine speed and hoping.
+- **Grid search, random search, and Bayesian optimisation are three systematic ways of trying different drills**, rather than guessing at a machine speed and hoping — only Bayesian optimisation updates its next guess based on what every previous one taught it.
+- **Minimising training error is the right goal for a parameter and a trap for a hyperparameter.** More flexibility can only ever help fit the training data, never hurt it, so scoring a hyperparameter search against training error alone just cranks every dial toward memorising the net session rather than learning from it.
 - **Tune against a closed-doors trial match, never against match day.** A coach who keeps adjusting the drill until it flatters the trial match has built a team that's good at beating the trial match, not good at cricket.
 
 ---

@@ -58,8 +58,13 @@ ${rubricLines ? `RUBRIC (each point worth 1, max 3):\n${rubricLines}\n` : ""}
 
 Grade the student's answer out of 3 points based on the rubric. Be fair but rigorous — award a point only when the answer genuinely demonstrates that part of the rubric.
 
+Then write feedback that tells the student exactly what to do differently next time:
+- If the score is less than 3, name each rubric point that was NOT awarded, and briefly say what was missing, incorrect, or too vague in the student's answer for that specific point — don't just say the answer was "incomplete," say what it left out.
+- If the full 3 points were awarded, briefly confirm what the answer got right.
+Be concrete and specific to this student's actual answer, not a generic restatement of the rubric.
+
 Respond with ONLY a JSON object in this exact format:
-{"score": <integer 0-3>, "feedback": "<one sentence of constructive feedback>"}`;
+{"score": <integer 0-3>, "feedback": "<1-2 sentences of specific, actionable feedback>"}`;
   };
 
   // Grade all items concurrently, but tolerate individual failures so one
@@ -89,7 +94,7 @@ Respond with ONLY a JSON object in this exact format:
               { role: "user", content: buildPrompt(question, answer, modelAnswer, rubric) },
             ],
             temperature: 0.2,
-            max_tokens: 250,
+            max_tokens: 350,
           }),
         });
 
