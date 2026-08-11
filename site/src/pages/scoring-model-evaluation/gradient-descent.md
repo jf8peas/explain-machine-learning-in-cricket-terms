@@ -81,7 +81,7 @@ The practical fix — the one a good bowler does on instinct and `sklearn`'s opt
 
 ## Bringing Back Regression: What's Actually Being Tuned
 
-Time to make this concrete against a model you'll meet properly in First Innings. A **projected score** — runs predicted from overs faced, wickets in hand, and current run rate — is weight and bias: a coefficient for every predictor, plus one intercept. One way to find those coefficients, covered in full when you get to **Linear Regression**, is the **normal equation** — an exact, one-shot piece of matrix algebra: β̂ = (XᵀX)⁻¹XᵀY.
+Time to make this concrete against a model you'll meet properly in First Innings. A **projected score** — runs predicted from overs faced, wickets in hand, and current run rate — is weight and bias: a coefficient for every predictor, plus one intercept. One way to find those coefficients, covered in full when you get to **Linear Regression**, is the **normal equation** — an exact, one-shot piece of matrix algebra: $\hat{\beta} = (X^\mathsf{T}X)^{-1}X^\mathsf{T}Y$.
 
 Gradient descent finds the *same* weight and bias, for the *same* mean-squared-error loss, by a completely different road — and every single step it takes, whether there's one coefficient in play or a thousand, breaks down into exactly the same three moves.
 
@@ -89,17 +89,19 @@ Gradient descent finds the *same* weight and bias, for the *same* mean-squared-e
 
 **2. The backward pass — one partial derivative per weight.** For each weight in turn, gradient descent asks the same narrow question: *if I nudged just this one, holding every other weight exactly still, would the total loss go up or down, and how fast?* That per-weight answer has a name — a **partial derivative** — and every one of them gets computed off the exact same forward pass, before any weight actually changes:
 
-```
-∂Loss/∂w₁,   ∂Loss/∂w₂,   ∂Loss/∂w₃,   …
-```
+$$\frac{\partial \text{Loss}}{\partial w_1}, \quad \frac{\partial \text{Loss}}{\partial w_2}, \quad \frac{\partial \text{Loss}}{\partial w_3}, \quad \dots$$
 
 **3. The update — every weight moves, together, but not equally.** Once every partial derivative is known, the whole vector updates in a single step, each weight nudged by its own partial derivative and scaled by the learning rate:
 
-```
-w₁ ← w₁ − learning_rate × ∂Loss/∂w₁
-w₂ ← w₂ − learning_rate × ∂Loss/∂w₂
-w₃ ← w₃ − learning_rate × ∂Loss/∂w₃
-```
+$$
+\begin{aligned}
+w_1 &\leftarrow w_1 - \alpha \frac{\partial \text{Loss}}{\partial w_1} \\
+w_2 &\leftarrow w_2 - \alpha \frac{\partial \text{Loss}}{\partial w_2} \\
+w_3 &\leftarrow w_3 - \alpha \frac{\partial \text{Loss}}{\partial w_3}
+\end{aligned}
+$$
+
+where $\alpha$ is the learning rate.
 
 Worth being precise about what "together" means here, because it's easy to picture wrong. Gradient descent doesn't tune `overs`, stop, tune `wickets`, stop, tune `run_rate` — that one-predictor-at-a-time discipline belongs to **Model Selection**'s sequential feature selector, which adds a single column, checks the result, and only then moves on to the next. Every weight above updates in the very same step. But "together" doesn't mean "equally": a predictor with a steep, urgent gradient gets nudged hard, one that's already nearly right barely moves, and a genuinely useless one can sit close to zero for the whole run.
 
@@ -128,7 +130,7 @@ Run this against overs/wickets/run-rate data and the coefficients it settles on 
 
 Ordinary loss asks one question: how far off were the predictions? A regularised loss asks two, and forces gradient descent to answer both at once by adding them together:
 
-Loss_regularised = Loss_original + λ · penalty(weights)
+$$\text{Loss}_{\text{regularised}} = \text{Loss}_{\text{original}} + \lambda \cdot \text{penalty}(w)$$
 
 That's a genuine tug of war folded into a single number. Gradient descent wants the first term at zero — fit the training data as closely as it possibly can. Regularisation wants the second term at zero — keep every weight as small as possible. Gradient descent doesn't get to pick a side; it just walks downhill on the *sum*, so every attempted improvement gets tested against both goals at once. Nudge a weight up to shave a fraction off the prediction error, and the penalty term pushes back the moment that weight grows — two halves of the same walk, pulling in opposite directions on every single step.
 
@@ -148,14 +150,14 @@ Two forces, one shared number, permanently pulling against each other:
 
 Neither force wins outright, and neither should. A model that only listens to gradient descent memorises its net sessions; a model that only listens to regularisation never learns anything useful at all. What decides how loud each voice gets is next.
 
-λ (in `sklearn`'s `LogisticRegression`, its inverse, `C`) is the dial that decides how much the penalty matters relative to the error. A small `C` — strong regularisation — tells the model that carrying large weights is expensive, so it had better be worth it. That's the fix **Underfitting, Overfitting & Finding the Sweet Spot** was gesturing at with "lower `C`" for an overfitting model, and now you know why it works: it's not a separate correction bolted on afterward, it's a change to the exact number gradient descent has been walking downhill on the whole time.
+$\lambda$ (in `sklearn`'s `LogisticRegression`, its inverse, `C`) is the dial that decides how much the penalty matters relative to the error. A small `C` — strong regularisation — tells the model that carrying large weights is expensive, so it had better be worth it. That's the fix **Underfitting, Overfitting & Finding the Sweet Spot** was gesturing at with "lower `C`" for an overfitting model, and now you know why it works: it's not a separate correction bolted on afterward, it's a change to the exact number gradient descent has been walking downhill on the whole time.
 
 The two standard penalty shapes behave differently:
 
 - **L2 (Ridge)** penalises the sum of *squared* weights. Every weight gets nudged smaller, roughly in proportion to its size — a general instruction to tone everything down a little, with nothing banned outright.
 - **L1 (Lasso)** penalises the sum of *absolute* weights. This shape has a sharper habit: it tends to push the least useful weights all the way to exactly zero, dropping them from the model entirely rather than just shrinking them. That's regularisation doubling as feature selection — a second, automatic route to the same trimmed roster **Feature Selection & Hyperparameter Optimisation** built by hand with `corr()`, and a third route (alongside sequential selection and PCA) to the same too-many-features problem **Model Selection** covers.
 
-Applied to plain linear regression, these two penalties are common enough to have their own names: L2-penalised linear regression is **Ridge**, L1-penalised linear regression is **Lasso**. Both still need λ set to something, and rather than guess, `scikit-learn` will search a range of candidates via built-in cross-validation and keep the best one:
+Applied to plain linear regression, these two penalties are common enough to have their own names: L2-penalised linear regression is **Ridge**, L1-penalised linear regression is **Lasso**. Both still need $\lambda$ set to something, and rather than guess, `scikit-learn` will search a range of candidates via built-in cross-validation and keep the best one:
 
 ```python
 import numpy as np
@@ -168,7 +170,7 @@ lasso = LassoCV(alphas=np.linspace(0.1, 10, num=100))
 lasso.fit(X, y)
 ```
 
-`alphas` is the shortlist of candidate λ values to trial; each `CV` class scores every one of them by cross-validation internally and settles on whichever strength generalises best, the same instinct as **Feature Selection & Hyperparameter Optimisation**'s grid search, now narrowed to a single dial.
+`alphas` is the shortlist of candidate $\lambda$ values to trial; each `CV` class scores every one of them by cross-validation internally and settles on whichever strength generalises best, the same instinct as **Feature Selection & Hyperparameter Optimisation**'s grid search, now narrowed to a single dial.
 
 One requirement is easy to skip and expensive to skip: **standardise your features before fitting a regularised model.** The penalty term sums up coefficients directly, so it has no way of knowing that a coefficient of `40` on a feature measured in the thousands is timid while a coefficient of `40` on a feature measured in single digits is enormous — it just sees two coefficients of `40` and penalises them identically. Left unscaled, regularisation ends up punishing whichever features happen to have small raw coefficients, regardless of how much they actually matter, exactly the failure mode min-max scaling and standardisation already exist to prevent in **K-Nearest Neighbours** and **K-Means Clustering**.
 
@@ -183,7 +185,7 @@ X_scaled = scaler.fit_transform(X)
 
 For plain linear regression, the normal equation is genuinely the better tool most of the time — it's exact, and there's no learning rate to get wrong. Gradient descent earns its keep in two situations the closed form struggles with:
 
-**Scale.** The normal equation requires inverting (XᵀX), and matrix inversion gets punishingly expensive as the number of predictors grows — the "increased minima and ground to cover" that makes standard gradient descent itself slow with many predictors, only worse for a direct matrix solve. Gradient descent's per-step cost barely notices how many dials it's turning.
+**Scale.** The normal equation requires inverting $(X^\mathsf{T}X)$, and matrix inversion gets punishingly expensive as the number of predictors grows — the "increased minima and ground to cover" that makes standard gradient descent itself slow with many predictors, only worse for a direct matrix solve. Gradient descent's per-step cost barely notices how many dials it's turning.
 
 **Everywhere the closed form doesn't exist at all.** Plain linear regression is one of the few models simple enough to solve exactly in one shot. Logistic regression, and every network layer waiting in Second Innings, has no equivalent clean formula — gradient descent, walking downhill one step at a time, is the *only* way most models ever get tuned. Learn it here and it explains not just this chapter, but a great deal of what comes later.
 

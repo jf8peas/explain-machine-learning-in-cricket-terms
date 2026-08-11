@@ -61,7 +61,7 @@ The pattern that matters sits in how these three move together across a full ran
 
 Odds are lopsided around a coin-flip shout — 3 on one side of even, but `0.33` rather than `-3` on the other — which is exactly the fence a linear model can't respect. Log-odds are perfectly symmetric around zero at the dead-even 0.50 mark, and climb without limit toward either extreme. That symmetry is why log-odds, not probability or odds, is the quantity a straight line can honestly predict.
 
-Z = β₀ + β₁X
+$$Z = \beta_0 + \beta_1 X$$
 
 Z here is log-odds — the model's raw, unfiltered opinion, in units nobody outside a statistics department finds intuitive.
 
@@ -69,7 +69,7 @@ Z here is log-odds — the model's raw, unfiltered opinion, in units nobody outs
 
 An umpire's gut certainty is exactly this kind of unbounded quantity — it can run from "plumb, no argument, biggest of all shouts" to "not in a million years," with no natural ceiling on how sure or unsure they feel. The **sigmoid function** is what takes that raw, unbounded reading and squashes it back into something you could put a percentage sign on:
 
-E[Y] = h(Z) = 1 / (1 + e^(−Z))
+$$E[Y] = h(Z) = \frac{1}{1 + e^{-Z}}$$
 
 ```python
 import numpy as np
@@ -136,7 +136,7 @@ model.coef_
 model.predict_proba(X)
 ```
 
-Here's the trap that catches everyone coming from linear regression: **a logistic regression coefficient is not "runs per unit," because the model isn't linear in probability — it's linear in log-odds.** A coefficient of `0.7` on "delivery pitched in line with the stumps" doesn't mean "add 0.7 to the chance of being out." It means: add `0.7` to the log-odds, which — undoing the logarithm — means **multiply the odds by e^0.7 ≈ 2.01.** Pitching in line, all else held equal, roughly doubles the odds of the decision going against the batter. That's an **odds ratio**, and it's the native, honest unit a logistic coefficient speaks in.
+Here's the trap that catches everyone coming from linear regression: **a logistic regression coefficient is not "runs per unit," because the model isn't linear in probability — it's linear in log-odds.** A coefficient of `0.7` on "delivery pitched in line with the stumps" doesn't mean "add 0.7 to the chance of being out." It means: add `0.7` to the log-odds, which — undoing the logarithm — means **multiply the odds by $e^{0.7} \approx 2.01$.** Pitching in line, all else held equal, roughly doubles the odds of the decision going against the batter. That's an **odds ratio**, and it's the native, honest unit a logistic coefficient speaks in.
 
 `model.predict_proba(X)` will hand you probabilities directly, and they're the number you'll actually report. But they're the wrong number to *reason* with, and the reason is worth sitting with, because a single probability is perfectly trustworthy on its own — the problem only shows up when you try to describe what a predictor *means*.
 
@@ -199,7 +199,7 @@ What changes is the shape of everything downstream. Instead of one set of coeffi
 - **Probability is bounded; log-odds aren't.** That's why the model is linear in log-odds, not in probability directly.
 - **The sigmoid translates unbounded confidence into a reportable percentage.** It never quite touches 0 or 1, which is the honest behaviour.
 - **Log-loss punishes confident wrongness far harder than squared error does.** A near-certain wrong call costs enormously more than a cautious near-miss.
-- **A coefficient is an odds ratio, not a "runs per unit."** `e^coefficient` tells you how much a predictor multiplies the odds, holding everything else fixed.
+- **A coefficient is an odds ratio, not a "runs per unit."** $e^{\text{coefficient}}$ tells you how much a predictor multiplies the odds, holding everything else fixed.
 - **Probability's sensitivity to a predictor depends on where you start.** The same coefficient moves probability a lot near 50/50 and barely at all near the extremes — reason in odds, report in probability.
 - **Sensitivity/PPV and recall/precision are the same arithmetic in different clothes.** Specificity and NPV are the mirror images, covering the negative class the way recall and precision cover the positive one.
 - **Overfitting and regularisation work exactly as before.** Nothing about a categorical target changes the diagnosis or the fix.

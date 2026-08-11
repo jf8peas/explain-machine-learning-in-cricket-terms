@@ -42,9 +42,9 @@ Distance-based algorithms only work if every stat is measured on the same ruler,
 
 K-Means typically reaches for a slightly different fix than the min-max scaling from the last chapter: **standardisation**. Instead of squeezing every stat into `[0, 1]`, it converts each value into a **z-score** — how many standard deviations a player sits from the squad average:
 
-z = (x − μ) / σ
+$$z = \frac{x - \mu}{\sigma}$$
 
-where *x* is the player's raw stat, *μ* is the squad's mean for that stat, and *σ* is the squad's standard deviation. A strike rate two standard deviations above average and an economy rate two standard deviations below average now both read as exactly `2` — genuinely comparable, regardless of which stat they started life as.
+where $x$ is the player's raw stat, $\mu$ is the squad's mean for that stat, and $\sigma$ is the squad's standard deviation. A strike rate two standard deviations above average and an economy rate two standard deviations below average now both read as exactly `2` — genuinely comparable, regardless of which stat they started life as.
 
 ```python
 from sklearn.preprocessing import StandardScaler
@@ -114,7 +114,7 @@ Nothing stops you asking for `n_clusters=1` (everyone in one giant, meaningless 
 
 Inertia is the sum of squared distances from every player to their own pile's captain:
 
-inertia = Σᵢ (xᵢ − c_k)²
+$$\text{inertia} = \sum_i (x_i - c_k)^2$$
 
 Low inertia means tight, well-defined piles. More piles always drives inertia down — split any group into two smaller groups and the total distance to the (now closer) centroids can only shrink or stay the same. So you can't just chase the lowest inertia, or you'll walk straight to "everyone is their own cluster" and learn nothing.
 

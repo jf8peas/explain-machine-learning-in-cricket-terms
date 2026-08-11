@@ -3,6 +3,8 @@ import { defineConfig } from 'astro/config';
 import tailwindcss from '@tailwindcss/vite';
 import pagefind from 'astro-pagefind';
 import vercel from '@astrojs/vercel';
+import remarkMath from 'remark-math';
+import rehypeKatex from 'rehype-katex';
 
 // https://astro.build/config
 export default defineConfig({
@@ -19,4 +21,10 @@ export default defineConfig({
     plugins: [tailwindcss()],
   },
   integrations: [pagefind()],
+  // $...$ and $$...$$ in markdown render to static KaTeX HTML at build time —
+  // no client-side JS, so formulas stay indexable by search engines and pagefind.
+  markdown: {
+    remarkPlugins: [remarkMath],
+    rehypePlugins: [rehypeKatex],
+  },
 });

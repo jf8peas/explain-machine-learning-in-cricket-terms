@@ -101,15 +101,15 @@ A classification tree wants each split to leave its two children as close to pur
 
 **Gini impurity** measures something precise: the probability that a randomly chosen observation from this node would be **mislabelled**, if you classified it randomly according to the node's own class proportions instead of actually looking at it.
 
-Gini = 1 − Σ(pᵢ)²
+$$\text{Gini} = 1 - \sum_i p_i^2$$
 
-Where `pᵢ` is the proportion of class `i` in the node. A node that's 100% one class scores `0` — there's only one label to guess, so a random guess is never wrong. The threshold with the **lowest** resulting Gini is the one the tree picks.
+Where $p_i$ is the proportion of class $i$ in the node. A node that's 100% one class scores `0` — there's only one label to guess, so a random guess is never wrong. The threshold with the **lowest** resulting Gini is the one the tree picks.
 
 The goal, split after split, is to drive Gini all the way to `0` on every node — every leaf perfectly pure, every observation inside it sharing one label. Chase that goal without any restraint, though, and you already know where it leads: **Underfitting, Overfitting & Finding the Sweet Spot**'s net hero, carving the training set into smaller and smaller pure little pockets until every leaf holds one delivery and the tree has stopped learning cricket and started memorising a season. `max_depth` and `min_samples_leaf` exist precisely to stop a tree from reaching `0` everywhere.
 
 **Entropy**, borrowed from information theory, scores a node a different way — not "how often would a random guess be wrong," but **how much information, randomness, or disorder the node's class mix contains**. High entropy is a coin flip: genuinely unpredictable. Low entropy is close to a foregone conclusion — high order, easy to call.
 
-Entropy = −Σ pᵢ · log₂(pᵢ)
+$$\text{Entropy} = -\sum_i p_i \cdot \log_2(p_i)$$
 
 A pure node scores `0` — nothing left to be uncertain about. A node split dead-evenly across two classes hits entropy's own worst case; across four evenly-split classes, that ceiling climbs higher still. Entropy shares Gini's exact goal — drive every node toward `0`, without driving the tree into memorising its own training data to get there — and it's held back by the same brakes, `max_depth` and `min_samples_leaf`.
 
@@ -117,7 +117,7 @@ The one place the two genuinely diverge is **scale**. For a binary split — Out
 
 Trees don't pick splits by minimising raw entropy directly, though — they use **information gain**: the entropy of the parent minus the weighted entropy of the two children that split produces. The bigger the drop in disorder, the better the split.
 
-IG = Entropy(parent) − [ (nₜᵣᵤₑ / nₚₐᵣₑₙₜ) · Entropy(true child) + (n_false / nₚₐᵣₑₙₜ) · Entropy(false child) ]
+$$IG = \text{Entropy(parent)} - \left[ \frac{n_{true}}{n_{parent}} \cdot \text{Entropy(true child)} + \frac{n_{false}}{n_{parent}} \cdot \text{Entropy(false child)} \right]$$
 
 That weighting — each child's impurity scaled by what share of the parent's data it actually received — matters more than it looks. Without it, a split that carves off one flawless-but-tiny sliver of five observations could masquerade as a brilliant split, when really it settled almost nothing about the other 195.
 
@@ -127,13 +127,13 @@ A regression tree has no classes to purify — the target is a number, like a pr
 
 **Mean squared error (MSE)** — the same cost function from **Linear Regression**, now applied node by node — takes the mean of the target values that landed in a node, measures how far every observation sits from that mean, squares each gap, and averages the result:
 
-MSE = (1/n) · Σ(xᵢ − x̄)²
+$$\text{MSE} = \frac{1}{n} \sum_i (x_i - \bar{x})^2$$
 
 The threshold producing the **lowest** MSE across both children wins. And this is the detail worth sitting with: **a regression tree's leaf doesn't predict a formula — it predicts the plain mean of whatever target values ended up there.** There's no weight, no intercept, no straight line being fit. Just: "everyone who answered these questions the same way gets the average of everyone else who answered them the same way."
 
 **Mean absolute error (MAE)** is the sturdier alternative, built the same way but using the median instead of the mean and absolute difference instead of squared:
 
-MAE = (1/n) · Σ|xᵢ − x̃|
+$$\text{MAE} = \frac{1}{n} \sum_i |x_i - \tilde{x}|$$
 
 Squaring, as you already know from **Linear Regression**'s residuals discussion, punishes big misses far more than small ones. A single freak delivery can quietly drag MSE's chosen threshold toward accommodating it. MAE, built on the median, shrugs the freak result off — worth reaching for whenever a dataset has outliers you don't want dictating the shape of the tree.
 

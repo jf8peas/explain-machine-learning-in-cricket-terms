@@ -37,7 +37,7 @@ Both assumptions can fail. A dataset with forty rows can't spare 15% for validat
 
 ## Building a Team One Trial at a Time
 
-Checking every possible subset of features is exponential — with `n` candidate features, there are `2ⁿ` possible subsets to try, and that number gets unmanageable fast. **Sequential feature selection** avoids the explosion by never checking every subset at all. It builds toward a good one, one feature at a time, in one of two directions.
+Checking every possible subset of features is exponential — with $n$ candidate features, there are $2^n$ possible subsets to try, and that number gets unmanageable fast. **Sequential feature selection** avoids the explosion by never checking every subset at all. It builds toward a good one, one feature at a time, in one of two directions.
 
 **Forward selection** starts from nothing — an empty side, an intercept-only model with no predictors at all — and adds, one at a time, whichever remaining feature improves the model the most. Stop once you've reached the number of features you asked for.
 

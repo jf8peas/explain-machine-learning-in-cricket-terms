@@ -61,11 +61,7 @@ In machine learning, this exact distinction separates **Hyperparameters** from *
 * **Cricket Analogy:** Think of parameters as whatever a player's body works out for itself, purely from repetition, inside whatever drill the coach has set up. A fast bowler running in at a set of cones makes micro-adjustments to wrist position and seam angle after every ball that swings the wrong way. A batter facing throwdowns against an imagined field adjusts backlift and foot position after every one that gets them out. A fielder restricted to underarm throws grooves the release point that keeps the ball flat and on target. Nobody hands any of them the exact numbers — the coach set the drill, not the technique. The technique is what gets learned inside it.
 * **ML Equivalent:** In linear regression or neural networks, parameters are the **weights (*w*)** and **biases (*b*)**. In decision trees, parameters are the specific split thresholds chosen at each node.
 
-```
-prediction  ŷ  =  w₁x₁  +  w₂x₂  +  b
-                  └──────┬──────┘   └┬┘
-                     learned      learned
-```
+$$\hat{y} = \underbrace{w_1x_1}_{\text{learned}} + \underbrace{w_2x_2}_{\text{learned}} + \underbrace{b}_{\text{learned}}$$
 
 The algorithm calculates and updates these weights automatically to minimise loss. You do not set parameters manually — and after fitting, you can go and look at what the player's body worked out for itself:
 
@@ -83,7 +79,7 @@ Nobody instructed those numbers. They are the residue of thousands of deliveries
 **Hyperparameters** are the external settings that *you* (the coach/data scientist) specify **before** model training begins. They control *how* the model learns, setting the boundaries and constraints within which parameters are adjusted.
 
 * **Cricket Analogy:** Think of hyperparameters as the rules the coach lays down before a drill starts — nobody's technique yet, just the constraints it has to fit inside:
-  * **Speed Dial:** How fast the bowling machine fires balls down (→ **Learning Rate** *η*). Too fast, and the batter overreacts and misses every cue; too slow, and nothing about the technique gets properly tested.
+  * **Speed Dial:** How fast the bowling machine fires balls down (→ **Learning Rate** $\eta$). Too fast, and the batter overreacts and misses every cue; too slow, and nothing about the technique gets properly tested.
   * **The Imagined Field:** There's nobody actually standing out there when you face a machine, so before the first ball you set a field in your head — three slips, a gully, a man up at point — and picture exactly where each one is. A shallow mental field (just a slip and a fine leg) leaves you two or three simple reads each ball; a deep one, stacked with layered if-he's-fuller-I-go-here, if-he's-straighter-I-go-there reasoning, lets you plan much further ahead (→ **Max Tree Depth** *d*). Build it too deep, though, and you stop playing the ball that actually arrives — you're playing the field you imagined.
   * **Target Cones:** The coach lays cones on a length and line and the bowler is only allowed to bowl at them — miss by too much and it's not a rep worth counting (→ **Regularisation Strength** *C*). Tight cones keep the action honest and stop the bowler grooving one wild, spectacular ball that never repeats; loose cones let more through, good habits and bad ones alike.
   * **Underarm Only:** Fielders in this drill are restricted to one technique — underarm throws, no side-arm flicks, no bombs from the boundary. Narrowing the toolbox on purpose is exactly what limiting the inputs a model is allowed to split on does (→ **Max Features** in a Random Forest).

@@ -53,7 +53,7 @@ abs(train_df["strike_rate"] - scout_target["strike_rate"])
 
 Compare a player on more than one stat — batting average, strike rate, boundary percentage, whatever you've got — and the formula for *n* features is:
 
-distance = √( (x₁−y₁)² + (x₂−y₂)² + … + (xₙ−yₙ)² )
+$$\text{distance} = \sqrt{(x_1-y_1)^2 + (x_2-y_2)^2 + \dots + (x_n-y_n)^2}$$
 
 which in code is a square, a sum, and a square root:
 
@@ -80,7 +80,7 @@ squad_df = pd.get_dummies(squad_df, columns=["bowling_arm"], drop_first=True)
 
 **Different stats live on wildly different scales**, and Euclidean distance can't tell the difference between "big number" and "important number." Strike rate roams from 0 to 200-odd; economy rate rarely leaves single digits. Left unscaled, strike rate would dominate every distance calculation purely by being numerically larger — not because it's more informative, just because it's louder. **Min-max scaling** squashes every feature into the same `[0, 1]` range so no single stat bullies the others out of the conversation:
 
-x′ = (x − min(x)) / (max(x) − min(x))
+$$x' = \frac{x - \min(x)}{\max(x) - \min(x)}$$
 
 Scale first, encode categoricals first, *then* measure distance. Do it in the wrong order and you're comparing players on a ruler that's secretly rubber.
 

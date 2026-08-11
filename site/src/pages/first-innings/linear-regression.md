@@ -65,7 +65,7 @@ Linear regression's standard choice is the **sum of squared error**: take each m
 
 Some models get to their answer through trial and error — a coach in the nets, tweaking, watching, adjusting. Ordinary linear regression doesn't need to. Given the cost function above, there's a **closed-form solution** — an exact formula that produces the best possible weights directly, no iteration required:
 
-β̂ = (XᵀX)⁻¹XᵀY
+$$\hat{\beta} = (X^\mathsf{T}X)^{-1}X^\mathsf{T}Y$$
 
 In matrix arithmetic, this is three lines:
 

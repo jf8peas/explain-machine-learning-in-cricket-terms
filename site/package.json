@@ -14,7 +14,10 @@
     "@astrojs/vercel": "^8.2.11",
     "astro": "^5.13.0",
     "astro-pagefind": "^2.0.1",
+    "katex": "^0.18.4",
     "pagefind": "^1.5.2",
+    "rehype-katex": "^7.0.1",
+    "remark-math": "^6.0.0",
     "typescript": "^5.9.3"
   },
   "devDependencies": {

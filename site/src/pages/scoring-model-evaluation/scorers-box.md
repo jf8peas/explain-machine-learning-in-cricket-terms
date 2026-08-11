@@ -31,11 +31,7 @@ This chapter is about getting into that box.
 
 Accuracy is the first metric everyone learns and the first one that betrays them.
 
-```
-              correct predictions
-Accuracy  =  ─────────────────────
-               total predictions
-```
+$$\text{Accuracy} = \frac{\text{correct predictions}}{\text{total predictions}}$$
 
 The formula is honest. The problem is what happens when the classes are lopsided.
 
@@ -111,11 +107,7 @@ Two metrics, both derived from the ledger, each answering a different question.
 
 **Of all the times the captain went upstairs claiming a wicket, how often was he right?**
 
-```
-                 TP             45
-Precision  =  ─────────  =  ────────  =  0.88
-               TP + FP        45 + 6
-```
+$$\text{Precision} = \frac{TP}{TP + FP} = \frac{45}{45 + 6} = 0.88$$
 
 Precision is a **quality** question, not a quantity one: of everything the model was willing to call "out," how much of it actually was? It lives entirely in the *predicted positive* column and ignores everything you didn't flag — a false negative doesn't touch this number at all. In plain terms, precision is whether you can **trust the model when it calls positive**. A captain with high precision is one whose reviews are trusted — when he twirls his hands in a T, the fielding side is already celebrating, because he doesn't burn reviews on hopeful appeals.
 
@@ -125,11 +117,7 @@ Precision is a **quality** question, not a quantity one: of everything the model
 
 **Of all the genuine chances that actually occurred, how many did the side take?**
 
-```
-              TP             45
-Recall  =  ─────────  =  ─────────  =  0.82
-            TP + FN        45 + 10
-```
+$$\text{Recall} = \frac{TP}{TP + FN} = \frac{45}{45 + 10} = 0.82$$
 
 Recall is a **quantity** question: of every genuine dismissal that actually happened out there in the world, how many did you actually catch? It lives entirely in the *actual positive* row and ignores your false alarms — a false positive doesn't touch this number at all. In plain terms, recall is whether the model **missed anything that mattered**. A side with high recall drops nothing — every edge is snaffled at second slip, every half-chance in the deep is converted, every faint nick is heard and appealed.
 
@@ -173,15 +161,11 @@ Same lever, same trade-off, every time — only the cost of being wrong changes,
 
 When you need one number, the F1-score is the harmonic mean of the two:
 
-```
-            Precision × Recall           0.88 × 0.82
-F1  =  2 · ────────────────────  =  2 · ─────────────  =  0.85
-            Precision + Recall           0.88 + 0.82
-```
+$$F_1 = 2 \cdot \frac{\text{Precision} \times \text{Recall}}{\text{Precision} + \text{Recall}} = 2 \cdot \frac{0.88 \times 0.82}{0.88 + 0.82} = 0.85$$
 
 The harmonic mean, rather than the plain average, is deliberate: it **punishes a low rate in either direction**, rather than letting a strong one paper over a weak one. A model with precision 1.0 and recall 0.1 averages a respectable 0.55 but scores an F1 of just 0.18. That is correct behaviour — F1 only rewards a captain who is both trustworthy *and* thorough, and a model can't back into a high F1 by being excellent at one and careless about the other. A captain who reviews once a match, is always right, and lets nine other dismissals go unappealed is not a good captain — he is a cautious one, and F1 says so.
 
-F1 is the sensible default for imbalanced binary problems. If precision and recall genuinely matter unequally in your context, `fbeta_score` lets you weight them (β > 1 favours recall, β < 1 favours precision).
+F1 is the sensible default for imbalanced binary problems. If precision and recall genuinely matter unequally in your context, `fbeta_score` lets you weight them ($\beta > 1$ favours recall, $\beta < 1$ favours precision).
 
 ### PR-AUC — the whole trade-off curve, not just one point on it
 
@@ -198,7 +182,7 @@ pr_auc = average_precision_score(y_test, y_proba)
 precisions, recalls, thresholds = precision_recall_curve(y_test, y_proba)
 ```
 
-Why not just reach for its better-known cousin, **ROC-AUC**? ROC-AUC plots recall against the *false positive rate* — `FP / (FP + TN)` — and on this chapter's wicket-detection data that denominator is 945, almost all of it the enormous true-negative pile. Six false positives barely dent a denominator that size, so ROC-AUC can report a model as excellent even while it's making a real mess of its rare, valuable positive calls. Precision's denominator, `TP + FP`, only ever contains the deliveries the model actually flagged as wickets — there's nowhere for a huge negative class to hide behind, which is exactly why PR-AUC is the honest choice once the positive class gets rare.
+Why not just reach for its better-known cousin, **ROC-AUC**? ROC-AUC plots recall against the *false positive rate* — $\frac{FP}{FP + TN}$ — and on this chapter's wicket-detection data that denominator is 945, almost all of it the enormous true-negative pile. Six false positives barely dent a denominator that size, so ROC-AUC can report a model as excellent even while it's making a real mess of its rare, valuable positive calls. Precision's denominator, $TP + FP$, only ever contains the deliveries the model actually flagged as wickets — there's nowhere for a huge negative class to hide behind, which is exactly why PR-AUC is the honest choice once the positive class gets rare.
 
 ### Choosing Your Headline Metric
 
@@ -218,17 +202,13 @@ Not every model classifies. When you are predicting a *quantity* — a final sco
 
 **Mean Absolute Error** is the plain-English answer — average the size of each miss, ignoring which side of the true value it fell on:
 
-```
-MAE  =  mean( | actual − predicted | )
-```
+$$\text{MAE} = \text{mean}(\,|\text{actual} - \text{predicted}|\,)$$
 
 "Our projected-score model is off by 12 runs on average." Everyone in the room understands that sentence, and it is in the same units as the thing being predicted.
 
 **Root Mean Squared Error** squares the errors before averaging, then takes the square root to get back into runs:
 
-```
-RMSE  =  sqrt( mean( (actual − predicted)² ) )
-```
+$$\text{RMSE} = \sqrt{\text{mean}\big((\text{actual} - \text{predicted})^2\big)}$$
 
 Squaring means a single catastrophic miss dominates the score. Being off by 12 runs contributes 144; being off by 50 contributes 2,500 — seventeen times the penalty for roughly four times the error.
 
@@ -307,8 +287,8 @@ That last one deserves emphasis. For anything with a time dimension, `train_test
 - **Never report accuracy alone on imbalanced data.** A 94.5% score can belong to a model that has never detected a single positive case.
 - **Unpack the confusion matrix first.** TP, TN, FP, FN — everything else is arithmetic on those four numbers, and reading them tells you *which* mistake you are making.
 - **Decide which error costs more before you tune.** False positives and false negatives are rarely equal, and only domain context can say which one you can afford.
-- **Precision = trust your reviews.** `TP / (TP + FP)`. Use it when a false alarm is expensive.
-- **Recall = drop no chances.** `TP / (TP + FN)`. Use it when a miss is expensive.
+- **Precision = trust your reviews.** $\frac{TP}{TP + FP}$. Use it when a false alarm is expensive.
+- **Recall = drop no chances.** $\frac{TP}{TP + FN}$. Use it when a miss is expensive.
 - **F1 when you need one number.** The harmonic mean punishes lopsided models, which is the behaviour you want.
 - **The 0.5 threshold is a choice, not a law.** Move it deliberately to slide along the precision/recall trade-off.
 - **PR-AUC judges the whole trade-off curve, not one threshold.** It ignores true negatives entirely, which is exactly why it holds up when ROC-AUC gets flattered by a huge negative class.
