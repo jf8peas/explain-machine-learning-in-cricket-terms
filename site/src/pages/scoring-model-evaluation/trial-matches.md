@@ -26,7 +26,7 @@ stats:
   - { k: "The Vault", v: "One Final Score", s: "best_estimator_.score()" }
 ---
 
-The whiteboard in the selection room has forty names on it and eleven places underneath. Somewhere between those two numbers is a decision that will be second-guessed by every person in the country who owns a television.
+Somewhere in the gap between a forty-name shortlist and an eleven-name team sheet sits a decision that will be second-guessed by every person in the country who owns a television.
 
 And the decision is not one decision. It is two, tangled together. *Who is in the side?* And *what conditions do you set for them* — the batting order, the field restrictions, the bowling plans. Change the personnel and the ideal conditions change. Change the conditions and a different player suddenly looks like the right pick.
 

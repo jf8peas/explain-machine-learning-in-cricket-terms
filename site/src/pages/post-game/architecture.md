@@ -33,7 +33,7 @@ stats:
 
 ## Nobody fields at every position
 
-A multi-agent system splits one impossible job into four plausible ones. The **captain** routes each question to a specialist, the specialists execute with their own tools and prompts, and the **analyst** keeps memory across sessions so the side stops relitigating last week's collapse.
+Ask one model to route the question, query the database, describe the footage, *and* remember last week's collapse, and you get a jack of all trades that's mediocre at every one of them — the same reason a real captain doesn't keep wicket and open the bowling. A multi-agent system splits that single impossible job into four plausible ones instead, each with its own tools, its own prompt, and exactly one thing it's actually good at.
 
 ## The step cap is the match rules
 

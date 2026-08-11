@@ -27,7 +27,7 @@ stats:
 
 ## Rank is just how many columns deep the scorecard goes
 
-A **scalar** is one delivery. A **vector** is an over. A **matrix** is an innings, overs by features. Stack innings into a season and you have a rank-3 tensor — the same scorecard logic, one column deeper. Neural networks do not think differently about data than scorers do; they just keep more columns.
+Every example in the card above climbs the same ladder, one column at a time — and a **tensor** is just the name that ladder gets once you stop giving each rung its own separate word. A scorer doesn't reach for new vocabulary going from a single delivery to a whole season; they just keep more columns on the same page. Neural networks work the same way: no special machinery kicks in at rank 3 that wasn't already there at rank 1, just more axes to keep straight.
 
 ## Axis zero is sacred
 

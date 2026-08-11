@@ -26,7 +26,7 @@ stats:
 ---
 
 <!-- ui: code-block scrollbar & fade enhancement -->
-A groundskeeper arrives long before the players. The roller comes out, the creases get painted, the stumps go in straight. By the time the first ball is bowled, nobody thinks about the pitch — and that is exactly the point. A well-prepared deck is invisible.
+By the time the first ball is bowled, nobody in the stands is thinking about the pitch — and that's exactly the point. Hours of rolling, painting, and measuring happened while the ground was still empty, and the entire job is judged by how completely it disappears once play starts. A well-prepared deck is invisible.
 
 Your development environment works the same way. Spend an hour now rolling it flat, and you will never think about it again. Skip it, and every notebook you open will bounce unpredictably.
 

@@ -33,8 +33,8 @@ stats:
 
 When a squad turns up for a net session, there are two distinct things happening:
 
-1. **Constraints the coach imposes on the drill** before a single ball is bowled — machine speed, target cones, an imagined field, fielders told to throw underarm only.
-2. **What the players' bodies and instincts work out for themselves** as they face ball after ball inside those constraints.
+1. **Constraints the coach imposes on the drill** — decided once, before the first ball, and then held fixed for the entire session no matter what happens inside it.
+2. **What the players' bodies and instincts work out for themselves** as they face ball after ball inside those constraints, adjusting in real time to whatever the last delivery taught them.
 
 In machine learning, this exact distinction separates **Hyperparameters** from **Parameters**.
 
