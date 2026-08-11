@@ -95,7 +95,7 @@ Finding an outlier is a question, not an automatic instruction to delete. A genu
 
 ## The Lopsided Squad: Class Imbalance
 
-Here's a problem covered in full later, in **Evaluation Metrics & Data Leakage**: a wicket-detection model facing 995 "no wicket" deliveries for every 5 genuine wickets can hit 94.5% accuracy by never once predicting a wicket. `class_weight="balanced"` — which you'll see doing quiet work in later chapters like **Classification vs Regression** and **Gradient Descent** — is one fix, and it works *inside* the model: it tells the loss function to penalise a mistake on the rare class more heavily than a mistake on the common one, without touching the training data itself.
+Here's a problem covered in full later, in **Evaluation Metrics & Data Leakage**: a wicket-detection model facing 995 "no wicket" deliveries for every 5 genuine wickets can hit 99.5% accuracy by never once predicting a wicket. `class_weight="balanced"` — which you'll see doing quiet work in later chapters like **Classification vs Regression** and **Gradient Descent** — is one fix, and it works *inside* the model: it tells the loss function to penalise a mistake on the rare class more heavily than a mistake on the common one, without touching the training data itself.
 
 The two techniques below fix the same problem a different way — by rebalancing the *data*, before any model ever sees it.
 

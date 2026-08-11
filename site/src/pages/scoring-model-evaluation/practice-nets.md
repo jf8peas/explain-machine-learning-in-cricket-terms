@@ -105,7 +105,7 @@ X_train, X_val, y_train, y_val = train_test_split(
 )
 
 print(len(X_train), len(X_val), len(X_test))
-# 80% / 10% / 10%
+# 70% / 10% / 20%
 ```
 
 The `test_size=0.125` on the second split looks odd until you follow the arithmetic: it is 12.5% of the remaining 80%, which is 10% of the original. Splitting twice is the standard idiom, and the second fraction always needs this adjustment.

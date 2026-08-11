@@ -299,15 +299,15 @@
     "chapterId": "ml-workflow",
     "chapterTitle": "2.2 ML Workflow",
     "sourceUrl": "/pre-game-preparation/ml-workflow/",
-    "question": "According to squad_df.shape in this chapter, how many players and columns does the squad have?",
+    "question": "pandas' df.shape returns a tuple of (rows, columns). Applied to a tabular ML dataset like this chapter's squad, what do those two numbers represent?",
     "options": [
-      "569 players, 31 columns",
-      "100 players, 15 columns",
-      "100 players, 14 columns",
-      "15 players, 100 columns"
+      "The number of observations, and the number of features plus the target column",
+      "The number of features, and the number of observations",
+      "The number of models trained, and the number of hyperparameters tuned",
+      "The size of the training set, and the size of the test set"
     ],
-    "correctAnswerIndex": 1,
-    "explanation": "The chapter states shape tells us the squad is 100 players deep, with 15 columns on the card — 14 features plus the target."
+    "correctAnswerIndex": 0,
+    "explanation": "The chapter states shape tells us the squad is 100 players deep (observations) with 15 columns on the card (14 features plus the target) — rows are observations, columns are features plus the target."
   },
   {
     "id": "mcq-ml-workflow-16",
@@ -459,15 +459,15 @@
     "chapterId": "ml-workflow",
     "chapterTitle": "2.2 ML Workflow",
     "sourceUrl": "/pre-game-preparation/ml-workflow/",
-    "question": "What is the overall class balance of the 'selected' target across the full 100-row squad, per the chapter?",
+    "question": "This chapter's squad splits 62 not-selected to 38 selected. If a lazy model always predicted 'not selected,' regardless of input, roughly what accuracy would it score?",
     "options": [
-      "50 selected, 50 not selected",
-      "62 not selected, 38 selected",
-      "95 not selected, 5 selected",
-      "100 selected, 0 not selected"
+      "About 62%",
+      "About 50%",
+      "About 38%",
+      "About 93%"
     ],
-    "correctAnswerIndex": 1,
-    "explanation": "The chapter states the class split as 62 not-selected to 38 selected when discussing why accuracy alone isn't the last word."
+    "correctAnswerIndex": 0,
+    "explanation": "A model that always predicts the majority class scores an accuracy equal to that class's share of the data — 62 out of 100 rows here — which is exactly why the chapter warns accuracy 'is not the last word' once one class outnumbers the other."
   },
   {
     "id": "mcq-ml-workflow-26",
@@ -1074,10 +1074,10 @@
       "50%",
       "75%",
       "94.5%",
-      "99.9%"
+      "99.5%"
     ],
-    "correctAnswerIndex": 2,
-    "explanation": "The chapter states this exact trap: a model that always predicts the majority class can hit 94.5% accuracy on a 995-to-5 split while being useless at its actual job."
+    "correctAnswerIndex": 3,
+    "explanation": "The chapter states this exact trap: a model that always predicts the majority class can hit 99.5% accuracy on a 995-to-5 split (995 correct out of 1000) while being useless at its actual job."
   },
   {
     "id": "mcq-feature-engineering-21",
@@ -1085,15 +1085,15 @@
     "chapterId": "feature-engineering",
     "chapterTitle": "2.3 Feature Engineering",
     "sourceUrl": "/pre-game-preparation/feature-engineering/",
-    "question": "What is the actual class imbalance ratio in the chapter's 995-wickets example, as shown in its chart?",
+    "question": "The chapter's downsampling and upweighting panels both start from the same 995-to-5 imbalance, but downsampling ends at a 1-to-1 ratio while upweighting only reaches roughly 20-to-1. Why does upweighting still leave the classes far more imbalanced?",
     "options": [
-      "2 to 1",
-      "20 to 1",
-      "199 to 1",
-      "995 to 1"
+      "Because upweighting clones the minority class up to 50 examples rather than matching the majority's 995, while downsampling trims the majority all the way down to match the minority's 5",
+      "Because upweighting deletes majority rows instead of cloning minority rows",
+      "Because downsampling and upweighting are actually the same technique with different names",
+      "Because upweighting can only ever double the minority class, never multiply it further"
     ],
-    "correctAnswerIndex": 2,
-    "explanation": "The chapter's bar chart labels the original split as 995 no-wicket deliveries against 5 wickets, a 199 to 1 ratio."
+    "correctAnswerIndex": 0,
+    "explanation": "Downsampling trims the majority down to meet the minority exactly, producing a clean 1:1 ratio. Upweighting instead clones the minority up to 50 — ten times its original size, but still far short of the majority's 995 — which is why it lands around 20:1 rather than 1:1."
   },
   {
     "id": "mcq-feature-engineering-22",
@@ -2529,15 +2529,15 @@
     "chapterId": "practice-nets",
     "chapterTitle": "3.1 Train/Validation/Test Splits",
     "sourceUrl": "/scoring-model-evaluation/practice-nets/",
-    "question": "What value is passed to random_state in both calls to train_test_split in the chapter's two-pass splitting code?",
+    "question": "scikit-learn's train_test_split only ever splits data into two parts. Why does the chapter's splitting code call it twice instead of once?",
     "options": [
-      "0",
-      "1",
-      "42",
-      "100"
+      "Because a three-way train/validation/test split has to be built by chaining two binary splits — there's no single function call that produces three sets directly",
+      "Because calling it twice doubles the reproducibility guaranteed by random_state",
+      "Because the training set and validation set each require a differently shaped input array",
+      "Because scikit-learn requires a separate call for every stratify= column"
     ],
-    "correctAnswerIndex": 2,
-    "explanation": "Both calls use random_state=42, fixing the split so it is reproducible across runs."
+    "correctAnswerIndex": 0,
+    "explanation": "train_test_split has no three-way mode. The chapter's code peels off the test set first, then splits what's left into training and validation — two binary cuts chained together to produce three sets."
   },
   {
     "id": "mcq-practice-nets-26",
@@ -3765,15 +3765,15 @@
     "chapterId": "scorers-box",
     "chapterTitle": "3.3 Evaluation Metrics",
     "sourceUrl": "/scoring-model-evaluation/scorers-box/",
-    "question": "According to the chapter, what is scikit-learn's convention for laying out the rows and columns of confusion_matrix()'s output?",
+    "question": "scikit-learn's confusion_matrix() lays its output out row by row as [[TN, FP], [FN, TP]]. Given that, why does .ravel() unpack it into exactly tn, fp, fn, tp, in that order?",
     "options": [
-      "[predicted][actual], with columns ordered positive then negative",
-      "[actual][predicted], with rows ordered actual-negative then actual-positive, giving [[TN, FP], [FN, TP]]",
-      "[actual][predicted], with rows ordered actual-positive then actual-negative, giving [[TP, FN], [FP, TN]]",
-      "Rows and columns are unordered and must be labelled manually every time"
+      "Because .ravel() flattens the grid row by row, and reading [[TN, FP], [FN, TP]] left-to-right, top-to-bottom produces exactly that sequence",
+      "Because tn, fp, fn, tp happens to be alphabetical order",
+      "Because scikit-learn always orders flattened output from largest value to smallest",
+      "Because .ravel() sorts cells from the best outcome to the worst outcome"
     ],
-    "correctAnswerIndex": 1,
-    "explanation": "The chapter notes: \"its convention is [actual][predicted], and rows go actual-negative then actual-positive — so the layout is [[TN, FP], [FN, TP]].\""
+    "correctAnswerIndex": 0,
+    "explanation": "The matrix's own layout is [actual][predicted], rows ordered actual-negative then actual-positive, giving [[TN, FP], [FN, TP]]. Flattening that grid row by row is what produces tn, fp, fn, tp in exactly that order — the unpacking order is a direct consequence of the layout, not an arbitrary choice."
   },
   {
     "id": "mcq-scorers-box-17",
@@ -3781,15 +3781,15 @@
     "chapterId": "scorers-box",
     "chapterTitle": "3.3 Evaluation Metrics",
     "sourceUrl": "/scoring-model-evaluation/scorers-box/",
-    "question": "In the chapter's code, what is the correct order to unpack scikit-learn's confusion_matrix() output using .ravel()?",
+    "question": "Why does the chapter recommend explicitly unpacking tn, fp, fn, tp with .ravel() the first few times, rather than just indexing into the raw matrix from memory?",
     "options": [
-      "tp, fp, fn, tn = confusion_matrix(y_test, y_pred).ravel()",
-      "tn, fp, fn, tp = confusion_matrix(y_test, y_pred).ravel()",
-      "tn, fn, fp, tp = confusion_matrix(y_test, y_pred).ravel()",
-      "fp, fn, tp, tn = confusion_matrix(y_test, y_pred).ravel()"
+      "Because getting FP and FN the wrong way round is an easy mistake to make, and it can quietly survive all the way into a production decision",
+      "Because .ravel() is required before any arithmetic can be performed on a NumPy array",
+      "Because scikit-learn changes confusion_matrix()'s output order between versions",
+      "Because unpacking is the only way to compute accuracy from the matrix"
     ],
-    "correctAnswerIndex": 1,
-    "explanation": "The chapter's code reads: tn, fp, fn, tp = confusion_matrix(y_test, y_pred).ravel(), matching the [[TN, FP], [FN, TP]] layout read row by row."
+    "correctAnswerIndex": 0,
+    "explanation": "The chapter's own warning: it's 'worth unpacking explicitly the first few times, because getting FP and FN the wrong way round is a mistake that quietly survives all the way to a production decision.'"
   },
   {
     "id": "mcq-scorers-box-18",
@@ -4455,15 +4455,15 @@
     "chapterId": "trial-matches",
     "chapterTitle": "3.4 Feature Selection & Tuning",
     "sourceUrl": "/scoring-model-evaluation/trial-matches/",
-    "question": "In the chapter's worked correlation table, what value and verdict does contact_cellular receive?",
+    "question": "If you scale your features once and then run cross-validated grid search on that already-scaled data, why does the chapter say the scaler has leaked information, even though the test set was never touched?",
     "options": [
-      "0.14, \"useful in combination\"",
-      "0.32, \"picks itself\"",
-      "0.01, \"carry the drinks\"",
-      "0.97, a leak"
+      "Because the scaler was fit before the cross-validation split happened, so every fold's held-out portion influenced the scaling it's later evaluated on — it was never genuinely unseen",
+      "Because GridSearchCV automatically refits the scaler on the test set by default",
+      "Because feature scaling is mathematically incompatible with cross-validation",
+      "Because this leak only happens with MinMaxScaler specifically, not other scalers"
     ],
     "correctAnswerIndex": 0,
-    "explanation": "The table lists contact_cellular at 0.14 with the verdict \"useful in combination.\""
+    "explanation": "The chapter is explicit: 'If you scale your features and then grid-search, the scaler has seen every fold — including the one being held out on each round.' Fitting inside a Pipeline fixes this by refitting the scaler on each fold's training portion alone."
   },
   {
     "id": "mcq-trial-matches-17",
@@ -4471,15 +4471,15 @@
     "chapterId": "trial-matches",
     "chapterTitle": "3.4 Feature Selection & Tuning",
     "sourceUrl": "/scoring-model-evaluation/trial-matches/",
-    "question": "In the worked correlation table, day_of_week scores 0.01. What verdict does the chapter give it?",
+    "question": "After grid.fit() finishes, why can grid.best_estimator_ be used immediately to make predictions, without fitting it again yourself?",
     "options": [
-      "Carry the drinks",
-      "Not a cricketer",
-      "Picks itself",
-      "Useful in combination"
+      "Because scikit-learn has already refitted it on the full training set using the winning hyperparameter combination",
+      "Because it uses scikit-learn's default hyperparameters instead of the tuned ones",
+      "Because it fits itself automatically the first time predict() is called",
+      "Because GridSearchCV doesn't actually fit any models, it only ranks parameter combinations"
     ],
     "correctAnswerIndex": 0,
-    "explanation": "day_of_week at 0.01 is marked \"carry the drinks,\" distinct from customer_id at 0.00, which is marked \"not a cricketer.\""
+    "explanation": "The chapter states best_estimator_ 'is the model itself, which scikit-learn has helpfully already refitted on the full training set using the winning settings, so you don't have to rebuild it by hand.'"
   },
   {
     "id": "mcq-trial-matches-18",
@@ -6461,15 +6461,15 @@
     "chapterId": "classification-vs-regression",
     "chapterTitle": "4.1 Classification vs Regression",
     "sourceUrl": "/first-innings/classification-vs-regression/",
-    "question": "In the chapter's example linear regression for projected score, which three columns does the model use as input features?",
+    "question": "Why does the chapter judge this projected-score model's error in runs (MAE), rather than as an accuracy percentage?",
     "options": [
-      "strike_rate, boundaries, dot_balls",
-      "wickets, run_rate, target_score",
-      "overs, wickets, run_rate",
-      "overs, boundaries, extras"
+      "Because the target is a continuous quantity, and a regression error is naturally expressed in whatever unit that quantity is measured in",
+      "Because accuracy can only ever be computed for classification models, and never as any kind of numeric metric",
+      "Because MAE is always the preferred metric, regardless of what's being predicted",
+      "Because runs are simpler to compute than percentages"
     ],
-    "correctAnswerIndex": 2,
-    "explanation": "model.fit(X_train[[\"overs\", \"wickets\", \"run_rate\"]], y_train) trains the model on overs faced, wickets in hand, and current run rate."
+    "correctAnswerIndex": 0,
+    "explanation": "The chapter states: 'You judge a regression in the same units as the thing it's predicting.' Since the target here is a continuous run total, error is measured in runs — accuracy, a classification concept, wouldn't apply."
   },
   {
     "id": "mcq-classification-vs-regression-13",
@@ -7135,15 +7135,15 @@
     "chapterId": "linear-regression",
     "chapterTitle": "4.2 Linear Regression",
     "sourceUrl": "/first-innings/linear-regression/",
-    "question": "According to the chapter's code example, which three predictors go into the projected-score model?",
+    "question": "Regardless of which specific columns are used, what does the chapter say a linear regression model with three predictors ultimately consists of?",
     "options": [
-      "Overs faced, wickets in hand, and current run rate",
-      "Venue, format, and home-or-away",
-      "Overs faced, venue, and run rate",
-      "Wickets in hand, format, and strike rate"
+      "Three weights and one baseline (intercept), combined into a single predicted number",
+      "Three separate baselines, one per predictor, averaged together",
+      "Three independent models whose predictions get voted on",
+      "One weight shared across all three predictors, plus three separate baselines"
     ],
     "correctAnswerIndex": 0,
-    "explanation": "The stats block lists three predictors — overs, wickets, rate — and the opening section names them as overs faced, wickets in hand, and current run rate."
+    "explanation": "The chapter states it plainly: 'That's the whole model. Three numbers, three weights, one baseline, one number out.' Every predictor gets its own weight, but there's a single shared intercept and a single output."
   },
   {
     "id": "mcq-linear-regression-12",
@@ -7231,15 +7231,15 @@
     "chapterId": "linear-regression",
     "chapterTitle": "4.2 Linear Regression",
     "sourceUrl": "/first-innings/linear-regression/",
-    "question": "What learning rate (eta0) does the chapter's SGDRegressor example use?",
+    "question": "The chapter says that for plain linear regression, you should reach for the normal equation rather than SGDRegressor, in part because doing so avoids one specific risk. What risk is that?",
     "options": [
-      "0.01",
-      "0.1",
-      "0.001",
-      "1.0"
+      "There's no learning rate to get wrong — the normal equation has no step-size hyperparameter to tune at all",
+      "SGDRegressor cannot compute an intercept term",
+      "The normal equation always produces a lower RMSE than SGDRegressor does",
+      "SGDRegressor requires labelled test data, which the normal equation does not"
     ],
     "correctAnswerIndex": 0,
-    "explanation": "The example sets eta0=0.01 with learning_rate=\"constant\"."
+    "explanation": "The chapter states: 'For plain linear regression, reach for the normal equation — sklearn's ordinary LinearRegression already does, and there's no learning rate to get wrong.'"
   },
   {
     "id": "mcq-linear-regression-18",
@@ -7873,15 +7873,15 @@
     "chapterId": "beyond-linear-models",
     "chapterTitle": "4.3 Polynomial & Spline Features",
     "sourceUrl": "/first-innings/beyond-linear-models/",
-    "question": "The chapter's code output summary reads 'degree 3 → 4 columns per feature · 2 knots → 3 stitched phases.' Based on this, how many stitched phases does placing 2 knots produce?",
+    "question": "The chapter's example places 2 knots and gets 3 stitched-together phases. Following that same logic, if a SplineTransformer is configured with n_knots=4, how many separate pieces does it cut the range into?",
     "options": [
-      "2",
-      "3",
+      "5",
       "4",
-      "5"
+      "3",
+      "8"
     ],
-    "correctAnswerIndex": 1,
-    "explanation": "The codeOut line explicitly states '2 knots → 3 stitched phases' — two breakpoints divide the range into three pieces."
+    "correctAnswerIndex": 0,
+    "explanation": "Each knot is a cut point, and k knots divide the range into k+1 pieces meeting smoothly at each cut — the same logic that turned the chapter's 2 knots into 3 stitched phases turns 4 knots into 5."
   },
   {
     "id": "mcq-beyond-linear-models-15",
@@ -9205,15 +9205,15 @@
     "chapterId": "k-nearest-neighbours",
     "chapterTitle": "4.5 K-Nearest Neighbours",
     "sourceUrl": "/first-innings/k-nearest-neighbours/",
-    "question": "In the chapter's example panel table (K=5), which comparison player has the smallest distance to the new player, and is therefore the single closest match?",
+    "question": "In the chapter's K=5 panel, player_203 (an Anchor) sits closer to the new player than two of the four Finishers in the panel. Does KNN still classify the new player as Anchor?",
     "options": [
-      "player_114, at a distance of 0.041",
-      "player_087, at a distance of 0.058",
-      "player_203, at a distance of 0.061",
-      "player_162, at a distance of 0.079"
+      "No — KNN classifies by majority vote across all K neighbours (4 Finisher to 1 Anchor here), not by whichever single neighbour happens to be closest",
+      "Yes — the single closest neighbour's label always wins, regardless of K",
+      "No — ties are always broken in favour of whichever class is rarer",
+      "Yes — because Anchor is closer on average across all five distances"
     ],
     "correctAnswerIndex": 0,
-    "explanation": "The table lists player_114 first with distance 0.041, the smallest of the five — the single closest comparison, though the final verdict is still decided by majority vote across all five, not just the closest one."
+    "explanation": "The chapter's rule is explicit: 'Ask which label the majority of that panel holds, and give it to the new player.' Proximity of any one neighbour doesn't override the vote — the panel calls Finisher, 4 to 1, regardless of exactly how close the lone Anchor got."
   },
   {
     "id": "mcq-k-nearest-neighbours-12",
@@ -9221,15 +9221,15 @@
     "chapterId": "k-nearest-neighbours",
     "chapterTitle": "4.5 K-Nearest Neighbours",
     "sourceUrl": "/first-innings/k-nearest-neighbours/",
-    "question": "What does the chapter's frontmatter show as the exact printed output (codeOut) of the KNN code example?",
+    "question": "The chapter says KNN is 'essentially free to set up and comparatively expensive to ask.' Why is querying expensive if training was virtually free?",
     "options": [
-      "K=5 → 4×Finisher, 1×Anchor → call: Finisher",
-      "K=5 → 5×Finisher, 0×Anchor → call: Finisher",
-      "K=1 → 1×Finisher → call: Finisher",
-      "K=5 → 3×Finisher, 2×Anchor → call: Finisher"
+      "Because computing distance to every stored training row happens at prediction time rather than training time, so each query's cost grows with the size of the training set",
+      "Because KNN retrains itself from scratch every time a new prediction is requested",
+      "Because querying requires re-scaling every feature from raw values each time",
+      "Because KNN can only answer one query at a time and must discard the dataset afterward"
     ],
     "correctAnswerIndex": 0,
-    "explanation": "The frontmatter's codeOut field shows exactly this string, matching the 4 Finisher vs 1 Anchor panel shown later in the 'Convening the Panel' section."
+    "explanation": "KNN has no training phase to speak of — 'lazy learner' means all the real work (measuring distance to every stored row) happens the moment a prediction is asked for, which is exactly why setup is cheap but each individual query isn't."
   },
   {
     "id": "mcq-k-nearest-neighbours-13",
@@ -10007,15 +10007,15 @@
     "chapterId": "k-means-clustering",
     "chapterTitle": "4.6 K-Means Clustering",
     "sourceUrl": "/first-innings/k-means-clustering/",
-    "question": "In the chapter's own worked code example (KMeans with n_clusters=4, random_state=42), what result does the model report?",
+    "question": "As you increase n_clusters and re-fit KMeans, what happens to inertia, and why can't you simply pick the k that minimises it?",
     "options": [
-      "4 clusters, inertia 812.4, converged in 6 iterations",
-      "4 clusters, inertia 200.0, converged in 4 iterations",
-      "6 clusters, inertia 812.4, converged in 4 iterations",
-      "4 clusters, inertia 6.0, converged in 812 iterations"
+      "Inertia always decreases (or at best stays flat) as k grows, so its minimum is reached at one player per cluster — a useless clustering",
+      "Inertia increases as k grows, so its minimum is always found at k=1",
+      "Inertia depends only on random_state, not on k, so minimising it tells you nothing about cluster count",
+      "Inertia decreases only up to the true number of clusters, then rises again, so the minimum always reveals the right k"
     ],
     "correctAnswerIndex": 0,
-    "explanation": "The chapter's code output is given as '4 clusters · inertia 812.4 · converged in 6 iterations.'"
+    "explanation": "The chapter is explicit: 'More piles always drives inertia down... you can't just chase the lowest inertia, or you'll walk straight to \"everyone is their own cluster\" and learn nothing.' That's why the elbow, not the minimum, is what you look for."
   },
   {
     "id": "mcq-k-means-clustering-19",
@@ -10649,15 +10649,15 @@
     "chapterId": "decision-trees",
     "chapterTitle": "4.7 Decision Trees",
     "sourceUrl": "/first-innings/decision-trees/",
-    "question": "In the delivery-data tree diagram shown in the chapter, what question does the root node ask?",
+    "question": "Why does the chapter's tree diagram place its split on impact_line_cm at the root, rather than on pitch_line_cm or ball_speed_kmh, which appear further down the tree?",
     "options": [
-      "ball_speed_kmh <= 131.0",
-      "pitch_line_cm <= -8.0",
-      "impact_line_cm <= -6.49",
-      "strike_rate <= 90"
+      "Because the root always asks the single most decisive question found anywhere in the entire dataset — the algorithm evaluates every candidate feature and threshold and places whichever one reduces impurity the most at the top",
+      "Because impact_line_cm is always the first column in the dataset",
+      "Because scikit-learn places numeric features above categorical ones by convention",
+      "Because impact_line_cm happens to have the widest range of raw values"
     ],
-    "correctAnswerIndex": 2,
-    "explanation": "The chapter reads the root of the diagram as impact_line_cm <= -6.49, the single best question found in the dataset."
+    "correctAnswerIndex": 0,
+    "explanation": "The chapter states the root node 'asks the single most decisive question available anywhere in the entire dataset' — CART evaluates every possible split on every feature and picks whichever one purifies the data the most, wherever in the dataset that turns out to be."
   },
   {
     "id": "mcq-decision-trees-16",
@@ -11157,15 +11157,15 @@
     "chapterId": "random-forest",
     "chapterTitle": "4.8 Random Forest",
     "sourceUrl": "/first-innings/random-forest/",
-    "question": "Which attribute would you read to get a RandomForestClassifier's out-of-bag predicted probabilities, as opposed to the plain predicted values an out-of-bag RandomForestRegressor gives you?",
+    "question": "A RandomForestRegressor's out-of-bag attribute (oob_prediction_) gives plain predicted values, while a RandomForestClassifier's (oob_decision_function_) gives predicted probabilities. Why does the classifier's version come out as probabilities rather than a single hard label?",
     "options": [
-      "oob_score_",
-      "oob_decision_function_",
-      "oob_prediction_",
-      "predict_proba_"
+      "Because each out-of-bag row is scored only by the trees that never trained on it, and averaging those trees' votes for a classifier naturally produces a proportion — a probability — rather than one forced label",
+      "Because classifiers are structurally unable to output a single predicted label under any circumstances",
+      "Because oob_decision_function_ actually reports feature importances, not predictions at all",
+      "Because RandomForestRegressor doesn't support out-of-bag scoring in the first place"
     ],
-    "correctAnswerIndex": 1,
-    "explanation": "The chapter distinguishes the two: oob_prediction_ gives a regressor's predicted values, while oob_decision_function_ gives a classifier's predicted probabilities."
+    "correctAnswerIndex": 0,
+    "explanation": "Out-of-bag scoring averages the votes of whichever trees didn't see a given row during training. For a classifier, that average is naturally a proportion of votes per class — a probability — while for a regressor it's an average of numeric predictions."
   },
   {
     "id": "mcq-random-forest-09",
@@ -11355,15 +11355,15 @@
     "chapterId": "random-forest",
     "chapterTitle": "4.8 Random Forest",
     "sourceUrl": "/first-innings/random-forest/",
-    "question": "In the chapter's example code output, what oob_score value did the 100-tree forest achieve?",
+    "question": "Why can the chapter report an oob_score without ever calling train_test_split?",
     "options": [
-      "0.63",
-      "0.85",
-      "0.83",
-      "1.00"
+      "Because each tree's out-of-bag rows are already held-out data for that tree — bagging automatically creates a different held-out set per tree as a side effect",
+      "Because oob_score is computed purely from training accuracy, with no held-out data involved at all",
+      "Because Random Forest doesn't need to be validated the way other models do",
+      "Because oob_score is simply another name for k-fold cross-validation"
     ],
-    "correctAnswerIndex": 2,
-    "explanation": "The chapter's codeOut reads '100 trees · oob_score 0.83 · test accuracy 0.85' — 0.85 is the separate test accuracy figure, a plausible mix-up."
+    "correctAnswerIndex": 0,
+    "explanation": "The chapter calls this out directly: skipping train_test_split 'isn't an exception to the rule that you must hold out data before trusting a score — it's the same rule, satisfied a different way. Each tree's out-of-bag rows are held-out data.'"
   },
   {
     "id": "mcq-random-forest-17",
@@ -11531,15 +11531,15 @@
     "chapterId": "random-forest",
     "chapterTitle": "4.8 Random Forest",
     "sourceUrl": "/first-innings/random-forest/",
-    "question": "What is the default value of n_estimators in scikit-learn's RandomForestClassifier, per the chapter?",
+    "question": "Why does the chapter say adding more trees past a certain point 'mostly just costs compute' rather than meaningfully improving the forest?",
     "options": [
-      "10",
-      "50",
-      "100",
-      "1000"
+      "Because more trees produce a steadier vote only up to a point — the improvement shows the same diminishing-returns, elbow-curve shape as inertia does against k in K-Means",
+      "Because scikit-learn silently ignores any n_estimators value above 100",
+      "Because every additional tree increases the forest's risk of underfitting",
+      "Because trees added past the 100th are trained on a completely different dataset"
     ],
-    "correctAnswerIndex": 2,
-    "explanation": "The stats table and text both give the default n_estimators as 100 trees on the panel."
+    "correctAnswerIndex": 0,
+    "explanation": "The chapter draws the comparison directly: 'the same diminishing-returns shape K-Means Clustering's elbow curve made visual, just applied to forest size instead of cluster count. Past the elbow, you're mostly just spending compute to confirm what the panel already agreed on.'"
   },
   {
     "id": "mcq-random-forest-28",
@@ -11783,15 +11783,15 @@
     "chapterId": "extra-trees",
     "chapterTitle": "4.9 Extra Trees",
     "sourceUrl": "/first-innings/extra-trees/",
-    "question": "What does the 'Extra' in Extra Trees actually stand for, according to the chapter?",
+    "question": "Beyond Random Forest's row-level bootstrapping, what additional randomness does Extra Trees introduce at every single split?",
     "options": [
-      "\"Extremely Randomized Trees\"",
-      "\"Extra Training Repetitions\"",
-      "\"Extremely Reduced Trees\"",
-      "\"Extra Regularized Trees\""
+      "Instead of exhaustively testing every possible threshold on every feature, it considers only a small number of randomly chosen candidate thresholds and picks the best of that random handful",
+      "It randomly discards half the training rows before every individual split",
+      "It randomly relabels a fraction of the target values during training",
+      "It randomly chooses a different loss function to optimise for each tree"
     ],
     "correctAnswerIndex": 0,
-    "explanation": "The chapter opens by naming Extra Trees as short for 'Extremely Randomized Trees.'"
+    "explanation": "The chapter states it plainly: 'each split considers only a small number of randomly chosen candidate thresholds, and picks the best of that random handful, not the best of everything that could have been tried.'"
   },
   {
     "id": "mcq-extra-trees-05",
@@ -11981,15 +11981,15 @@
     "chapterId": "extra-trees",
     "chapterTitle": "4.9 Extra Trees",
     "sourceUrl": "/first-innings/extra-trees/",
-    "question": "In the chapter's first code example, what value is passed as random_state when constructing the ExtraTreesClassifier?",
+    "question": "Random Forest gets its out-of-bag validation score for free because each tree only sees a bootstrapped slice of the data. Why can't Extra Trees rely on the same trick by default?",
     "options": [
-      "24",
-      "42",
-      "100",
-      "0"
+      "Because Extra Trees turns bootstrapping off by default — every tree sees the entire training set, so there's no held-out portion left over per tree to score against",
+      "Because Extra Trees only ever builds a single tree, so there's no panel to average across",
+      "Because Extra Trees requires a separate validation set to be passed in manually",
+      "Because bootstrapping only works for regression tasks, not classification"
     ],
     "correctAnswerIndex": 0,
-    "explanation": "The code reads `extra_clf = ExtraTreesClassifier(random_state=24)`."
+    "explanation": "The chapter states it directly: 'no bootstrapping, by default. Every tree in an Extra Trees ensemble sees the entire training dataset... There's no ~37% held out for free the way Random Forest's OOB score relies on.'"
   },
   {
     "id": "mcq-extra-trees-13",

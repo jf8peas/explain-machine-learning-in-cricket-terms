@@ -266,7 +266,7 @@ X_test  = scaler.transform(X_test)        # transform ONLY
 
 `fit_transform` on training data, `transform` on everything else. Every time. The same rule applies to imputers, encoders, PCA, feature selection, and resamplers such as SMOTE.
 
-The robust fix is to stop relying on discipline and let a `Pipeline` enforce it:
+That habit is really one instance of a fundamental rule in machine learning: **the model, and every transformer that touches your data, is allowed to learn only from the training set — never from the validation set, never from the test set.** A scikit-learn `Pipeline` prevents data leakage by automating exactly that rule, so it stops depending on a human remembering to call `fit_transform` in the right place and starts being enforced by the code's own structure:
 
 ```python
 from sklearn.pipeline import Pipeline

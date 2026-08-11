@@ -174,7 +174,35 @@ Grid search is exhaustive, which is its virtue and its whole problem. Every dial
 
 At which point you are no longer selecting a side, you are running a domestic season.
 
-Two escapes. **`RandomizedSearchCV`** samples a fixed number of combinations from the space rather than trialling all of them — you name your budget (`n_iter=60`) and it spends it. It sounds like a compromise and mostly isn't: when only two or three dials genuinely matter, random sampling covers the range of *those* dials far more efficiently than a grid that spends most of its effort on settings that make no difference. The other escape is a coarse pass to find the promising region, then a fine grid within it — exactly how you would scout a district before scouting a club.
+Two escapes.
+
+**Escape one: `RandomizedSearchCV` on its own.** Instead of trialling every combination, it samples a fixed number of them at random and reports the best of that sample — you name the budget with `n_iter`, and it spends exactly that many fits, no more, no less:
+
+```python
+from sklearn.model_selection import RandomizedSearchCV
+
+search = RandomizedSearchCV(knn, param_distributions=grid_params, n_iter=60, cv=5)
+search.fit(X_train, y_train)
+```
+
+It sounds like a compromise, and mostly isn't. When only two or three dials genuinely matter, random sampling covers the range of *those* dials far more efficiently than a grid that spends most of its effort exhaustively varying settings that make no difference at all.
+
+**Escape two: a coarse pass, then a fine one.** A single search, however it's run, has to guess up front how wide a net to cast. This escape stops guessing and does it in two deliberate steps instead — first a wide, cheap sweep to find the promising region, then a narrow, precise search right around wherever that first sweep landed:
+
+```python
+from scipy.stats import randint
+
+# Step one: cast wide, cheaply
+coarse = RandomizedSearchCV(knn, {"n_neighbors": randint(1, 100)}, n_iter=20, cv=5)
+coarse.fit(X_train, y_train)
+# best: n_neighbors=23
+
+# Step two: grid-search tightly around the coarse winner
+fine = GridSearchCV(knn, {"n_neighbors": range(18, 29)}, cv=5)
+fine.fit(X_train, y_train)
+```
+
+Exactly how you would actually scout a side — a wide look across a whole district before anyone spends real time watching one club closely.
 
 ### Search the pipeline, not the model
 
