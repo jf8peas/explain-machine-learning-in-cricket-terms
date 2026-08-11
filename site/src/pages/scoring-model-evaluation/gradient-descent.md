@@ -124,13 +124,29 @@ Run this against overs/wickets/run-rate data and the coefficients it settles on 
 
 ## Regularisation: Making the Model Pay for Trying Too Hard
 
-**Underfitting, Overfitting & Finding the Sweet Spot** told you to reach for "regularisation" when a model is overfitting, and left the word doing a lot of unexplained work. Here's what it actually is, now that you've seen the loss function up close: **regularisation is an extra term bolted directly onto the loss, penalising the weights themselves for being large or numerous — not just the predictions for being wrong.**
+**Underfitting, Overfitting & Finding the Sweet Spot** told you to reach for "regularisation" when a model is overfitting, and left the word doing a lot of unexplained work. Here's what it actually is, now that you've seen the loss function up close — and it's worth being direct about this: regularisation doesn't cooperate with gradient descent, it actively opposes it. Left alone, gradient descent is greedy. Its only instinct is to keep walking downhill on the training loss, and it will cheerfully drive that number toward zero by any means necessary, including memorising the exact noise of one quirky net session if that's what shrinks the number in front of it. **Regularisation is an extra term bolted directly onto the loss, penalising the weights themselves for being large or numerous — not just the predictions for being wrong** — and it exists specifically to talk that greedy instinct back down.
 
-Ordinary loss asks one question: how far off were the predictions? A regularised loss asks two, and adds them together:
+Ordinary loss asks one question: how far off were the predictions? A regularised loss asks two, and forces gradient descent to answer both at once by adding them together:
 
 Loss_regularised = Loss_original + λ · penalty(weights)
 
-Gradient descent doesn't know or care which part of that sum it's minimising — it just walks downhill on the total. Which means a weight can no longer grow huge for free, chasing one quirky net session's worth of deliveries, unless shrinking the raw prediction error by that much is worth the penalty it now costs to carry a weight that size. It's the coach who marks a batter down not just for runs scored, but for technique that only works against one specific bowling machine — an elaborate, over-fitted trigger movement has to earn its keep against the penalty, not just against the scoreboard.
+That's a genuine tug of war folded into a single number. Gradient descent wants the first term at zero — fit the training data as closely as it possibly can. Regularisation wants the second term at zero — keep every weight as small as possible. Gradient descent doesn't get to pick a side; it just walks downhill on the *sum*, so every attempted improvement gets tested against both goals at once. Nudge a weight up to shave a fraction off the prediction error, and the penalty term pushes back the moment that weight grows — two halves of the same walk, pulling in opposite directions on every single step.
+
+Which side wins depends entirely on what's driving the nudge:
+
+- **A genuinely important predictor** — one whose weight increase meaningfully shrinks the prediction error — wins easily. The error reduction outweighs the penalty, so gradient descent raises the weight anyway.
+- **A predictor that's just fitting background noise** — one where growing the weight buys only a sliver of training-error improvement — loses. The penalty costs more than the improvement is worth, so gradient descent leaves that weight close to zero rather than pay for it.
+
+It's the coach who marks a batter down not just for runs scored, but for technique that only works against one specific bowling machine — an elaborate, over-fitted trigger movement has to earn its keep against the penalty, not just against the scoreboard.
+
+Two forces, one shared number, permanently pulling against each other:
+
+| Force | Wants | Left unchecked, produces | Risk |
+| :--- | :--- | :--- | :--- |
+| **Gradient descent** | Minimise error on the training data | A model complex enough to fit every wiggle and outlier | Overfitting |
+| **Regularisation** | Keep the weights small and few | A model too simple to capture real structure | Underfitting, if the penalty is set too high |
+
+Neither force wins outright, and neither should. A model that only listens to gradient descent memorises its net sessions; a model that only listens to regularisation never learns anything useful at all. What decides how loud each voice gets is next.
 
 λ (in `sklearn`'s `LogisticRegression`, its inverse, `C`) is the dial that decides how much the penalty matters relative to the error. A small `C` — strong regularisation — tells the model that carrying large weights is expensive, so it had better be worth it. That's the fix **Underfitting, Overfitting & Finding the Sweet Spot** was gesturing at with "lower `C`" for an overfitting model, and now you know why it works: it's not a separate correction bolted on afterward, it's a change to the exact number gradient descent has been walking downhill on the whole time.
 
@@ -229,7 +245,7 @@ print(classification_report(y_val, clf.predict(X_val)))
 - **More dials make the landscape harder to search exhaustively** — exactly why gradient descent, not grid search, is how models with continuous parameters get tuned.
 - **Three hyperparameters govern the whole process:** learning rate, maximum iterations, and a stopping tolerance. Any one of them can end the run.
 - **Every weight updates in the same step, but not by the same amount.** All partial derivatives get computed off one shared forward pass, then the whole vector moves at once — each weight in proportion to its own gradient, not tuned one predictor at a time like a sequential feature selector.
-- **Regularisation is a penalty added to the loss itself, not a separate step.** Large weights now cost something, so gradient descent only keeps them where they earn their keep. L2 (Ridge) shrinks everything a little; L1 (Lasso) can drop weights to zero outright.
+- **Gradient descent and regularisation are pulling against each other, on purpose.** Left alone, gradient descent is greedy and will chase training loss to zero, noise included; regularisation bolts a competing penalty onto that same loss so large weights have to earn their keep, not just get added for free. L2 (Ridge) shrinks everything a little; L1 (Lasso) can drop weights to zero outright.
 - **`RidgeCV`/`LassoCV` search for the penalty strength instead of you guessing it**, scoring a shortlist of candidate `alpha` values by cross-validation and keeping the best.
 - **Standardise before you regularise.** The penalty sums coefficients directly, so features on different scales get penalised unfairly unless they're all on the same footing first.
 - **Stochastic gradient descent trades a little accuracy per step for a lot of speed** — sampling instead of scanning the whole dataset on every update.
