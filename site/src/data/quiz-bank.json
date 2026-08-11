@@ -2321,15 +2321,15 @@
     "chapterId": "practice-nets",
     "chapterTitle": "3.1 Train/Validation/Test Splits",
     "sourceUrl": "/scoring-model-evaluation/practice-nets/",
-    "question": "The Head Coach's quote in the chapter reads: 'In the nets, everyone looks like ___. Match day on a green wicket is where you find out who can actually bat.'",
+    "question": "A model scores 100% when re-tested on the exact rows it was trained on. What does the chapter say this actually demonstrates?",
     "options": [
-      "Bradman",
-      "the captain",
-      "a professional",
-      "a champion"
+      "That it has a good memory — it tells you nothing about whether it can generalise to new data",
+      "That its hyperparameters are optimally tuned",
+      "That it is ready to be deployed to production",
+      "That it has learned the true underlying pattern in the data"
     ],
     "correctAnswerIndex": 0,
-    "explanation": "The chapter's commentary quote from the Head Coach is: 'In the nets, everyone looks like Bradman. Match day on a green wicket is where you find out who can actually bat.'"
+    "explanation": "The chapter is explicit: 'A sufficiently complex model can simply memorise all 10,000 [rows] and answer perfectly. That tells you the model has a good memory. It tells you nothing about whether it can bat.'"
   },
   {
     "id": "mcq-practice-nets-13",
@@ -2385,15 +2385,15 @@
     "chapterId": "practice-nets",
     "chapterTitle": "3.1 Train/Validation/Test Splits",
     "sourceUrl": "/scoring-model-evaluation/practice-nets/",
-    "question": "The chapter says the test set is treated 'with something close to superstition,' noting that some clubs won't even do what during selection week?",
+    "question": "Why does the chapter treat the test set with 'something close to superstition,' rather than just ordinary care?",
     "options": [
-      "Practice with the test data",
-      "Say its name out loud",
-      "Allow the coach near the nets",
-      "Announce the batting order"
+      "Because once its honesty is compromised there is no way to get an unbiased performance estimate back — the mistake cannot be undone",
+      "Because computing a test score is technically more difficult than computing a validation score",
+      "Because industry regulations require special handling of test data",
+      "Because extra caution measurably improves the model's accuracy"
     ],
-    "correctAnswerIndex": 1,
-    "explanation": "The chapter states the test set is treated with near-superstition, and 'Some clubs won't even say its name out loud during selection week.'"
+    "correctAnswerIndex": 0,
+    "explanation": "Ordinary carelessness can usually be fixed by re-doing the work. A contaminated test set can't — once it's been peeked at and used to steer a decision, there is no honest number left to recover, which is why the chapter treats it as something closer to ritual than routine."
   },
   {
     "id": "mcq-practice-nets-17",
@@ -2995,15 +2995,15 @@
     "chapterId": "form-and-class",
     "chapterTitle": "3.2 Underfitting & Overfitting",
     "sourceUrl": "/scoring-model-evaluation/form-and-class/",
-    "question": "In the chapter's opening description, what is the single shot the underfitting batter has learned?",
+    "question": "The chapter's underfitting batter plays the exact same shot regardless of whether the ball is short, full, or spinning away. What ML problem does this fixed, one-size-fits-all response illustrate?",
     "options": [
-      "The cut shot",
-      "The forward defensive",
-      "The cover drive",
-      "The reverse sweep"
+      "High variance — the model reacts too strongly to small differences in the input",
+      "High bias — the model's capacity is too limited to represent the structure it needs to respond to",
+      "Data leakage — information from the test set has contaminated training",
+      "Class imbalance — one outcome dominates the training data"
     ],
     "correctAnswerIndex": 1,
-    "explanation": "The chapter describes a batter who has learned exactly one shot, the forward defensive, played regardless of what the ball actually does — technically consistent but unable to score anywhere."
+    "explanation": "A fixed response regardless of input is the signature of high bias: the model (or batter) is too simple to represent the structure actually present, so consistency doesn't help — the response itself can't adapt."
   },
   {
     "id": "mcq-form-and-class-12",
@@ -3027,15 +3027,15 @@
     "chapterId": "form-and-class",
     "chapterTitle": "3.2 Underfitting & Overfitting",
     "sourceUrl": "/scoring-model-evaluation/form-and-class/",
-    "question": "What does the chapter identify as the committee's typical mistake when facing an underfitting player?",
+    "question": "Why does giving an underfitting model 'another season' — more training time on the exact same data — fail to fix the problem?",
     "options": [
-      "Cutting the player immediately without a trial",
-      "Patience — giving the player another season rather than changing technique",
-      "Overtraining the player on a bowling machine",
-      "Comparing the player only against overseas conditions"
+      "Because more training time always pushes a model straight into overfitting instead",
+      "Because the limitation is the model's capacity or technique, not the amount of practice it's had",
+      "Because training time only matters for tree-based models, not linear ones",
+      "Because more training time cannot be measured with cross-validation"
     ],
     "correctAnswerIndex": 1,
-    "explanation": "The chapter states: 'The committee's mistake here is patience... Another season is not the answer; a different technique is.'"
+    "explanation": "The chapter is explicit that patience is the wrong fix: 'Another season is not the answer; a different technique is.' A model too simple to capture the structure in the data converges to the same weak solution no matter how long it trains — the fix is more capacity, not more reps."
   },
   {
     "id": "mcq-form-and-class-14",
@@ -3075,15 +3075,15 @@
     "chapterId": "form-and-class",
     "chapterTitle": "3.2 Underfitting & Overfitting",
     "sourceUrl": "/scoring-model-evaluation/form-and-class/",
-    "question": "How does the chapter describe the practice conditions that produced the 'net hero'?",
+    "question": "The net hero trained for six months against the same bowling machine, at the same length and pace, off the same worn patch of turf. In ML terms, why does training on such a narrow, unvarying slice of conditions produce overfitting rather than genuine skill?",
     "options": [
-      "Six months on a green, seaming, overseas wicket",
-      "Six months facing the same bowling machine, at the same length and pace, off the same worn patch of artificial turf",
-      "A rotating cast of bowlers on a dry turner in Chennai",
-      "Six months of cross-validated net sessions"
+      "Because narrow, unvarying training data lets a model fit patterns specific to that one slice, which don't hold once conditions actually change",
+      "Because narrow training data always produces underfitting, never overfitting",
+      "Because any amount of repetition causes memorisation, regardless of how varied the conditions are",
+      "Because model capacity has no relationship to how varied the training data is"
     ],
-    "correctAnswerIndex": 1,
-    "explanation": "The net hero 'spent six months in the same indoor facility, facing the same bowling machine, set to the same length, at the same pace, off the same worn patch of artificial turf.'"
+    "correctAnswerIndex": 0,
+    "explanation": "Training on one fixed, unvarying environment lets a model latch onto quirks specific to that environment — noise rather than signal — which is exactly why 'more data' as a remedy means more bowlers, more surfaces, more genuine variety, not just more of the same."
   },
   {
     "id": "mcq-form-and-class-17",
@@ -3091,15 +3091,15 @@
     "chapterId": "form-and-class",
     "chapterTitle": "3.2 Underfitting & Overfitting",
     "sourceUrl": "/scoring-model-evaluation/form-and-class/",
-    "question": "What happens to the net hero on tour, according to the chapter?",
+    "question": "What does the size of the gap between training score and validation score tell you that the training score alone cannot?",
     "options": [
-      "They score another century against a new bowling machine",
-      "They adapt within a few balls and settle in",
-      "The first delivery on a green, seaming wicket moves off the seam and they are caught behind for a duck",
-      "They are rested before the match to avoid overexposure"
+      "How many epochs the model was trained for",
+      "How much of the model's apparent skill depends on quirks specific to the training data, rather than genuine, transferable pattern",
+      "Whether the model is a classifier or a regressor",
+      "The exact value of the regularisation penalty being applied"
     ],
-    "correctAnswerIndex": 2,
-    "explanation": "'First delivery moves half a bat's width off the seam. Caught behind. Duck.' The memorised patterns don't transfer to real, varied conditions."
+    "correctAnswerIndex": 1,
+    "explanation": "A high training score alone can't distinguish real skill from memorisation. The gap is the tell: a large gap means much of that apparent skill is quirks specific to the training data that won't hold up on anything new — exactly what happens to the net hero on tour, when the first unfamiliar delivery moves off the seam and they're caught behind for a duck."
   },
   {
     "id": "mcq-form-and-class-18",
@@ -3123,15 +3123,15 @@
     "chapterId": "form-and-class",
     "chapterTitle": "3.2 Underfitting & Overfitting",
     "sourceUrl": "/scoring-model-evaluation/form-and-class/",
-    "question": "The chapter mentions regularisation (L1/L2, dropout, lower C) as an overfitting remedy but defers a full explanation of the penalty itself to which later chapter?",
+    "question": "The chapter's overfitting remedies split into two general strategies. Which pairing correctly groups them?",
     "options": [
-      "Evaluation Metrics",
-      "Feature Engineering",
-      "Gradient Descent",
-      "The Coach's Settings"
+      "More data and data augmentation add variety; regularisation, simplification, and early stopping subtract capacity",
+      "Regularisation and more data both subtract capacity; simplification and early stopping both add variety",
+      "All six remedies work by adding capacity to the model",
+      "All six remedies work by adding more training data"
     ],
-    "correctAnswerIndex": 2,
-    "explanation": "The chapter notes: 'What that penalty actually is gets a proper definition in Gradient Descent, later in this innings.'"
+    "correctAnswerIndex": 0,
+    "explanation": "The chapter's own framing for fighting overfitting is to 'add variety, subtract capacity' — more data and data augmentation widen what the model sees, while regularisation, simplification, and early stopping all restrain how much the model is allowed to fit."
   },
   {
     "id": "mcq-form-and-class-20",
@@ -3187,15 +3187,15 @@
     "chapterId": "form-and-class",
     "chapterTitle": "3.2 Underfitting & Overfitting",
     "sourceUrl": "/scoring-model-evaluation/form-and-class/",
-    "question": "Per the chapter's shot-selection rules for the adaptable player, what should be done with a ball angling across outside off with a hint of movement?",
+    "question": "A model has a near-perfect training score but a validation score well below it. Why is this combination risky to actually deploy, even though the training number looks great?",
     "options": [
-      "Drive it",
-      "Cut it",
-      "Leave it alone and let it go through to the keeper",
-      "Play the forward defensive"
+      "Because part of that apparent skill is memorised noise specific to the training data, which won't be present in new, unseen data",
+      "Because a large gap always means the model is too simple to be useful",
+      "Because validation scores are always inflated compared to real-world performance",
+      "Because training and validation scores are never allowed to differ"
     ],
-    "correctAnswerIndex": 2,
-    "explanation": "The chapter's rule: 'Angling across outside off with a hint of movement, leave it alone and let it go through to the keeper.'"
+    "correctAnswerIndex": 0,
+    "explanation": "A large train-validation gap signals overfitting: some of the training score is real skill, but some of it is memorised idiosyncrasy that has nothing to do with how the model will perform on data it hasn't seen."
   },
   {
     "id": "mcq-form-and-class-24",
@@ -3203,15 +3203,15 @@
     "chapterId": "form-and-class",
     "chapterTitle": "3.2 Underfitting & Overfitting",
     "sourceUrl": "/scoring-model-evaluation/form-and-class/",
-    "question": "Which set of conditions does the chapter use to illustrate that the adaptable player's technique 'travels'?",
+    "question": "Why does the chapter treat a player's performance holding up across several genuinely different conditions as much stronger evidence of skill than one strong performance in a single setting?",
     "options": [
-      "Indoor nets in February, a dry turner in Chennai, and a seaming green top in Leeds",
-      "A bowling machine, a flat track, and a rain-affected outfield",
-      "Match Day, center wicket, and the vault",
-      "Depth 1, depth 5, and depth None"
+      "Because consistent performance across varied conditions is harder to achieve by memorising quirks of just one environment, so it's better evidence the underlying skill actually generalises",
+      "Because performance always improves the more varied the conditions are, regardless of underlying skill",
+      "Because a single strong performance is always proof of overfitting",
+      "Because varied conditions remove the need for a validation set entirely"
     ],
     "correctAnswerIndex": 0,
-    "explanation": "'Indoor nets in February, a dry turner in Chennai, a seaming green top in Leeds — the same batter, adjusting, scoring.'"
+    "explanation": "One strong score in one setting could easily be a model, or player, that's simply learned that one setting's quirks. Holding up across genuinely different conditions is much harder to fake by memorisation, so it's stronger evidence the pattern learned is real and general."
   },
   {
     "id": "mcq-form-and-class-25",
@@ -3267,15 +3267,15 @@
     "chapterId": "form-and-class",
     "chapterTitle": "3.2 Underfitting & Overfitting",
     "sourceUrl": "/scoring-model-evaluation/form-and-class/",
-    "question": "In the depth-search example, which cricket analogy does the chapter attach to max_depth=None?",
+    "question": "In the chapter's depth-search example, why does setting max_depth=None tend to produce overfitting?",
     "options": [
-      "The forward-defence-only batter",
-      "The net hero",
-      "The player who travels",
-      "The chair of selectors"
+      "Because an unconstrained tree can keep splitting until it perfectly separates every training row, memorising noise along with genuine signal",
+      "Because None is interpreted as depth 1, which is too shallow to learn anything",
+      "Because max_depth=None automatically disables cross-validation",
+      "Because unconstrained trees train more slowly, and slower training always counts as overfitting"
     ],
-    "correctAnswerIndex": 1,
-    "explanation": "'Depth 1 is the forward-defence-only batter. Depth None is the net hero. Depth 5 can bat anywhere.'"
+    "correctAnswerIndex": 0,
+    "explanation": "With no depth limit, a tree is free to keep splitting until every leaf is pure — including leaves that exist only to accommodate one or two noisy training rows, which is exactly why its cross-validated score falls back down even though its training score is the highest of all."
   },
   {
     "id": "mcq-form-and-class-29",
@@ -3283,15 +3283,15 @@
     "chapterId": "form-and-class",
     "chapterTitle": "3.2 Underfitting & Overfitting",
     "sourceUrl": "/scoring-model-evaluation/form-and-class/",
-    "question": "Which line from the chapter's selection checklist justifies cross-validating before committing to a model?",
+    "question": "Why does the chapter recommend cross-validating — rotating which slice of data is held out — before committing to a model, rather than trusting a single train/validation split?",
     "options": [
-      "'Nobody hands out caps for net form.'",
-      "'One flattering split has ended more careers than any bowler.'",
-      "'More epochs will not help.'",
-      "'Open the vault once.'"
+      "Because a single split might happen to be unusually easy or unusually hard, flattering or punishing a model for reasons that have nothing to do with its real quality",
+      "Because cross-validation removes the need for a test set entirely",
+      "Because a single split always produces underfitting",
+      "Because cross-validation guarantees a perfect validation score"
     ],
-    "correctAnswerIndex": 1,
-    "explanation": "The checklist item on cross-validation reads: 'Cross-validate before you commit. One flattering split has ended more careers than any bowler.'"
+    "correctAnswerIndex": 0,
+    "explanation": "The chapter's warning is that 'one flattering split has ended more careers than any bowler' — a single validation split can mislead by chance, so rotating which slice is held out averages that luck away."
   },
   {
     "id": "mcq-form-and-class-30",
@@ -3299,15 +3299,15 @@
     "chapterId": "form-and-class",
     "chapterTitle": "3.2 Underfitting & Overfitting",
     "sourceUrl": "/scoring-model-evaluation/form-and-class/",
-    "question": "How does the chapter close, in terms of what the next chapter will cover?",
+    "question": "According to the chapter, what should you watch most closely when judging whether a model is actually good, rather than just good at the nets?",
     "options": [
-      "What to do when accuracy itself is the thing lying to you",
-      "How to compute L1 and L2 penalties by hand",
-      "The full derivation of gradient descent",
-      "How to build a decision tree from scratch"
+      "The absolute training score by itself",
+      "The absolute validation score by itself",
+      "The gap between training and validation scores, not either number in isolation",
+      "The total number of epochs the model was trained for"
     ],
-    "correctAnswerIndex": 0,
-    "explanation": "The chapter ends: 'Next chapter: what to do when accuracy itself is the thing lying to you.'"
+    "correctAnswerIndex": 2,
+    "explanation": "The chapter's own framing is 'the verdict: the gap' — watch it, not the score. Either number alone can mislead; it's the relationship between the two that actually diagnoses underfitting, overfitting, or a good fit."
   },
   {
     "id": "sa-form-and-class-06",
@@ -3329,12 +3329,12 @@
     "chapterId": "form-and-class",
     "chapterTitle": "3.2 Underfitting & Overfitting",
     "sourceUrl": "/scoring-model-evaluation/form-and-class/",
-    "question": "The chapter says the net hero learned 'the noise, not the signal.' What specifically had they memorized instead of learning to bat, and how did that show up on tour?",
-    "modelAnswer": "The net hero had memorized the fixed, specific quirks of one bowling machine in one indoor shed: its exact length, pace, and the worn patch of turf it always landed on. That is noise, the idiosyncrasies of one narrow practice environment, rather than the signal of how a cricket ball actually behaves in general. When they faced a real overseas match on a green, seaming, bouncy wicket against a bowler with variable pace, none of those memorized machine-specific patterns applied: the first delivery moved off the seam and they were caught behind for a duck. The failure shows that what looked like elite skill in the nets was really overfitting to one training environment, with nothing that generalized to genuinely different conditions.",
+    "question": "The chapter says the net hero learned 'the noise, not the signal.' In ML terms, what does it mean to memorise noise instead of signal, and what should you expect to happen when a model like that meets data unlike anything it trained on?",
+    "modelAnswer": "Memorising noise means fitting the fixed, specific quirks of one narrow training environment — its exact idiosyncrasies — rather than the true underlying relationship that would hold up more generally. That's the opposite of learning the signal: the real, generalisable pattern that actually explains the data, independent of which particular examples happened to be in the training set. A model that has only learned noise has nothing useful to fall back on once it meets conditions its training never covered, because none of what it memorised was ever really about the underlying problem — so its performance collapses, often sharply, on data that doesn't share those specific quirks.",
     "rubric": [
-      "Identifies the noise as the specific, fixed quirks of the one bowling machine/shed (length, pace, surface), not general batting skill",
-      "Describes the concrete tour outcome (green seaming wicket, first ball off the seam, caught behind, duck) as evidence the memorized patterns didn't transfer",
-      "Connects this to the definition of overfitting: the model memorized training-set idiosyncrasies instead of learning generalizable structure"
+      "Defines memorising noise as fitting idiosyncrasies specific to the training environment, not the general underlying relationship",
+      "Defines signal as the true, generalisable pattern that holds independent of the specific training examples",
+      "Explains that a model which only learned noise has nothing to fall back on and performs poorly on genuinely new conditions"
     ]
   },
   {
@@ -3343,12 +3343,12 @@
     "chapterId": "form-and-class",
     "chapterTitle": "3.2 Underfitting & Overfitting",
     "sourceUrl": "/scoring-model-evaluation/form-and-class/",
-    "question": "The chapter calls knowing when not to play 'the closest thing cricket has to a good regularisation term.' Using the shot-selection rules given, explain what this means.",
-    "modelAnswer": "The chapter's rules are simple: full and straight, drive it; short and wide, cut it; but a delivery angling across outside off with a hint of movement should be left alone, allowed to go through to the keeper. Leaving that ball is an act of restraint, choosing not to commit to a shot even though a batter physically could try one, because the risk of getting it wrong outweighs any potential reward. That mirrors regularisation, which restrains a model from using all of its available capacity to react to every pattern it sees, including risky, noisy ones, in order to avoid overreacting to something that isn't reliably there. In both cases, the skill isn't doing more, it's knowing when doing less is the safer, more generalizable choice.",
+    "question": "The chapter calls knowing when not to play 'the closest thing cricket has to a good regularisation term.' In ML terms, what does regularisation actually restrain a model from doing, and why does deliberately holding back sometimes produce a more generalisable model than always reacting to everything?",
+    "modelAnswer": "Regularisation restrains a model from using all of its available capacity to react to every pattern it detects in the training data, including risky, noisy ones that don't reliably hold up beyond that specific data. Choosing not to act on a marginal or ambiguous signal is itself a form of restraint: it costs a small amount of potential upside on the training data in exchange for not overreacting to something that isn't reliably true. That trade generally produces a more generalisable model, because a model that commits fully to every pattern it sees, including spurious ones, ends up fitting noise alongside genuine signal — deliberately holding back some of that capacity is what keeps it from doing so.",
     "rubric": [
-      "States the leave-alone rule (or the shot-selection rules generally) accurately from the chapter",
-      "Explains that leaving the ball is a form of restraint, choosing not to act despite having the option to",
-      "Connects this restraint to what regularisation does: preventing a model from over-committing capacity to risky or noisy patterns"
+      "Explains that regularisation restrains a model from fully exploiting its capacity to react to every pattern in the training data",
+      "Explains that restraint/choosing not to act trades a little training-data upside for avoiding overreaction to unreliable signal",
+      "States why this trade-off tends to produce a more generalisable model"
     ]
   },
   {
@@ -3371,12 +3371,12 @@
     "chapterId": "form-and-class",
     "chapterTitle": "3.2 Underfitting & Overfitting",
     "sourceUrl": "/scoring-model-evaluation/form-and-class/",
-    "question": "In the chapter's cross_val_score example across tree depths 1, 3, 5, 10, 20, and None, describe the pattern of scores and map depths 1, 5, and None to their corresponding cricket analogies.",
-    "modelAnswer": "The cross-validated scores rise from depth 1 (0.8912) up through depth 3 and peak at depth 5 (0.9401), then decline again through depth 10 (0.9285), depth 20 (0.9163), and depth None (0.9138) — a rising, peaking, and falling shape that mirrors the general validation-error curve described earlier in the chapter. Depth 1 corresponds to the forward-defence-only batter, too simple to capture the structure, which is why its score is the lowest. Depth 5 corresponds to the well-rounded batter who 'can bat anywhere,' the sweet spot where capacity and generalization are balanced. Depth None corresponds to the net hero, given essentially unlimited capacity to memorize the training data, which is why its cross-validated score falls back down even though it would fit the training set best of all.",
+    "question": "In the chapter's cross_val_score example across tree depths 1, 3, 5, 10, 20, and None, describe the pattern of scores, and explain in ML terms why both depth 1 and depth None score worse than the peak at depth 5.",
+    "modelAnswer": "The cross-validated scores rise from depth 1 (0.8912) up through depth 3 and peak at depth 5 (0.9401), then decline again through depth 10 (0.9285), depth 20 (0.9163), and depth None (0.9138) — a rising, peaking, and falling shape that mirrors the general validation-error curve described earlier in the chapter. Depth 1 underfits: a single split has nowhere near enough capacity to represent the real decision boundaries in the data, so it scores worst of all. Depth None overfits: with no limit on how far it can split, the tree keeps dividing the training data until individual leaves are built around a handful of noisy rows, memorising quirks that don't hold up on the validation folds. Depth 5 sits at the point where the tree has enough capacity to capture genuine structure without enough freedom to start fitting noise — the sweet spot the whole curve is built around.",
     "rubric": [
       "Describes the rise-then-peak-then-fall pattern of scores, correctly identifying depth 5 as the peak",
-      "Correctly maps depth 1 to the forward-defence-only batter/underfitting",
-      "Correctly maps depth None to the net hero/overfitting"
+      "Explains why depth 1 underfits: too little capacity to represent the real structure in the data",
+      "Explains why depth None overfits: unconstrained splitting lets the tree memorise training-row noise that doesn't generalise"
     ]
   },
   {
@@ -3413,12 +3413,12 @@
     "chapterId": "form-and-class",
     "chapterTitle": "3.2 Underfitting & Overfitting",
     "sourceUrl": "/scoring-model-evaluation/form-and-class/",
-    "question": "How does the chapter describe 'adaptable fundamentals,' and how do they differ from what the net hero has learned?",
-    "modelAnswer": "Adaptable fundamentals are described as watching the ball out of the hand, getting the front foot moving, playing late, and, critically, knowing which shot a given delivery deserves. These are general skills for reading and reacting to whatever ball actually arrives, rather than a fixed, pre-decided response. The net hero, by contrast, learned a fixed reaction tuned to one bowling machine's exact pace, length, and surface, essentially memorizing the answer to a single narrow question instead of developing a flexible process for answering many different ones. Because fundamentals are general rather than memorized, they carry over to indoor nets, a dry turner in Chennai, or a green top in Leeds, while the net hero's memorized responses only work in the one shed where they were built.",
+    "question": "The chapter distinguishes a model that has learned 'adaptable fundamentals' from one that has just memorised training-specific patterns. In ML terms, what's the difference between these two kinds of learned behaviour, and why does only one of them generalise?",
+    "modelAnswer": "Adaptable fundamentals are general, flexible rules for responding to whatever input actually shows up — reading the situation and reacting appropriately, rather than reproducing one fixed, pre-decided answer. Memorised patterns, by contrast, are narrow responses tuned to the exact quirks of the specific data a model was trained on, effectively hard-coding the answer to one narrow question instead of learning a rule that covers many related ones. Because fundamentals capture something genuinely true about the underlying relationship in the data, they transfer to new situations the model has never seen; memorised patterns only work under the exact conditions they were learned in, and break the moment those conditions shift even slightly. That's the entire difference between a model that has learned the real structure in a problem and one that has overfit to a single training environment.",
     "rubric": [
-      "Describes adaptable fundamentals accurately (watching the ball out of the hand, footwork, playing late, choosing the right shot)",
-      "Contrasts this with the net hero's fixed, memorized reaction tuned to one specific machine/environment",
-      "States that fundamentals generalize/travel across different conditions while memorized patterns do not"
+      "Explains that adaptable fundamentals are general, flexible rules that respond to what's actually presented, not one fixed answer",
+      "Explains that memorised patterns are narrow responses tuned to the specific training data rather than the general relationship",
+      "States why only general, fundamentals-based learning transfers to new, unseen conditions"
     ]
   },
   {
@@ -3701,15 +3701,15 @@
     "chapterId": "scorers-box",
     "chapterTitle": "3.3 Evaluation Metrics",
     "sourceUrl": "/scoring-model-evaluation/scorers-box/",
-    "question": "In the chapter's opening scene, the crowd sees a batter smash 80 off 40 balls and roars. What does the scorer notice that the crowd doesn't?",
+    "question": "Why does the chapter open by contrasting what the crowd sees with what the scorer sees, before introducing any actual metric?",
     "options": [
-      "That the batter was using an illegal bat",
-      "That three of the boundaries came off outside edges through a vacant slip cordon, and the batter was dropped on 12",
-      "That the bowler had been signalling deliveries in advance",
-      "That the scoreboard operator made an arithmetic error"
+      "To establish that the same raw outcome can be produced by very different underlying performances — exactly what a single headline number like accuracy can hide",
+      "To argue that scorers understand cricket better than commentators do",
+      "To criticise crowds for enjoying the game the wrong way",
+      "To introduce the mathematical definition of precision before explaining it"
     ],
-    "correctAnswerIndex": 1,
-    "explanation": "The chapter contrasts the crowd's excitement over the raw total with the scorer's ball-by-ball view: three boundaries came off outside edges through a vacant slip cordon, and the batter was dropped on 12."
+    "correctAnswerIndex": 0,
+    "explanation": "The scene's whole point is that an identical-looking result — a big total, a high accuracy score — can be produced by genuine skill or by a string of lucky breaks, and you can't tell which just by looking at the headline number. That's the exact problem the rest of the chapter's metrics exist to solve."
   },
   {
     "id": "mcq-scorers-box-13",

@@ -137,14 +137,14 @@ Recall is a **quantity** question: of every genuine dismissal that actually happ
 
 ### The trade-off is real and unavoidable
 
-These two pull against each other, always, and the mechanism is worth understanding rather than memorising. Most classifiers output a probability, and the label comes from a threshold — typically 0.5:
+Precision and recall are not two independent scores to chase — they're opposite ends of the same lever, and that lever is a fundamental fact of classification, not a cricket quirk. The lever itself is the **decision threshold**: most classifiers don't output "Out" or "Not Out" directly, they output a probability, and a threshold is what turns that probability into a verdict — typically 0.5:
 
 ```python
 y_proba = model.predict_proba(X_test)[:, 1]
 y_pred = (y_proba >= 0.5).astype(int)
 ```
 
-Lower that threshold and the umpire becomes trigger-happy: more appeals upheld, more genuine wickets caught (**recall up**), more bad decisions against batters (**precision down**). Raise it and he becomes cautious: only stone-dead plumb decisions get the finger (**precision up**), while feather edges sail through unpunished (**recall down**).
+Move that threshold and both numbers move with it, in opposite directions, every time:
 
 ```python
 for t in [0.3, 0.5, 0.7]:
@@ -156,7 +156,18 @@ for t in [0.3, 0.5, 0.7]:
 # 0.7   0.96   0.64
 ```
 
-There is no setting that maximises both. The threshold is a *decision*, not a default, and it should be made by someone who knows what a false positive costs in your particular game.
+**Lower the threshold to 0.3 — the trigger-happy umpire.** *"If there's even a 30% chance it's out, the finger goes up."* Recall jumps to 0.93: almost every genuine wicket in the data gets caught, because the bar for raising the finger is so low. Precision pays for it, falling to 0.71 — an umpire that eager also gives out batters who were never out, and nearly three in ten "Out" calls turn out to be wrong.
+
+**Raise the threshold to 0.7 — the cautious umpire.** *"Only if I'm at least 70% certain."* Precision climbs to 0.96: almost every time this umpire raises the finger, he's right. Recall pays for it, dropping to 0.64 — hesitation lets real wickets through unpunished, and more than a third of the genuine dismissals in the data go unclaimed.
+
+**There is no threshold that gives you both.** Push it one way and you buy recall by spending precision; push it the other way and you buy precision by spending recall — every single time, no exceptions. The threshold is a *decision*, not a default, and the right one depends entirely on what a false positive costs you versus what a false negative costs you, in your particular game:
+
+| Application | The costlier mistake | What that means for the threshold |
+| :--- | :--- | :--- |
+| Cancer screening | A false negative — missing a sick patient | Lower it. A false alarm sending someone for a re-test is cheap; a missed diagnosis isn't. |
+| Spam filter | A false positive — burying a real email in spam | Raise it. A spam message reaching the inbox is a nuisance; a client's email vanishing into it is a disaster. |
+
+Same lever, same trade-off, every time — only the cost of being wrong changes, and that cost is what should set the threshold, not the default of 0.5.
 
 ### F1-Score — the all-rounder
 
