@@ -91,6 +91,10 @@ weight_new = weight_old − learning_rate × (∂Loss / ∂weight)
 
 Repeat that update for every weight and the bias, re-measure the loss, and go again. Ball one, ball two, ball three — except now there are as many "balls" as there are `max_iter` allows, and as many things being adjusted at once as there are predictors.
 
+Worth being precise about what "at once" actually means, because it's easy to picture wrong. Gradient descent doesn't tune `overs`, stop, tune `wickets`, stop, tune `run_rate` — that one-predictor-at-a-time discipline belongs to **Model Selection**'s sequential feature selector, which adds a single column, checks the result, and only then moves on to the next. Gradient descent computes every partial derivative off the exact same forward pass, using the exact same set of weights, before touching any of them — and only once all of them are known does the whole vector update together. "Together" doesn't mean "equally," though: each weight moves in proportion to its own partial derivative alone. A predictor with a steep, urgent gradient gets nudged hard; one that's already nearly right barely moves; a genuinely useless one can sit close to zero for the whole run.
+
+Back on the multi-dial hillside from a few sections ago: with `overs` along one axis and `wickets` along another, a step down that surface isn't a walk along the overs axis followed by a separate walk along the wickets axis. It's one look at the actual slope from wherever the model is currently standing — some blend of both directions — and a single diagonal step straight down that combined slope. Three predictors and the hillside becomes a shape with no name past three dimensions, and real models do this across thousands of weights, but the motion is identical at any scale: one look at the whole slope, one step, every weight moving together.
+
 ```python
 from sklearn.linear_model import SGDRegressor
 
@@ -212,6 +216,7 @@ print(classification_report(y_val, clf.predict(X_val)))
 - **A loss landscape can have false floors.** A local minimum looks like the answer from nearby and can still be far from the true global minimum.
 - **More dials make the landscape harder to search exhaustively** — exactly why gradient descent, not grid search, is how models with continuous parameters get tuned.
 - **Three hyperparameters govern the whole process:** learning rate, maximum iterations, and a stopping tolerance. Any one of them can end the run.
+- **Every weight updates in the same step, but not by the same amount.** All partial derivatives get computed off one shared forward pass, then the whole vector moves at once — each weight in proportion to its own gradient, not tuned one predictor at a time like a sequential feature selector.
 - **Regularisation is a penalty added to the loss itself, not a separate step.** Large weights now cost something, so gradient descent only keeps them where they earn their keep. L2 (Ridge) shrinks everything a little; L1 (Lasso) can drop weights to zero outright.
 - **`RidgeCV`/`LassoCV` search for the penalty strength instead of you guessing it**, scoring a shortlist of candidate `alpha` values by cross-validation and keeping the best.
 - **Standardise before you regularise.** The penalty sums coefficients directly, so features on different scales get penalised unfairly unless they're all on the same footing first.
