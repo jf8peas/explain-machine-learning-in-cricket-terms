@@ -183,6 +183,35 @@ The harmonic mean, rather than the plain average, is deliberate: it **punishes a
 
 F1 is the sensible default for imbalanced binary problems. If precision and recall genuinely matter unequally in your context, `fbeta_score` lets you weight them (β > 1 favours recall, β < 1 favours precision).
 
+### PR-AUC — the whole trade-off curve, not just one point on it
+
+Every number so far — precision, recall, F1 — is a snapshot at one specific threshold. Move the threshold and the umpire's whole temperament changes, which is exactly the problem the previous section walked through. **PR-AUC** answers a different question: instead of picking one threshold and reporting precision and recall there, it looks at precision and recall across *every* possible threshold at once, and boils that entire trade-off curve down to a single number.
+
+Plot recall along the bottom and precision up the side, one point per threshold, and you get a **precision-recall curve**. A model that stays precise even as it's pushed toward higher recall — the umpire who can afford to get more trigger-happy without handing out many bad decisions — traces a curve that hugs the top-right corner. A model with no real skill for telling the two classes apart can't hold precision up as recall climbs, and its curve sags toward the bottom instead. **PR-AUC is the area under that curve**: the closer to 1.0, the more of that top-right corner the model genuinely reaches, whichever threshold you eventually settle on.
+
+```python
+from sklearn.metrics import average_precision_score, precision_recall_curve
+
+pr_auc = average_precision_score(y_test, y_proba)
+# 0.91
+
+precisions, recalls, thresholds = precision_recall_curve(y_test, y_proba)
+```
+
+Why not just reach for its better-known cousin, **ROC-AUC**? ROC-AUC plots recall against the *false positive rate* — `FP / (FP + TN)` — and on this chapter's wicket-detection data that denominator is 945, almost all of it the enormous true-negative pile. Six false positives barely dent a denominator that size, so ROC-AUC can report a model as excellent even while it's making a real mess of its rare, valuable positive calls. Precision's denominator, `TP + FP`, only ever contains the deliveries the model actually flagged as wickets — there's nowhere for a huge negative class to hide behind, which is exactly why PR-AUC is the honest choice once the positive class gets rare.
+
+### Choosing Your Headline Metric
+
+Every metric in this chapter answers a slightly different question, and which one deserves top billing depends on a single number: how rare is the thing you're actually trying to catch?
+
+| Positive Class % | Primary Headline Metric | Secondary Metrics |
+| :--- | :--- | :--- |
+| 40–50% (Balanced) | Accuracy or ROC-AUC | Precision, Recall |
+| 20–40% (Mild Imbalance) | F1-Score | Accuracy, ROC-AUC |
+| Under 20% (Severe Imbalance) | PR-AUC, or Precision & Recall directly | F1-Score (never Accuracy!) |
+
+The wicket-detection data running through this entire chapter sits at roughly 5.5% positive — deep in the bottom row. That's not a coincidence; it's the entire reason this chapter opens by putting a lazy umpire's 94.5% "accuracy" on trial in the first place.
+
 ### A brief note on regression: MAE and RMSE
 
 Not every model classifies. When you are predicting a *quantity* — a final score, a run chase margin, a projected total — the umpire's ledger doesn't apply. You are no longer asking "right or wrong" but "off by how much".
@@ -265,11 +294,11 @@ These produce eerily perfect models. If your first attempt scores 0.99 on a hard
 
 ### Leakage warning signs
 
-- Validation accuracy far above anything reported for similar problems
-- One feature with overwhelming importance that you cannot clearly justify
-- A big drop between validation and production performance
-- Duplicate or near-duplicate rows split across train and test
-- Time-series data split randomly instead of chronologically
+- **Validation accuracy far above anything reported for similar problems.** A genuine breakthrough is rare; a model quietly being handed information it shouldn't have is far more likely.
+- **One feature with overwhelming importance that you cannot clearly justify.** A single column solving a hard problem almost single-handedly is usually a proxy for the target itself, not a real predictor of it.
+- **A big drop between validation and production performance.** Something the model leaned on during evaluation — leaked or otherwise — simply isn't available once it's running live.
+- **Duplicate or near-duplicate rows split across train and test.** The model isn't being scored on unseen data at all; part of its "test" is really just recognising rows it already memorised in training.
+- **Time-series data split randomly instead of chronologically.** The model has quietly been allowed to train on the future and predict the past, an advantage no live deployment will ever get to use.
 
 That last one deserves emphasis. For anything with a time dimension, `train_test_split` with a random shuffle lets the model train on Thursday and predict Tuesday. Use `TimeSeriesSplit` and always split forward in time.
 
@@ -282,6 +311,8 @@ That last one deserves emphasis. For anything with a time dimension, `train_test
 - **Recall = drop no chances.** `TP / (TP + FN)`. Use it when a miss is expensive.
 - **F1 when you need one number.** The harmonic mean punishes lopsided models, which is the behaviour you want.
 - **The 0.5 threshold is a choice, not a law.** Move it deliberately to slide along the precision/recall trade-off.
+- **PR-AUC judges the whole trade-off curve, not one threshold.** It ignores true negatives entirely, which is exactly why it holds up when ROC-AUC gets flattered by a huge negative class.
+- **Let the positive class's rarity choose your headline metric.** Roughly balanced, reach for accuracy or ROC-AUC; mildly imbalanced, F1; severely imbalanced (under 20%), PR-AUC or precision and recall directly — and never accuracy.
 - **For regression: MAE for interpretability, RMSE when catastrophic misses matter most.** A wide gap between them means a few deliveries are doing all the damage.
 - **Split before you transform.** `fit_transform` on train, `transform` on test. Wrap it in a `Pipeline` so the rule is enforced by structure rather than memory.
 - **Audit every feature for time travel.** If it could not have been known at prediction time, it is a leak.
