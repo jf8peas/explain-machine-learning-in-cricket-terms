@@ -83,17 +83,29 @@ The practical fix — the one a good bowler does on instinct and `sklearn`'s opt
 
 Time to make this concrete against a model you'll meet properly in First Innings. A **projected score** — runs predicted from overs faced, wickets in hand, and current run rate — is weight and bias: a coefficient for every predictor, plus one intercept. One way to find those coefficients, covered in full when you get to **Linear Regression**, is the **normal equation** — an exact, one-shot piece of matrix algebra: β̂ = (XᵀX)⁻¹XᵀY.
 
-Gradient descent finds the *same* weight and bias, for the *same* mean-squared-error loss, by a completely different road. Instead of solving for the exact answer in one calculation, it starts with a guess for every coefficient, computes how wrong the resulting projected score is across the training set, and asks a very specific question for each coefficient in turn: *if I nudge just this one weight, holding all the others still, does the total error go up or down, and how fast?*
+Gradient descent finds the *same* weight and bias, for the *same* mean-squared-error loss, by a completely different road — and every single step it takes, whether there's one coefficient in play or a thousand, breaks down into exactly the same three moves.
 
-That per-weight question has a name — a **partial derivative** — and computing one for every weight, plus one for the bias, gives you the full gradient: a complete set of directions, one per dial, all worked out at once. Each weight then gets nudged, proportionally to its own partial derivative and scaled by the learning rate:
+**1. The forward pass — measure the damage.** Every weight currently in play — the coefficient on `overs`, on `wickets`, on `run_rate`, plus the intercept — gets used together to predict a projected score for every row in the training set. Those predictions get compared against what actually happened, and out comes a single number: the total loss.
 
-weight_new = weight_old − learning_rate × (∂Loss / ∂weight)
+**2. The backward pass — one partial derivative per weight.** For each weight in turn, gradient descent asks the same narrow question: *if I nudged just this one, holding every other weight exactly still, would the total loss go up or down, and how fast?* That per-weight answer has a name — a **partial derivative** — and every one of them gets computed off the exact same forward pass, before any weight actually changes:
 
-Repeat that update for every weight and the bias, re-measure the loss, and go again. Ball one, ball two, ball three — except now there are as many "balls" as there are `max_iter` allows, and as many things being adjusted at once as there are predictors.
+```
+∂Loss/∂w₁,   ∂Loss/∂w₂,   ∂Loss/∂w₃,   …
+```
 
-Worth being precise about what "at once" actually means, because it's easy to picture wrong. Gradient descent doesn't tune `overs`, stop, tune `wickets`, stop, tune `run_rate` — that one-predictor-at-a-time discipline belongs to **Model Selection**'s sequential feature selector, which adds a single column, checks the result, and only then moves on to the next. Gradient descent computes every partial derivative off the exact same forward pass, using the exact same set of weights, before touching any of them — and only once all of them are known does the whole vector update together. "Together" doesn't mean "equally," though: each weight moves in proportion to its own partial derivative alone. A predictor with a steep, urgent gradient gets nudged hard; one that's already nearly right barely moves; a genuinely useless one can sit close to zero for the whole run.
+**3. The update — every weight moves, together, but not equally.** Once every partial derivative is known, the whole vector updates in a single step, each weight nudged by its own partial derivative and scaled by the learning rate:
 
-Back on the multi-dial hillside from a few sections ago: with `overs` along one axis and `wickets` along another, a step down that surface isn't a walk along the overs axis followed by a separate walk along the wickets axis. It's one look at the actual slope from wherever the model is currently standing — some blend of both directions — and a single diagonal step straight down that combined slope. Three predictors and the hillside becomes a shape with no name past three dimensions, and real models do this across thousands of weights, but the motion is identical at any scale: one look at the whole slope, one step, every weight moving together.
+```
+w₁ ← w₁ − learning_rate × ∂Loss/∂w₁
+w₂ ← w₂ − learning_rate × ∂Loss/∂w₂
+w₃ ← w₃ − learning_rate × ∂Loss/∂w₃
+```
+
+Worth being precise about what "together" means here, because it's easy to picture wrong. Gradient descent doesn't tune `overs`, stop, tune `wickets`, stop, tune `run_rate` — that one-predictor-at-a-time discipline belongs to **Model Selection**'s sequential feature selector, which adds a single column, checks the result, and only then moves on to the next. Every weight above updates in the very same step. But "together" doesn't mean "equally": a predictor with a steep, urgent gradient gets nudged hard, one that's already nearly right barely moves, and a genuinely useless one can sit close to zero for the whole run.
+
+Repeat all three steps, re-measure the loss, and go again. Ball one, ball two, ball three — except now there are as many "balls" as there are `max_iter` allows, and as many things being adjusted at once as there are predictors.
+
+**Picture the motion, not just the arithmetic.** Imagine a hillside where height is the loss, one direction is `overs`, and the other is `wickets`. A step down that hillside isn't a walk along the overs axis followed by a separate walk along the wickets axis — it's one look at the actual slope from wherever the model is currently standing, some blend of both directions, and a single diagonal step straight down that combined slope. Three predictors and the hillside becomes a shape with no name past three dimensions; real models do this across thousands of weights, but the motion is identical at any scale: one look at the whole slope, one step, every weight moving together.
 
 ```python
 from sklearn.linear_model import SGDRegressor

@@ -5113,7 +5113,7 @@
     "chapterId": "gradient-descent",
     "chapterTitle": "3.5 Gradient Descent",
     "sourceUrl": "/scoring-model-evaluation/gradient-descent/",
-    "question": "Why can't a linear regression model's coefficients be tuned the way Trial Matches tuned n_neighbors or max_depth?",
+    "question": "Why can't a linear regression model's coefficients be tuned the way Feature Selection & Hyperparameter Optimisation tuned n_neighbors or max_depth?",
     "options": [
       "Because coefficients like 14.6183... or -9.047... could be almost any value on a number line, not a short list of candidates you can grid-search",
       "Because scikit-learn does not allow grid search on regression models",
@@ -5180,12 +5180,12 @@
     "question": "According to the chapter, what changes about the loss landscape when a model tunes dozens or thousands of dials at once instead of just one?",
     "options": [
       "The landscape becomes a single, simpler curve that's easier to search exhaustively",
-      "The landscape becomes a surface with folds and false floors in every direction at once — the same kind of explosion Trial Matches hit going from two dials to four",
+      "The landscape becomes a surface with folds and false floors in every direction at once — the same kind of explosion Feature Selection & Hyperparameter Optimisation hit going from two dials to four",
       "Local minima disappear entirely once more than one dial is involved",
       "Gradient descent must switch to grid search once more than two dials are involved"
     ],
     "correctAnswerIndex": 1,
-    "explanation": "With one dial the landscape is a single curve; with many dials it becomes a surface with folds and false floors, echoing the grid explosion Trial Matches hit going from two dials to four."
+    "explanation": "With one dial the landscape is a single curve; with many dials it becomes a surface with folds and false floors, echoing the grid explosion Feature Selection & Hyperparameter Optimisation hit going from two dials to four."
   },
   {
     "id": "mcq-gradient-descent-19",
@@ -5193,15 +5193,15 @@
     "chapterId": "gradient-descent",
     "chapterTitle": "3.5 Gradient Descent",
     "sourceUrl": "/scoring-model-evaluation/gradient-descent/",
-    "question": "What does the chapter say happens if a learning rate that's already too high is turned up even further?",
+    "question": "Gradient descent updates every weight in a single step. Why is this different from how Model Selection's sequential feature selector works?",
     "options": [
-      "The bowler converges faster despite the larger steps",
-      "The bowler can end up worse with every correction, wandering further from the mark each time rather than closer",
-      "The gradient stops being computed correctly",
-      "The stopping tolerance is automatically tightened to compensate"
+      "Sequential feature selection adds one predictor at a time, checking the result before moving to the next; gradient descent computes every weight's partial derivative off the same forward pass and updates the whole vector together",
+      "Sequential feature selection and gradient descent are actually the same underlying algorithm, just applied to different tasks",
+      "Gradient descent also works one weight at a time internally, but hides this from the user",
+      "Sequential feature selection updates all features simultaneously, exactly like gradient descent does"
     ],
-    "correctAnswerIndex": 1,
-    "explanation": "'Turn it up further still and the bowler can end up worse with every correction, wandering further from the mark each time rather than closer.'"
+    "correctAnswerIndex": 0,
+    "explanation": "The chapter draws this contrast directly: 'that one-predictor-at-a-time discipline belongs to Model Selection's sequential feature selector, which adds a single column, checks the result, and only then moves on to the next. Gradient descent computes every partial derivative off the exact same forward pass... before touching any of them — and only once all of them are known does the whole vector update together.'"
   },
   {
     "id": "mcq-gradient-descent-20",
@@ -5305,7 +5305,7 @@
     "chapterId": "gradient-descent",
     "chapterTitle": "3.5 Gradient Descent",
     "sourceUrl": "/scoring-model-evaluation/gradient-descent/",
-    "question": "The chapter says 'Form and Class' left the word 'regularisation' doing a lot of unexplained work. How does this chapter define it?",
+    "question": "The chapter says 'Underfitting, Overfitting & Finding the Sweet Spot' left the word 'regularisation' doing a lot of unexplained work. How does this chapter define it?",
     "options": [
       "A method for selecting the best subset of features using cross-validation",
       "An extra term bolted directly onto the loss, penalising the weights themselves for being large or numerous — not just the predictions for being wrong",
@@ -5324,12 +5324,12 @@
     "question": "Besides shrinking weights, what does the chapter say L1 (Lasso) regularisation effectively doubles as?",
     "options": [
       "A replacement for the normal equation",
-      "A form of automatic feature selection — a second route to the same trimmed roster Trial Matches built by hand with corr(), and a third alongside sequential selection and PCA",
+      "A form of automatic feature selection — a second route to the same trimmed roster Feature Selection & Hyperparameter Optimisation built by hand with corr(), and a third alongside sequential selection and PCA",
       "A substitute for the stopping tolerance",
       "A way to convert a regressor into a classifier"
     ],
     "correctAnswerIndex": 1,
-    "explanation": "The chapter notes L1's habit of zeroing out weights is 'regularisation doubling as feature selection — a second, automatic route to the same trimmed roster Trial Matches built by hand with corr(), and a third route (alongside sequential selection and PCA) to the same too-many-features problem Model Selection covers.'"
+    "explanation": "The chapter notes L1's habit of zeroing out weights is 'regularisation doubling as feature selection — a second, automatic route to the same trimmed roster Feature Selection & Hyperparameter Optimisation built by hand with corr(), and a third route (alongside sequential selection and PCA) to the same too-many-features problem Model Selection covers.'"
   },
   {
     "id": "mcq-gradient-descent-28",
@@ -5369,15 +5369,15 @@
     "chapterId": "gradient-descent",
     "chapterTitle": "3.5 Gradient Descent",
     "sourceUrl": "/scoring-model-evaluation/gradient-descent/",
-    "question": "When the chapter swaps SGDRegressor for SGDClassifier and evaluates it with classification_report, what does it say stays the same?",
+    "question": "With two predictors like overs and wickets, why does a single step of gradient descent move diagonally across the loss surface rather than adjusting overs first and wickets second?",
     "options": [
-      "Nothing — classification requires an entirely different tool from the one covered in The Scorer's Box",
-      "classification_report is the same tool from The Scorer's Box — precision, recall, and F1 haven't changed; only what's underneath doing the tuning has changed",
-      "The loss function must remain exactly the same as for regression",
-      "The learning rate becomes irrelevant once classification is involved"
+      "Because the step follows the actual combined slope of the surface from the model's current position — some blend of both directions — taken as one motion rather than two sequential ones",
+      "Because scikit-learn alternates which weight it updates on every other iteration",
+      "Because only one weight can have a nonzero partial derivative at any given step",
+      "Because the loss surface only has a defined slope along one axis at a time"
     ],
-    "correctAnswerIndex": 1,
-    "explanation": "'classification_report is the same tool from The Scorer's Box — precision, recall, and F1 haven't changed. What's changed is only what's underneath the model doing the tuning.'"
+    "correctAnswerIndex": 0,
+    "explanation": "The chapter states: 'a step down that surface isn't a walk along the overs axis followed by a separate walk along the wickets axis. It's one look at the actual slope from wherever the model is currently standing — some blend of both directions — and a single diagonal step straight down that combined slope.'"
   },
   {
     "id": "sa-gradient-descent-06",
@@ -5399,8 +5399,8 @@
     "chapterId": "gradient-descent",
     "chapterTitle": "3.5 Gradient Descent",
     "sourceUrl": "/scoring-model-evaluation/gradient-descent/",
-    "question": "Explain what regularisation actually is, mathematically, as this chapter defines it, and how it connects back to Form and Class's earlier advice to lower C when a model is overfitting.",
-    "modelAnswer": "Regularisation is an extra term bolted directly onto the loss function, expressed as Loss_regularised = Loss_original + λ·penalty(weights), which penalises the weights themselves for being large or numerous rather than only penalising wrong predictions. Because gradient descent walks downhill on the total sum without caring which part it's minimising, a weight can now only grow large if doing so reduces prediction error by more than the penalty costs — large or unnecessary weights have to earn their keep. In scikit-learn's LogisticRegression, C is the inverse of λ, so a small C makes carrying large weights expensive, which is exactly the mechanism behind Form and Class's advice to lower C for an overfitting model: it's not a separate fix bolted on afterward, but a change to the very number gradient descent is minimising.",
+    "question": "Explain what regularisation actually is, mathematically, as this chapter defines it, and how it connects back to Underfitting, Overfitting & Finding the Sweet Spot's earlier advice to lower C when a model is overfitting.",
+    "modelAnswer": "Regularisation is an extra term bolted directly onto the loss function, expressed as Loss_regularised = Loss_original + λ·penalty(weights), which penalises the weights themselves for being large or numerous rather than only penalising wrong predictions. Because gradient descent walks downhill on the total sum without caring which part it's minimising, a weight can now only grow large if doing so reduces prediction error by more than the penalty costs — large or unnecessary weights have to earn their keep. In scikit-learn's LogisticRegression, C is the inverse of λ, so a small C makes carrying large weights expensive, which is exactly the mechanism behind Underfitting, Overfitting & Finding the Sweet Spot's advice to lower C for an overfitting model: it's not a separate fix bolted on afterward, but a change to the very number gradient descent is minimising.",
     "rubric": [
       "States the regularised loss formula and explains it adds a weight penalty to the original prediction-error loss",
       "Explains gradient descent minimises the combined total, so large weights must justify themselves against the penalty",
@@ -5414,7 +5414,7 @@
     "chapterTitle": "3.5 Gradient Descent",
     "sourceUrl": "/scoring-model-evaluation/gradient-descent/",
     "question": "Explain why L1 (Lasso) regularisation doubles as automatic feature selection while L2 (Ridge) does not, based on how each penalty shape treats the weights.",
-    "modelAnswer": "L2 (Ridge) penalises the sum of squared weights, which nudges every weight smaller roughly in proportion to its size — a general instruction to tone everything down a little, with nothing banned outright. L1 (Lasso) penalises the sum of absolute weights instead, and this shape has a sharper habit: it tends to push the least useful weights all the way to exactly zero rather than merely shrinking them. Because a weight pushed to exactly zero is effectively dropped from the model, L1 acts as an automatic, built-in feature selection method, achieving the same trimmed feature set that Trial Matches built by hand with corr() or that sequential selection and PCA achieve elsewhere in the book.",
+    "modelAnswer": "L2 (Ridge) penalises the sum of squared weights, which nudges every weight smaller roughly in proportion to its size — a general instruction to tone everything down a little, with nothing banned outright. L1 (Lasso) penalises the sum of absolute weights instead, and this shape has a sharper habit: it tends to push the least useful weights all the way to exactly zero rather than merely shrinking them. Because a weight pushed to exactly zero is effectively dropped from the model, L1 acts as an automatic, built-in feature selection method, achieving the same trimmed feature set that Feature Selection & Hyperparameter Optimisation built by hand with corr() or that sequential selection and PCA achieve elsewhere in the book.",
     "rubric": [
       "Explains L2 shrinks all weights proportionally without eliminating any",
       "Explains L1's sharper habit of pushing the least useful weights all the way to exactly zero",
@@ -5484,7 +5484,7 @@
     "chapterTitle": "3.5 Gradient Descent",
     "sourceUrl": "/scoring-model-evaluation/gradient-descent/",
     "question": "Explain how the chapter demonstrates that gradient descent can tune a classifier as well as a regressor, and what stays identical versus what changes between the two use cases.",
-    "modelAnswer": "The chapter swaps SGDRegressor for SGDClassifier, keeping the same underlying optimiser but swapping the loss function for one that scores label mismatches instead of run differences. What changes is only the loss function and therefore what's underneath the model doing the tuning; the core mechanism — measure the error, find the downhill direction, take a step — is not specific to predicting a number. What stays identical is the evaluation tooling: classification_report, from The Scorer's Box, still reports precision, recall, and F1 exactly as before. This shows gradient descent is a general-purpose optimisation mechanism rather than something built specifically for regression.",
+    "modelAnswer": "The chapter swaps SGDRegressor for SGDClassifier, keeping the same underlying optimiser but swapping the loss function for one that scores label mismatches instead of run differences. What changes is only the loss function and therefore what's underneath the model doing the tuning; the core mechanism — measure the error, find the downhill direction, take a step — is not specific to predicting a number. What stays identical is the evaluation tooling: classification_report, from Evaluation Metrics & Data Leakage, still reports precision, recall, and F1 exactly as before. This shows gradient descent is a general-purpose optimisation mechanism rather than something built specifically for regression.",
     "rubric": [
       "Explains the swap is achieved by changing the loss function while keeping the same optimiser mechanism",
       "States that the core algorithm (measure error, find direction, take a step) is unchanged between regressor and classifier",
@@ -5511,12 +5511,26 @@
     "chapterId": "gradient-descent",
     "chapterTitle": "3.5 Gradient Descent",
     "sourceUrl": "/scoring-model-evaluation/gradient-descent/",
-    "question": "Explain why the coefficients of a linear regression model can't be tuned using the same grid-search approach Trial Matches used for hyperparameters like n_neighbors or max_depth, and what gradient descent does instead.",
+    "question": "Explain why the coefficients of a linear regression model can't be tuned using the same grid-search approach Feature Selection & Hyperparameter Optimisation used for hyperparameters like n_neighbors or max_depth, and what gradient descent does instead.",
     "modelAnswer": "Grid search works by trying a finite shortlist of candidate values and keeping the best one, which depends on the dial having a short list to begin with, such as trying a handful of integer values for n_neighbors. A linear regression's coefficients aren't chosen from a small set like {1, 2, 3}; they could be 14.6183... or -9.047... or anything in between, and there is no way to write out every candidate on a number line to grid-search. Gradient descent sidesteps this entirely by not needing a candidate list at all: it starts somewhere, checks whether the current guess is too high or too low, and adjusts in that direction, repeating until the corrections stop being worth making — exactly what a bowler does every time they walk back to their mark.",
     "rubric": [
       "Explains grid search depends on a finite, enumerable shortlist of candidate values",
       "Explains that continuous parameters like regression coefficients can take virtually any value, making an exhaustive candidate list impossible",
       "Describes gradient descent's alternative approach: start somewhere, check direction, adjust, and repeat instead of enumerating candidates"
+    ]
+  },
+  {
+    "id": "sa-gradient-descent-16",
+    "type": "short_answer",
+    "chapterId": "gradient-descent",
+    "chapterTitle": "3.5 Gradient Descent",
+    "sourceUrl": "/scoring-model-evaluation/gradient-descent/",
+    "question": "Explain what it means for gradient descent to update 'every weight in the same step, but not by the same amount.' Use the geometric picture of a multi-dial loss surface in your answer.",
+    "modelAnswer": "In a single step, gradient descent computes a partial derivative for every weight off one shared forward pass, using the current values of all the weights at once — none of them change until every partial derivative has been worked out. Only then does the whole vector of weights update together, in one move, rather than one weight being finished before the next is even started the way Model Selection's sequential feature selector adds one predictor, checks it, and only then moves to the next. 'Together' doesn't mean 'equally,' though: each weight moves in proportion to its own partial derivative, scaled by the learning rate, so a weight with a steep, urgent gradient gets nudged hard while one that's already nearly correct barely moves. Geometrically, picture a loss surface with one predictor along each axis — the step downhill isn't a walk along one axis followed by a walk along the other. It's a single diagonal step, taken in whatever direction the actual combined slope points from wherever the model currently stands, moving every weight at once by however much its own slope demands.",
+    "rubric": [
+      "Explains that every partial derivative is computed from the same forward pass and shared weight values before any update happens",
+      "States that the weight vector updates in one simultaneous step, contrasted with a one-at-a-time approach like sequential feature selection",
+      "Explains that weights move proportionally, not equally, and connects this to the diagonal-step picture on a multi-dimensional loss surface"
     ]
   },
   {
