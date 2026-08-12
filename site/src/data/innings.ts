@@ -357,7 +357,7 @@ print("coefficients", dict(zip(X_train.columns, model.coef_.round(2))))`,
         meta: "14 min · sequential selection, AIC & PCA",
         title: "Model Selection",
         subtitle: "When You Can't Trial Everyone",
-        lede: "Trial Matches assumed you could afford to check every combination and still have a warm-up fixture spare to judge the winner on. Sometimes you can't — too many candidate features to grid-search, or too little data to responsibly give any of it up. Model selection methods like sequential feature selection, AIC, and PCA are what you reach for when a full trial match isn't an option.",
+        lede: "Feature Selection & Hyperparameter Optimisation assumed you could afford to check every combination and still have a warm-up fixture spare to judge the winner on. Sometimes you can't — too many candidate features to grid-search, or too little data to responsibly give any of it up. Model selection methods like sequential feature selection, the Akaike Information Criterion (AIC), and Principal Component Analysis (PCA) are what you reach for when a full trial match isn't an option.",
         commentary:
           "'We don't get a full trial match for every candidate this window. Give me a shortlist, and a reason attached to every name on it.' — Head of Recruitment",
         codeFile: "scoring/model_selection.py",
