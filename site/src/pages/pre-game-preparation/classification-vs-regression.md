@@ -2,12 +2,12 @@
 layout: ../../layouts/MatchLayout.astro
 title: "Classification vs Regression"
 subtitle: "How Many, or Which One?"
-innings: first-innings
+innings: pre-game-preparation
 chapter: classification-vs-regression
 meta: "8 min · how many, or which one"
 lede: "Every number on the broadcast graphic is answering one of exactly two questions: classification or regression. Get the question wrong and the cleverest model in the ground will hand you a beautifully confident answer to something nobody asked."
 commentary: "'Is that a projected total or a review verdict? Because you've built a magnificent model for the wrong scoreboard.' — Match Analyst"
-codeFile: first_innings/task_type.py
+codeFile: pre_game/task_type.py
 codeOut: "regression → 9.3 runs this over · classification → 'No Wicket' (p=0.82)"
 code: |
   # Same over, two different questions to a model
@@ -29,7 +29,7 @@ stats:
 
 Watch any broadcast during a run chase and there are two entirely different kinds of number competing for space on the screen. One is a projected total — 187, give or take a handful. The other is a verdict — OUT, delivered after a review. Both are produced from data. Both, these days, are probably produced by a model. And they are not remotely the same job.
 
-Every supervised model you'll meet in this innings is doing one of those two jobs, and the job is decided the instant you pick what column you're asking it to predict. Everything downstream — which algorithm fits, which score to trust, what the output even means — falls out of that one choice.
+Every supervised model you'll meet in First Innings is doing one of those two jobs, and the job is decided the instant you pick what column you're asking it to predict. Everything downstream — which algorithm fits, which score to trust, what the output even means — falls out of that one choice.
 
 ## Regression: How Many?
 
@@ -94,7 +94,7 @@ Here's the part that trips people up: the exact same ball-by-ball dataset can su
 
 The task type isn't a footnote you fill in after picking an algorithm — it comes first, and it decides almost everything else:
 
-- **The algorithm.** `LinearRegression` produces a number on a continuous scale. Asking it to output "Out" or "Not Out" doesn't make sense; asking `LogisticRegression` for a projected score doesn't either. Some algorithms — K-Nearest Neighbours among them, met later in this innings — can do either job, but only once you've told them which one you want.
+- **The algorithm.** `LinearRegression` produces a number on a continuous scale. Asking it to output "Out" or "Not Out" doesn't make sense; asking `LogisticRegression` for a projected score doesn't either. Some algorithms — K-Nearest Neighbours among them, met later in First Innings — can do either job, but only once you've told them which one you want.
 - **The metric.** Reporting "accuracy" on a projected score, or "mean absolute error" on a label, are both category errors. You'll get a number back. It will mean nothing.
 - **The output itself.** A regressor asked a which-one question will cheerfully hand you 0.7340912, and you'll have to remember that this is a probability of the positive class, not a score, not a count, not anything you can put straight on the scoreboard.
 
@@ -110,4 +110,4 @@ An optimiser doesn't know or care which question you meant to ask. It will optim
 
 ---
 
-Two questions, and now you can tell them apart on sight. The next chapter meets the first player capable of answering both — the same idea, the same arithmetic, just pointed at a different kind of target column.
+Two questions, and now you can tell them apart on sight — which matters immediately, because the next chapter starts cleaning up the data both of them will eventually be fed. Later in First Innings you'll even meet a player capable of answering both questions with the same arithmetic, just pointed at a different kind of target column, but that's a trick worth earning properly rather than spoiling here.

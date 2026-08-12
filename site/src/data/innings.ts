@@ -189,6 +189,32 @@ print(len(X_train), len(X_val), len(X_test))`,
         ],
       },
       {
+        slug: "classification-vs-regression",
+        nav: "Classification vs Regression",
+        meta: "8 min · how many, or which one",
+        title: "Classification vs Regression",
+        subtitle: "How Many, or Which One?",
+        lede: "Every number on the broadcast graphic is answering one of exactly two questions: classification or regression. Get the question wrong and the cleverest model in the ground will hand you a beautifully confident answer to something nobody asked.",
+        commentary:
+          "'Is that a projected total or a review verdict? Because you've built a magnificent model for the wrong scoreboard.' — Match Analyst",
+        codeFile: "pre_game/task_type.py",
+        codeOut: "regression → 9.3 runs this over · classification → 'No Wicket' (p=0.82)",
+        code: `# Same over, two different questions to a model
+
+# Regression: how many runs will this over cost?
+reg.predict(this_over)            # array([9.3])
+
+# Classification: will this over produce a wicket?
+clf.predict(this_over)            # array(['No Wicket'])
+clf.predict_proba(this_over)      # array([[0.82, 0.18]])`,
+        stats: [
+          { k: "Regression", v: "How Many?", s: "a continuous target" },
+          { k: "Classification", v: "Which One?", s: "a fixed set of labels" },
+          { k: "Same Pitch", v: "Different Question", s: "the target column decides" },
+          { k: "Wrong Question", v: "Wrong Everything", s: "model, metric, meaning" },
+        ],
+      },
+      {
         slug: "feature-engineering",
         nav: "Feature Engineering",
         meta: "13 min · gaps, freaks & lopsided squads",
@@ -391,32 +417,6 @@ def AIC(p, L):
     short: "Classical ML",
     subtitle: "Regression · Classification · Clustering · Decision Trees & Ensembles",
     chapters: [
-      {
-        slug: "classification-vs-regression",
-        nav: "Classification vs Regression",
-        meta: "8 min · how many, or which one",
-        title: "Classification vs Regression",
-        subtitle: "How Many, or Which One?",
-        lede: "Every number on the broadcast graphic is answering one of exactly two questions: classification or regression. Get the question wrong and the cleverest model in the ground will hand you a beautifully confident answer to something nobody asked.",
-        commentary:
-          "'Is that a projected total or a review verdict? Because you've built a magnificent model for the wrong scoreboard.' — Match Analyst",
-        codeFile: "first_innings/task_type.py",
-        codeOut: "regression → 9.3 runs this over · classification → 'No Wicket' (p=0.82)",
-        code: `# Same over, two different questions to a model
-
-# Regression: how many runs will this over cost?
-reg.predict(this_over)            # array([9.3])
-
-# Classification: will this over produce a wicket?
-clf.predict(this_over)            # array(['No Wicket'])
-clf.predict_proba(this_over)      # array([[0.82, 0.18]])`,
-        stats: [
-          { k: "Regression", v: "How Many?", s: "a continuous target" },
-          { k: "Classification", v: "Which One?", s: "a fixed set of labels" },
-          { k: "Same Pitch", v: "Different Question", s: "the target column decides" },
-          { k: "Wrong Question", v: "Wrong Everything", s: "model, metric, meaning" },
-        ],
-      },
       {
         slug: "linear-regression",
         nav: "Linear Regression",
