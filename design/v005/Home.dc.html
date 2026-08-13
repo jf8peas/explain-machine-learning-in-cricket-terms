@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet data-dc-atomics>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,700;12..96,800&family=Geist:ital,wght@0,400;0,500;0,600;1,400&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+html,body{margin:0;padding:0}
+body{background:#ECEEEA;font-family:"Geist",ui-sans-serif,system-ui,sans-serif;color:#0B0F0D;-webkit-font-smoothing:antialiased;font-feature-settings:"tnum"}
+*{box-sizing:border-box;scrollbar-width:none;-ms-overflow-style:none}
+*::-webkit-scrollbar{width:0;height:0;display:none}
+a{color:#0B2B1A;text-decoration:none}
+a:hover{color:#8A6E00}
+@keyframes xiBlink{0%,100%{opacity:1}50%{opacity:.25}}
+::selection{background:#E2B71455}
+</style>
+</helmet>
+
+<div style="min-height:100vh;display:flex;flex-direction:column;background:#ECEEEA">
+
+  <!-- ═══ SCOREBUG HEADER ═══ -->
+  <header style="position:sticky;top:0;z-index:20;background:#0B2B1A;box-shadow:0 10px 28px rgba(6,22,14,.22)">
+    <div style="max-width:1680px;margin:0 auto;padding:0 clamp(14px,2.2vw,30px);display:flex;align-items:center;flex-wrap:wrap;gap:16px;min-height:78px">
+
+      <div style="display:flex;align-items:center;gap:16px;flex:1 1 300px;min-width:0">
+        <div style="width:48px;height:48px;flex:none;border-radius:11px;background:#E2B714;display:flex;align-items:center;justify-content:center;font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:21px;color:#0B2B1A;letter-spacing:-.04em">XI</div>
+        <div style="display:flex;flex-direction:column;gap:4px;min-width:0">
+          <span style="font-family:'Geist Mono',monospace;font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:#E2B714;font-weight:500">Broadcast Centre</span>
+          <span style="font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:clamp(18px,2vw,25px);line-height:1.05;letter-spacing:-.025em;color:#FFFFFF;text-wrap:nowrap;overflow:hidden;text-overflow:ellipsis">The Playing XI<span style="color:#9DB3A5;font-weight:600"> · ML in Cricket Terms</span></span>
+        </div>
+      </div>
+
+      <div style="flex:1 1 240px;max-width:360px;min-width:210px;padding:8px 0">
+        <div style="display:flex;align-items:center;gap:10px;height:42px;padding:0 12px 0 14px;border-radius:10px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12)">
+          <span style="flex:none;font-family:'Geist Mono',monospace;font-size:13px;color:#8FA79A">&#9906;</span>
+          <input type="text" placeholder="{{ searchPlaceholder }}" style="flex:1;min-width:0;height:100%;border:0;outline:none;background:transparent;color:#FFFFFF;font-family:'Geist',sans-serif;font-size:14.5px" />
+          <span style="flex:none;font-family:'Geist Mono',monospace;font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:#8FA79A">Esc</span>
+        </div>
+      </div>
+
+      <div style="display:flex;align-items:center;gap:9px;padding:2px 0">
+        <span style="width:7px;height:7px;border-radius:50%;background:#E2B714;animation:xiBlink 1.6s ease-in-out infinite"></span>
+        <span style="font-family:'Geist Mono',monospace;font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:#E5EDE7;font-weight:500">Live</span>
+      </div>
+    </div>
+
+    <nav style="background:#0A2417;border-top:1px solid rgba(255,255,255,.06);border-bottom:2px solid #E2B714">
+      <div style="max-width:1680px;margin:0 auto;padding:0 clamp(14px,2.2vw,30px)">
+        <sc-if value="{{ navCompact }}" hint-placeholder-val="{{ false }}">
+          <div style="display:flex;align-items:center;gap:10px;padding:10px 0 12px">
+            <span style="flex:none;font-family:'Geist Mono',monospace;font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:#7E968A">Session</span>
+            <select value="home" onChange="{{ onNavSelect }}" style="flex:1;min-width:0;height:44px;padding:0 14px;border-radius:10px;border:1px solid rgba(255,255,255,.16);background:#0B2116;color:#FFFFFF;font-family:'Bricolage Grotesque',sans-serif;font-weight:600;font-size:15px;cursor:pointer;appearance:none">
+              <sc-for list="{{ navOptions }}" as="o" hint-placeholder-count="7"><option value="{{ o.v }}">{{ o.label }}</option></sc-for>
+            </select>
+          </div>
+        </sc-if>
+        <sc-if value="{{ navRow }}" hint-placeholder-val="{{ true }}">
+          <div data-nav-row="1" style="display:flex;align-items:stretch;gap:0;overflow-x:auto">
+            <sc-for list="{{ sessions }}" as="s" hint-placeholder-count="6">
+              <a href="./The Playing XI (Current).dc.html" style="display:flex;align-items:center;gap:10px;padding:14px 16px;border-bottom:4px solid transparent;color:#C3D2C8;flex:none;transition:background .14s,color .14s" style-hover="background:rgba(226,183,20,.08);color:#FFFFFF">
+                <span style="font-family:'Geist Mono',monospace;font-size:12px;letter-spacing:.06em;color:#E2B714;flex:none">{{ s.num }}</span>
+                <span style="font-family:'Bricolage Grotesque',sans-serif;font-weight:600;font-size:14.5px;line-height:1;letter-spacing:-.015em;color:inherit;white-space:nowrap">{{ s.label }}</span>
+              </a>
+            </sc-for>
+            <a href="./Practice Nets.dc.html" style="display:flex;align-items:center;gap:10px;padding:14px 16px;border-bottom:4px solid transparent;color:#C3D2C8;flex:none;transition:background .14s,color .14s" style-hover="background:rgba(226,183,20,.08);color:#FFFFFF">
+              <span style="font-family:'Geist Mono',monospace;font-size:12px;letter-spacing:.06em;color:#E2B714;flex:none">07</span>
+              <span style="font-family:'Bricolage Grotesque',sans-serif;font-weight:600;font-size:14.5px;line-height:1;letter-spacing:-.015em;color:inherit;white-space:nowrap">{{ netsLabel }}</span>
+            </a>
+          </div>
+        </sc-if>
+      </div>
+    </nav>
+  </header>
+
+  <!-- ═══ BODY ═══ -->
+  <div style="flex:1;max-width:1680px;width:100%;margin:0 auto;padding:clamp(16px,1.8vw,26px) clamp(14px,2.2vw,30px) 60px;display:flex;flex-direction:column;gap:clamp(16px,1.6vw,24px)">
+
+    <!-- HERO -->
+    <div style="background:#123020;border-radius:16px;position:relative;overflow:hidden">
+      <div style="position:absolute;inset:0;background:repeating-linear-gradient(115deg,rgba(255,255,255,.035) 0 1px,transparent 1px 26px);pointer-events:none"></div>
+      <div style="position:relative;display:flex;flex-wrap:wrap;gap:clamp(24px,3vw,48px);padding:clamp(28px,3.4vw,52px) clamp(22px,3vw,48px)">
+        <div style="flex:2 1 520px;min-width:0;display:flex;flex-direction:column;gap:18px">
+          <span style="display:inline-flex;align-self:flex-start;align-items:center;height:31px;padding:0 15px;border-radius:999px;background:#E2B714;color:#0B2B1A;font-family:'Geist Mono',monospace;font-size:12px;letter-spacing:.13em;text-transform:uppercase;white-space:nowrap">{{ seasonPill }}</span>
+          <h1 style="margin:0;font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:clamp(40px,5.6vw,76px);line-height:.98;letter-spacing:-.042em;color:#FFFFFF;text-wrap:balance">Machine learning, called from the commentary box.</h1>
+          <p style="margin:0;max-width:56ch;font-size:clamp(17px,1.5vw,22px);line-height:1.55;color:#E5EDE7;text-wrap:pretty">Machine learning can feel like a game governed by obscure laws, arbitrary decisions, and unpredictable weather. As it turns out, so is cricket. Welcome to a practical, whimsical approach to mastering AI.</p>
+          <p style="margin:0;max-width:56ch;font-family:'Geist',sans-serif;font-style:italic;font-size:clamp(17px,1.5vw,21px);line-height:1.4;color:#E2B714;text-wrap:pretty">Machine learning isn't magic, and it certainly shouldn't be dry.</p>
+          <div style="display:flex;flex-wrap:wrap;gap:12px;padding-top:6px">
+            <a href="./The Playing XI (Current).dc.html" style="display:inline-flex;align-items:center;gap:10px;height:54px;padding:0 26px;border-radius:11px;background:#E2B714;color:#0B2B1A;font-size:17px;font-weight:600;transition:background .12s" style-hover="background:#F0C93A;color:#0B2B1A">Take your guard<span style="font-family:'Geist Mono',monospace;font-size:15px">&#8594;</span></a>
+            <a href="./Practice Nets.dc.html" style="display:inline-flex;align-items:center;gap:10px;height:54px;padding:0 26px;border-radius:11px;border:1px solid rgba(255,255,255,.24);color:#E5EDE7;font-size:17px;font-weight:500;transition:border-color .12s,color .12s" style-hover="border-color:#E2B714;color:#E2B714">Head to the nets</a>
+          </div>
+        </div>
+
+        <div style="flex:1 1 260px;min-width:240px;display:flex;flex-direction:column;justify-content:flex-end;gap:14px">
+          <sc-for list="{{ heroFacts }}" as="f" hint-placeholder-count="4">
+            <div style="display:flex;align-items:baseline;justify-content:space-between;gap:14px;padding:14px 0;border-top:1px solid rgba(255,255,255,.12)">
+              <span style="font-family:'Geist Mono',monospace;font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;color:#8FA79A">{{ f.k }}</span>
+              <span style="font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:20px;line-height:1;letter-spacing:-.025em;color:#FFFFFF;text-align:right">{{ f.v }}</span>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+    </div>
+
+    <!-- PREFACE -->
+    <main style="background:#FFFFFF;border-radius:16px;box-shadow:0 1px 2px rgba(11,15,13,.06),0 14px 34px rgba(11,15,13,.06);overflow:hidden">
+      <div style="padding:clamp(24px,2.8vw,40px) clamp(22px,3vw,48px);border-bottom:1px solid #E3E7E1;display:flex;flex-wrap:wrap;align-items:baseline;gap:14px">
+        <span style="font-family:'Geist Mono',monospace;font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:#8A6E00">Preface · Over 1.2</span>
+        <h2 style="margin:0;font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:clamp(24px,2.4vw,34px);line-height:1.1;letter-spacing:-.032em;color:#0B2B1A;text-wrap:balance">The Whimsical Game of ML &amp; Cricket</h2>
+      </div>
+
+      <article style="padding:clamp(26px,3vw,44px) clamp(22px,3vw,48px) clamp(30px,3.4vw,48px);display:flex;flex-direction:column;gap:clamp(26px,2.8vw,38px)">
+
+        <!-- 1 -->
+        <section style="display:flex;flex-direction:column;gap:14px">
+          <h3 style="margin:0;font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:clamp(23px,2.3vw,31px);line-height:1.14;letter-spacing:-.03em;color:#0B2B1A">1. Demystifying the Black Box Through Whimsy</h3>
+          <p style="margin:0;max-width:74ch;font-size:clamp(16px,1.25vw,19px);line-height:1.65;color:#1E2A22;text-wrap:pretty">If you pick up a conventional machine learning textbook, you are often greeted by dense linear algebra, probability mass functions, and Greek notation before you ever build a working system. It can feel like being thrown into a Test match on a crumbling day-five pitch against a 150km/h pace bowler—without pads or a helmet.</p>
+          <p style="margin:0;max-width:74ch;font-size:clamp(16px,1.25vw,19px);line-height:1.65;color:#1E2A22;text-wrap:pretty"><em>The Playing XI</em> was built on a core belief: <strong style="color:#0B2B1A">Machine learning isn't magic, and it certainly shouldn't be dry.</strong></p>
+          <p style="margin:0;max-width:74ch;font-size:clamp(16px,1.25vw,19px);line-height:1.65;color:#1E2A22;text-wrap:pretty">When I strip away the academic jargon, machine learning is simply about making tactical decisions under uncertainty, observing the outcome, and making small adjustments. Which, as any cricket follower knows, is the exact definition of a long session at the crease.</p>
+          <p style="margin:0;max-width:74ch;font-size:clamp(16px,1.25vw,19px);line-height:1.65;color:#1E2A22;text-wrap:pretty">By using whimsical analogies, I anchor complex algorithmic mechanics into vivid, memorable mental models:</p>
+
+          <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:12px;padding-top:2px">
+            <sc-for list="{{ analogies }}" as="a" hint-placeholder-count="3">
+              <div style="display:flex;flex-direction:column;gap:8px;padding:18px 20px;border-radius:12px;background:#F6F8F6;border:1px solid #E3E7E1;border-top:3px solid #E2B714">
+                <span style="font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:18px;letter-spacing:-.022em;color:#0B2B1A">{{ a.term }}</span>
+                <span style="font-size:15px;line-height:1.55;color:#475569;text-wrap:pretty">{{ a.text }}</span>
+              </div>
+            </sc-for>
+          </div>
+        </section>
+
+        <!-- 2 -->
+        <section style="display:flex;flex-direction:column;gap:14px;padding-top:clamp(8px,1vw,14px);border-top:1px solid #E3E7E1">
+          <h3 style="margin:0;font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:clamp(23px,2.3vw,31px);line-height:1.14;letter-spacing:-.03em;color:#0B2B1A">2. Learning Without Fear of Failure</h3>
+          <p style="margin:0;max-width:74ch;font-size:clamp(16px,1.25vw,19px);line-height:1.65;color:#1E2A22;text-wrap:pretty">In cricket, even the greatest batters fail more than half the time. An edge through the slips still counts as four runs, and a scratchy 20 under pressure can win a match.</p>
+          <p style="margin:0;max-width:74ch;font-size:clamp(16px,1.25vw,19px);line-height:1.65;color:#1E2A22;text-wrap:pretty">Studying machine learning should feel the same way:</p>
+          <div style="display:flex;flex-direction:column;gap:12px">
+            <sc-for list="{{ principles }}" as="p" hint-placeholder-count="3">
+              <div style="display:flex;gap:16px;padding:16px 18px;border-radius:12px;background:#F6F8F6;border:1px solid #E3E7E1">
+                <span style="flex:none;width:30px;height:30px;border-radius:8px;background:#E2B714;color:#0B2B1A;display:flex;align-items:center;justify-content:center;font-family:'Geist Mono',monospace;font-size:12px">{{ p.n }}</span>
+                <span style="flex:1;min-width:0;font-size:clamp(15.5px,1.2vw,18px);line-height:1.6;color:#1E2A22;text-wrap:pretty"><strong style="color:#0B2B1A">{{ p.term }}</strong> {{ p.text }}</span>
+              </div>
+            </sc-for>
+          </div>
+        </section>
+
+        <!-- 3 -->
+        <section style="display:flex;flex-direction:column;gap:14px;padding-top:clamp(8px,1vw,14px);border-top:1px solid #E3E7E1">
+          <h3 style="margin:0;font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:clamp(23px,2.3vw,31px);line-height:1.14;letter-spacing:-.03em;color:#0B2B1A">3. Reading the Ground Rules</h3>
+          <p style="margin:0;max-width:74ch;font-size:clamp(16px,1.25vw,19px);line-height:1.65;color:#1E2A22;text-wrap:pretty">Here is how to navigate this broadcast suite:</p>
+          <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:1px;background:#E3E7E1;border:1px solid #E3E7E1;border-radius:12px;overflow:hidden">
+            <sc-for list="{{ groundRules }}" as="g" hint-placeholder-count="3">
+              <div style="display:flex;flex-direction:column;gap:9px;padding:20px;background:#FFFFFF">
+                <span style="font-family:'Geist Mono',monospace;font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;color:#8A6E00">{{ g.k }}</span>
+                <span style="font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:19px;letter-spacing:-.025em;color:#0B2B1A">{{ g.term }}</span>
+                <span style="font-size:15px;line-height:1.55;color:#475569;text-wrap:pretty">{{ g.text }}</span>
+              </div>
+            </sc-for>
+          </div>
+        </section>
+
+        <!-- 4 -->
+        <section style="display:flex;flex-direction:column;gap:14px;padding-top:clamp(8px,1vw,14px);border-top:1px solid #E3E7E1">
+          <h3 style="margin:0;font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:clamp(23px,2.3vw,31px);line-height:1.14;letter-spacing:-.03em;color:#0B2B1A">4. Take Your Guard</h3>
+          <p style="margin:0;max-width:74ch;font-size:clamp(16px,1.25vw,19px);line-height:1.65;color:#1E2A22;text-wrap:pretty">You don't need a Ph.D. in computer science to read this guide, nor do you need to know every nuance of the Duckworth-Lewis-Stern method.</p>
+          <p style="margin:0;max-width:74ch;font-size:clamp(16px,1.25vw,19px);line-height:1.65;color:#1E2A22;text-wrap:pretty">Whether you are a seasoned data practitioner looking for a fresh perspective on system design, or a curious cricket fan wondering how predictive algorithms actually work under the hood, step into the nets, take your guard, and enjoy the innings.</p>
+        </section>
+
+        <aside style="display:flex;gap:16px;padding:18px 20px;border-radius:12px;background:#F6F8F6;border-left:3px solid #E2B714">
+          <div style="flex:none;width:38px;height:38px;border-radius:50%;background:#123020;display:flex;align-items:center;justify-content:center;font-family:'Geist Mono',monospace;font-size:11px;color:#E2B714">CB</div>
+          <div style="display:flex;flex-direction:column;gap:6px;min-width:0">
+            <span style="font-family:'Geist Mono',monospace;font-size:9.5px;letter-spacing:.18em;text-transform:uppercase;color:#5A6B60">From the commentary box</span>
+            <p style="margin:0;font-size:16px;line-height:1.55;color:#0B0F0D;text-wrap:pretty">'In cricket, as in statistical modelling, you can do everything right for five days and still get rained out.' — The Scorer</p>
+          </div>
+        </aside>
+
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:1px;background:#E3E7E1;border:1px solid #E3E7E1;border-radius:12px;overflow:hidden">
+          <sc-for list="{{ stats }}" as="st" hint-placeholder-count="4">
+            <div style="background:#FFFFFF;padding:18px 20px;display:flex;flex-direction:column;gap:6px">
+              <span style="font-family:'Geist Mono',monospace;font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:#5A6B60">{{ st.k }}</span>
+              <span style="font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:24px;letter-spacing:-.03em;color:#0B2B1A;line-height:1">{{ st.v }}</span>
+              <span style="font-size:12.5px;color:#6B7280">{{ st.s }}</span>
+            </div>
+          </sc-for>
+        </div>
+      </article>
+    </main>
+
+    <!-- THE CARD -->
+    <section style="display:flex;flex-direction:column;gap:clamp(14px,1.4vw,20px)">
+      <div style="display:flex;flex-wrap:wrap;align-items:baseline;gap:14px;padding:0 4px">
+        <h2 style="margin:0;font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:clamp(24px,2.4vw,34px);line-height:1.1;letter-spacing:-.032em;color:#0B2B1A">The card</h2>
+        <span style="font-family:'Geist Mono',monospace;font-size:11.5px;letter-spacing:.14em;text-transform:uppercase;color:#5A6B60">{{ cardMeta }}</span>
+      </div>
+
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(330px,1fr));gap:clamp(14px,1.4vw,20px)">
+        <sc-for list="{{ sessionCards }}" as="c" hint-placeholder-count="6">
+          <div style="display:flex;flex-direction:column;gap:16px;padding:clamp(20px,2vw,26px);background:#FFFFFF;border-radius:16px;box-shadow:0 1px 2px rgba(11,15,13,.06)">
+            <div style="display:flex;align-items:baseline;justify-content:space-between;gap:14px">
+              <span style="font-family:'Geist Mono',monospace;font-size:12px;letter-spacing:.06em;color:#8A6E00">{{ c.num }}</span>
+              <span style="font-family:'Geist Mono',monospace;font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:#5A6B60">{{ c.count }}</span>
+            </div>
+            <div style="display:flex;flex-direction:column;gap:8px">
+              <h3 style="margin:0;font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:clamp(21px,2vw,27px);line-height:1.12;letter-spacing:-.03em;color:#0B2B1A;text-wrap:balance">{{ c.title }}</h3>
+              <span style="font-family:'Geist Mono',monospace;font-size:11.5px;letter-spacing:.04em;color:#5A6B60;text-wrap:pretty">{{ c.tags }}</span>
+            </div>
+            <div style="display:flex;flex-direction:column;gap:8px">
+              <sc-for list="{{ c.chapters }}" as="ch" hint-placeholder-count="4">
+                <a href="./The Playing XI (Current).dc.html" style="display:flex;align-items:center;gap:13px;padding:12px 14px;border-radius:10px;background:#F6F8F6;color:#0B2B1A;transition:background .12s" style-hover="background:#FBF6E2;color:#0B2B1A">
+                  <span style="flex:none;font-family:'Geist Mono',monospace;font-size:12px;color:#8A6E00;width:26px">{{ ch.over }}</span>
+                  <span style="flex:1;min-width:0;font-size:15.5px;font-weight:500;color:#0B2B1A">{{ ch.name }}</span>
+                  <span style="flex:none;font-family:'Geist Mono',monospace;font-size:13px;color:#8A6E00">&#8594;</span>
+                </a>
+              </sc-for>
+            </div>
+            <a href="./The Playing XI (Current).dc.html" style="align-self:flex-start;font-family:'Geist Mono',monospace;font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:#8A6E00" style-hover="color:#0B2B1A">Pad up &amp; read &#8594;</a>
+          </div>
+        </sc-for>
+
+        <div style="display:flex;flex-direction:column;gap:16px;padding:clamp(20px,2vw,26px);background:#123020;border-radius:16px">
+          <div style="display:flex;align-items:baseline;justify-content:space-between;gap:14px">
+            <span style="font-family:'Geist Mono',monospace;font-size:12px;letter-spacing:.06em;color:#E2B714">07</span>
+            <span style="font-family:'Geist Mono',monospace;font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:#8FA79A">15 questions</span>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:10px">
+            <h3 style="margin:0;font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:clamp(21px,2vw,27px);line-height:1.12;letter-spacing:-.03em;color:#FFFFFF">Practice Nets</h3>
+            <p style="margin:0;font-size:15.5px;line-height:1.6;color:#B9CBBF;text-wrap:pretty">Every concept comes with runnable code. Tweak the parameters, mess up the inputs, and see where the model breaks — then face ten throw downs and five in the nets.</p>
+          </div>
+          <a href="./Practice Nets.dc.html" style="display:inline-flex;align-self:flex-start;align-items:center;gap:10px;height:48px;padding:0 24px;border-radius:11px;background:#E2B714;color:#0B2B1A;font-size:16px;font-weight:600;transition:background .12s" style-hover="background:#F0C93A;color:#0B2B1A">Head to the nets<span style="font-family:'Geist Mono',monospace;font-size:15px">&#8594;</span></a>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <footer style="background:#0A2417;padding:20px clamp(14px,2.2vw,30px)">
+    <div style="max-width:1680px;margin:0 auto;display:flex;flex-wrap:wrap;gap:12px;align-items:center;justify-content:space-between">
+      <div style="display:flex;flex-wrap:wrap;align-items:center;gap:12px">
+        <span style="font-family:'Geist Mono',monospace;font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:#7E968A">The Playing XI</span>
+        <span style="font-family:'Geist Mono',monospace;font-size:10px;color:#3E5A4B">·</span>
+        <a href="https://www.linkedin.com/in/john-fong-04b7a120/" target="_blank" rel="noopener noreferrer" style="display:flex;align-items:center;gap:8px;border-radius:999px;border:1px solid rgba(255,255,255,.12);padding:6px 12px;font-family:'Geist Mono',monospace;font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:#DCE5DE;transition:border-color .12s,color .12s" style-hover="border-color:#E2B714;color:#FFFFFF">
+          <svg viewBox="0 0 24 24" fill="#E2B714" width="12" height="12" aria-hidden="true"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z" /></svg>
+          Contact Me
+        </a>
+        <span style="font-family:'Geist Mono',monospace;font-size:10px;color:#3E5A4B">·</span>
+        <a href="https://github.com/jf8peas/explain-machine-learning-in-cricket-terms/issues/new" target="_blank" rel="noopener noreferrer" style="display:flex;align-items:center;gap:8px;border-radius:999px;border:1px solid rgba(255,255,255,.12);padding:6px 12px;font-family:'Geist Mono',monospace;font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:#DCE5DE;transition:border-color .12s,color .12s" style-hover="border-color:#E2B714;color:#FFFFFF">
+          <span style="font-family:'Geist Mono',monospace;font-size:9px;font-weight:600;letter-spacing:.02em;color:#E2B714">GH</span>
+          Feedback
+        </a>
+      </div>
+      <span style="font-family:'Geist Mono',monospace;font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:#3E5A4B">Stumps drawn at 18:30</span>
+    </div>
+  </footer>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1600}}">
+const SESSIONS = [
+  { title:"Behind the Broadcast", short:"Behind", tags:"Author · Engineering",
+    chapters:[["1.1","The Author"],["1.2","How This Site Was Built"]] },
+  { title:"Pre-Game: ML Fundamentals", short:"Pre-Game", tags:"Workflow · Setup · Feature Engineering",
+    chapters:[["2.1","Environment Setup"],["2.2","ML Workflow"],["2.3","Classification vs Regression"],["2.4","Feature Engineering"],["2.5","Parameters & Hyperparameters"]] },
+  { title:"Scoring: Model Evaluation", short:"Scoring", tags:"Accuracy · Precision · Loss",
+    chapters:[["3.1","Accuracy & Its Limits"],["3.2","Precision & Recall"],["3.3","The Confusion Matrix"],["3.4","Cross-Validation"],["3.5","Loss Functions"]] },
+  { title:"First Innings: Classical ML", short:"First Innings", tags:"Regression · Trees · Overfitting",
+    chapters:[["4.1","Regression"],["4.2","Classification"],["4.3","Decision Trees"],["4.4","Ensembles"],["4.5","Clustering"],["4.6","Overfitting"]] },
+  { title:"Second Innings: Deep Learning", short:"Second Innings", tags:"Tensors · Backpropagation · Serving",
+    chapters:[["5.1","Tensors"],["5.2","Layers & Activations"],["5.3","Backpropagation"],["5.4","Build a Model"],["5.5","Saving & Serving"]] },
+  { title:"Post-Game: Agent Solutions", short:"Post-Game", tags:"Architecture · The DRS Agent · Tools",
+    chapters:[["6.1","Agent Architecture"],["6.2","The 'DRS' Agent"],["6.3","Agent Tools"],["6.4","Memory & Context"],["6.5","Evaluating Agents"]] }
+];
+
+const TOTAL = SESSIONS.reduce((n, s) => n + s.chapters.length, 0);
+
+class Component extends DCLogic {
+  state = { navMode:"full", w:1600 };
+
+  componentDidMount() {
+    this._measure = () => this.setState({ w: window.innerWidth, navMode: "full" });
+    this._measure();
+    setTimeout(this._measure, 300);
+    window.addEventListener("resize", this._measure);
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(this._measure);
+  }
+
+  componentWillUnmount() { window.removeEventListener("resize", this._measure); }
+
+  componentDidUpdate() {
+    const mode = this.state.navMode || "full";
+    if (mode === "compact") return;
+    const row = document.querySelector("[data-nav-row]");
+    if (row && row.scrollWidth > row.clientWidth + 2) {
+      this.setState({ navMode: mode === "full" ? "short" : "compact" });
+    }
+  }
+
+  renderVals() {
+    const mode = this.state.navMode || "full";
+    const w = this.state.w || 1600;
+    const compact = mode === "compact" || w < 700;
+    const full = mode === "full" && w >= 700;
+
+    return {
+      searchPlaceholder: "Search all " + TOTAL + " chapters",
+      seasonPill: "Season 1 · " + TOTAL + " chapters",
+      cardMeta: SESSIONS.length + " sessions · " + TOTAL + " chapters · one match",
+
+      navRow: !compact,
+      navCompact: compact,
+      netsLabel: full ? "Practice Nets" : "Nets",
+      sessions: SESSIONS.map((s, i) => ({ num: "0" + (i + 1), label: full ? s.title : s.short })),
+      navOptions: [{ v:"home", label:"00  Home" }]
+        .concat(SESSIONS.map((s, i) => ({ v:"s" + i, label:"0" + (i + 1) + "  " + s.title })))
+        .concat([{ v:"nets", label:"07  Practice Nets" }]),
+      onNavSelect: (e) => {
+        const v = e.target.value;
+        if (v === "nets") window.location.href = "./Practice Nets.dc.html";
+        else if (v !== "home") window.location.href = "./The Playing XI (Current).dc.html";
+      },
+
+      heroFacts: [
+        { k:"Maths prelims", v:"None" },
+        { k:"Code", v:"Runnable Python" },
+        { k:"Sessions", v:SESSIONS.length + " innings" },
+        { k:"Written for", v:"Anyone curious" }
+      ],
+
+      analogies: [
+        { term:"Overfitting", text:"becomes a batter who has memorised one specific bowler's action in the nets, only to get bowled for a duck on an away pitch." },
+        { term:"Loss functions", text:"become the hawk-eyed third umpire calling a front-foot no-ball." },
+        { term:"Hyperparameters", text:"are the strategic choices made before stepping onto the field—like choosing whether to bowl first or set a total." }
+      ],
+
+      principles: [
+        { n:"01", term:"Experimentation in the Nets:", text:"Every concept in this course comes with runnable code snippets. You are encouraged to tweak the parameters, mess up the inputs, and see where the model breaks." },
+        { n:"02", term:"Intuition First, Formalism Second:", text:"Once your brain understands why an algorithm behaves the way it does through a relatable story, the underlying code and mathematics naturally fall into place." },
+        { n:"03", term:"Playful, Not Unprofessional:", text:"Whimsy doesn't mean skipping the rigor. I build real models, configure real data pipelines, and write production-grade Python—I just refuse to take myself too seriously while doing it." }
+      ],
+
+      groundRules: [
+        { k:"Structure", term:"Innings are Modules", text:"The course is structured into distinct \u201cInnings\u201d — from setting up your development kit bag to deploying complex multi-agent LLM review systems." },
+        { k:"Training", term:"Overs are Iterations", text:"Every model training loop or optimization step is an over being bowled. Some overs yield wickets (breakthroughs); others yield boundaries (overfitting)." },
+        { k:"Review", term:"The DRS is Validation", text:"Decision Review Systems exist because umpires make mistakes. In ML, validation splits and review agents perform the exact same duty." }
+      ],
+
+      stats: [
+        { k:"Premise", v:"100% Fun", s:"zero pretension" },
+        { k:"Maths", v:"Visual", s:"intuitive concepts" },
+        { k:"Code", v:"Python", s:"runnable in the nets" },
+        { k:"Target", v:"Anyone", s:"curious about ML" }
+      ],
+
+      sessionCards: SESSIONS.map((s, i) => ({
+        num: "0" + (i + 1),
+        title: s.title,
+        tags: s.tags,
+        count: s.chapters.length + " chapters",
+        chapters: s.chapters.map(c => ({ over: c[0], name: c[1] }))
+      }))
+    };
+  }
+}
+</script>
+</body>
+</html>

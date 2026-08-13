@@ -2,101 +2,399 @@
 import BaseLayout from "../layouts/BaseLayout.astro";
 import { innings, totalChapters } from "../data/innings";
 import { url } from "../utils/paths";
+
+const heroFacts = [
+  { k: "Maths prelims", v: "None" },
+  { k: "Code", v: "Runnable Python" },
+  { k: "Sessions", v: `${innings.length} innings` },
+  { k: "Written for", v: "Anyone curious" },
+];
+
+const analogies = [
+  {
+    term: "Overfitting",
+    text: "becomes a batter who has memorised one specific bowler's action in the nets, only to get bowled for a duck on an away pitch.",
+  },
+  {
+    term: "Loss functions",
+    text: "become the hawk-eyed third umpire calling a front-foot no-ball.",
+  },
+  {
+    term: "Hyperparameters",
+    text: "are the strategic choices made before stepping onto the field — like choosing whether to bowl first or set a total.",
+  },
+];
+
+const principles = [
+  {
+    n: "01",
+    term: "Experimentation in the Nets:",
+    text: "Every concept in this course comes with runnable code snippets. You are encouraged to tweak the parameters, mess up the inputs, and see where the model breaks.",
+  },
+  {
+    n: "02",
+    term: "Intuition First, Formalism Second:",
+    text: "Once your brain understands why an algorithm behaves the way it does through a relatable story, the underlying code and mathematics naturally fall into place.",
+  },
+  {
+    n: "03",
+    term: "Playful, Not Unprofessional:",
+    text: "Whimsy doesn't mean skipping the rigor. I build real models, configure real data pipelines, and write production-grade Python — I just refuse to take myself too seriously while doing it.",
+  },
+];
+
+const groundRules = [
+  {
+    k: "Structure",
+    term: "Innings are Modules",
+    text: "The course is structured into distinct “Innings” — from setting up your development kit bag to deploying complex multi-agent LLM review systems.",
+  },
+  {
+    k: "Training",
+    term: "Overs are Iterations",
+    text: "Every model training loop or optimisation step is an over being bowled. Some overs yield wickets (breakthroughs); others yield boundaries (overfitting).",
+  },
+  {
+    k: "Review",
+    term: "The DRS is Validation",
+    text: "Decision Review Systems exist because umpires make mistakes. In ML, validation splits and review agents perform the exact same duty.",
+  },
+];
+
+const prefaceStats = [
+  { k: "Premise", v: "100% Fun", s: "zero pretension" },
+  { k: "Maths", v: "Visual", s: "intuitive concepts" },
+  { k: "Code", v: "Python", s: "runnable in the nets" },
+  { k: "Target", v: "Anyone", s: "curious about ML" },
+];
 ---
 
 <BaseLayout title="Home">
   <div
-    class="mx-auto w-full max-w-[1440px] flex-1 px-[clamp(14px,3vw,28px)] pb-14 pt-[clamp(20px,3vw,32px)]"
+    class="mx-auto flex w-full max-w-[1440px] flex-1 flex-col gap-[clamp(16px,1.6vw,24px)] px-[clamp(14px,3vw,28px)] pb-14 pt-[clamp(16px,1.8vw,26px)]"
   >
-    <!-- Home hero -->
+    <!-- Hero -->
     <header
-      class="relative mb-[clamp(18px,2.6vw,28px)] overflow-hidden rounded-2xl bg-[linear-gradient(140deg,#0B2B1A_0%,#0F3A24_55%,#071D11_100%)] px-[clamp(20px,3.4vw,44px)] py-[clamp(26px,4vw,46px)]"
+      class="relative overflow-hidden rounded-2xl bg-[linear-gradient(140deg,#0B2B1A_0%,#0F3A24_55%,#071D11_100%)] px-[clamp(20px,3.4vw,44px)] py-[clamp(26px,4vw,46px)]"
     >
       <div
         class="pointer-events-none absolute inset-0"
         style="background:repeating-linear-gradient(115deg,rgba(255,255,255,.045) 0 1px,transparent 1px 22px)"
       >
       </div>
-      <div class="relative flex max-w-[70ch] flex-col gap-4">
-        <span
-          class="inline-flex h-[23px] w-fit items-center rounded-full bg-gold px-2.5 font-mono text-[9.5px] font-medium uppercase tracking-[0.14em] text-pitch"
-          >Season 1 · {totalChapters} chapters</span
-        >
-        <h1
-          class="m-0 text-balance font-display text-[clamp(32px,5vw,56px)] font-extrabold leading-[1.02] tracking-[-0.035em] text-white"
-        >
-          Machine learning, called from the commentary box.
-        </h1>
-        <p
-          class="m-0 text-pretty text-[clamp(15px,1.35vw,17.5px)] leading-[1.55] text-mist-light"
-        >
-          A four-innings course that explains regression, neural networks and
-          agent systems the way cricket actually works — overs, reviews, batting
-          orders and all. No prior ML required; a passing tolerance for cricket
-          metaphors strongly recommended.
-        </p>
+      <div class="relative flex flex-wrap gap-[clamp(24px,3vw,48px)]">
+        <div class="flex min-w-0 flex-[2_1_460px] flex-col gap-4">
+          <span
+            class="inline-flex h-[23px] w-fit items-center rounded-full bg-gold px-2.5 font-mono text-[9.5px] font-medium uppercase tracking-[0.14em] text-pitch"
+          >
+            Season 1 &middot; {totalChapters} chapters
+          </span>
+          <h1
+            class="m-0 text-balance font-display text-[clamp(32px,5vw,56px)] font-extrabold leading-[1.02] tracking-[-0.035em] text-white"
+          >
+            Machine learning, called from the commentary box.
+          </h1>
+          <p
+            class="m-0 max-w-[56ch] text-pretty text-[clamp(15px,1.35vw,17.5px)] leading-[1.55] text-mist-light"
+          >
+            Machine learning can feel like a game governed by obscure laws,
+            arbitrary decisions, and unpredictable weather. As it turns out,
+            so is cricket. Welcome to a practical, whimsical approach to
+            mastering AI.
+          </p>
+          <p
+            class="m-0 max-w-[56ch] text-pretty font-sans text-[clamp(15px,1.3vw,16.5px)] italic leading-[1.4] text-gold"
+          >
+            Machine learning isn't magic, and it certainly shouldn't be dry.
+          </p>
+          <div class="flex flex-wrap gap-3 pt-1.5">
+            <a
+              href={url("pre-game-preparation/environment-setup/")}
+              class="inline-flex h-[50px] items-center gap-2.5 rounded-[11px] bg-gold px-6 font-sans text-[15.5px] font-semibold text-pitch transition-colors hover:bg-gold-light"
+            >
+              Take your guard
+              <span class="font-mono text-[14px]">&rarr;</span>
+            </a>
+            <a
+              href={url("practice-nets/")}
+              class="inline-flex h-[50px] items-center gap-2.5 rounded-[11px] border border-white/25 px-6 font-sans text-[15.5px] font-medium text-mist-light transition-colors hover:border-gold hover:text-gold"
+            >
+              Head to the nets
+            </a>
+          </div>
+        </div>
+
+        <div class="flex min-w-[220px] flex-1 flex-col justify-end gap-3">
+          {
+            heroFacts.map((f) => (
+              <div class="flex items-baseline justify-between gap-3.5 border-t border-white/10 py-3">
+                <span class="font-mono text-[10px] uppercase tracking-[0.14em] text-mist">
+                  {f.k}
+                </span>
+                <span class="text-right font-display text-[18px] font-bold leading-none tracking-[-0.02em] text-white">
+                  {f.v}
+                </span>
+              </div>
+            ))
+          }
+        </div>
       </div>
     </header>
 
-    <!-- Innings cards -->
-    <div class="grid gap-[clamp(14px,2vw,22px)] md:grid-cols-2">
-      {
-        innings.map((inn) => (
-          <div
-            class="group flex flex-col gap-3 rounded-2xl border border-line bg-white p-[clamp(16px,2vw,24px)] shadow-[0_1px_0_rgba(11,15,13,.04)] transition-all hover:-translate-y-0.5 hover:border-pitch hover:shadow-[0_12px_30px_rgba(11,15,13,.08)]"
-          >
+    <!-- Preface -->
+    <main class="overflow-hidden rounded-2xl bg-white shadow-[0_1px_0_rgba(11,15,13,.04),0_12px_30px_rgba(11,15,13,.06)]">
+      <div class="flex flex-wrap items-baseline gap-3.5 border-b border-line px-[clamp(20px,3vw,44px)] py-[clamp(20px,2.6vw,36px)]">
+        <span class="font-mono text-[10.5px] uppercase tracking-[0.16em] text-gold-deep">
+          Preface
+        </span>
+        <h2 class="m-0 text-balance font-display text-[clamp(22px,2.2vw,32px)] font-bold leading-[1.1] tracking-[-0.03em] text-pitch">
+          The Whimsical Game of ML &amp; Cricket
+        </h2>
+      </div>
 
-            <div class="flex items-baseline justify-between gap-2">
-              <span class="font-mono text-[10px] font-medium uppercase tracking-[0.18em] text-gold-deep">
-                {inn.number}
-              </span>
-              <span class="font-mono text-[9.5px] uppercase tracking-[0.12em] text-slate-custom">
-                {inn.chapters.length} chapters
-              </span>
-            </div>
-            <h2 class="m-0 font-display text-[clamp(20px,2vw,26px)] font-bold leading-[1.1] tracking-[-0.025em] text-pitch">
-              <a href={url(`${inn.slug}/`)} class="text-inherit no-underline">
-                {inn.title}
-              </a>
-            </h2>
+      <article class="flex flex-col gap-[clamp(22px,2.6vw,34px)] px-[clamp(20px,3vw,44px)] py-[clamp(24px,3vw,40px)]">
+        <!-- 1 -->
+        <section class="flex flex-col gap-3.5">
+          <h3 class="m-0 font-display text-[clamp(19px,1.9vw,26px)] font-bold leading-[1.16] tracking-[-0.028em] text-pitch">
+            1. Demystifying the Black Box Through Whimsy
+          </h3>
+          <p class="m-0 max-w-[74ch] text-pretty text-[clamp(14.5px,1.15vw,17px)] leading-[1.65] text-ink-soft">
+            If you pick up a conventional machine learning textbook, you are
+            often greeted by dense linear algebra, probability mass
+            functions, and Greek notation before you ever build a working
+            system. It can feel like being thrown into a Test match on a
+            crumbling day-five pitch against a 150km/h pace bowler — without
+            pads or a helmet.
+          </p>
+          <p class="m-0 max-w-[74ch] text-pretty text-[clamp(14.5px,1.15vw,17px)] leading-[1.65] text-ink-soft">
+            <em>The Playing XI</em> was built on a core belief: <strong class="text-pitch">Machine
+            learning isn't magic, and it certainly shouldn't be dry.</strong>
+          </p>
+          <p class="m-0 max-w-[74ch] text-pretty text-[clamp(14.5px,1.15vw,17px)] leading-[1.65] text-ink-soft">
+            When I strip away the academic jargon, machine learning is simply
+            about making tactical decisions under uncertainty, observing the
+            outcome, and making small adjustments. Which, as any cricket
+            follower knows, is the exact definition of a long session at the
+            crease.
+          </p>
+          <p class="m-0 max-w-[74ch] text-pretty text-[clamp(14.5px,1.15vw,17px)] leading-[1.65] text-ink-soft">
+            By using whimsical analogies, I anchor complex algorithmic
+            mechanics into vivid, memorable mental models:
+          </p>
 
-            <p class="m-0 font-mono text-[10.5px] tracking-[0.06em] text-slate-custom">
-              {inn.subtitle}
+          <div class="grid grid-cols-[repeat(auto-fit,minmax(230px,1fr))] gap-3 pt-0.5">
+            {
+              analogies.map((a) => (
+                <div class="flex flex-col gap-2 rounded-xl border border-line border-t-[3px] border-t-gold bg-card px-4.5 py-4">
+                  <span class="font-display text-[16.5px] font-bold tracking-[-0.02em] text-pitch">
+                    {a.term}
+                  </span>
+                  <span class="text-pretty text-[13.5px] leading-[1.55] text-slate-custom">
+                    {a.text}
+                  </span>
+                </div>
+              ))
+            }
+          </div>
+        </section>
+
+        <!-- 2 -->
+        <section class="flex flex-col gap-3.5 border-t border-line pt-[clamp(10px,1.2vw,16px)]">
+          <h3 class="m-0 font-display text-[clamp(19px,1.9vw,26px)] font-bold leading-[1.16] tracking-[-0.028em] text-pitch">
+            2. Learning Without Fear of Failure
+          </h3>
+          <p class="m-0 max-w-[74ch] text-pretty text-[clamp(14.5px,1.15vw,17px)] leading-[1.65] text-ink-soft">
+            In cricket, even the greatest batters fail more than half the
+            time. An edge through the slips still counts as four runs, and a
+            scratchy 20 under pressure can win a match.
+          </p>
+          <p class="m-0 max-w-[74ch] text-pretty text-[clamp(14.5px,1.15vw,17px)] leading-[1.65] text-ink-soft">
+            Studying machine learning should feel the same way:
+          </p>
+          <div class="flex flex-col gap-2.5">
+            {
+              principles.map((p) => (
+                <div class="flex gap-3.5 rounded-xl border border-line bg-card px-4 py-3.5">
+                  <span class="flex h-[28px] w-[28px] flex-none items-center justify-center rounded-[8px] bg-gold font-mono text-[11px] text-pitch">
+                    {p.n}
+                  </span>
+                  <span class="min-w-0 flex-1 text-pretty text-[clamp(14px,1.1vw,16.5px)] leading-[1.6] text-ink-soft">
+                    <strong class="text-pitch">{p.term}</strong> {p.text}
+                  </span>
+                </div>
+              ))
+            }
+          </div>
+        </section>
+
+        <!-- 3 -->
+        <section class="flex flex-col gap-3.5 border-t border-line pt-[clamp(10px,1.2vw,16px)]">
+          <h3 class="m-0 font-display text-[clamp(19px,1.9vw,26px)] font-bold leading-[1.16] tracking-[-0.028em] text-pitch">
+            3. Reading the Ground Rules
+          </h3>
+          <p class="m-0 max-w-[74ch] text-pretty text-[clamp(14.5px,1.15vw,17px)] leading-[1.65] text-ink-soft">
+            Here is how to navigate this broadcast suite:
+          </p>
+          <div class="grid grid-cols-[repeat(auto-fit,minmax(240px,1fr))] gap-px overflow-hidden rounded-xl border border-line bg-line">
+            {
+              groundRules.map((g) => (
+                <div class="flex flex-col gap-2 bg-white px-4.5 py-4">
+                  <span class="font-mono text-[10px] uppercase tracking-[0.16em] text-gold-deep">
+                    {g.k}
+                  </span>
+                  <span class="font-display text-[17px] font-bold tracking-[-0.022em] text-pitch">
+                    {g.term}
+                  </span>
+                  <span class="text-pretty text-[13.5px] leading-[1.55] text-slate-custom">
+                    {g.text}
+                  </span>
+                </div>
+              ))
+            }
+          </div>
+        </section>
+
+        <!-- 4 -->
+        <section class="flex flex-col gap-3.5 border-t border-line pt-[clamp(10px,1.2vw,16px)]">
+          <h3 class="m-0 font-display text-[clamp(19px,1.9vw,26px)] font-bold leading-[1.16] tracking-[-0.028em] text-pitch">
+            4. Take Your Guard
+          </h3>
+          <p class="m-0 max-w-[74ch] text-pretty text-[clamp(14.5px,1.15vw,17px)] leading-[1.65] text-ink-soft">
+            You don't need a Ph.D. in computer science to read this guide,
+            nor do you need to know every nuance of the
+            Duckworth-Lewis-Stern method.
+          </p>
+          <p class="m-0 max-w-[74ch] text-pretty text-[clamp(14.5px,1.15vw,17px)] leading-[1.65] text-ink-soft">
+            Whether you are a seasoned data practitioner looking for a fresh
+            perspective on system design, or a curious cricket fan wondering
+            how predictive algorithms actually work under the hood, step
+            into the nets, take your guard, and enjoy the innings.
+          </p>
+        </section>
+
+        <aside class="flex gap-3.5 rounded-xl border-l-[3px] border-l-gold bg-card px-4.5 py-4">
+          <div class="flex h-[36px] w-[36px] flex-none items-center justify-center rounded-full bg-pitch font-mono text-[10.5px] text-gold">
+            CB
+          </div>
+          <div class="flex min-w-0 flex-col gap-1.5">
+            <span class="font-mono text-[9px] uppercase tracking-[0.18em] text-slate-custom">
+              From the commentary box
+            </span>
+            <p class="m-0 text-pretty text-[15px] leading-[1.55] text-ink">
+              'In cricket, as in statistical modelling, you can do everything
+              right for five days and still get rained out.' &mdash; The
+              Scorer
             </p>
-            <ul class="m-0 mt-1 flex list-none flex-col gap-1.5 p-0">
-              {inn.chapters.map((c, j) => (
-                <li>
+          </div>
+        </aside>
+
+        <div class="grid grid-cols-[repeat(auto-fit,minmax(140px,1fr))] gap-px overflow-hidden rounded-xl border border-line bg-line">
+          {
+            prefaceStats.map((st) => (
+              <div class="flex flex-col gap-1.5 bg-white px-4.5 py-4">
+                <span class="font-mono text-[9.5px] uppercase tracking-[0.16em] text-slate-custom">
+                  {st.k}
+                </span>
+                <span class="font-display text-[21px] font-bold leading-none tracking-[-0.028em] text-pitch">
+                  {st.v}
+                </span>
+                <span class="text-[12px] text-gray-500">{st.s}</span>
+              </div>
+            ))
+          }
+        </div>
+      </article>
+    </main>
+
+    <!-- Session cards -->
+    <section class="flex flex-col gap-[clamp(12px,1.2vw,18px)]">
+      <div class="flex flex-wrap items-baseline gap-3.5 px-1">
+        <h2 class="m-0 font-display text-[clamp(22px,2.2vw,32px)] font-bold leading-[1.1] tracking-[-0.03em] text-pitch">
+          The card
+        </h2>
+        <span class="font-mono text-[10.5px] uppercase tracking-[0.14em] text-slate-custom">
+          {innings.length} sessions &middot; {totalChapters} chapters &middot; one match
+        </span>
+      </div>
+
+      <div class="grid grid-cols-[repeat(auto-fit,minmax(300px,1fr))] gap-[clamp(12px,1.2vw,18px)]">
+        {
+          innings.map((inn) => (
+            <div class="flex flex-col gap-3.5 rounded-2xl bg-white p-[clamp(18px,1.8vw,24px)] shadow-[0_1px_0_rgba(11,15,13,.04)]">
+              <div class="flex items-baseline justify-between gap-3.5">
+                <span class="font-mono text-[11px] tracking-[0.06em] text-gold-deep">
+                  0{inn.number}
+                </span>
+                <span class="font-mono text-[9.5px] uppercase tracking-[0.14em] text-slate-custom">
+                  {inn.chapters.length} chapters
+                </span>
+              </div>
+              <div class="flex flex-col gap-1.5">
+                <h3 class="m-0 text-balance font-display text-[clamp(19px,1.8vw,24px)] font-bold leading-[1.12] tracking-[-0.028em] text-pitch">
+                  <a href={url(`${inn.slug}/`)} class="text-inherit no-underline">
+                    {inn.title}
+                  </a>
+                </h3>
+                <span class="text-pretty font-mono text-[10.5px] tracking-[0.03em] text-slate-custom">
+                  {inn.subtitle}
+                </span>
+              </div>
+              <div class="flex flex-col gap-1.5">
+                {inn.chapters.map((c, j) => (
                   <a
                     href={url(`${inn.slug}/${c.slug}/`)}
-                    class="group flex w-full items-center gap-3 rounded-lg border border-gray-100 bg-gray-50 px-3 py-2.5 no-underline transition-all hover:border-gray-300 hover:bg-emerald-950/10"
+                    class="flex items-center gap-3 rounded-[10px] bg-card px-3.5 py-3 text-pitch no-underline transition-colors hover:bg-[#FBF6E2]"
                   >
-                    <span class="flex-none rounded bg-amber-100/60 px-2 py-0.5 font-mono text-xs font-semibold text-amber-700">
+                    <span class="w-[24px] flex-none font-mono text-[11px] text-gold-deep">
                       {inn.index + 1}.{j + 1}
                     </span>
-                    <span class="min-w-0 flex-1 text-[13.5px] text-ink-soft">
+                    <span class="min-w-0 flex-1 text-[14.5px] font-medium text-pitch">
                       {c.nav}
                     </span>
-                    <span
-                      class="ml-auto flex-none font-mono text-[13px] text-gold-deep transition-transform group-hover:translate-x-0.5"
-                      aria-hidden="true"
-                    >
+                    <span class="flex-none font-mono text-[12px] text-gold-deep" aria-hidden="true">
                       &rarr;
                     </span>
                   </a>
-                </li>
-              ))}
+                ))}
+              </div>
+              <a
+                href={url(`${inn.slug}/`)}
+                class="self-start font-mono text-[10px] uppercase tracking-[0.16em] text-gold-deep no-underline transition-colors hover:text-pitch"
+              >
+                Pad up &amp; read &rarr;
+              </a>
+            </div>
+          ))
+        }
 
-            </ul>
-            <a
-              href={url(`${inn.slug}/`)}
-              class="mt-1 font-mono text-[10px] uppercase tracking-[0.14em] text-gold-deep no-underline transition-colors hover:text-pitch group-hover:text-pitch"
-            >
-              Pad up & Read →
-            </a>
+        <div class="flex flex-col gap-3.5 rounded-2xl bg-pitch p-[clamp(18px,1.8vw,24px)]">
+          <div class="flex items-baseline justify-between gap-3.5">
+            <span class="font-mono text-[11px] tracking-[0.06em] text-gold">
+              0{innings.length + 1}
+            </span>
+            <span class="font-mono text-[9.5px] uppercase tracking-[0.14em] text-mist">
+              15 questions
+            </span>
           </div>
-        ))
-      }
-
-    </div>
+          <div class="flex flex-col gap-2">
+            <h3 class="m-0 font-display text-[clamp(19px,1.8vw,24px)] font-bold leading-[1.12] tracking-[-0.028em] text-white">
+              Practice Nets
+            </h3>
+            <p class="m-0 text-pretty text-[14px] leading-[1.6] text-mist-light">
+              Every concept comes with runnable code. Tweak the parameters,
+              mess up the inputs, and see where the model breaks — then face
+              ten throw downs and five in the nets.
+            </p>
+          </div>
+          <a
+            href={url("practice-nets/")}
+            class="inline-flex h-[46px] w-fit items-center gap-2.5 rounded-[11px] bg-gold px-5 font-sans text-[15px] font-semibold text-pitch transition-colors hover:bg-gold-light"
+          >
+            Head to the nets
+            <span class="font-mono text-[14px]">&rarr;</span>
+          </a>
+        </div>
+      </div>
+    </section>
   </div>
 </BaseLayout>
