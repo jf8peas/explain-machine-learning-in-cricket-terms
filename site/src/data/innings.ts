@@ -26,6 +26,8 @@ export interface Chapter {
   codeOut: string;
   code: string;
   stats: Stat[];
+  /** Set to false to permanently exclude this chapter from the quiz bank — skip it when (re)generating questions */
+  quiz?: boolean;
 }
 
 export interface Innings {
@@ -73,6 +75,7 @@ print("author registered · 1 scorer on duty")`,
           { k: "Chapters", v: "12", s: "across the season" },
           { k: "Umpire", v: "You", s: "the final call" },
         ],
+        quiz: false,
       },
       {
         slug: "how-this-site-was-built",
@@ -95,6 +98,7 @@ print("author registered · 1 scorer on duty")`,
           { k: "Framework", v: "Astro", s: "zero-JS static output" },
           { k: "Hosting", v: "GH Pages", s: "automated action deployment" },
         ],
+        quiz: false,
       },
     ],
   },
@@ -131,6 +135,7 @@ python -c "import sklearn; print(sklearn.__version__)"`,
           { k: "Cold build", v: "92s", s: "CI from lockfile" },
           { k: "Drift", v: "0", s: "since lock committed" },
         ],
+        quiz: false,
       },
       {
         slug: "ml-workflow",
@@ -186,6 +191,7 @@ clf.predict_proba(this_over)      # array([[0.82, 0.18]])`,
           { k: "Same Pitch", v: "Different Question", s: "the target column decides" },
           { k: "Wrong Question", v: "Wrong Everything", s: "model, metric, meaning" },
         ],
+        quiz: false,
       },
       {
         slug: "feature-engineering",

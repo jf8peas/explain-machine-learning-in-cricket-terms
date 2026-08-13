@@ -34,10 +34,11 @@ const eyebrow = `${inn.short} · Over ${over}`;
 const readTime = fm.meta.split(" · ")[0];
 const codeLines = (fm.code ?? "").split("\n");
 
-// Check if the current chapter has any questions in the quiz bank
-const hasQuizQuestions = (quizBank as Array<{ chapterId: string }>).some(
-  (q) => q.chapterId === fm.chapter,
-);
+// Show the practice nets callout only if this chapter opts into the quiz bank
+// and actually has questions there
+const hasQuizQuestions =
+  ctx.chapter.quiz !== false &&
+  (quizBank as Array<{ chapterId: string }>).some((q) => q.chapterId === fm.chapter);
 ---
 
 <BaseLayout title={fm.title} description={fm.lede} section={inn.slug}>
