@@ -36,6 +36,7 @@ const totalQuizChapters = new Set((quizBank as { chapterId: string }[]).map((q) 
       <span class="font-sans text-[12.5px] text-slate-custom">Chapters completed</span>
       <span
         id="lhn-chapters-completed"
+        data-total={totalChapters}
         class="font-mono text-[12.5px] font-medium text-pitch"
         >0 / {totalChapters}</span
       >
@@ -107,10 +108,10 @@ const totalQuizChapters = new Set((quizBank as { chapterId: string }[]).map((q) 
   /** Re-render every progress-aware element in the card from storage. */
   function refresh(): void {
     const data = loadProgress();
-    const total = Number(chaptersEl?.dataset.total ?? 28);
+    const total = Number(chaptersEl?.dataset.total);
     const done = data.completedChapters.length;
     if (chaptersEl) chaptersEl.textContent = `${done} / ${total}`;
-    const exTotal = Number(exercisesEl?.dataset.total ?? 24);
+    const exTotal = Number(exercisesEl?.dataset.total);
     if (exercisesEl) exercisesEl.textContent = `${data.passedQuizChapters.length} / ${exTotal}`;
     if (streakEl) {
       const n = data.streak.count;

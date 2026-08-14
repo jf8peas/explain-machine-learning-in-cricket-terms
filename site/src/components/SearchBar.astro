@@ -3,12 +3,14 @@
  * Header search — Pagefind-powered static search with a dropdown result panel.
  * Mirrors the design in `design/v002/The Playing XI (Current)`.
  */
+import { totalChapters } from "../data/innings";
+
 interface Props {
   /** Placeholder text shown in the input */
   placeholder?: string;
 }
 
-const { placeholder = "Search all 24 chapters" } = Astro.props;
+const { placeholder = `Search all ${totalChapters} chapters` } = Astro.props;
 ---
 
 <div class="relative flex-1 basis-[240px] max-w-[360px] min-w-[210px] py-2">

@@ -726,15 +726,15 @@ model.compile(optimizer="adam", loss="binary_crossentropy",
     number: "6",
     title: "Post-Game: Agent Solutions",
     short: "Post-Game",
-    subtitle: "Architecture · Reviewer Agent · Agent Tools",
+    subtitle: "Architecture · Division of Labor · Tools · Execution",
     chapters: [
       {
         slug: "architecture",
         nav: "Agent Architecture",
-        meta: "12 min · the dressing room",
+        meta: "14 min · one all-rounder or a full xi",
         title: "Agent Architecture",
-        subtitle: "The Dressing Room",
-        lede: "A single model is one player. Agent architecture is the dressing room around them — a captain who decides, specialists who execute, and an analyst who remembers what happened in the last six matches.",
+        subtitle: "One All-Rounder or a Full Dressing Room",
+        lede: "An agent working an ML problem can play it two ways: one all-rounder looping through every tool themselves, or a full XI where a captain routes the work to specialists. Both are legitimate team sheets — the mistake is picking one out of habit instead of matching it to the job.",
         commentary: "The captain does not bowl every over. That is the entire idea.",
         codeFile: "post_game/dressing_room.py",
         codeOut: "turn 3/8 · handoff → stats_specialist",
@@ -753,10 +753,10 @@ def play(question, max_overs=8):
         if captain.is_settled(memory):
             return captain.summarise(memory)`,
         stats: [
+          { k: "Patterns", v: "2", s: "ReAct loop vs multi-agent XI" },
           { k: "Agents", v: "4", s: "captain + 3 specialists" },
-          { k: "Max overs", v: "8", s: "hard step cap" },
-          { k: "Handoffs", v: "3", s: "this session" },
-          { k: "Logged", v: "100%", s: "every decision" },
+          { k: "Max overs", v: "8", s: "hard step cap, either pattern" },
+          { k: "Feedback", v: "Bidirectional", s: "a bad over changes the last one" },
         ],
       },
       {
@@ -821,6 +821,99 @@ def match_stats(match_id, timeout=5, limit=50):
           { k: "Timeout", v: "5s", s: "per call" },
           { k: "Row cap", v: "50", s: "hard limit" },
           { k: "Access", v: "Read", s: "no writes, ever" },
+        ],
+      },
+      {
+        slug: "director-and-executor",
+        nav: "Director and Executor",
+        meta: "12 min · who owns the toss",
+        title: "Director and Executor",
+        subtitle: "Why AI Agents Don't Take Vacations (And Why You Can't Either)",
+        lede: "Hand an agent the dataset and it will happily hand you back a model — confidently, quickly, and sometimes built on a rule it invented to get there. The agent can run the drill. It cannot decide what the drill is for.",
+        commentary: "'The kit man doesn't set the batting order.' — Head Coach",
+        codeFile: "post_game/guardrails.py",
+        codeOut: "split rejected: val window starts before train window ends",
+        code: `def make_split(df, cutoff_date):
+    # A Director's rule, enforced in code an Executor can't route around
+    train = df[df.match_date < cutoff_date]
+    val = df[df.match_date >= cutoff_date]
+
+    if val.match_date.min() <= train.match_date.max():
+        raise ValueError("split rejected: val window starts before train window ends")
+
+    return train, val`,
+        stats: [
+          { k: "Owns", v: "Loss & Leakage Rules", s: "the Director (human)" },
+          { k: "Executes", v: "Sweeps & Logging", s: "the Executor (agent)" },
+          { k: "Leakage caught", v: "1 in 6 runs", s: "unguarded temporal splits" },
+          { k: "Vacation Policy", v: "None", s: "someone still owns the toss" },
+        ],
+      },
+      {
+        slug: "classical-vs-deep-learning-agents",
+        nav: "Classical vs Deep Learning Agents",
+        meta: "12 min · feature factory vs training floor",
+        title: "Classical vs Deep Learning Agents",
+        subtitle: "From Feature Factories to Gradient Descent Supervision",
+        lede: "An agent sweeping a tabular model and an agent training a network are not doing variations on the same job. One spends its overs inventing columns. The other spends them watching a loss curve for signs of trouble it can't undo after the fact.",
+        commentary:
+          "'One squad drills fielding positions. The other watches the scoreboard tick over ball by ball. Different net, different session.' — Data Analyst",
+        codeFile: "post_game/training_supervisor.py",
+        codeOut: "epoch 14 · val loss ↑ 3 in a row → lr 3e-4 → 6e-5, patience reset",
+        code: `best_val, bad_epochs = float("inf"), 0
+
+for epoch in range(max_epochs):
+    train_loss = run_epoch(model, train_loader, optimizer)
+    val_loss = evaluate(model, val_loader)
+
+    if val_loss < best_val:
+        best_val, bad_epochs = val_loss, 0
+        save_checkpoint(model)
+    else:
+        bad_epochs += 1
+
+    if bad_epochs == 3:
+        decay_learning_rate(optimizer, factor=0.2)
+        bad_epochs = 0
+    if bad_epochs >= patience:
+        break  # stop the innings, best checkpoint already saved`,
+        stats: [
+          { k: "Tabular loop", v: "Feature Factory", s: "interactions, dummies, SHAP prune" },
+          { k: "Deep loop", v: "Training Supervisor", s: "loss curves, LR schedule, memory" },
+          { k: "Deep stop signal", v: "Val loss ↑", s: "3 epochs running" },
+          { k: "Tabular stop signal", v: "ΔScore < 0.001", s: "next candidate feature" },
+        ],
+      },
+      {
+        slug: "execution-environments",
+        nav: "Execution Environments",
+        meta: "11 min · where the agent actually runs",
+        title: "Execution Environments",
+        subtitle: "Keeping the Agent from Burning Down the Pavilion",
+        lede: "A human exploring a dataset in a notebook is doing careful, improvised net practice — running cells out of order on purpose, keeping useful state around, backtracking freely. Point an agent at the same notebook and every one of those habits becomes a way to quietly corrupt the innings.",
+        commentary:
+          "'Nets are for the players. The agent gets a clean pitch, a fresh scorecard, and a timer.' — Lead Systems Engineer",
+        codeFile: "post_game/sandbox_runner.py",
+        codeOut: "attempt 1: NameError → patched import → attempt 2: exit 0 (1.8s)",
+        code: `import subprocess
+
+def run_in_sandbox(script_path, timeout=120):
+    result = subprocess.run(
+        ["python", script_path],
+        capture_output=True, text=True, timeout=timeout,
+        cwd="/sandbox", env={"PYTHONDONTWRITEBYTECODE": "1"},
+    )
+    return result.returncode, result.stdout, result.stderr
+
+code, out, err = run_in_sandbox("attempt.py")
+if code != 0:
+    fixed = agent.patch(script="attempt.py", traceback=err)
+    code, out, err = run_in_sandbox(fixed)`,
+        stats: [
+          { k: "State", v: "Fresh", s: "every run, no hidden globals" },
+          { k: "Isolation", v: "Container", s: "docker / e2b sandbox" },
+          { k: "Timeout", v: "120s", s: "per script execution" },
+          { k: "Notebook access", v: "Human only", s: "agents write .py" },
         ],
       },
     ],

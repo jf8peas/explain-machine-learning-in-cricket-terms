@@ -12434,236 +12434,6 @@
     ]
   },
   {
-    "id": "mcq-architecture-01",
-    "type": "mcq",
-    "chapterId": "architecture",
-    "chapterTitle": "6.1 Agent Architecture",
-    "sourceUrl": "/post-game/architecture/",
-    "question": "In this multi-agent architecture, what is the captain's role?",
-    "options": [
-      "To answer every question directly using its own knowledge",
-      "To route each question to the appropriate specialist, without answering it directly itself",
-      "To execute SQL queries against the match database",
-      "To retrieve and describe video footage"
-    ],
-    "correctAnswerIndex": 1,
-    "explanation": "The roster defines the captain as the one who routes the question, and never answers it."
-  },
-  {
-    "id": "mcq-architecture-02",
-    "type": "mcq",
-    "chapterId": "architecture",
-    "chapterTitle": "6.1 Agent Architecture",
-    "sourceUrl": "/post-game/architecture/",
-    "question": "Why does the system enforce a max_overs hard cap on the number of steps an agent loop can take?",
-    "options": [
-      "To save on captain salary costs",
-      "To prevent endless, expensive, unproductive loops — an uncapped agent loop is described as an 'endless rain delay'",
-      "Because scikit-learn requires a maximum iteration count",
-      "To ensure exactly 8 specialists are always consulted"
-    ],
-    "correctAnswerIndex": 1,
-    "explanation": "Uncapped agent loops are expensive and going nowhere; the step cap forces the captain to declare when the answer is settled."
-  },
-  {
-    "id": "mcq-architecture-03",
-    "type": "mcq",
-    "chapterId": "architecture",
-    "chapterTitle": "6.1 Agent Architecture",
-    "sourceUrl": "/post-game/architecture/",
-    "question": "What is the analyst's specific role in this architecture?",
-    "options": [
-      "Routing questions to other agents",
-      "Keeping long-term memory across sessions, so the system doesn't relitigate the same issue repeatedly",
-      "Retrieving video footage only",
-      "Enforcing the step cap"
-    ],
-    "correctAnswerIndex": 1,
-    "explanation": "The analyst keeps memory across sessions so the side stops relitigating last week's collapse."
-  },
-  {
-    "id": "mcq-architecture-04",
-    "type": "mcq",
-    "chapterId": "architecture",
-    "chapterTitle": "6.1 Agent Architecture",
-    "sourceUrl": "/post-game/architecture/",
-    "question": "In the play() loop, what does the `memory` list accumulate across turns?",
-    "options": [
-      "A running list of (role, result) tuples for every specialist call made so far",
-      "Only the final summarised answer",
-      "A confidence score for each turn",
-      "A cached copy of the entire match database"
-    ],
-    "correctAnswerIndex": 0,
-    "explanation": "Each iteration appends memory.append((role, result)), so memory is the accumulated history of which specialist was called and what it returned, giving the captain full context for its next decision."
-  },
-  {
-    "id": "mcq-architecture-05",
-    "type": "mcq",
-    "chapterId": "architecture",
-    "chapterTitle": "6.1 Agent Architecture",
-    "sourceUrl": "/post-game/architecture/",
-    "question": "What actually causes the play() loop to exit before reaching the max_overs limit?",
-    "options": [
-      "A fixed wall-clock timer expiring",
-      "captain.is_settled(memory) returning True after a given turn",
-      "The video specialist running out of footage to describe",
-      "The stats specialist's database query timing out"
-    ],
-    "correctAnswerIndex": 1,
-    "explanation": "After each handoff, the loop checks if captain.is_settled(memory) and returns captain.summarise(memory) immediately if true, independent of how many overs remain in the max_overs budget."
-  },
-  {
-    "id": "mcq-architecture-06",
-    "type": "mcq",
-    "chapterId": "architecture",
-    "chapterTitle": "6.1 Agent Architecture",
-    "sourceUrl": "/post-game/architecture/",
-    "question": "The chapter notes every handoff is logged (100%). Why log each intermediate decision rather than only the final answer?",
-    "options": [
-      "So each individual routing decision and specialist result can be audited, letting you trace exactly which step produced a wrong output",
-      "Because logging intermediate steps makes the system run faster",
-      "So the captain can skip calling is_settled entirely",
-      "Because only the final answer is ever wrong in practice"
-    ],
-    "correctAnswerIndex": 0,
-    "explanation": "In a multi-step loop, a bad final answer could stem from any single handoff; logging every decision turns the loop into an auditable trace rather than a black box."
-  },
-  {
-    "id": "mcq-architecture-07",
-    "type": "mcq",
-    "chapterId": "architecture",
-    "chapterTitle": "6.1 Agent Architecture",
-    "sourceUrl": "/post-game/architecture/",
-    "question": "What is a plausible downside of splitting one job across a captain plus three specialists instead of using a single generalist model?",
-    "options": [
-      "It becomes impossible to enforce a step cap",
-      "Each additional handoff adds a routing decision and consumes one of the limited overs, increasing latency and steps used compared to a single model answering directly",
-      "Specialists are no longer able to use their own tools or prompts",
-      "The system can no longer keep any memory of prior turns"
-    ],
-    "correctAnswerIndex": 1,
-    "explanation": "Because every specialist call is one of the max_overs steps and requires a routing decision first, more handoffs mean more latency and step budget consumed than a single model answering in one shot."
-  },
-  {
-    "id": "mcq-architecture-08",
-    "type": "mcq",
-    "chapterId": "architecture",
-    "chapterTitle": "6.1 Agent Architecture",
-    "sourceUrl": "/post-game/architecture/",
-    "question": "The loop dispatches work with ROSTER_AGENTS[role].run(task), where role comes from captain.decide(). What does this pattern make easy?",
-    "options": [
-      "Removing the max_overs cap entirely",
-      "Adding a new specialist mainly by registering it in the roster and letting the captain route to it, without rewriting the core loop",
-      "Skipping the memory.append step for new specialists",
-      "Making the captain answer questions directly instead of routing them"
-    ],
-    "correctAnswerIndex": 1,
-    "explanation": "Because dispatch is a dynamic lookup keyed by role, extending the system with a new specialist is mostly a matter of registering it and updating routing logic, not restructuring play()."
-  },
-  {
-    "id": "mcq-architecture-09",
-    "type": "mcq",
-    "chapterId": "architecture",
-    "chapterTitle": "6.1 Agent Architecture",
-    "sourceUrl": "/post-game/architecture/",
-    "question": "What would likely go wrong if captain.decide() always returned the same specialist regardless of the question asked?",
-    "options": [
-      "Nothing — the specialists are fully interchangeable",
-      "It would defeat the point of having multiple specialists, since questions best handled by a different agent would get routed to the wrong one and produce weak results",
-      "max_overs would automatically increase to compensate",
-      "The analyst would silently take over routing instead"
-    ],
-    "correctAnswerIndex": 1,
-    "explanation": "The value of a router is discriminating between question types; a captain that ignores the question's content and always picks the same specialist isn't really routing at all."
-  },
-  {
-    "id": "mcq-architecture-10",
-    "type": "mcq",
-    "chapterId": "architecture",
-    "chapterTitle": "6.1 Agent Architecture",
-    "sourceUrl": "/post-game/architecture/",
-    "question": "The chapter distinguishes the loop-local `memory` list from the analyst's memory. What is the key difference?",
-    "options": [
-      "There is no difference; they refer to the same data structure",
-      "The `memory` list holds only the current play() call's handoffs, while the analyst keeps long-term memory that persists across separate sessions",
-      "The analyst has no access to memory at all",
-      "The `memory` list is discarded before is_settled is ever checked"
-    ],
-    "correctAnswerIndex": 1,
-    "explanation": "The loop's memory list is scoped to one play() invocation, while the chapter states the analyst keeps memory across sessions specifically so the system doesn't relitigate the same issue repeatedly."
-  },
-  {
-    "id": "sa-architecture-01",
-    "type": "short_answer",
-    "chapterId": "architecture",
-    "chapterTitle": "6.1 Agent Architecture",
-    "sourceUrl": "/post-game/architecture/",
-    "question": "Explain why an agent 'captain' should route questions to specialist agents rather than answer them directly.",
-    "modelAnswer": "A captain-style routing agent reads each incoming question and decides which specialist — for example a stats agent, a retrieval agent, or an analyst agent — is best equipped to handle it, rather than trying to answer everything itself with general-purpose knowledge. Splitting one broad, general-purpose job into several narrower, well-equipped specialist jobs produces more reliable results than asking one generalist model to do everything, since each specialist can be tuned, prompted, or tooled specifically for its narrow task.",
-    "rubric": [
-      "Explains the captain agent's job is routing or deciding, not directly answering",
-      "States the benefit of splitting one big job into specialist sub-tasks",
-      "Connects this to more reliable or accurate results versus a single generalist model"
-    ]
-  },
-  {
-    "id": "sa-architecture-02",
-    "type": "short_answer",
-    "chapterId": "architecture",
-    "chapterTitle": "6.1 Agent Architecture",
-    "sourceUrl": "/post-game/architecture/",
-    "question": "What would likely go wrong in an agent system without a max_overs-style step cap, according to the chapter's reasoning?",
-    "modelAnswer": "Without a hard cap on the number of steps or turns an agent loop can take, the system risks running indefinitely, described as an endless rain delay, burning compute and time without necessarily converging on a settled answer. The step cap forces the captain to declare when the answer is settled within a bounded budget, which is what turns an open-ended chat model into something that reliably behaves like a structured team completing a task.",
-    "rubric": [
-      "States the risk of unbounded or endless loops without a cap",
-      "Connects this to wasted cost or compute",
-      "Notes the cap forces the system toward a bounded, structured conclusion"
-    ]
-  },
-  {
-    "id": "sa-architecture-03",
-    "type": "short_answer",
-    "chapterId": "architecture",
-    "chapterTitle": "6.1 Agent Architecture",
-    "sourceUrl": "/post-game/architecture/",
-    "question": "Explain what the max_overs parameter actually caps in play(), and what happens if captain.is_settled(memory) never returns True before that cap is reached.",
-    "modelAnswer": "max_overs caps the number of decide-execute-log handoff turns the for loop can run in a single play() call, defaulting to 8. If is_settled(memory) never becomes true within that budget, the for loop simply finishes without ever hitting the early return statement, so play() falls through without calling captain.summarise, meaning it returns nothing meaningful despite having used its full step budget. A more robust version would need an explicit fallback, such as forcing a best-effort summary once the cap is hit, rather than silently returning without a settled answer.",
-    "rubric": [
-      "Correctly states max_overs caps the number of loop iterations/handoffs in play()",
-      "Reasons that if is_settled never triggers, the loop ends without producing a summarised answer",
-      "Identifies this as a design gap that would need a fallback or forced summary"
-    ]
-  },
-  {
-    "id": "sa-architecture-04",
-    "type": "short_answer",
-    "chapterId": "architecture",
-    "chapterTitle": "6.1 Agent Architecture",
-    "sourceUrl": "/post-game/architecture/",
-    "question": "captain.decide(question, memory) is called fresh at the top of every loop iteration rather than once before the loop starts. What advantage does this give over a router that makes a single upfront routing decision?",
-    "modelAnswer": "Because captain.decide is called every iteration with access to the accumulated memory of prior handoffs, the captain can adapt its routing based on what has already been learned, for example calling the video specialist next because the stats specialist's result turned out to be insufficient. A one-shot router, by contrast, would commit to a single specialist for the whole question before any evidence had been gathered, and couldn't adjust if that specialist's output turned out to be incomplete or irrelevant.",
-    "rubric": [
-      "Notes captain.decide runs fresh every iteration with access to accumulated memory",
-      "Explains this enables adaptive re-routing based on prior specialist results",
-      "Contrasts this with a hypothetical one-shot, upfront-only routing decision and its limitation"
-    ]
-  },
-  {
-    "id": "sa-architecture-05",
-    "type": "short_answer",
-    "chapterId": "architecture",
-    "chapterTitle": "6.1 Agent Architecture",
-    "sourceUrl": "/post-game/architecture/",
-    "question": "The system logs 100% of handoffs, not just the final answer. Why does logging every intermediate step matter for debugging a multi-agent system?",
-    "modelAnswer": "The final answer in this system is the product of several intermediate handoffs, any one of which, a bad routing choice or a wrong specialist result, could be the actual source of an incorrect output. If only the final answer were logged, a wrong result would leave no trail explaining which specialist was called, what it returned, or why the captain chose it, making the failure very hard to diagnose. Logging every handoff turns the loop into an auditable decision trace, so a debugger can pinpoint exactly which step introduced the error rather than only seeing that the end result was wrong.",
-    "rubric": [
-      "States that the final answer alone hides which intermediate step caused a failure",
-      "Explains that full logging creates an auditable or traceable decision chain",
-      "Connects this to actually diagnosing or debugging agent behavior, not just observing outcomes"
-    ]
-  },
-  {
     "id": "mcq-drs-agent-01",
     "type": "mcq",
     "chapterId": "drs-agent",
@@ -13121,6 +12891,910 @@
       "Explains that non-malicious mistakes or overreach can still be costly without hard limits",
       "Notes that trusting intentions does not bound actual model behavior or output",
       "States that hard limits guard against ordinary error, not just malicious misuse, and so apply unconditionally"
+    ]
+  },
+  {
+    "id": "mcq-architecture-01",
+    "type": "mcq",
+    "chapterId": "architecture",
+    "chapterTitle": "6.1 Agent Architecture",
+    "sourceUrl": "/post-game/architecture/",
+    "question": "What distinguishes the ReAct pattern from a multi-agent team, per this chapter?",
+    "options": [
+      "ReAct always uses more agents than a multi-agent team",
+      "ReAct is one model looping through think, tool call, observation itself; a multi-agent team splits the job across several specialist agents",
+      "ReAct is only used for deep learning tasks",
+      "A multi-agent team never uses tools"
+    ],
+    "correctAnswerIndex": 1,
+    "explanation": "ReAct is a single all-rounder holding the whole scratchpad and looping through tool calls itself. A multi-agent team splits that job into several specialist agents coordinated by a captain."
+  },
+  {
+    "id": "mcq-architecture-02",
+    "type": "mcq",
+    "chapterId": "architecture",
+    "chapterTitle": "6.1 Agent Architecture",
+    "sourceUrl": "/post-game/architecture/",
+    "question": "According to the chapter, when does a single ReAct-loop agent stop being a good choice?",
+    "options": [
+      "When the task is small and well-scoped",
+      "When several things need doing in parallel, or a second opinion the same model can't credibly give itself",
+      "When there is only one tool available",
+      "Never — ReAct is always the better pattern"
+    ],
+    "correctAnswerIndex": 1,
+    "explanation": "The chapter says ReAct is good for small-to-medium jobs but stops being good once the job needs parallel work or a genuine second opinion."
+  },
+  {
+    "id": "mcq-architecture-03",
+    "type": "mcq",
+    "chapterId": "architecture",
+    "chapterTitle": "6.1 Agent Architecture",
+    "sourceUrl": "/post-game/architecture/",
+    "question": "In the multi-agent example code, what is the captain's role?",
+    "options": [
+      "To answer the question directly using its own knowledge",
+      "To route the question to the correct specialist and decide when the answer is settled",
+      "To query the match database directly",
+      "To retrieve and describe footage"
+    ],
+    "correctAnswerIndex": 1,
+    "explanation": "The captain never answers a question directly — it only decides who acts next and whether the accumulated answer is settled."
+  },
+  {
+    "id": "mcq-architecture-04",
+    "type": "mcq",
+    "chapterId": "architecture",
+    "chapterTitle": "6.1 Agent Architecture",
+    "sourceUrl": "/post-game/architecture/",
+    "question": "What does the max_overs step cap do in the multi-agent example?",
+    "options": [
+      "Sets a hard limit on model temperature",
+      "Caps the maximum number of specialist agents allowed",
+      "Places a hard limit on how many decision or handoff rounds the loop can run before it must stop",
+      "Determines how many database rows are returned"
+    ],
+    "correctAnswerIndex": 2,
+    "explanation": "The chapter compares an uncapped agent loop to an endless rain delay — expensive and going nowhere. The step cap forces a declared outcome."
+  },
+  {
+    "id": "mcq-architecture-05",
+    "type": "mcq",
+    "chapterId": "architecture",
+    "chapterTitle": "6.1 Agent Architecture",
+    "sourceUrl": "/post-game/architecture/",
+    "question": "Per the 'Picking a Team Sheet' comparison table, what is a typical failure mode of a single ReAct agent?",
+    "options": [
+      "A handoff drops context the next specialist needed",
+      "The loop rambles or repeats a tool with no new information",
+      "GPU memory overflow",
+      "A leaked feature inflates the validation score"
+    ],
+    "correctAnswerIndex": 1,
+    "explanation": "The table lists 'loop rambles or repeats a tool call with no new information' as ReAct's characteristic failure mode."
+  },
+  {
+    "id": "mcq-architecture-06",
+    "type": "mcq",
+    "chapterId": "architecture",
+    "chapterTitle": "6.1 Agent Architecture",
+    "sourceUrl": "/post-game/architecture/",
+    "question": "What is a typical failure mode of a multi-agent XI, per the same table?",
+    "options": [
+      "The loop rambles or repeats a tool with no new information",
+      "A handoff drops context that the next specialist actually needed",
+      "Validation loss diverges",
+      "Row cap exceeded"
+    ],
+    "correctAnswerIndex": 1,
+    "explanation": "The multi-agent failure mode in the table is a handoff dropping context the next specialist needed."
+  },
+  {
+    "id": "mcq-architecture-07",
+    "type": "mcq",
+    "chapterId": "architecture",
+    "chapterTitle": "6.1 Agent Architecture",
+    "sourceUrl": "/post-game/architecture/",
+    "question": "Why does the chapter say a multi-agent split can outperform one generalist model?",
+    "options": [
+      "Because more agents always means a better model",
+      "Because splitting one impossible job into several narrower, well-equipped specialist jobs beats one jack-of-all-trades model that's mediocre at everything",
+      "Because agents are cheaper to run than one large model",
+      "Because captain agents don't need any tools"
+    ],
+    "correctAnswerIndex": 1,
+    "explanation": "One model routing, querying, describing footage, and remembering everything ends up mediocre at all of it — the same reason a captain doesn't keep wicket and open the bowling."
+  },
+  {
+    "id": "mcq-architecture-08",
+    "type": "mcq",
+    "chapterId": "architecture",
+    "chapterTitle": "6.1 Agent Architecture",
+    "sourceUrl": "/post-game/architecture/",
+    "question": "According to 'Validation Has to Talk Back to Feature Engineering,' what should happen when evaluation finds a near-zero-importance or leaked feature?",
+    "options": [
+      "Nothing — evaluation is the final step and the pipeline should stop there",
+      "That result should feed backwards into feature pruning, and sometimes into imputation choices, before the next attempt runs",
+      "The feature should be kept regardless, since it already made it into training",
+      "The model should be retrained with the same features but a different algorithm"
+    ],
+    "correctAnswerIndex": 1,
+    "explanation": "The chapter is explicit that this finding has to travel backwards into earlier overs before the next attempt runs."
+  },
+  {
+    "id": "mcq-architecture-09",
+    "type": "mcq",
+    "chapterId": "architecture",
+    "chapterTitle": "6.1 Agent Architecture",
+    "sourceUrl": "/post-game/architecture/",
+    "question": "What does the chapter say is wrong with a strictly unidirectional pipeline script?",
+    "options": [
+      "It runs too slowly",
+      "It will happily ship a model built on a feature validation already condemned, since nothing lets it revisit earlier steps",
+      "It cannot call any tools",
+      "It requires GPU access"
+    ],
+    "correctAnswerIndex": 1,
+    "explanation": "A one-way-only script has no mechanism for evaluation's findings to change an earlier decision, so a condemned feature can ship anyway."
+  },
+  {
+    "id": "mcq-architecture-10",
+    "type": "mcq",
+    "chapterId": "architecture",
+    "chapterTitle": "6.1 Agent Architecture",
+    "sourceUrl": "/post-game/architecture/",
+    "question": "What does the chapter's ASCII diagram contrast?",
+    "options": [
+      "A notebook execution order against a sandboxed script",
+      "A ReAct think-then-tool-call loop against a captain-and-specialists multi-agent hierarchy",
+      "A training loop against a feature factory",
+      "A Director's rules against an Executor's sweep"
+    ],
+    "correctAnswerIndex": 1,
+    "explanation": "The diagram places the ReAct loop (thought/tool call cycle) beside the multi-agent hierarchy (captain branching to specialists)."
+  },
+  {
+    "id": "sa-architecture-01",
+    "type": "short_answer",
+    "chapterId": "architecture",
+    "chapterTitle": "6.1 Agent Architecture",
+    "sourceUrl": "/post-game/architecture/",
+    "question": "Explain the difference between the ReAct pattern and a multi-agent team, and describe one situation where each is the better choice.",
+    "modelAnswer": "ReAct is a single agent running its own think/tool-call/observation loop, holding the whole scratchpad itself, well suited to small well-scoped tasks with a tight tool set since there's no handoff to lose context across. A multi-agent team splits the work across several specialist agents coordinated by a captain, better suited to large tasks that split cleanly into distinct roles, since it allows parallelism and keeps each agent's prompt and tools small enough to get right.",
+    "rubric": [
+      "Describes ReAct as a single agent with its own scratchpad",
+      "Describes multi-agent as split specialists coordinated by a captain",
+      "Gives a correct scenario for at least one pattern"
+    ]
+  },
+  {
+    "id": "sa-architecture-02",
+    "type": "short_answer",
+    "chapterId": "architecture",
+    "chapterTitle": "6.1 Agent Architecture",
+    "sourceUrl": "/post-game/architecture/",
+    "question": "Why does the chapter insist on a hard step cap (max_overs) regardless of which architecture pattern is used?",
+    "modelAnswer": "Without a cap, an agent loop can run indefinitely without producing an answer — described as an 'endless rain delay' — burning compute with no guarantee of resolution. The cap forces whoever holds the loop, the lone agent or the captain, to declare the answer settled within a fixed number of steps, and every handoff gets logged along the way.",
+    "rubric": [
+      "States an uncapped loop can run indefinitely or never resolve",
+      "Mentions the cost / rain-delay framing",
+      "Notes the cap forces a declared or settled outcome"
+    ]
+  },
+  {
+    "id": "sa-architecture-03",
+    "type": "short_answer",
+    "chapterId": "architecture",
+    "chapterTitle": "6.1 Agent Architecture",
+    "sourceUrl": "/post-game/architecture/",
+    "question": "Describe what 'the pipeline is not an assembly line' means in the context of validation and feature engineering.",
+    "modelAnswer": "It means the stages of an ML pipeline — imputation, feature engineering, evaluation — shouldn't run strictly forward-only, where each stage hands off and is never revisited. When evaluation finds a problem, like a near-zero-importance or leaked feature, that finding needs to flow backwards into feature pruning or imputation choices before another attempt is trusted, rather than being noted in a final report only.",
+    "rubric": [
+      "Explains the assembly-line metaphor as one-directional, no revisiting",
+      "Explains evaluation results need to feed back into earlier stages",
+      "Gives a concrete example, such as pruning a leaked or low-importance feature"
+    ]
+  },
+  {
+    "id": "sa-architecture-04",
+    "type": "short_answer",
+    "chapterId": "architecture",
+    "chapterTitle": "6.1 Agent Architecture",
+    "sourceUrl": "/post-game/architecture/",
+    "question": "Using the dressing-room analogy, explain why the multi-agent captain never answers the question directly.",
+    "modelAnswer": "The captain's only job is to decide which specialist should handle the current task and to judge whether the accumulated answers settle the original question; answering directly would mean the captain is trying to do the specialists' jobs too, recreating the same jack-of-all-trades problem the multi-agent split was meant to avoid.",
+    "rubric": [
+      "States the captain routes or decides rather than answers",
+      "Connects this to avoiding the generalist-doing-everything problem"
+    ]
+  },
+  {
+    "id": "sa-architecture-05",
+    "type": "short_answer",
+    "chapterId": "architecture",
+    "chapterTitle": "6.1 Agent Architecture",
+    "sourceUrl": "/post-game/architecture/",
+    "question": "What is the practical difference in debugging effort between the ReAct pattern and a multi-agent team, according to the chapter's comparison table?",
+    "modelAnswer": "Debugging a ReAct agent means reading one transcript top to bottom, since there is only one scratchpad. Debugging a multi-agent team means first reading the captain's handoff log to see which specialist was involved, then drilling into that one specialist's own trace — a two-step process rather than one continuous read.",
+    "rubric": [
+      "Describes ReAct debugging as reading one transcript",
+      "Describes multi-agent debugging as handoff log then drill into a specialist"
+    ]
+  },
+  {
+    "id": "mcq-director-and-executor-01",
+    "type": "mcq",
+    "chapterId": "director-and-executor",
+    "chapterTitle": "6.4 Director and Executor",
+    "sourceUrl": "/post-game/director-and-executor/",
+    "question": "According to the chapter, what does the human Director never delegate to the agent Executor?",
+    "options": [
+      "Running cross-validation folds with different seeds",
+      "Deciding the target column and the success metric",
+      "Logging experiment results",
+      "Trying different imputation strategies"
+    ],
+    "correctAnswerIndex": 1,
+    "explanation": "The chapter states the agent doesn't get a vote on the target column, and problem formulation is not delegated."
+  },
+  {
+    "id": "mcq-director-and-executor-02",
+    "type": "mcq",
+    "chapterId": "director-and-executor",
+    "chapterTitle": "6.4 Director and Executor",
+    "sourceUrl": "/post-game/director-and-executor/",
+    "question": "In the make_split code example, what does the guard clause protect against?",
+    "options": [
+      "Missing values in the match_date column",
+      "The validation window starting before the training window has ended (temporal leakage)",
+      "Too many rows being returned",
+      "An agent calling the function with the wrong arguments"
+    ],
+    "correctAnswerIndex": 1,
+    "explanation": "The ValueError fires when the validation window's earliest date is not after the training window's latest date."
+  },
+  {
+    "id": "mcq-director-and-executor-03",
+    "type": "mcq",
+    "chapterId": "director-and-executor",
+    "chapterTitle": "6.4 Director and Executor",
+    "sourceUrl": "/post-game/director-and-executor/",
+    "question": "What is a 'target-encoding trap,' per the chapter?",
+    "options": [
+      "Encoding a categorical column using the mean target computed across the whole dataset, validation rows included, which leaks the answer into the feature",
+      "Using one-hot encoding instead of label encoding",
+      "Forgetting to encode a categorical column at all",
+      "Encoding the target variable itself instead of a feature"
+    ],
+    "correctAnswerIndex": 0,
+    "explanation": "The trap is fitting the encoding on the full dataset rather than the training fold only, letting validation information leak into the feature."
+  },
+  {
+    "id": "mcq-director-and-executor-04",
+    "type": "mcq",
+    "chapterId": "director-and-executor",
+    "chapterTitle": "6.4 Director and Executor",
+    "sourceUrl": "/post-game/director-and-executor/",
+    "question": "Why does the chapter say an unguided agent might over-index on a freak outlier?",
+    "options": [
+      "Because outliers always break the code with an error",
+      "Because keeping the outlier usually improves the training metric the agent is watching, even though it distorts the fit for everything else",
+      "Because agents cannot detect outliers at all",
+      "Because outliers are always data entry errors"
+    ],
+    "correctAnswerIndex": 1,
+    "explanation": "An agent chasing R² will let a single freak outlier drag the fit toward it, because keeping it usually improves the training metric."
+  },
+  {
+    "id": "mcq-director-and-executor-05",
+    "type": "mcq",
+    "chapterId": "director-and-executor",
+    "chapterTitle": "6.4 Director and Executor",
+    "sourceUrl": "/post-game/director-and-executor/",
+    "question": "What do temporal leakage, target-encoding traps, and over-indexing on outliers have in common, according to the chapter?",
+    "options": [
+      "They all throw runtime errors immediately",
+      "None of them throw an error — they all report a better score, which is why a rule above the metric is needed",
+      "They only occur in deep learning models",
+      "They are all caused by insufficient training data"
+    ],
+    "correctAnswerIndex": 1,
+    "explanation": "The chapter's close on this section is explicit: none of these throw an error, they all report a better score."
+  },
+  {
+    "id": "mcq-director-and-executor-06",
+    "type": "mcq",
+    "chapterId": "director-and-executor",
+    "chapterTitle": "6.4 Director and Executor",
+    "sourceUrl": "/post-game/director-and-executor/",
+    "question": "In the 'Team Sheet' table, who is responsible for approving the feature universe (what's fair game to derive)?",
+    "options": [
+      "The Executor (agent) alone",
+      "The Director (human)",
+      "Neither — it's decided automatically by the validation metric",
+      "A third-party reviewer agent"
+    ],
+    "correctAnswerIndex": 1,
+    "explanation": "The Director sets the data cleaning rules and approves what's fair game to derive as a feature."
+  },
+  {
+    "id": "mcq-director-and-executor-07",
+    "type": "mcq",
+    "chapterId": "director-and-executor",
+    "chapterTitle": "6.4 Director and Executor",
+    "sourceUrl": "/post-game/director-and-executor/",
+    "question": "What is the Executor (agent) responsible for regarding feature iteration, per the Team Sheet table?",
+    "options": [
+      "Approving which features are fair game to derive",
+      "Generating candidates, running the sweep, and logging what each one changed",
+      "Deciding the loss function",
+      "Setting the leakage boundary"
+    ],
+    "correctAnswerIndex": 1,
+    "explanation": "The Executor generates feature candidates, runs the sweep, and logs what each candidate changed."
+  },
+  {
+    "id": "mcq-director-and-executor-08",
+    "type": "mcq",
+    "chapterId": "director-and-executor",
+    "chapterTitle": "6.4 Director and Executor",
+    "sourceUrl": "/post-game/director-and-executor/",
+    "question": "What does the chapter say is worse than a human slowly setting the rules for a model?",
+    "options": [
+      "An agent that runs unattended with nobody actually setting those rules",
+      "Using a smaller model",
+      "Running the pipeline on a single CPU core",
+      "Skipping cross-validation entirely"
+    ],
+    "correctAnswerIndex": 0,
+    "explanation": "The chapter argues an agent running unattended doesn't remove the need for rules — it just means nobody is setting them, which is worse."
+  },
+  {
+    "id": "mcq-director-and-executor-09",
+    "type": "mcq",
+    "chapterId": "director-and-executor",
+    "chapterTitle": "6.4 Director and Executor",
+    "sourceUrl": "/post-game/director-and-executor/",
+    "question": "Why does the chapter argue that agent-generated feature sweeps are still valuable, despite the Director owning problem formulation?",
+    "options": [
+      "They aren't valuable — the chapter argues against using agents for this",
+      "Grinding through feature sweeps and logging every run is legitimate graft, just graft that happens inside rules someone else set",
+      "Because sweeps replace the need for a validation split",
+      "Because agents choose the loss function better than humans"
+    ],
+    "correctAnswerIndex": 1,
+    "explanation": "The chapter calls this 'legitimate, valuable graft' — just graft performed inside rules the Director set, not a substitute for setting them."
+  },
+  {
+    "id": "mcq-director-and-executor-10",
+    "type": "mcq",
+    "chapterId": "director-and-executor",
+    "chapterTitle": "6.4 Director and Executor",
+    "sourceUrl": "/post-game/director-and-executor/",
+    "question": "What does the chapter recommend an agent log during a sweep, beyond just the winning configuration?",
+    "options": [
+      "Nothing beyond the final model",
+      "Everything it tried, not just what won, so a Director can catch a cheat that happened several attempts earlier",
+      "Only the hyperparameters, not the results",
+      "Only the failed runs"
+    ],
+    "correctAnswerIndex": 1,
+    "explanation": "A Director who only sees the final model has no way to catch a cheat from an earlier attempt — full logging is required."
+  },
+  {
+    "id": "sa-director-and-executor-01",
+    "type": "short_answer",
+    "chapterId": "director-and-executor",
+    "chapterTitle": "6.4 Director and Executor",
+    "sourceUrl": "/post-game/director-and-executor/",
+    "question": "Explain why leakage rules should live in code rather than only in a prompt, according to the chapter.",
+    "modelAnswer": "A rule enforced in code, like the cutoff-date check in make_split, is one the agent literally cannot route around under metric pressure, whereas an instruction in a prompt can be rationalised past by an agent chasing a better score. Code-level guards make bad splits structurally impossible rather than merely discouraged.",
+    "rubric": [
+      "States code guards can't be bypassed the way prompt instructions can",
+      "References or implies the cutoff-date / temporal split example"
+    ]
+  },
+  {
+    "id": "sa-director-and-executor-02",
+    "type": "short_answer",
+    "chapterId": "director-and-executor",
+    "chapterTitle": "6.4 Director and Executor",
+    "sourceUrl": "/post-game/director-and-executor/",
+    "question": "Describe the target-encoding trap and explain why an agent optimising purely for validation error might not avoid it on its own.",
+    "modelAnswer": "The trap is encoding a categorical column using the mean of the target computed across the whole dataset, including validation rows, which leaks information about the validation target into the feature. An agent watching only 'reduce validation error' has no signal telling it to fit the encoding on the training fold only, since the leak actually makes the reported validation error look better, not worse.",
+    "rubric": [
+      "Explains encoding using the full dataset including validation leaks the target",
+      "Explains the metric alone doesn't flag this because it makes the score look better"
+    ]
+  },
+  {
+    "id": "sa-director-and-executor-03",
+    "type": "short_answer",
+    "chapterId": "director-and-executor",
+    "chapterTitle": "6.4 Director and Executor",
+    "sourceUrl": "/post-game/director-and-executor/",
+    "question": "Using the Team Sheet table, contrast the Director's and Executor's responsibilities for validation design.",
+    "modelAnswer": "The Director owns the split strategy and decides what metric defines success. The Executor's job is to actually carry out that split, compute the chosen metric, and report the result honestly — it doesn't get to choose the strategy or the metric itself.",
+    "rubric": [
+      "States the Director owns the split strategy and metric choice",
+      "States the Executor executes the split and reports the metric"
+    ]
+  },
+  {
+    "id": "sa-director-and-executor-04",
+    "type": "short_answer",
+    "chapterId": "director-and-executor",
+    "chapterTitle": "6.4 Director and Executor",
+    "sourceUrl": "/post-game/director-and-executor/",
+    "question": "Why does the chapter say 'hand an agent the dataset and it will happily hand you back a model' is not the same as removing the need for human judgement?",
+    "modelAnswer": "An agent can and will produce a model regardless of whether the underlying choices — what's being predicted, what counts as a leak, what counts as a legitimate outlier — were made deliberately. If nobody makes those choices on purpose, the agent still makes them implicitly by default, just without anyone accountable for the result, which the chapter frames as worse than deciding them slowly.",
+    "rubric": [
+      "Explains the agent produces a model regardless of whether choices were deliberate",
+      "Explains this means the choices get made implicitly rather than not at all"
+    ]
+  },
+  {
+    "id": "sa-director-and-executor-05",
+    "type": "short_answer",
+    "chapterId": "director-and-executor",
+    "chapterTitle": "6.4 Director and Executor",
+    "sourceUrl": "/post-game/director-and-executor/",
+    "question": "Give one concrete example from the chapter of an agent 'cheating' to improve a metric, and explain what makes it a cheat rather than a legitimate improvement.",
+    "modelAnswer": "One example is a random train/val shuffle used on data where the real deployment question is predicting the next match from past ones — shuffling silently lets the model see rows from the 'future' relative to what it's meant to predict. It's a cheat rather than a legitimate improvement because the resulting validation score looks better only because of information the model would never actually have access to at prediction time.",
+    "rubric": [
+      "Describes a specific cheating example from the chapter accurately",
+      "Explains why it inflates the score without being a real improvement"
+    ]
+  },
+  {
+    "id": "mcq-classical-vs-deep-learning-agents-01",
+    "type": "mcq",
+    "chapterId": "classical-vs-deep-learning-agents",
+    "chapterTitle": "6.5 Classical vs Deep Learning Agents",
+    "sourceUrl": "/post-game/classical-vs-deep-learning-agents/",
+    "question": "Per the chapter, what is the main job of a tabular ML agent?",
+    "options": [
+      "Watching loss curves epoch by epoch",
+      "Manufacturing candidate features, checking each one earns its place, and discarding the rest",
+      "Managing GPU memory",
+      "Tuning a learning rate schedule"
+    ],
+    "correctAnswerIndex": 1,
+    "explanation": "A tabular ML agent is described as spending almost its entire budget on manufacturing and pruning columns, not the algorithm."
+  },
+  {
+    "id": "mcq-classical-vs-deep-learning-agents-02",
+    "type": "mcq",
+    "chapterId": "classical-vs-deep-learning-agents",
+    "chapterTitle": "6.5 Classical vs Deep Learning Agents",
+    "sourceUrl": "/post-game/classical-vs-deep-learning-agents/",
+    "question": "Why does the code example use drop_first=True when creating dummy variables?",
+    "options": [
+      "It's a style preference with no functional effect",
+      "Keeping every dummy column makes the design matrix singular for anything solved by matrix inversion",
+      "It reduces the number of rows in the dataframe",
+      "It's required for permutation importance to work"
+    ],
+    "correctAnswerIndex": 1,
+    "explanation": "The chapter is explicit that dropping the redundant column avoids a singular design matrix, not just a style choice."
+  },
+  {
+    "id": "mcq-classical-vs-deep-learning-agents-03",
+    "type": "mcq",
+    "chapterId": "classical-vs-deep-learning-agents",
+    "chapterTitle": "6.5 Classical vs Deep Learning Agents",
+    "sourceUrl": "/post-game/classical-vs-deep-learning-agents/",
+    "question": "Why does the chapter prefer pruning features by permutation importance rather than by the trained coefficient's sign or magnitude?",
+    "options": [
+      "Permutation importance is always faster to compute",
+      "A coefficient can be large and confident on a feature that changes nothing when actually shuffled",
+      "Coefficients are not available for tabular models",
+      "Permutation importance doesn't require a validation set"
+    ],
+    "correctAnswerIndex": 1,
+    "explanation": "The chapter warns that a large, confident coefficient can still belong to a feature with no real effect when it's shuffled and re-evaluated."
+  },
+  {
+    "id": "mcq-classical-vs-deep-learning-agents-04",
+    "type": "mcq",
+    "chapterId": "classical-vs-deep-learning-agents",
+    "chapterTitle": "6.5 Classical vs Deep Learning Agents",
+    "sourceUrl": "/post-game/classical-vs-deep-learning-agents/",
+    "question": "What does a deep learning training-supervisor agent need to watch for that a tabular agent's .fit() call does not typically risk?",
+    "options": [
+      "Collinear dummy columns",
+      "The network memorising the training set while validation loss climbs, or the loss diverging from too high a learning rate",
+      "A leaked categorical encoding",
+      "An interaction term with low permutation importance"
+    ],
+    "correctAnswerIndex": 1,
+    "explanation": "The chapter contrasts these deep-learning-specific failure modes with the risks a simple tabular .fit() call doesn't share."
+  },
+  {
+    "id": "mcq-classical-vs-deep-learning-agents-05",
+    "type": "mcq",
+    "chapterId": "classical-vs-deep-learning-agents",
+    "chapterTitle": "6.5 Classical vs Deep Learning Agents",
+    "sourceUrl": "/post-game/classical-vs-deep-learning-agents/",
+    "question": "In the training-loop code example, what triggers a learning-rate decay?",
+    "options": [
+      "Reaching the maximum number of epochs",
+      "Three stagnant epochs in a row where validation loss doesn't improve",
+      "The very first epoch where training loss decreases",
+      "Running out of GPU memory"
+    ],
+    "correctAnswerIndex": 1,
+    "explanation": "bad_epochs reaching 3 triggers decay_learning_rate before the patience counter resets."
+  },
+  {
+    "id": "mcq-classical-vs-deep-learning-agents-06",
+    "type": "mcq",
+    "chapterId": "classical-vs-deep-learning-agents",
+    "chapterTitle": "6.5 Classical vs Deep Learning Agents",
+    "sourceUrl": "/post-game/classical-vs-deep-learning-agents/",
+    "question": "According to the chapter, what is the actual tell for overfitting during a training run?",
+    "options": [
+      "A single bad validation loss value at any one epoch",
+      "A widening gap — training loss still falling while validation loss turns upward",
+      "The total number of epochs run",
+      "The batch size used"
+    ],
+    "correctAnswerIndex": 1,
+    "explanation": "The chapter states overfitting shows up as a widening gap, not the absolute value of either loss on its own."
+  },
+  {
+    "id": "mcq-classical-vs-deep-learning-agents-07",
+    "type": "mcq",
+    "chapterId": "classical-vs-deep-learning-agents",
+    "chapterTitle": "6.5 Classical vs Deep Learning Agents",
+    "sourceUrl": "/post-game/classical-vs-deep-learning-agents/",
+    "question": "Why does the training loop save the checkpoint from before validation loss turns upward, rather than the last epoch?",
+    "options": [
+      "Because the last epoch is always corrupted",
+      "Because stopping on 'ran out of patience' without having saved the best point along the way throws away the good run to keep the bad one",
+      "Because early checkpoints train faster",
+      "Because it saves disk space"
+    ],
+    "correctAnswerIndex": 1,
+    "explanation": "The chapter is explicit: the agent's job is to save the checkpoint from before the turn, not after."
+  },
+  {
+    "id": "mcq-classical-vs-deep-learning-agents-08",
+    "type": "mcq",
+    "chapterId": "classical-vs-deep-learning-agents",
+    "chapterTitle": "6.5 Classical vs Deep Learning Agents",
+    "sourceUrl": "/post-game/classical-vs-deep-learning-agents/",
+    "question": "Per the comparison table, what is a typical execution environment difference between a tabular agent and a deep learning agent?",
+    "options": [
+      "Tabular agents require GPUs; deep learning agents run on CPU",
+      "Tabular runs are typically CPU, seconds to minutes; deep learning runs are typically GPU, minutes to hours and memory-constrained",
+      "There is no meaningful difference in execution environment",
+      "Deep learning agents never need a timeout"
+    ],
+    "correctAnswerIndex": 1,
+    "explanation": "The comparison table lists these as the typical execution environments for each agent type."
+  },
+  {
+    "id": "mcq-classical-vs-deep-learning-agents-09",
+    "type": "mcq",
+    "chapterId": "classical-vs-deep-learning-agents",
+    "chapterTitle": "6.5 Classical vs Deep Learning Agents",
+    "sourceUrl": "/post-game/classical-vs-deep-learning-agents/",
+    "question": "What stopping criterion does the chapter give for a tabular Feature Factory agent, as opposed to a deep learning agent?",
+    "options": [
+      "Validation loss increasing for 3 epochs in a row",
+      "The next candidate feature's marginal gain falling below a threshold",
+      "Running out of GPU memory",
+      "A fixed number of training epochs"
+    ],
+    "correctAnswerIndex": 1,
+    "explanation": "The tabular stopping signal in the chapter's stats is the next feature's marginal gain falling below a threshold."
+  },
+  {
+    "id": "mcq-classical-vs-deep-learning-agents-10",
+    "type": "mcq",
+    "chapterId": "classical-vs-deep-learning-agents",
+    "chapterTitle": "6.5 Classical vs Deep Learning Agents",
+    "sourceUrl": "/post-game/classical-vs-deep-learning-agents/",
+    "question": "What failure mode does the chapter identify as having 'no tabular equivalent'?",
+    "options": [
+      "A leaked or collinear feature inflating the score",
+      "Out-of-memory during training, requiring a batch-size backoff plan",
+      "Choosing the wrong dummy encoding",
+      "A stagnant validation score"
+    ],
+    "correctAnswerIndex": 1,
+    "explanation": "The chapter states a deep learning agent needs a batch-size backoff plan for out-of-memory failures that a tabular agent almost never will."
+  },
+  {
+    "id": "sa-classical-vs-deep-learning-agents-01",
+    "type": "short_answer",
+    "chapterId": "classical-vs-deep-learning-agents",
+    "chapterTitle": "6.5 Classical vs Deep Learning Agents",
+    "sourceUrl": "/post-game/classical-vs-deep-learning-agents/",
+    "question": "Explain why a tabular ML agent spends most of its effort on features while a deep learning agent spends most of its effort on the training run itself.",
+    "modelAnswer": "A tabular model's inputs are named, human-meaningful columns, so most of the signal-finding work is manufacturing and pruning good features by hand before the algorithm ever sees them. A deep network takes raw or lightly-processed tensors and is meant to find its own interactions internally, so the agent's effort shifts to supervising the training process — the loss curve, learning rate, and memory — rather than hand-crafting inputs.",
+    "rubric": [
+      "Explains tabular agents focus on manufacturing or pruning features because inputs are named columns",
+      "Explains deep learning agents focus on supervising the training run because the network finds its own interactions"
+    ]
+  },
+  {
+    "id": "sa-classical-vs-deep-learning-agents-02",
+    "type": "short_answer",
+    "chapterId": "classical-vs-deep-learning-agents",
+    "chapterTitle": "6.5 Classical vs Deep Learning Agents",
+    "sourceUrl": "/post-game/classical-vs-deep-learning-agents/",
+    "question": "What does the learning rate decay formula in the chapter do, and when does it trigger in the example code?",
+    "modelAnswer": "It multiplies the current learning rate by a decay factor (0.2 in the example) to reduce it. In the code, it triggers after three consecutive epochs where validation loss fails to improve on the best value seen so far, after which the patience counter resets.",
+    "rubric": [
+      "Describes the formula as multiplying the learning rate by a decay factor",
+      "States it triggers after 3 stagnant or non-improving epochs"
+    ]
+  },
+  {
+    "id": "sa-classical-vs-deep-learning-agents-03",
+    "type": "short_answer",
+    "chapterId": "classical-vs-deep-learning-agents",
+    "chapterTitle": "6.5 Classical vs Deep Learning Agents",
+    "sourceUrl": "/post-game/classical-vs-deep-learning-agents/",
+    "question": "Why is permutation importance a more reliable pruning signal than a model's raw coefficients, per the chapter?",
+    "modelAnswer": "A coefficient reflects how the model weighted a feature during fitting, which can be large and confident even for a feature that turns out to change nothing when it's actually shuffled and re-evaluated. Permutation importance measures the real effect on model performance when a feature's values are shuffled, so it catches features that look important on paper but aren't actually earning their place.",
+    "rubric": [
+      "Explains coefficients can be misleadingly large or confident",
+      "Explains permutation importance tests the real effect by shuffling the feature"
+    ]
+  },
+  {
+    "id": "sa-classical-vs-deep-learning-agents-04",
+    "type": "short_answer",
+    "chapterId": "classical-vs-deep-learning-agents",
+    "chapterTitle": "6.5 Classical vs Deep Learning Agents",
+    "sourceUrl": "/post-game/classical-vs-deep-learning-agents/",
+    "question": "Describe one difference in failure modes between a tabular agent and a deep learning agent, using an example from the chapter.",
+    "modelAnswer": "A tabular agent's typical failure is a leaked or collinear feature inflating the reported score, caught through pruning steps like permutation importance. A deep learning agent's typical failure is the loss diverging outright, or memory overflowing mid-epoch on a GPU run, which requires monitoring the training curve and having a batch-size backoff plan rather than a feature-pruning step.",
+    "rubric": [
+      "Gives a tabular failure example such as a leaked or collinear feature",
+      "Gives a deep learning failure example such as diverging loss or out-of-memory",
+      "Correctly distinguishes the two"
+    ]
+  },
+  {
+    "id": "sa-classical-vs-deep-learning-agents-05",
+    "type": "short_answer",
+    "chapterId": "classical-vs-deep-learning-agents",
+    "chapterTitle": "6.5 Classical vs Deep Learning Agents",
+    "sourceUrl": "/post-game/classical-vs-deep-learning-agents/",
+    "question": "Why does the chapter argue that 'always checkpoint on the best validation score, not the last epoch' matters for a training-supervisor agent?",
+    "modelAnswer": "Training can continue past the point where the model was actually at its best, with validation loss climbing afterward due to overfitting or an unstable learning rate. If the agent only ever keeps the model from whichever epoch training happened to stop on, it discards the genuinely best version of the model in favour of a worse one that just happened to run last.",
+    "rubric": [
+      "Explains validation performance can get worse after the actual best point",
+      "Explains only keeping the last epoch throws away the best model"
+    ]
+  },
+  {
+    "id": "mcq-execution-environments-01",
+    "type": "mcq",
+    "chapterId": "execution-environments",
+    "chapterTitle": "6.6 Execution Environments",
+    "sourceUrl": "/post-game/execution-environments/",
+    "question": "What is the 'Notebook Paradox' described in the chapter?",
+    "options": [
+      "Notebooks are too slow for any real data work",
+      "The same feature that makes notebooks great for humans — out-of-order execution and state outliving its cell — is exactly what makes them dangerous for agents",
+      "Notebooks cannot run Python code",
+      "Agents are unable to read notebook files at all"
+    ],
+    "correctAnswerIndex": 1,
+    "explanation": "The paradox is that out-of-order execution and lingering state are a feature for humans and a trap for agents — the same mechanism, opposite outcome."
+  },
+  {
+    "id": "mcq-execution-environments-02",
+    "type": "mcq",
+    "chapterId": "execution-environments",
+    "chapterTitle": "6.6 Execution Environments",
+    "sourceUrl": "/post-game/execution-environments/",
+    "question": "In the notebook diagram example, why does the agent's top-to-bottom replay get a different df than the human saw?",
+    "options": [
+      "Because the agent uses a different Python version",
+      "Because the human redefined df in a later cell and then re-ran an earlier cell, an execution order that only existed in the human's head, not the notebook's top-to-bottom order",
+      "Because notebooks don't support dataframes",
+      "Because the agent skips cells randomly"
+    ],
+    "correctAnswerIndex": 1,
+    "explanation": "The human's actual click order (cell 3, 47, then re-running 12) differs from the notebook's visible top-to-bottom order, so a literal replay diverges."
+  },
+  {
+    "id": "mcq-execution-environments-03",
+    "type": "mcq",
+    "chapterId": "execution-environments",
+    "chapterTitle": "6.6 Execution Environments",
+    "sourceUrl": "/post-game/execution-environments/",
+    "question": "What does the sandbox runner code capture as the 'actual result' of a script run?",
+    "options": [
+      "The agent's own summary of what happened",
+      "stdout and stderr, captured directly from the subprocess",
+      "Only the exit code, with output discarded",
+      "A screenshot of the terminal"
+    ],
+    "correctAnswerIndex": 1,
+    "explanation": "run_in_sandbox returns the return code plus captured stdout and stderr as the ground truth of what happened."
+  },
+  {
+    "id": "mcq-execution-environments-04",
+    "type": "mcq",
+    "chapterId": "execution-environments",
+    "chapterTitle": "6.6 Execution Environments",
+    "sourceUrl": "/post-game/execution-environments/",
+    "question": "What happens when a sandboxed script fails, per the run_in_sandbox example?",
+    "options": [
+      "The sandbox retries the identical script unchanged",
+      "The traceback is passed back to the agent, which patches the script before the next attempt",
+      "The human is immediately paged",
+      "The container is deleted and the task abandoned"
+    ],
+    "correctAnswerIndex": 1,
+    "explanation": "On a non-zero exit code, the captured stderr is handed to agent.patch(), and the fixed script is run again."
+  },
+  {
+    "id": "mcq-execution-environments-05",
+    "type": "mcq",
+    "chapterId": "execution-environments",
+    "chapterTitle": "6.6 Execution Environments",
+    "sourceUrl": "/post-game/execution-environments/",
+    "question": "Why does every sandboxed run get a hard timeout, according to the chapter?",
+    "options": [
+      "To save disk space",
+      "So a runaway or stuck loop fails loudly and fast instead of quietly consuming compute",
+      "To limit the size of the output",
+      "Timeouts are only used for deep learning runs"
+    ],
+    "correctAnswerIndex": 1,
+    "explanation": "The chapter states a runaway loop should be killed rather than sit consuming compute until someone notices."
+  },
+  {
+    "id": "mcq-execution-environments-06",
+    "type": "mcq",
+    "chapterId": "execution-environments",
+    "chapterTitle": "6.6 Execution Environments",
+    "sourceUrl": "/post-game/execution-environments/",
+    "question": "In the Hybrid IDE Workflow, what is the human's role versus the agent's role?",
+    "options": [
+      "The human writes the final script; the agent explores interactively in the notebook",
+      "The human explores interactively to form the hypothesis; the agent writes it as a clean deterministic script for the sandbox",
+      "Neither uses a notebook or a sandbox",
+      "The agent reviews the human's git diffs"
+    ],
+    "correctAnswerIndex": 1,
+    "explanation": "The chapter assigns exploration and hypothesis-forming to the human notebook session, and clean deterministic execution to the agent's script."
+  },
+  {
+    "id": "mcq-execution-environments-07",
+    "type": "mcq",
+    "chapterId": "execution-environments",
+    "chapterTitle": "6.6 Execution Environments",
+    "sourceUrl": "/post-game/execution-environments/",
+    "question": "What does the chapter say should actually be reviewed in the hybrid workflow?",
+    "options": [
+      "The chat transcript, since it shows the agent's reasoning",
+      "The script's diff in an IDE like VS Code or Cursor",
+      "Only the final model's accuracy score",
+      "The notebook's cell execution order"
+    ],
+    "correctAnswerIndex": 1,
+    "explanation": "The chapter is explicit: review the script diff, not a wall of cell-by-cell chat transcript."
+  },
+  {
+    "id": "mcq-execution-environments-08",
+    "type": "mcq",
+    "chapterId": "execution-environments",
+    "chapterTitle": "6.6 Execution Environments",
+    "sourceUrl": "/post-game/execution-environments/",
+    "question": "Per the chapter's stats, what state does an agent's sandboxed script start with on every run?",
+    "options": [
+      "Whatever globals were left over from the previous run",
+      "Fresh state, with no hidden globals carried over",
+      "The state from the human's most recent notebook session",
+      "A cached checkpoint from the last failed attempt"
+    ],
+    "correctAnswerIndex": 1,
+    "explanation": "The chapter lists 'Fresh' state, every run, no hidden globals, as a defining property of the sandbox."
+  },
+  {
+    "id": "mcq-execution-environments-09",
+    "type": "mcq",
+    "chapterId": "execution-environments",
+    "chapterTitle": "6.6 Execution Environments",
+    "sourceUrl": "/post-game/execution-environments/",
+    "question": "According to the 'Dressing Room Ground Rules,' who should have access to a live notebook kernel in this workflow?",
+    "options": [
+      "Both humans and agents equally",
+      "Humans only — agents execute .py scripts in isolated containers instead",
+      "Agents only, since they need to explore interactively",
+      "Neither — notebooks are banned entirely"
+    ],
+    "correctAnswerIndex": 1,
+    "explanation": "The ground rules state agents execute .py scripts in isolated containers, never a live notebook kernel."
+  },
+  {
+    "id": "mcq-execution-environments-10",
+    "type": "mcq",
+    "chapterId": "execution-environments",
+    "chapterTitle": "6.6 Execution Environments",
+    "sourceUrl": "/post-game/execution-environments/",
+    "question": "Why does the chapter say stdout and stderr should be read directly rather than through the agent's summary of them?",
+    "options": [
+      "Because agents cannot produce summaries",
+      "Because the raw output is the ground truth, and a summary could smooth over or miss something the raw trace would show",
+      "Because stdout is always shorter than a summary",
+      "Because summaries are not supported by the sandbox"
+    ],
+    "correctAnswerIndex": 1,
+    "explanation": "The ground rules call stdout/stderr the ground truth, to be read directly rather than through the agent's account of it."
+  },
+  {
+    "id": "sa-execution-environments-01",
+    "type": "short_answer",
+    "chapterId": "execution-environments",
+    "chapterTitle": "6.6 Execution Environments",
+    "sourceUrl": "/post-game/execution-environments/",
+    "question": "Explain the Notebook Paradox in your own words, using the human/agent example from the chapter.",
+    "modelAnswer": "Notebooks let a human run cells out of order — redefining a variable in a later cell and then re-running an earlier one — which is a genuinely useful, deliberate way to explore data, but that same flexibility means the 'true' state of a variable exists only in whatever order the human actually clicked run in, not in the notebook's visible top-to-bottom order. An agent that replays the notebook from top to bottom will therefore compute a different result, a different df in the chapter's example, than the one the human was actually looking at.",
+    "rubric": [
+      "Explains out-of-order execution / state outliving its cell is useful for humans",
+      "Explains an agent's top-to-bottom replay can silently diverge from what the human actually saw"
+    ]
+  },
+  {
+    "id": "sa-execution-environments-02",
+    "type": "short_answer",
+    "chapterId": "execution-environments",
+    "chapterTitle": "6.6 Execution Environments",
+    "sourceUrl": "/post-game/execution-environments/",
+    "question": "Describe the patch-and-retry loop shown in the sandbox runner example, and explain what makes it possible.",
+    "modelAnswer": "The agent runs a script in the sandbox; if it fails, the captured stderr traceback is passed directly to the agent, which uses it to patch the script and run the corrected version. This is possible because the sandbox runs fresh, isolated state on every invocation and returns the raw stdout/stderr rather than an interpretation of it, so the agent gets exactly the information it needs to diagnose the failure.",
+    "rubric": [
+      "Describes the loop: run, capture failure, patch, retry",
+      "Explains it depends on fresh state and raw output being available to the agent"
+    ]
+  },
+  {
+    "id": "sa-execution-environments-03",
+    "type": "short_answer",
+    "chapterId": "execution-environments",
+    "chapterTitle": "6.6 Execution Environments",
+    "sourceUrl": "/post-game/execution-environments/",
+    "question": "In the Hybrid IDE Workflow, what is 'the notebook is where the idea gets found, the container is where it gets proven' meant to capture?",
+    "modelAnswer": "It draws a boundary between two different jobs: exploratory, improvised analysis where a human forms a hypothesis is well suited to a notebook, while confirming that the resulting approach actually works reliably belongs in a clean, deterministic script run inside an isolated container. Mixing the two — letting an agent execute directly inside the exploratory notebook — combines a job that tolerates messy state with an execution mode that requires clean, reproducible state.",
+    "rubric": [
+      "Distinguishes exploration or hypothesis-forming (notebook, human) from proving or executing (container, agent)",
+      "Explains why mixing the two is a problem"
+    ]
+  },
+  {
+    "id": "sa-execution-environments-04",
+    "type": "short_answer",
+    "chapterId": "execution-environments",
+    "chapterTitle": "6.6 Execution Environments",
+    "sourceUrl": "/post-game/execution-environments/",
+    "question": "Why does the chapter recommend reviewing the agent's script diff rather than its chat transcript?",
+    "modelAnswer": "The script diff shows exactly what code will actually run and what changed, in the same form a human would review any other code change, whereas a chat transcript is a narrative account that could omit or misrepresent details of the actual execution. Reviewing the diff keeps the review grounded in the real, reproducible artefact rather than the agent's description of its own work.",
+    "rubric": [
+      "States the diff reflects the actual executable change",
+      "States the transcript is a narrative or summary that may not match what actually ran"
+    ]
+  },
+  {
+    "id": "sa-execution-environments-05",
+    "type": "short_answer",
+    "chapterId": "execution-environments",
+    "chapterTitle": "6.6 Execution Environments",
+    "sourceUrl": "/post-game/execution-environments/",
+    "question": "What two guardrails does the chapter identify for keeping a sandboxed agent run safe, and why is each necessary?",
+    "modelAnswer": "A hard timeout, so a stuck or runaway loop fails fast instead of silently consuming compute indefinitely; and isolation via a container, so a script's fresh state each run can't be corrupted by, or corrupt, leftover state from a previous attempt. Together they keep a failing run cheap to detect and easy to reason about, rather than an expensive, ambiguous mess.",
+    "rubric": [
+      "Names the timeout guardrail and its purpose",
+      "Names the isolation / fresh-state guardrail and its purpose"
     ]
   }
 ]
