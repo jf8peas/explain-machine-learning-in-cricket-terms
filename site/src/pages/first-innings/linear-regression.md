@@ -171,14 +171,26 @@ r2 = r2_score(y_val, preds)
 
 **Feature Selection & Hyperparameter Optimisation** already covered `corr()` as a general scouting report for feature selection. Linear regression adds one move of its own, on top of that.
 
-**The outcome itself sometimes needs reshaping first.** A handful of freak overs — thirty-two off six balls, once a season — can drag a model's entire attention toward fitting the extremes at the expense of getting the ordinary case right, because the sum-of-squared-error cost function punishes big misses so heavily. A **logarithmic transform** —
+**The outcome itself sometimes needs reshaping first.** That widening funnel from the residuals section a moment ago doesn't always mean the model itself is broken — very often it's the fingerprint of a skewed `y`, showing up downstream in the one place you were already told to look. It's worth checking the shape of the outcome directly, before reading too much into the residuals plot: a histogram of `y` with a long tail stretching off to one side is the tell.
+
+A handful of freak overs — thirty-two off six balls, once a season — can drag a model's entire attention toward fitting the extremes at the expense of getting the ordinary case right, because the sum-of-squared-error cost function punishes big misses so heavily. A **logarithmic transform** —
 
 ```python
 import numpy as np
 y_transformed = np.log2(y)
 ```
 
-— compresses the long tail so extreme values stop dominating. The **Box-Cox transformation** generalises the idea across a whole family of reshapings, with a log transform sitting inside it as one special case:
+— compresses the long tail so extreme values stop dominating, by squashing large numbers far harder than small ones. Two perfectly ordinary overs, eight runs and sixteen runs, sit one point apart in log2 space (`3` versus `4`). That freak thirty-two, twenty-four runs clear of the eight-run over in raw terms, ends up only two points clear of it (`5` versus `3`). The cost function is still squaring errors after this — but the error it's squaring is now far smaller, so the freak over no longer bullies the fit for every other match.
+
+The **Box-Cox transformation** generalises the idea across a whole family of reshapings, with a log transform sitting inside it as one special case:
+
+$$
+y(\lambda) =
+\begin{cases}
+\dfrac{y^{\lambda} - 1}{\lambda} & \lambda \neq 0 \\[6pt]
+\log y & \lambda = 0
+\end{cases}
+$$
 
 ```python
 from scipy.stats import boxcox
@@ -186,7 +198,22 @@ y_transformed, lam = boxcox(y)
 # lmbda=0 is equivalent to a log transform
 ```
 
+The difference that matters day to day: a log transform is one fixed shape, applied on faith. `boxcox()` instead searches across every value of `lambda` and picks whichever one makes the transformed `y`'s distribution as close to symmetric and bell-shaped as possible — directly targeting the well-behaved, constant-spread shape the residuals section asked you to look for, rather than assuming a log will happen to deliver it.
+
 Both exist for the same reason: a wildly skewed outcome makes for a model that's excellent at freak overs and mediocre at ordinary ones, and neither is what you actually wanted.
+
+**One step is easy to forget: the model now speaks log, not runs.** Fit on `y_transformed` and `model.predict()` hands back a number like `6.2` — a real prediction, but in log space, not a score anyone watching the broadcast would recognise. It has to be transformed back before it means anything again:
+
+```python
+predictions_log = model.predict(X_val)
+predictions = 2 ** predictions_log        # inverse of np.log2
+
+# for Box-Cox, scipy provides the inverse directly:
+from scipy.special import inv_boxcox
+predictions = inv_boxcox(predictions_log, lam)
+```
+
+Skip that step and every number built on top of it — RMSE, R², the projected score itself — is being read off in the wrong units entirely.
 
 That reshapes the outcome. The next chapter, **Polynomial & Spline Features**, does the equivalent for the predictors — teaching this same straight-line method to trace an actual curve, because a batting innings doesn't accumulate runs at one constant rate from over one to over fifty.
 
