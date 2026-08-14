@@ -55,6 +55,8 @@ df_with_dummies = pd.get_dummies(df, columns=["format"], drop_first=True)
 
 The dropped category doesn't vanish. It becomes the **reference group**, silently baked into the intercept, which is exactly the thread to pull on next.
 
+One thing dummy variables deliberately throw away: order. Each category gets its own independent column, so `pd.get_dummies` couldn't care less whether format was listed as Test, ODI, T20 or T20, ODI, Test — the fit comes out identical either way. That's *not* true of every encoding scheme. **Decision Trees** covers **ordinal encoding**, where a category column collapses onto a single numeric scale instead of splitting into flags — and there, the order you choose matters a great deal, especially for a linear model.
+
 ## The Cost Function: Naming What "Wrong" Means
 
 Before the model can find good weights, it needs a precise definition of *bad*. That's the **cost function** — a single number summarising, across every match in the training data, how far the model's predictions land from what actually happened.
@@ -91,7 +93,7 @@ Same arithmetic, no scratchpad.
 The normal equation isn't the only way to arrive at these weights — it's just the fastest one available, and only because linear regression's particular cost function happens to have a clean, closed-form answer. **Gradient Descent** covered the general-purpose alternative: start with a guess for every weight, measure how wrong the resulting projected score is, work out which direction each weight should nudge to shrink that error, take a step, repeat.
 
 ```python
-from sklearn.linear_model import SGDRegressor
+from sklearn.linear_model import SGDRegressor # Stochastic Gradient Descent Regressor
 
 model = SGDRegressor(
     loss="squared_error",
@@ -190,7 +192,7 @@ That reshapes the outcome. The next chapter, **Polynomial & Spline Features**, d
 
 ## Ground Rules for the Dressing-Room Wall
 
-- **The outcome is a weighted sum, plus error.** Every predictor gets a coefficient; the error is whatever those predictors couldn't explain.
+- **The outcome is a weighted sum, plus error.** Every predictor gets a coefficient; the **error** — $\varepsilon$, or the **residual** — is one specific match's own gap between its true outcome and what the weighted sum predicted for it: the noise, or unexplained variance, that particular sample's predictors never got a chance to explain.
 - **The normal equation and gradient descent solve the same problem two different ways.** One solves exactly in a single shot; the other walks downhill and stops when it's close enough. Reach for the normal equation here — reach for gradient descent everywhere the closed form doesn't exist.
 - **Categorical predictors need K−1 dummy columns, not K.** `pd.get_dummies(..., drop_first=True)` — skip this and you've handed the model a perfectly redundant column and called it a feature.
 - **The intercept is a real prediction, for a real (if sometimes silly) situation.** Check that "all predictors at zero" describes something meaningful before quoting it.

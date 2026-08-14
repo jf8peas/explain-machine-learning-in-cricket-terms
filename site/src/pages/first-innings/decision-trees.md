@@ -158,6 +158,8 @@ hierarchy = [["Dry", "Damp", "Green"]]   # double brackets — it expects a list
 df["pitch_condition"] = OrdinalEncoder(categories=hierarchy).fit_transform(df[["pitch_condition"]])
 ```
 
+**Getting that order wrong costs a tree less than it costs a linear model, but it isn't free for either.** The ranking you hand `OrdinalEncoder` isn't decoration — whichever model consumes `pitch_condition` afterwards will treat `Green` as genuinely "two steps past" `Dry`, so an order that doesn't reflect the real relationship hands it a ranking it shouldn't trust. A tree can fully recover from a bad order, given enough splits: nothing stops it from isolating `Damp` on its own with a threshold at `0.5` and another at `1.5`, regardless of where `Damp` sits on the numeric scale — it just costs an extra split to get there instead of one. **Linear Regression** has no equivalent escape hatch. One column gets exactly one coefficient, forcing a single straight-line relationship across the *entire* ranking, at any model complexity — get the order wrong there and the model isn't merely inefficient, it's structurally incapable of describing the real relationship no matter how it's tuned.
+
 **Binary columns** — exactly two categories, no ranking implied — become a single `0`/`1` flag:
 
 ```python
@@ -320,6 +322,7 @@ Nothing new in the mechanics — same `best_params_` / `best_estimator_` / `best
 - **Classification trees chase purity; regression trees chase low error.** Gini and entropy/information gain for the former, MSE and MAE for the latter.
 - **A regression leaf predicts a plain average, not a formula.** No weights, no intercept — just the mean (or median) of whoever ended up there.
 - **Categorical features need encoding; the classification target doesn't.** And unlike linear regression, dummy columns don't need one dropped — trees don't suffer multicollinearity.
+- **A wrong ordinal order is a rounding error for a tree and a structural bug for a linear model.** A tree can split its way around a bad ranking given enough depth; a linear model's single coefficient never can.
 - **Trees are wonderfully readable and wonderfully unstable.** The same property — asking one clean sequence of questions — that makes them easy to explain is what makes them rattle at the slightest change in the training data.
 - **Cross-validate before you trust a single score**, and reach for `cross_validate` or `make_scorer` the moment one metric or one predefined scorer isn't enough.
 - **Tune `max_depth` and friends with a search, not a guess** — the exact same `GridSearchCV` machinery from Feature Selection & Hyperparameter Optimisation, now pointed at a tree.
