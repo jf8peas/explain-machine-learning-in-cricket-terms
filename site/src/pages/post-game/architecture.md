@@ -79,6 +79,8 @@ Ask one model to route the question, query the database, describe the footage, *
 
 The `max_overs` cap matters more than any prompt, in either pattern. Uncapped agent loops are endless rain delays — expensive and going nowhere. Eight overs, every handoff logged, and whoever holds the loop — a lone all-rounder or a captain — must declare when the answer is settled. Structure is what turns a chat model into a team, not the number of models on the sheet.
 
+`max_overs` itself is this chapter's own invented name for the idea, not a real parameter you'd import — the same cap exists in actual frameworks under its own name: LangGraph's `recursion_limit`, LangChain's `AgentExecutor(max_iterations=...)`, AutoGen's `max_turns`, CrewAI's `max_iter`. Whichever a real stack uses, the job is identical: force a declared stop before the loop pays for its own indecision.
+
 ## Validation Has to Talk Back to Feature Engineering
 
 The pipeline is not an assembly line where over 4 (evaluation) hands off a report and the innings ends. When evaluation finds a feature with near-zero permutation importance, or worse, a leaked one, that result has to travel backwards — into over 3 (feature pruning), sometimes into over 2 (imputation choices) — before the next attempt runs. A strictly unidirectional script that only ever moves forward will happily ship a model built on a feature the validation step already condemned, because nothing in the pipeline was allowed to go back and say so.

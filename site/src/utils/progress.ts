@@ -36,6 +36,8 @@ export interface PlayingXIProgress {
   completedChapters: string[];
   /** chapter slugs whose dedicated practice-nets quiz scored >= 50% */
   passedQuizChapters: string[];
+  /** best score (0-100) ever recorded per quiz scope — a chapter slug, or "all" for the full-match quiz */
+  bestScores: Record<string, number>;
   streak: Streak;
 }
 
@@ -43,6 +45,7 @@ function emptyProgress(): PlayingXIProgress {
   return {
     completedChapters: [],
     passedQuizChapters: [],
+    bestScores: {},
     streak: { count: 0, lastActiveDate: "" },
   };
 }
@@ -76,6 +79,14 @@ export function loadProgress(): PlayingXIProgress {
       passedQuizChapters: Array.isArray(parsed?.passedQuizChapters)
         ? parsed.passedQuizChapters.filter((s): s is string => typeof s === "string")
         : [],
+      bestScores:
+        parsed?.bestScores && typeof parsed.bestScores === "object" && !Array.isArray(parsed.bestScores)
+          ? Object.fromEntries(
+              Object.entries(parsed.bestScores).filter(
+                (entry): entry is [string, number] => typeof entry[1] === "number",
+              ),
+            )
+          : {},
       streak: {
         count:
           typeof parsed?.streak?.count === "number" && parsed.streak.count > 0
@@ -149,6 +160,28 @@ export function isChapterComplete(chapterId: string): boolean {
   return loadProgress().completedChapters.includes(chapterId);
 }
 
+/**
+ * Record a quiz attempt's score (0-100) for a scope — a chapter slug, or
+ * "all" for the full-match quiz. Only ever keeps the best score seen;
+ * a worse retake doesn't overwrite a personal best.
+ */
+export function recordQuizScore(scopeId: string, score: number): PlayingXIProgress {
+  const data = loadProgress();
+  const clamped = Math.max(0, Math.min(100, Math.round(score)));
+  const prev = data.bestScores[scopeId] ?? -1;
+  if (clamped > prev) {
+    data.bestScores[scopeId] = clamped;
+    saveProgress(data);
+    broadcast(data);
+  }
+  return data;
+}
+
+/** Best score (0-100) ever recorded for a scope, or undefined if never attempted. */
+export function getBestScore(scopeId: string): number | undefined {
+  return loadProgress().bestScores[scopeId];
+}
+
 /** Wipe all stored progress (used for testing / "start over"). */
 export function resetProgress(): void {
   const data = emptyProgress();
@@ -167,6 +200,8 @@ export function initProgressTracking(): void {
     completeChapter,
     passQuizChapter,
     isChapterComplete,
+    recordQuizScore,
+    getBestScore,
     touchStreak,
     resetProgress,
   };
