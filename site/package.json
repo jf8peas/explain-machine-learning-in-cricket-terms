@@ -26,5 +26,8 @@
     "@types/node": "^26.2.0",
     "@vercel/node": "^5.9.6",
     "tailwindcss": "^4.1.0"
+  },
+  "overrides": {
+    "katex": "^0.18.4"
   }
 }

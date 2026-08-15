@@ -13796,5 +13796,127 @@
       "Names the timeout guardrail and its purpose",
       "Names the isolation / fresh-state guardrail and its purpose"
     ]
+  },
+  {
+    "id": "mcq-linear-regression-31",
+    "type": "mcq",
+    "chapterId": "linear-regression",
+    "chapterTitle": "4.1 Linear Regression",
+    "sourceUrl": "/first-innings/linear-regression/",
+    "question": "What does the error term (often written as ε, or called the residual) represent for a single observation in a fitted linear regression model?",
+    "options": [
+      "The model's overall R² score across the whole dataset",
+      "The gap between that specific observation's true value and the value the weighted sum predicted for it",
+      "The learning rate used while fitting the model",
+      "The number of predictors that were excluded from the model"
+    ],
+    "correctAnswerIndex": 1,
+    "explanation": "The error/residual is defined per observation: the difference between one data point's actual outcome and what the model predicted for that same point — the noise that predictor never explained."
+  },
+  {
+    "id": "mcq-linear-regression-32",
+    "type": "mcq",
+    "chapterId": "linear-regression",
+    "chapterTitle": "4.1 Linear Regression",
+    "sourceUrl": "/first-innings/linear-regression/",
+    "question": "Why does applying a logarithmic transform to a skewed target variable reduce the influence of extreme values on a sum-of-squared-error cost function?",
+    "options": [
+      "It converts the target into a categorical variable, so squared error no longer applies",
+      "It compresses large values proportionally more than small values, shrinking the numeric gap an outlier contributes before that gap gets squared",
+      "It removes outlier rows from the training data entirely",
+      "It increases the weight given to extreme values so the model is forced to learn them"
+    ],
+    "correctAnswerIndex": 1,
+    "explanation": "A log transform grows far more slowly for large inputs than small ones, so an outlier's raw gap from the rest of the data shrinks disproportionately once transformed — and a smaller gap means a much smaller squared contribution to the cost function."
+  },
+  {
+    "id": "mcq-linear-regression-33",
+    "type": "mcq",
+    "chapterId": "linear-regression",
+    "chapterTitle": "4.1 Linear Regression",
+    "sourceUrl": "/first-innings/linear-regression/",
+    "question": "In a Box-Cox transformation, what does the parameter λ (lambda) control, and how is it typically chosen?",
+    "options": [
+      "It sets the model's learning rate, chosen by grid search",
+      "It sets the amount of regularisation applied to the coefficients",
+      "It parameterises a family of power transforms, and is typically chosen by searching for the value that makes the transformed target closest to a symmetric, normal distribution",
+      "It sets how many dummy variables get dropped during categorical encoding"
+    ],
+    "correctAnswerIndex": 2,
+    "explanation": "Box-Cox is a family of transforms indexed by λ, with a log transform sitting inside it as the λ=0 case; fitting it searches for whichever λ makes the transformed variable look most normally distributed, rather than assuming one fixed shape."
+  },
+  {
+    "id": "mcq-linear-regression-34",
+    "type": "mcq",
+    "chapterId": "linear-regression",
+    "chapterTitle": "4.1 Linear Regression",
+    "sourceUrl": "/first-innings/linear-regression/",
+    "question": "After fitting a linear regression model on a log-transformed target variable, what has to happen before the model's raw predictions can be read as real-world values again?",
+    "options": [
+      "Nothing — the predictions are already in the original units",
+      "The predictions must be inverse-transformed (for example, exponentiated) to undo the transform that was applied to the target",
+      "The predictions must be divided by the number of features in the model",
+      "The predictions must be rounded to the nearest whole number"
+    ],
+    "correctAnswerIndex": 1,
+    "explanation": "A model trained on a transformed target predicts in that same transformed space; skipping the inverse transform means every downstream number — the prediction itself, and any metric built on it — is being read in the wrong units."
+  },
+  {
+    "id": "mcq-linear-regression-35",
+    "type": "mcq",
+    "chapterId": "linear-regression",
+    "chapterTitle": "4.1 Linear Regression",
+    "sourceUrl": "/first-innings/linear-regression/",
+    "question": "A skewed target variable is often associated with which pattern in a residuals plot?",
+    "options": [
+      "A perfectly flat line with zero residuals everywhere",
+      "A widening funnel shape, where the spread of residuals grows as predicted values increase",
+      "Residuals that are always exactly negative",
+      "Residuals plots are unaffected by the distribution of the target variable"
+    ],
+    "correctAnswerIndex": 1,
+    "explanation": "A heavily skewed target frequently produces a funnel-shaped residuals plot, since the model's errors tend to grow alongside the size of the (skewed) values it's trying to predict."
+  },
+  {
+    "id": "sa-linear-regression-16",
+    "type": "short_answer",
+    "chapterId": "linear-regression",
+    "chapterTitle": "4.1 Linear Regression",
+    "sourceUrl": "/first-innings/linear-regression/",
+    "question": "Using a numeric example, explain why a logarithmic transform reduces the impact of a large outlier in the target variable more than it affects small, typical values.",
+    "modelAnswer": "A log transform compresses the gap between large numbers far more than the gap between small numbers, because logarithms grow much more slowly than their inputs. For example, going from 8 to 16 (a raw gap of 8) is a one-unit change in log base 2 (from 3 to 4), while going from 8 to 32 (a raw gap of 24) is only a two-unit change in log base 2 (from 3 to 5) — a much smaller change relative to the size of the raw gap. Since the cost function squares whatever gap remains after the transform, a smaller transformed gap means the outlier contributes far less to the total error being minimised.",
+    "rubric": [
+      "Explains that log compresses large values proportionally more than small ones",
+      "Gives or references a numeric example showing a disproportionate raw gap becoming a much smaller log-space gap",
+      "Connects this to a smaller squared-error contribution from the outlier"
+    ]
+  },
+  {
+    "id": "sa-linear-regression-17",
+    "type": "short_answer",
+    "chapterId": "linear-regression",
+    "chapterTitle": "4.1 Linear Regression",
+    "sourceUrl": "/first-innings/linear-regression/",
+    "question": "What is the difference between how a fixed logarithmic transform and a Box-Cox transform are chosen, and why does that difference matter in practice?",
+    "modelAnswer": "A logarithmic transform is a single fixed shape applied regardless of the data — it either helps or it doesn't, with nothing tuned. A Box-Cox transform instead searches across a range of possible lambda values and selects whichever one makes the transformed target's distribution closest to symmetric and normally distributed, of which a log transform (lambda=0) is just one possible outcome. This matters because a dataset's skew might not be fully corrected by a plain log transform, and Box-Cox can find a better-fitting transform automatically rather than assuming the log is the right choice.",
+    "rubric": [
+      "States the log transform is fixed and untuned",
+      "States Box-Cox searches for the best lambda automatically from the data",
+      "Explains why an automatically-chosen transform can outperform a fixed assumption"
+    ]
+  },
+  {
+    "id": "sa-linear-regression-18",
+    "type": "short_answer",
+    "chapterId": "linear-regression",
+    "chapterTitle": "4.1 Linear Regression",
+    "sourceUrl": "/first-innings/linear-regression/",
+    "question": "Why is it necessary to inverse-transform a model's predictions after fitting on a transformed target variable, and what happens if this step is skipped?",
+    "modelAnswer": "If the target variable was transformed — for example with a log or Box-Cox transform — before fitting, the model's predictions come out in that transformed space, not in the original units the outcome is actually measured in. Skipping the inverse transform means every downstream calculation built on those predictions, including error metrics and the predictions themselves, is computed in the wrong units, making them meaningless or misleading when compared against the true, untransformed values.",
+    "rubric": [
+      "Explains predictions come out in transformed space after fitting on a transformed target",
+      "States the inverse transform must be applied before predictions are usable",
+      "Explains the consequence of skipping it: downstream values/metrics end up in the wrong units"
+    ]
   }
 ]
