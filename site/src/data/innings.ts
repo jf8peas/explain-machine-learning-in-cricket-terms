@@ -726,23 +726,24 @@ model.compile(optimizer="adam", loss="binary_crossentropy",
     number: "6",
     title: "Post-Game: Agent Solutions",
     short: "Post-Game",
-    subtitle: "Architecture · Division of Labor · Tools · Execution",
+    subtitle: "Architectures & Tools · Division of Labor · Execution",
     chapters: [
       {
-        slug: "architecture",
-        nav: "Agent Architecture",
-        meta: "14 min · one all-rounder or a full xi",
-        title: "Agent Architecture",
-        subtitle: "One All-Rounder or a Full Dressing Room",
-        lede: "An agent working an ML problem can play it two ways: one all-rounder looping through every tool themselves, or a full XI where a captain routes the work to specialists. Both are legitimate team sheets — the mistake is picking one out of habit instead of matching it to the job.",
-        commentary: "The captain does not bowl every over. That is the entire idea.",
-        codeFile: "post_game/dressing_room.py",
-        codeOut: "turn 3/8 · handoff → stats_specialist",
+        slug: "agent-architectures-and-tools",
+        nav: "Agent Architectures & Tools",
+        meta: "20 min · three ways to run the innings",
+        title: "Agent Architectures & Tools",
+        subtitle: "One All-Rounder, Multi-Agent XI, and the DRS Reviewer",
+        lede: "An agent working an ML problem can play it three ways: one all-rounder looping through every tool alone, a full XI where a captain routes work to specialists, or either pattern with a reviewer standing behind it checking the verdict. All three are legitimate team sheets — the job is matching the pattern to the problem, then never shipping a verdict nobody checked.",
+        commentary:
+          "'The kit man doesn't set the batting order, and the third umpire doesn't bat. Everyone gets exactly one job.' — Data Analyst",
+        codeFile: "post_game/agent_patterns.py",
+        codeOut: "turn 4/8 · handoff → validator · verdict: upheld",
         code: `ROSTER = {
-    "captain":  "routes the question, never answers it",
-    "stats":    "queries the match database",
-    "video":    "retrieves and describes footage",
-    "analyst":  "long-term memory across sessions",
+    "captain":       "routes the question, never answers it",
+    "data_engineer": "cleans data, engineers features",
+    "ml_scientist":  "trains and tunes candidate models",
+    "validator":     "checks metrics, flags leakage",
 }
 
 def play(question, max_overs=8):
@@ -753,74 +754,10 @@ def play(question, max_overs=8):
         if captain.is_settled(memory):
             return captain.summarise(memory)`,
         stats: [
-          { k: "Patterns", v: "2", s: "ReAct loop vs multi-agent XI" },
-          { k: "Agents", v: "4", s: "captain + 3 specialists" },
-          { k: "Max overs", v: "8", s: "hard step cap, either pattern" },
-          { k: "Feedback", v: "Bidirectional", s: "a bad over changes the last one" },
-        ],
-      },
-      {
-        slug: "drs-agent",
-        nav: "Reviewer Agent",
-        meta: "11 min · referring the decision",
-        title: "Reviewer Agent (LLM-as-Judge)",
-        subtitle: "The 'DRS' Agent",
-        lede: "DRS exists because confident officials are sometimes wrong. An LLM-as-judge reviewer agent is the same institution in software: a second model whose only job is to check the first one's work against the evidence.",
-        commentary:
-          "Umpire's call is not indecision. It is a system that knows the limits of its own cameras.",
-        codeFile: "post_game/drs_agent.py",
-        codeOut: "verdict: umpire's call · escalated to human",
-        code: `VERDICTS = ("upheld", "overturned", "umpires_call")
-
-def review(question, answer, evidence):
-    verdict = reviewer.judge(
-        question=question,
-        answer=answer,
-        evidence=evidence,        # the footage, not the opinion
-        allowed=VERDICTS,
-    )
-    if verdict == "overturned":
-        return primary.retry(question, hint=reviewer.reason)
-    if verdict == "umpires_call":
-        return escalate_to_human(question, answer, evidence)
-    return answer`,
-        stats: [
-          { k: "Verdicts", v: "3", s: "incl. umpire's call" },
-          { k: "Overturned", v: "7%", s: "of primary answers" },
-          { k: "Escalated", v: "2%", s: "to a human" },
-          { k: "Latency", v: "+1.4s", s: "cost of the review" },
-        ],
-      },
-      {
-        slug: "agent-tools",
-        nav: "Agent Tools",
-        meta: "10 min · twelfth man duties",
-        title: "Agent Tools",
-        subtitle: "Twelfth Man Duties",
-        lede: "Tools are the twelfth man: not in the XI, but the reason the XI can keep going. A retrieval call, a SQL query, a calculator — each one does the errand the model should never attempt from memory.",
-        commentary:
-          "Do not ask the batter to fetch their own drinks mid-over. That is what the tool call is for.",
-        codeFile: "post_game/tools.py",
-        codeOut: "match_stats(...) → 12 rows in 240ms",
-        code: `TOOLS = [
-    {
-        "name": "match_stats",
-        "description": "Return per-over runs and wickets for one match id.",
-        "input_schema": {
-            "type": "object",
-            "properties": {"match_id": {"type": "string"}},
-            "required": ["match_id"],
-        },
-    },
-]
-
-def match_stats(match_id, timeout=5, limit=50):
-    return db.readonly.query(OVER_SQL, match_id, timeout=timeout)[:limit]`,
-        stats: [
-          { k: "Tools", v: "3", s: "stats, video, calc" },
-          { k: "Timeout", v: "5s", s: "per call" },
-          { k: "Row cap", v: "50", s: "hard limit" },
-          { k: "Access", v: "Read", s: "no writes, ever" },
+          { k: "Patterns", v: "3", s: "ReAct · multi-agent XI · DRS reviewer" },
+          { k: "Agents", v: "4", s: "captain + data-eng + ml-sci + validator" },
+          { k: "Tool timeout", v: "5s", s: "hard limit per call" },
+          { k: "Reviewer verdicts", v: "3", s: "upheld · overturned · umpire's call" },
         ],
       },
       {

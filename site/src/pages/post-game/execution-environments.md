@@ -47,12 +47,34 @@ A notebook is a superb tool for a human and a trap for an agent, and it's the sa
 
 The fix isn't a smarter notebook — it's not using one for agent execution at all. An agent's code runs as a plain `.py` script inside an isolated container (Docker, e2b, or similar): fresh state on every invocation, stdout and stderr captured as the actual result, and a hard timeout so a runaway loop gets killed instead of billed. When a script fails, the traceback goes straight back to the agent as its next input — the sandbox above shows exactly that loop, patch-and-retry, with no hidden variable surviving from the failed attempt into the fixed one.
 
+Three boundaries, not two — the model that decides *what* to run should never be the process that runs it:
+
+```
+          AGENT BRAIN
+    (reasons, never executes)
+               │
+               │  writes code — never touches disk directly
+               ▼
+        SANDBOX CONTAINER
+     (the only place code runs)
+   python script.py · timeout · no network
+               │
+               │  stdout / stderr only — no shared memory
+               ▼
+           LOGS / VCS
+   (the only place a run persists)
+    experiments.csv · git diff / commit
+```
+
+The brain plans and reads results; the container is the only place a line of Python ever actually runs; the logs and version control are the only place a run is allowed to leave a permanent trace. Collapse any one of those three into another — let the agent's reasoning process execute code directly, or let a run mutate state with no log of what changed — and the whole point of sandboxing quietly disappears.
+
 ## The Hybrid IDE Workflow
 
 None of this makes notebooks useless — it relocates them. A human still explores interactively in Jupyter or an IDE's interactive window, forming the hypothesis. Once the approach is decided, the agent's job is to write it as a clean script the sandbox can run deterministically, and the human reviews *that script's diff* in VS Code or Cursor, not a wall of cell-by-cell chat transcript. The notebook is where the idea gets found. The container is where it gets proven.
 
 ## Dressing Room Ground Rules
 
+- **Keep the brain, the container, and the logs as three separate boundaries.** The model that decides what to run should never be the process that runs it, and a run's only permanent trace should be in logs or version control, not in memory the agent quietly carries forward.
 - **Agents execute `.py` scripts in isolated containers, never a live notebook kernel.** No hidden globals, no out-of-order cell state to misread.
 - **Every run gets a hard timeout.** A stuck loop should fail loudly and fast, not sit consuming compute until someone notices.
 - **stdout and stderr are the ground truth, not the agent's summary of them.** Capture the raw output and let a human — or a reviewer agent — read it directly.

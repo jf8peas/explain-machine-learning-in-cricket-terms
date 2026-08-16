@@ -12434,698 +12434,10 @@
     ]
   },
   {
-    "id": "mcq-drs-agent-01",
-    "type": "mcq",
-    "chapterId": "drs-agent",
-    "chapterTitle": "6.2 Reviewer Agent",
-    "sourceUrl": "/post-game/drs-agent/",
-    "question": "What information does the review agent deliberately NOT see, according to this chapter?",
-    "options": [
-      "The evidence retrieved to support the answer",
-      "The primary model's confidence score or chain of thought",
-      "The original question being asked",
-      "The list of allowed verdicts"
-    ],
-    "correctAnswerIndex": 1,
-    "explanation": "The review agent never sees the primary model's confidence or chain of thought — only the question, the answer, and the retrieved evidence."
-  },
-  {
-    "id": "mcq-drs-agent-02",
-    "type": "mcq",
-    "chapterId": "drs-agent",
-    "chapterTitle": "6.2 Reviewer Agent",
-    "sourceUrl": "/post-game/drs-agent/",
-    "question": "Why does the system include 'umpires_call' as a valid verdict rather than forcing a binary upheld or overturned decision?",
-    "options": [
-      "To make the system's output more complex for its own sake",
-      "So that when the evidence genuinely can't settle the question, the system can honestly escalate to a human rather than guessing",
-      "Because scikit-learn classifiers require at least 3 output classes",
-      "'umpires_call' is simply a synonym for 'overturned'"
-    ],
-    "correctAnswerIndex": 1,
-    "explanation": "The most important verdict is the honest shrug: when the evidence cannot settle it, the system escalates to a human rather than guessing."
-  },
-  {
-    "id": "mcq-drs-agent-03",
-    "type": "mcq",
-    "chapterId": "drs-agent",
-    "chapterTitle": "6.2 Reviewer Agent",
-    "sourceUrl": "/post-game/drs-agent/",
-    "question": "What does the chapter warn happens to a review layer that is never allowed to say 'insufficient evidence'?",
-    "options": [
-      "It becomes more efficient and reliable",
-      "It will eventually invent evidence or confidence it doesn't have, letting confident nonsense into production",
-      "It automatically defaults to 'overturned' every time",
-      "It stops being able to process any requests"
-    ],
-    "correctAnswerIndex": 1,
-    "explanation": "A review layer that is not allowed to say 'insufficient evidence' will eventually invent some, and that is how confident nonsense gets into production."
-  },
-  {
-    "id": "mcq-drs-agent-04",
-    "type": "mcq",
-    "chapterId": "drs-agent",
-    "chapterTitle": "6.2 Reviewer Agent",
-    "sourceUrl": "/post-game/drs-agent/",
-    "question": "According to the review() function, what happens specifically when the reviewer's verdict is \"overturned\"?",
-    "options": [
-      "The system immediately escalates the question to a human",
-      "The system calls primary.retry(question, hint=reviewer.reason), giving the original model another attempt informed by the reviewer's reasoning",
-      "The question is discarded and no answer is produced",
-      "The original answer is returned unchanged"
-    ],
-    "correctAnswerIndex": 1,
-    "explanation": "The code branches distinctly on \"overturned\": it triggers an automated retry with the reviewer's reasoning as a hint, unlike \"umpires_call\" which escalates to a human instead."
-  },
-  {
-    "id": "mcq-drs-agent-05",
-    "type": "mcq",
-    "chapterId": "drs-agent",
-    "chapterTitle": "6.2 Reviewer Agent",
-    "sourceUrl": "/post-game/drs-agent/",
-    "question": "The review() function only special-cases \"overturned\" and \"umpires_call\". What happens when the verdict is \"upheld\"?",
-    "options": [
-      "The system escalates to a human as a precaution",
-      "It falls through both conditionals and returns the original answer unchanged",
-      "The system automatically retries the primary model",
-      "The function raises an error because \"upheld\" is not explicitly handled"
-    ],
-    "correctAnswerIndex": 1,
-    "explanation": "Since neither the overturned nor umpires_call branch matches, execution falls through to the final `return answer`, passing the original answer through unchanged."
-  },
-  {
-    "id": "mcq-drs-agent-06",
-    "type": "mcq",
-    "chapterId": "drs-agent",
-    "chapterTitle": "6.2 Reviewer Agent",
-    "sourceUrl": "/post-game/drs-agent/",
-    "question": "The reviewer.judge call passes in `evidence`, described in code as \"the footage, not the opinion.\" What is the significance of grounding the review in retrieved evidence rather than the primary model's own justification?",
-    "options": [
-      "There is no real significance; evidence and self-justification are functionally interchangeable inputs",
-      "It forces the review to be grounded in independently retrieved facts rather than the primary model's self-reported reasoning, which could be persuasive without being correct",
-      "It exists only to reduce the latency of the review call",
-      "It removes the need for a fixed, enumerated verdict list"
-    ],
-    "correctAnswerIndex": 1,
-    "explanation": "The chapter frames the reviewer as judging evidence, not vibes, deliberately withholding the primary's confidence or chain of thought so the check is based on independent facts, not a potentially persuasive but unfounded self-report."
-  },
-  {
-    "id": "mcq-drs-agent-07",
-    "type": "mcq",
-    "chapterId": "drs-agent",
-    "chapterTitle": "6.2 Reviewer Agent",
-    "sourceUrl": "/post-game/drs-agent/",
-    "question": "Given the stats that 7% of primary answers are overturned and 2% are escalated to a human, what does this imply about the review layer's overall effect?",
-    "options": [
-      "The review layer changes or flags the majority of all primary answers",
-      "Roughly 91% of primary answers pass through as upheld and unchanged, while a minority are corrected or escalated",
-      "The review layer never actually changes any answers",
-      "The review layer only ever escalates and never triggers a retry"
-    ],
-    "correctAnswerIndex": 1,
-    "explanation": "7% overturned plus 2% escalated accounts for 9% of cases, leaving roughly 91% upheld unchanged — the review acts as a minority-case correction layer, not a wholesale rewrite of outputs."
-  },
-  {
-    "id": "mcq-drs-agent-08",
-    "type": "mcq",
-    "chapterId": "drs-agent",
-    "chapterTitle": "6.2 Reviewer Agent",
-    "sourceUrl": "/post-game/drs-agent/",
-    "question": "The chapter reports the review step adds +1.4s of latency. What trade-off does this stat represent?",
-    "options": [
-      "There is no trade-off; the review is effectively free",
-      "A latency cost is accepted in exchange for a chance to catch, correct, or escalate wrong answers before they reach the user",
-      "The 1.4s is spent entirely on formatting the verdict as JSON",
-      "The latency is caused by the primary model's generation, not the review step"
-    ],
-    "correctAnswerIndex": 1,
-    "explanation": "Running a second model call to check the first necessarily costs time; the chapter presents this explicitly as \"cost of the review,\" framing it as a deliberate trade-off for higher reliability."
-  },
-  {
-    "id": "mcq-drs-agent-09",
-    "type": "mcq",
-    "chapterId": "drs-agent",
-    "chapterTitle": "6.2 Reviewer Agent",
-    "sourceUrl": "/post-game/drs-agent/",
-    "question": "Why does constraining the reviewer's output to `allowed=VERDICTS` matter specifically for the control flow of the review() function itself?",
-    "options": [
-      "It doesn't matter functionally; free text would work identically with the existing code",
-      "The function branches on exact string equality (if verdict == \"overturned\" / \"umpires_call\"), so an unconstrained free-text verdict could not be reliably matched by this logic",
-      "It reduces the number of tools the reviewer is allowed to call",
-      "It is purely a stylistic choice with no effect on behavior"
-    ],
-    "correctAnswerIndex": 1,
-    "explanation": "The review function's control flow depends on exact matches against the enumerated VERDICTS strings; free text would break the conditional logic deciding between retry, escalate, and accept."
-  },
-  {
-    "id": "mcq-drs-agent-10",
-    "type": "mcq",
-    "chapterId": "drs-agent",
-    "chapterTitle": "6.2 Reviewer Agent",
-    "sourceUrl": "/post-game/drs-agent/",
-    "question": "The system has two distinct recovery paths for a flagged answer: primary.retry() and escalate_to_human(). What determines which one is used?",
-    "options": [
-      "The paths are chosen at random to distribute load",
-      "The reviewer's verdict: \"overturned\" triggers an automated retry with a hint, while \"umpires_call\" triggers escalation to a human instead of another automated attempt",
-      "The latency of the original answer",
-      "Whether the retrieved evidence contains a number"
-    ],
-    "correctAnswerIndex": 1,
-    "explanation": "The code explicitly branches on the verdict: overturned leads to primary.retry(hint=reviewer.reason), while umpires_call leads to escalate_to_human — two different recovery strategies for two different failure types."
-  },
-  {
-    "id": "sa-drs-agent-01",
-    "type": "short_answer",
-    "chapterId": "drs-agent",
-    "chapterTitle": "6.2 Reviewer Agent",
-    "sourceUrl": "/post-game/drs-agent/",
-    "question": "Explain why restricting a reviewer agent's output to a fixed, enumerated list of verdicts (e.g. upheld, overturned, escalate) matters, rather than letting it respond in free text.",
-    "modelAnswer": "Constraining the review agent's output to a fixed list of verdicts keeps its behaviour predictable and bounded — it can't produce some ambiguous, hard-to-act-on freeform response. Every possible verdict has a clear, pre-defined downstream action, retry, escalate, or accept, which only works if the verdict space is closed and known in advance.",
-    "rubric": [
-      "Explains that a fixed verdict list keeps output bounded and predictable, unlike free text",
-      "Explains that each verdict maps to a clear downstream action",
-      "States the benefit: predictable, actionable behaviour rather than open-ended output"
-    ]
-  },
-  {
-    "id": "sa-drs-agent-02",
-    "type": "short_answer",
-    "chapterId": "drs-agent",
-    "chapterTitle": "6.2 Reviewer Agent",
-    "sourceUrl": "/post-game/drs-agent/",
-    "question": "Why does the chapter argue that 'umpire's call,' escalating to a human, is a deliberately designed outcome rather than a failure of the system?",
-    "modelAnswer": "A review system forced to always pick between only upheld or overturned, even when the evidence is genuinely insufficient to decide, will eventually have to fabricate a level of confidence it doesn't actually have, producing confident nonsense that looks like a real decision but isn't grounded in the evidence. Allowing an honest insufficient-evidence, escalate-to-human outcome is instead the safer, more honest design: the system openly acknowledges the limits of what it can determine, rather than quietly overstepping them.",
-    "rubric": [
-      "States that forcing a binary decision when evidence is insufficient leads to fabricated confidence",
-      "Explains umpire's call as an honest acknowledgment of the system's evidentiary limits",
-      "Frames escalation to a human as a deliberate design choice, not a system failure"
-    ]
-  },
-  {
-    "id": "sa-drs-agent-03",
-    "type": "short_answer",
-    "chapterId": "drs-agent",
-    "chapterTitle": "6.2 Reviewer Agent",
-    "sourceUrl": "/post-game/drs-agent/",
-    "question": "Explain the functional difference between the \"overturned\" and \"umpires_call\" verdicts in terms of what each one causes the system to do next.",
-    "modelAnswer": "\"Overturned\" triggers primary.retry(question, hint=reviewer.reason) — the system gives the original model a second automated attempt at answering, informed by why the reviewer disagreed with it. \"Umpires_call\", by contrast, triggers escalate_to_human(question, answer, evidence) — instead of retrying automatically, the system hands the decision to a person. Keeping these as separate verdicts lets the downstream response differ based on why the answer was flagged: a confidently wrong answer gets a corrective retry, while a genuinely unclear case gets routed to a human instead of another guess.",
-    "rubric": [
-      "States that overturned leads to an automated retry with the reviewer's reasoning passed as a hint",
-      "States that umpires_call leads to escalation to a human instead of an automated retry",
-      "Explains why keeping these as distinct verdicts/paths is useful, different responses for \"wrong\" versus \"unclear\""
-    ]
-  },
-  {
-    "id": "sa-drs-agent-04",
-    "type": "short_answer",
-    "chapterId": "drs-agent",
-    "chapterTitle": "6.2 Reviewer Agent",
-    "sourceUrl": "/post-game/drs-agent/",
-    "question": "The review() function only receives the question, the primary model's answer, and retrieved evidence, never the primary model's confidence score or reasoning trace. What risk does withholding that information guard against?",
-    "modelAnswer": "If the reviewer could see the primary model's stated confidence or reasoning, it risks being anchored by that self-report, effectively judging how persuasive or certain the primary sounded rather than independently checking the answer against the evidence. That would undermine the point of having a second, independent check, since a wrong but confidently phrased answer could talk its way past review, while a correct answer expressed less certainly might get flagged unnecessarily. Withholding this information forces the reviewer to reach its own judgment using only the retrieved evidence.",
-    "rubric": [
-      "Identifies the risk of anchoring or bias if the reviewer saw the primary's confidence or reasoning",
-      "Explains this would undermine the independence of the review",
-      "States the reviewer is instead forced to judge based on evidence rather than the primary's self-report"
-    ]
-  },
-  {
-    "id": "sa-drs-agent-05",
-    "type": "short_answer",
-    "chapterId": "drs-agent",
-    "chapterTitle": "6.2 Reviewer Agent",
-    "sourceUrl": "/post-game/drs-agent/",
-    "question": "The review step adds 1.4s of latency to every request, even though only about 9% of answers end up overturned or escalated. What factors would you weigh in deciding whether a review layer like this is worth its added cost?",
-    "modelAnswer": "The core trade-off is the cost of an undetected wrong answer versus the fixed latency tax applied to every request, including the roughly 91% that end up unchanged. In a domain where a wrong answer reaching a user is expensive or unsafe, catching 9% of cases for a flat 1.4s cost is likely worth it. Relevant factors include how costly each type of error actually is, how latency-sensitive users are, whether the overturn or escalation rate might shrink as the primary model improves, and whether review could be triggered selectively, such as only on lower-confidence answers, rather than run unconditionally on every request.",
-    "rubric": [
-      "Weighs the value of catching the roughly 9% error/uncertain rate against the fixed latency cost applied to all requests",
-      "Names at least one concrete relevant factor, such as cost of a wrong answer, latency sensitivity, or selective triggering",
-      "Gives a reasoned judgment rather than a flat yes or no with no justification"
-    ]
-  },
-  {
-    "id": "mcq-agent-tools-01",
-    "type": "mcq",
-    "chapterId": "agent-tools",
-    "chapterTitle": "6.3 Agent Tools",
-    "sourceUrl": "/post-game/agent-tools/",
-    "question": "According to the chapter, what should you fix first if a model keeps misusing a particular tool?",
-    "options": [
-      "Immediately remove the tool from the system entirely",
-      "The tool's description — if it's vague, fix the words before trying to fix the model",
-      "Retrain the entire underlying model from scratch",
-      "Increase the tool's timeout setting"
-    ],
-    "correctAnswerIndex": 1,
-    "explanation": "If the model keeps misusing a tool, the description is vague — fix the words before you fix the model."
-  },
-  {
-    "id": "mcq-agent-tools-02",
-    "type": "mcq",
-    "chapterId": "agent-tools",
-    "chapterTitle": "6.3 Agent Tools",
-    "sourceUrl": "/post-game/agent-tools/",
-    "question": "What three hard limits does the chapter say every tool should run with?",
-    "options": [
-      "A maximum cost, a maximum age, and write-only permission",
-      "A timeout, a row cap, and read-only access",
-      "A password, a rate limit, and a GPU requirement",
-      "A retry count, a cache TTL, and admin access"
-    ],
-    "correctAnswerIndex": 1,
-    "explanation": "Every tool runs with a timeout, a row cap, and read-only access — the boundary rope that keeps enthusiasm from reaching the carpark."
-  },
-  {
-    "id": "mcq-agent-tools-03",
-    "type": "mcq",
-    "chapterId": "agent-tools",
-    "chapterTitle": "6.3 Agent Tools",
-    "sourceUrl": "/post-game/agent-tools/",
-    "question": "What is the purpose of a tool's input schema, according to this chapter?",
-    "options": [
-      "To make the tool call slower and more deliberate",
-      "To make bad calls unrepresentable — the schema constrains what the model can even attempt to pass in",
-      "To automatically translate the model's output into SQL",
-      "To log every tool call for billing purposes"
-    ],
-    "correctAnswerIndex": 1,
-    "explanation": "A tool definition is a name, a description written like instructions to a debutant, and a schema that makes bad calls unrepresentable."
-  },
-  {
-    "id": "mcq-agent-tools-04",
-    "type": "mcq",
-    "chapterId": "agent-tools",
-    "chapterTitle": "6.3 Agent Tools",
-    "sourceUrl": "/post-game/agent-tools/",
-    "question": "match_stats(match_id, timeout=5, limit=50) sets timeout and limit as Python defaults in the function itself, rather than exposing them as fields the model can set via the input_schema. What does this design choice achieve?",
-    "options": [
-      "It lets the model choose the query timeout freely on each call",
-      "It keeps the hard limits enforced at the function level, outside the model's control, so the model cannot request a call without a timeout or beyond the row cap even if it tried",
-      "It removes the need for an input_schema entirely",
-      "It has no functional effect since the model can override function defaults anyway"
-    ],
-    "correctAnswerIndex": 1,
-    "explanation": "Because timeout and limit are function defaults rather than input_schema fields, the model has no way to inflate them; the boundary is enforced structurally in code, not merely by convention."
-  },
-  {
-    "id": "mcq-agent-tools-05",
-    "type": "mcq",
-    "chapterId": "agent-tools",
-    "chapterTitle": "6.3 Agent Tools",
-    "sourceUrl": "/post-game/agent-tools/",
-    "question": "The input_schema for match_stats defines only one property, match_id, marked required. What does this narrow schema specifically prevent?",
-    "options": [
-      "It prevents match_id from ever being passed to the tool at all",
-      "It prevents the model from passing arbitrary extra parameters, such as its own timeout, row limit, or an unrelated clause, since only match_id is representable in the schema",
-      "It intentionally slows down every query",
-      "It forces the tool to always return zero rows"
-    ],
-    "correctAnswerIndex": 1,
-    "explanation": "This matches the chapter's point that a schema makes bad calls unrepresentable: since only match_id is defined, the model has no field through which it could attempt to smuggle in other parameters."
-  },
-  {
-    "id": "mcq-agent-tools-06",
-    "type": "mcq",
-    "chapterId": "agent-tools",
-    "chapterTitle": "6.3 Agent Tools",
-    "sourceUrl": "/post-game/agent-tools/",
-    "question": "match_stats queries the database via db.readonly.query(...) rather than a general connection. What failure mode does this specifically guard against, beyond the row cap and timeout?",
-    "options": [
-      "Slow-running queries",
-      "Any accidental or intentional write, update, or delete from the tool call, since the connection itself has no write capability",
-      "Queries that reference more than one match_id",
-      "Queries that return zero rows"
-    ],
-    "correctAnswerIndex": 1,
-    "explanation": "The chapter's stats explicitly call out \"Access: Read — no writes, ever\"; using a read-only connection enforces that guarantee at the connection level, independent of what the model requests."
-  },
-  {
-    "id": "mcq-agent-tools-07",
-    "type": "mcq",
-    "chapterId": "agent-tools",
-    "chapterTitle": "6.3 Agent Tools",
-    "sourceUrl": "/post-game/agent-tools/",
-    "question": "The chapter states: \"The model decides when to fetch the drinks. The tool decides what fetching is allowed to mean.\" What division of responsibility does this describe?",
-    "options": [
-      "The tool decides when it gets called; the model decides what happens internally",
-      "The model is responsible for deciding when or whether to invoke a tool call, while the tool's schema and hard limits define the bounds of what that call can actually do",
-      "Both decisions belong entirely to the model",
-      "Both decisions belong entirely to the tool"
-    ],
-    "correctAnswerIndex": 1,
-    "explanation": "This separates two concerns: invocation judgment stays with the model, while the tool's schema and hard limits define the ceiling on what any invocation can achieve, regardless of what the model requests."
-  },
-  {
-    "id": "mcq-agent-tools-08",
-    "type": "mcq",
-    "chapterId": "agent-tools",
-    "chapterTitle": "6.3 Agent Tools",
-    "sourceUrl": "/post-game/agent-tools/",
-    "question": "The chapter lists a calculator among the three tools (stats, video, calc). Why expose even simple arithmetic as a tool call rather than trusting the model to compute it directly in free text?",
-    "options": [
-      "Calculators are only included for completeness and add no reliability benefit",
-      "Language models can make arithmetic errors generating numbers in free text, so offloading computation to a deterministic tool call is more reliable than trusting the model's own generated arithmetic",
-      "The input_schema specification requires every tool list to include a calculator",
-      "It reduces the total number of tools available to the model"
-    ],
-    "correctAnswerIndex": 1,
-    "explanation": "This generalizes the chapter's stated principle that a retrieval call, a SQL query, or a calculator is \"the errand the model should never attempt from memory\" — even simple deterministic operations are safer executed by a tool than generated by the model."
-  },
-  {
-    "id": "mcq-agent-tools-09",
-    "type": "mcq",
-    "chapterId": "agent-tools",
-    "chapterTitle": "6.3 Agent Tools",
-    "sourceUrl": "/post-game/agent-tools/",
-    "question": "The example codeOut reads \"match_stats(...) → 12 rows in 240ms\" against a stated row cap of 50. What does this demonstrate about the row cap?",
-    "options": [
-      "The row cap was exceeded on this particular call",
-      "This call returned fewer rows (12) than the hard cap (50) allows — the cap functions as an upper bound, not a target every call must hit",
-      "The row cap only applies to the video tool, not to stats",
-      "240ms represents the timeout limit being reached"
-    ],
-    "correctAnswerIndex": 1,
-    "explanation": "12 rows is well under the 50-row cap, showing the cap is an enforced ceiling that ordinary calls don't need to reach, not a quota calls are expected to fill."
-  },
-  {
-    "id": "mcq-agent-tools-10",
-    "type": "mcq",
-    "chapterId": "agent-tools",
-    "chapterTitle": "6.3 Agent Tools",
-    "sourceUrl": "/post-game/agent-tools/",
-    "question": "Suppose a new tool needed to update match scores, a write operation, instead of only reading them. Based on this chapter's principles, what would need to change compared to match_stats?",
-    "options": [
-      "Nothing — the same read-only connection and schema could be reused as-is",
-      "It would need a distinct, deliberately scoped connection with write capability instead of db.readonly, plus its own schema and hard limits, since read-only access is explicitly called out as a core safeguard",
-      "It would no longer need a timeout, since writes are always fast",
-      "It would no longer need a description, since writes are self-explanatory"
-    ],
-    "correctAnswerIndex": 1,
-    "explanation": "The chapter treats read-only access as one of the core hard limits precisely because writes carry more risk; a write-capable tool would need its own carefully scoped permissions rather than inheriting the read-only guarantee."
-  },
-  {
-    "id": "sa-agent-tools-01",
-    "type": "short_answer",
-    "chapterId": "agent-tools",
-    "chapterTitle": "6.3 Agent Tools",
-    "sourceUrl": "/post-game/agent-tools/",
-    "question": "Explain the three components of a tool definition described in this chapter, and what job each one does.",
-    "modelAnswer": "A tool definition has a name the model can call it by, a description written like clear instructions to a debutant, someone brand new who needs everything spelled out, so the model knows exactly when and how to use it, and a schema that constrains the input so that malformed or nonsensical calls simply aren't representable in the first place. Together these three make the tool both discoverable and safe to call correctly.",
-    "rubric": [
-      "Names all three components: name, description, and schema",
-      "Explains the description should be clear and explicit, written like instructions to a debutant",
-      "Explains the schema's job is making bad calls unrepresentable"
-    ]
-  },
-  {
-    "id": "sa-agent-tools-02",
-    "type": "short_answer",
-    "chapterId": "agent-tools",
-    "chapterTitle": "6.3 Agent Tools",
-    "sourceUrl": "/post-game/agent-tools/",
-    "question": "Why do agent tools enforce hard limits like timeouts and row caps, and what specific failure do they guard against?",
-    "modelAnswer": "Hard limits like a timeout, a row cap, and read-only access put a ceiling on what a tool call can do, guarding against the failure of an enthusiastic but occasionally wrong model making an expensive mistake — for example an unbounded query returning huge amounts of data, running forever, or accidentally writing to data it should never touch.",
-    "rubric": [
-      "Explains that hard limits cap what a tool call is allowed to do",
-      "Names at least one specific guarded failure, such as a runaway query, unbounded time, or unintended writes",
-      "States the limits exist because models are capable but occasionally wrong, not malicious"
-    ]
-  },
-  {
-    "id": "sa-agent-tools-03",
-    "type": "short_answer",
-    "chapterId": "agent-tools",
-    "chapterTitle": "6.3 Agent Tools",
-    "sourceUrl": "/post-game/agent-tools/",
-    "question": "match_stats hardcodes timeout=5 and limit=50 as function defaults rather than exposing them as fields the model can set. Explain why enforcing limits in the tool's implementation, not just documenting them in the description, matters.",
-    "modelAnswer": "A description is just instructional text; a model can misread it, ignore it, or a prompt could attempt to talk around it, and nothing structurally stops a bad call from asking for a larger limit or no timeout if those values were exposed as inputs. By hardcoding timeout and limit as Python defaults and leaving them out of the input_schema entirely, the constraint is enforced in code, outside the model's reach, so no matter what the model requests, the call physically cannot return more than 50 rows or run longer than 5 seconds. This is the difference between a limit that is merely suggested in prose and one that is structurally guaranteed.",
-    "rubric": [
-      "Notes that description-only limits are advisory and could be ignored or bypassed",
-      "Explains that hardcoding defaults outside the input_schema enforces the limit in code, beyond the model's control",
-      "States the outcome: a structurally guaranteed limit versus a merely suggested one"
-    ]
-  },
-  {
-    "id": "sa-agent-tools-04",
-    "type": "short_answer",
-    "chapterId": "agent-tools",
-    "chapterTitle": "6.3 Agent Tools",
-    "sourceUrl": "/post-game/agent-tools/",
-    "question": "Explain what \"making bad calls unrepresentable\" means for the match_stats input_schema, and give a concrete example of a bad call this schema prevents.",
-    "modelAnswer": "Making bad calls unrepresentable means designing the schema narrowly enough that invalid or unintended calls cannot be constructed in the first place, rather than relying on validating and rejecting them after the fact. Since the match_stats schema defines only one property, match_id, as a required string, the model has no field through which it could pass, for example, an arbitrary SQL fragment, a negative row limit, or a request touching a different match's data — those inputs simply aren't fields the schema allows to exist. The bad call isn't caught and rejected after being attempted; it is structurally impossible to form given the schema.",
-    "rubric": [
-      "Correctly explains \"unrepresentable\" as preventing invalid calls from being constructible at all, not catching them afterward",
-      "Gives a concrete example of an input the narrow schema rules out",
-      "Distinguishes this from a validate-after-the-fact approach"
-    ]
-  },
-  {
-    "id": "sa-agent-tools-05",
-    "type": "short_answer",
-    "chapterId": "agent-tools",
-    "chapterTitle": "6.3 Agent Tools",
-    "sourceUrl": "/post-game/agent-tools/",
-    "question": "The chapter frames models as \"enthusiastic and occasionally wrong,\" not malicious, yet still insists on hard limits like timeouts, row caps, and read-only access. Why do defensive limits matter even when you trust the model's intentions?",
-    "modelAnswer": "Even a well-intentioned model can make a mistake that a limit-free tool would carry out at full cost, for example an overly broad query returning far more data than needed, or a call that runs far longer than expected against a live database, with no bad intent behind it at all. Trusting intentions doesn't bound behavior: a model reasoning imperfectly, misjudging a parameter, or simply being overly thorough can still produce an expensive or risky call. Hard limits protect the system from the consequences of ordinary model error, not only from adversarial misuse, which is why they're applied unconditionally rather than only when malice is suspected.",
-    "rubric": [
-      "Explains that non-malicious mistakes or overreach can still be costly without hard limits",
-      "Notes that trusting intentions does not bound actual model behavior or output",
-      "States that hard limits guard against ordinary error, not just malicious misuse, and so apply unconditionally"
-    ]
-  },
-  {
-    "id": "mcq-architecture-01",
-    "type": "mcq",
-    "chapterId": "architecture",
-    "chapterTitle": "6.1 Agent Architecture",
-    "sourceUrl": "/post-game/architecture/",
-    "question": "What distinguishes the ReAct pattern from a multi-agent team, per this chapter?",
-    "options": [
-      "ReAct always uses more agents than a multi-agent team",
-      "ReAct is one model looping through think, tool call, observation itself; a multi-agent team splits the job across several specialist agents",
-      "ReAct is only used for deep learning tasks",
-      "A multi-agent team never uses tools"
-    ],
-    "correctAnswerIndex": 1,
-    "explanation": "ReAct is a single all-rounder holding the whole scratchpad and looping through tool calls itself. A multi-agent team splits that job into several specialist agents coordinated by a captain."
-  },
-  {
-    "id": "mcq-architecture-02",
-    "type": "mcq",
-    "chapterId": "architecture",
-    "chapterTitle": "6.1 Agent Architecture",
-    "sourceUrl": "/post-game/architecture/",
-    "question": "According to the chapter, when does a single ReAct-loop agent stop being a good choice?",
-    "options": [
-      "When the task is small and well-scoped",
-      "When several things need doing in parallel, or a second opinion the same model can't credibly give itself",
-      "When there is only one tool available",
-      "Never — ReAct is always the better pattern"
-    ],
-    "correctAnswerIndex": 1,
-    "explanation": "The chapter says ReAct is good for small-to-medium jobs but stops being good once the job needs parallel work or a genuine second opinion."
-  },
-  {
-    "id": "mcq-architecture-03",
-    "type": "mcq",
-    "chapterId": "architecture",
-    "chapterTitle": "6.1 Agent Architecture",
-    "sourceUrl": "/post-game/architecture/",
-    "question": "In the multi-agent example code, what is the captain's role?",
-    "options": [
-      "To answer the question directly using its own knowledge",
-      "To route the question to the correct specialist and decide when the answer is settled",
-      "To query the match database directly",
-      "To retrieve and describe footage"
-    ],
-    "correctAnswerIndex": 1,
-    "explanation": "The captain never answers a question directly — it only decides who acts next and whether the accumulated answer is settled."
-  },
-  {
-    "id": "mcq-architecture-04",
-    "type": "mcq",
-    "chapterId": "architecture",
-    "chapterTitle": "6.1 Agent Architecture",
-    "sourceUrl": "/post-game/architecture/",
-    "question": "What does the max_overs step cap do in the multi-agent example?",
-    "options": [
-      "Sets a hard limit on model temperature",
-      "Caps the maximum number of specialist agents allowed",
-      "Places a hard limit on how many decision or handoff rounds the loop can run before it must stop",
-      "Determines how many database rows are returned"
-    ],
-    "correctAnswerIndex": 2,
-    "explanation": "The chapter compares an uncapped agent loop to an endless rain delay — expensive and going nowhere. The step cap forces a declared outcome."
-  },
-  {
-    "id": "mcq-architecture-05",
-    "type": "mcq",
-    "chapterId": "architecture",
-    "chapterTitle": "6.1 Agent Architecture",
-    "sourceUrl": "/post-game/architecture/",
-    "question": "Per the 'Picking a Team Sheet' comparison table, what is a typical failure mode of a single ReAct agent?",
-    "options": [
-      "A handoff drops context the next specialist needed",
-      "The loop rambles or repeats a tool with no new information",
-      "GPU memory overflow",
-      "A leaked feature inflates the validation score"
-    ],
-    "correctAnswerIndex": 1,
-    "explanation": "The table lists 'loop rambles or repeats a tool call with no new information' as ReAct's characteristic failure mode."
-  },
-  {
-    "id": "mcq-architecture-06",
-    "type": "mcq",
-    "chapterId": "architecture",
-    "chapterTitle": "6.1 Agent Architecture",
-    "sourceUrl": "/post-game/architecture/",
-    "question": "What is a typical failure mode of a multi-agent XI, per the same table?",
-    "options": [
-      "The loop rambles or repeats a tool with no new information",
-      "A handoff drops context that the next specialist actually needed",
-      "Validation loss diverges",
-      "Row cap exceeded"
-    ],
-    "correctAnswerIndex": 1,
-    "explanation": "The multi-agent failure mode in the table is a handoff dropping context the next specialist needed."
-  },
-  {
-    "id": "mcq-architecture-07",
-    "type": "mcq",
-    "chapterId": "architecture",
-    "chapterTitle": "6.1 Agent Architecture",
-    "sourceUrl": "/post-game/architecture/",
-    "question": "Why does the chapter say a multi-agent split can outperform one generalist model?",
-    "options": [
-      "Because more agents always means a better model",
-      "Because splitting one impossible job into several narrower, well-equipped specialist jobs beats one jack-of-all-trades model that's mediocre at everything",
-      "Because agents are cheaper to run than one large model",
-      "Because captain agents don't need any tools"
-    ],
-    "correctAnswerIndex": 1,
-    "explanation": "One model routing, querying, describing footage, and remembering everything ends up mediocre at all of it — the same reason a captain doesn't keep wicket and open the bowling."
-  },
-  {
-    "id": "mcq-architecture-08",
-    "type": "mcq",
-    "chapterId": "architecture",
-    "chapterTitle": "6.1 Agent Architecture",
-    "sourceUrl": "/post-game/architecture/",
-    "question": "According to 'Validation Has to Talk Back to Feature Engineering,' what should happen when evaluation finds a near-zero-importance or leaked feature?",
-    "options": [
-      "Nothing — evaluation is the final step and the pipeline should stop there",
-      "That result should feed backwards into feature pruning, and sometimes into imputation choices, before the next attempt runs",
-      "The feature should be kept regardless, since it already made it into training",
-      "The model should be retrained with the same features but a different algorithm"
-    ],
-    "correctAnswerIndex": 1,
-    "explanation": "The chapter is explicit that this finding has to travel backwards into earlier overs before the next attempt runs."
-  },
-  {
-    "id": "mcq-architecture-09",
-    "type": "mcq",
-    "chapterId": "architecture",
-    "chapterTitle": "6.1 Agent Architecture",
-    "sourceUrl": "/post-game/architecture/",
-    "question": "What does the chapter say is wrong with a strictly unidirectional pipeline script?",
-    "options": [
-      "It runs too slowly",
-      "It will happily ship a model built on a feature validation already condemned, since nothing lets it revisit earlier steps",
-      "It cannot call any tools",
-      "It requires GPU access"
-    ],
-    "correctAnswerIndex": 1,
-    "explanation": "A one-way-only script has no mechanism for evaluation's findings to change an earlier decision, so a condemned feature can ship anyway."
-  },
-  {
-    "id": "mcq-architecture-10",
-    "type": "mcq",
-    "chapterId": "architecture",
-    "chapterTitle": "6.1 Agent Architecture",
-    "sourceUrl": "/post-game/architecture/",
-    "question": "What does the chapter's ASCII diagram contrast?",
-    "options": [
-      "A notebook execution order against a sandboxed script",
-      "A ReAct think-then-tool-call loop against a captain-and-specialists multi-agent hierarchy",
-      "A training loop against a feature factory",
-      "A Director's rules against an Executor's sweep"
-    ],
-    "correctAnswerIndex": 1,
-    "explanation": "The diagram places the ReAct loop (thought/tool call cycle) beside the multi-agent hierarchy (captain branching to specialists)."
-  },
-  {
-    "id": "sa-architecture-01",
-    "type": "short_answer",
-    "chapterId": "architecture",
-    "chapterTitle": "6.1 Agent Architecture",
-    "sourceUrl": "/post-game/architecture/",
-    "question": "Explain the difference between the ReAct pattern and a multi-agent team, and describe one situation where each is the better choice.",
-    "modelAnswer": "ReAct is a single agent running its own think/tool-call/observation loop, holding the whole scratchpad itself, well suited to small well-scoped tasks with a tight tool set since there's no handoff to lose context across. A multi-agent team splits the work across several specialist agents coordinated by a captain, better suited to large tasks that split cleanly into distinct roles, since it allows parallelism and keeps each agent's prompt and tools small enough to get right.",
-    "rubric": [
-      "Describes ReAct as a single agent with its own scratchpad",
-      "Describes multi-agent as split specialists coordinated by a captain",
-      "Gives a correct scenario for at least one pattern"
-    ]
-  },
-  {
-    "id": "sa-architecture-02",
-    "type": "short_answer",
-    "chapterId": "architecture",
-    "chapterTitle": "6.1 Agent Architecture",
-    "sourceUrl": "/post-game/architecture/",
-    "question": "Why does the chapter insist on a hard step cap (max_overs) regardless of which architecture pattern is used?",
-    "modelAnswer": "Without a cap, an agent loop can run indefinitely without producing an answer — described as an 'endless rain delay' — burning compute with no guarantee of resolution. The cap forces whoever holds the loop, the lone agent or the captain, to declare the answer settled within a fixed number of steps, and every handoff gets logged along the way.",
-    "rubric": [
-      "States an uncapped loop can run indefinitely or never resolve",
-      "Mentions the cost / rain-delay framing",
-      "Notes the cap forces a declared or settled outcome"
-    ]
-  },
-  {
-    "id": "sa-architecture-03",
-    "type": "short_answer",
-    "chapterId": "architecture",
-    "chapterTitle": "6.1 Agent Architecture",
-    "sourceUrl": "/post-game/architecture/",
-    "question": "Describe what 'the pipeline is not an assembly line' means in the context of validation and feature engineering.",
-    "modelAnswer": "It means the stages of an ML pipeline — imputation, feature engineering, evaluation — shouldn't run strictly forward-only, where each stage hands off and is never revisited. When evaluation finds a problem, like a near-zero-importance or leaked feature, that finding needs to flow backwards into feature pruning or imputation choices before another attempt is trusted, rather than being noted in a final report only.",
-    "rubric": [
-      "Explains the assembly-line metaphor as one-directional, no revisiting",
-      "Explains evaluation results need to feed back into earlier stages",
-      "Gives a concrete example, such as pruning a leaked or low-importance feature"
-    ]
-  },
-  {
-    "id": "sa-architecture-04",
-    "type": "short_answer",
-    "chapterId": "architecture",
-    "chapterTitle": "6.1 Agent Architecture",
-    "sourceUrl": "/post-game/architecture/",
-    "question": "Using the dressing-room analogy, explain why the multi-agent captain never answers the question directly.",
-    "modelAnswer": "The captain's only job is to decide which specialist should handle the current task and to judge whether the accumulated answers settle the original question; answering directly would mean the captain is trying to do the specialists' jobs too, recreating the same jack-of-all-trades problem the multi-agent split was meant to avoid.",
-    "rubric": [
-      "States the captain routes or decides rather than answers",
-      "Connects this to avoiding the generalist-doing-everything problem"
-    ]
-  },
-  {
-    "id": "sa-architecture-05",
-    "type": "short_answer",
-    "chapterId": "architecture",
-    "chapterTitle": "6.1 Agent Architecture",
-    "sourceUrl": "/post-game/architecture/",
-    "question": "What is the practical difference in debugging effort between the ReAct pattern and a multi-agent team, according to the chapter's comparison table?",
-    "modelAnswer": "Debugging a ReAct agent means reading one transcript top to bottom, since there is only one scratchpad. Debugging a multi-agent team means first reading the captain's handoff log to see which specialist was involved, then drilling into that one specialist's own trace — a two-step process rather than one continuous read.",
-    "rubric": [
-      "Describes ReAct debugging as reading one transcript",
-      "Describes multi-agent debugging as handoff log then drill into a specialist"
-    ]
-  },
-  {
     "id": "mcq-director-and-executor-01",
     "type": "mcq",
     "chapterId": "director-and-executor",
-    "chapterTitle": "6.4 Director and Executor",
+    "chapterTitle": "6.2 Director and Executor",
     "sourceUrl": "/post-game/director-and-executor/",
     "question": "According to the chapter, what does the human Director never delegate to the agent Executor?",
     "options": [
@@ -13141,7 +12453,7 @@
     "id": "mcq-director-and-executor-02",
     "type": "mcq",
     "chapterId": "director-and-executor",
-    "chapterTitle": "6.4 Director and Executor",
+    "chapterTitle": "6.2 Director and Executor",
     "sourceUrl": "/post-game/director-and-executor/",
     "question": "In the make_split code example, what does the guard clause protect against?",
     "options": [
@@ -13157,7 +12469,7 @@
     "id": "mcq-director-and-executor-03",
     "type": "mcq",
     "chapterId": "director-and-executor",
-    "chapterTitle": "6.4 Director and Executor",
+    "chapterTitle": "6.2 Director and Executor",
     "sourceUrl": "/post-game/director-and-executor/",
     "question": "What is a 'target-encoding trap,' per the chapter?",
     "options": [
@@ -13173,7 +12485,7 @@
     "id": "mcq-director-and-executor-04",
     "type": "mcq",
     "chapterId": "director-and-executor",
-    "chapterTitle": "6.4 Director and Executor",
+    "chapterTitle": "6.2 Director and Executor",
     "sourceUrl": "/post-game/director-and-executor/",
     "question": "Why does the chapter say an unguided agent might over-index on a freak outlier?",
     "options": [
@@ -13189,7 +12501,7 @@
     "id": "mcq-director-and-executor-05",
     "type": "mcq",
     "chapterId": "director-and-executor",
-    "chapterTitle": "6.4 Director and Executor",
+    "chapterTitle": "6.2 Director and Executor",
     "sourceUrl": "/post-game/director-and-executor/",
     "question": "What do temporal leakage, target-encoding traps, and over-indexing on outliers have in common, according to the chapter?",
     "options": [
@@ -13205,7 +12517,7 @@
     "id": "mcq-director-and-executor-06",
     "type": "mcq",
     "chapterId": "director-and-executor",
-    "chapterTitle": "6.4 Director and Executor",
+    "chapterTitle": "6.2 Director and Executor",
     "sourceUrl": "/post-game/director-and-executor/",
     "question": "In the 'Team Sheet' table, who is responsible for approving the feature universe (what's fair game to derive)?",
     "options": [
@@ -13221,7 +12533,7 @@
     "id": "mcq-director-and-executor-07",
     "type": "mcq",
     "chapterId": "director-and-executor",
-    "chapterTitle": "6.4 Director and Executor",
+    "chapterTitle": "6.2 Director and Executor",
     "sourceUrl": "/post-game/director-and-executor/",
     "question": "What is the Executor (agent) responsible for regarding feature iteration, per the Team Sheet table?",
     "options": [
@@ -13237,7 +12549,7 @@
     "id": "mcq-director-and-executor-08",
     "type": "mcq",
     "chapterId": "director-and-executor",
-    "chapterTitle": "6.4 Director and Executor",
+    "chapterTitle": "6.2 Director and Executor",
     "sourceUrl": "/post-game/director-and-executor/",
     "question": "What does the chapter say is worse than a human slowly setting the rules for a model?",
     "options": [
@@ -13253,7 +12565,7 @@
     "id": "mcq-director-and-executor-09",
     "type": "mcq",
     "chapterId": "director-and-executor",
-    "chapterTitle": "6.4 Director and Executor",
+    "chapterTitle": "6.2 Director and Executor",
     "sourceUrl": "/post-game/director-and-executor/",
     "question": "Why does the chapter argue that agent-generated feature sweeps are still valuable, despite the Director owning problem formulation?",
     "options": [
@@ -13269,7 +12581,7 @@
     "id": "mcq-director-and-executor-10",
     "type": "mcq",
     "chapterId": "director-and-executor",
-    "chapterTitle": "6.4 Director and Executor",
+    "chapterTitle": "6.2 Director and Executor",
     "sourceUrl": "/post-game/director-and-executor/",
     "question": "What does the chapter recommend an agent log during a sweep, beyond just the winning configuration?",
     "options": [
@@ -13285,7 +12597,7 @@
     "id": "sa-director-and-executor-01",
     "type": "short_answer",
     "chapterId": "director-and-executor",
-    "chapterTitle": "6.4 Director and Executor",
+    "chapterTitle": "6.2 Director and Executor",
     "sourceUrl": "/post-game/director-and-executor/",
     "question": "Explain why leakage rules should live in code rather than only in a prompt, according to the chapter.",
     "modelAnswer": "A rule enforced in code, like the cutoff-date check in make_split, is one the agent literally cannot route around under metric pressure, whereas an instruction in a prompt can be rationalised past by an agent chasing a better score. Code-level guards make bad splits structurally impossible rather than merely discouraged.",
@@ -13298,7 +12610,7 @@
     "id": "sa-director-and-executor-02",
     "type": "short_answer",
     "chapterId": "director-and-executor",
-    "chapterTitle": "6.4 Director and Executor",
+    "chapterTitle": "6.2 Director and Executor",
     "sourceUrl": "/post-game/director-and-executor/",
     "question": "Describe the target-encoding trap and explain why an agent optimising purely for validation error might not avoid it on its own.",
     "modelAnswer": "The trap is encoding a categorical column using the mean of the target computed across the whole dataset, including validation rows, which leaks information about the validation target into the feature. An agent watching only 'reduce validation error' has no signal telling it to fit the encoding on the training fold only, since the leak actually makes the reported validation error look better, not worse.",
@@ -13311,7 +12623,7 @@
     "id": "sa-director-and-executor-03",
     "type": "short_answer",
     "chapterId": "director-and-executor",
-    "chapterTitle": "6.4 Director and Executor",
+    "chapterTitle": "6.2 Director and Executor",
     "sourceUrl": "/post-game/director-and-executor/",
     "question": "Using the Team Sheet table, contrast the Director's and Executor's responsibilities for validation design.",
     "modelAnswer": "The Director owns the split strategy and decides what metric defines success. The Executor's job is to actually carry out that split, compute the chosen metric, and report the result honestly — it doesn't get to choose the strategy or the metric itself.",
@@ -13324,7 +12636,7 @@
     "id": "sa-director-and-executor-04",
     "type": "short_answer",
     "chapterId": "director-and-executor",
-    "chapterTitle": "6.4 Director and Executor",
+    "chapterTitle": "6.2 Director and Executor",
     "sourceUrl": "/post-game/director-and-executor/",
     "question": "Why does the chapter say 'hand an agent the dataset and it will happily hand you back a model' is not the same as removing the need for human judgement?",
     "modelAnswer": "An agent can and will produce a model regardless of whether the underlying choices — what's being predicted, what counts as a leak, what counts as a legitimate outlier — were made deliberately. If nobody makes those choices on purpose, the agent still makes them implicitly by default, just without anyone accountable for the result, which the chapter frames as worse than deciding them slowly.",
@@ -13337,7 +12649,7 @@
     "id": "sa-director-and-executor-05",
     "type": "short_answer",
     "chapterId": "director-and-executor",
-    "chapterTitle": "6.4 Director and Executor",
+    "chapterTitle": "6.2 Director and Executor",
     "sourceUrl": "/post-game/director-and-executor/",
     "question": "Give one concrete example from the chapter of an agent 'cheating' to improve a metric, and explain what makes it a cheat rather than a legitimate improvement.",
     "modelAnswer": "One example is a random train/val shuffle used on data where the real deployment question is predicting the next match from past ones — shuffling silently lets the model see rows from the 'future' relative to what it's meant to predict. It's a cheat rather than a legitimate improvement because the resulting validation score looks better only because of information the model would never actually have access to at prediction time.",
@@ -13350,7 +12662,7 @@
     "id": "mcq-classical-vs-deep-learning-agents-01",
     "type": "mcq",
     "chapterId": "classical-vs-deep-learning-agents",
-    "chapterTitle": "6.5 Classical vs Deep Learning Agents",
+    "chapterTitle": "6.3 Classical vs Deep Learning Agents",
     "sourceUrl": "/post-game/classical-vs-deep-learning-agents/",
     "question": "Per the chapter, what is the main job of a tabular ML agent?",
     "options": [
@@ -13366,7 +12678,7 @@
     "id": "mcq-classical-vs-deep-learning-agents-02",
     "type": "mcq",
     "chapterId": "classical-vs-deep-learning-agents",
-    "chapterTitle": "6.5 Classical vs Deep Learning Agents",
+    "chapterTitle": "6.3 Classical vs Deep Learning Agents",
     "sourceUrl": "/post-game/classical-vs-deep-learning-agents/",
     "question": "Why does the code example use drop_first=True when creating dummy variables?",
     "options": [
@@ -13382,7 +12694,7 @@
     "id": "mcq-classical-vs-deep-learning-agents-03",
     "type": "mcq",
     "chapterId": "classical-vs-deep-learning-agents",
-    "chapterTitle": "6.5 Classical vs Deep Learning Agents",
+    "chapterTitle": "6.3 Classical vs Deep Learning Agents",
     "sourceUrl": "/post-game/classical-vs-deep-learning-agents/",
     "question": "Why does the chapter prefer pruning features by permutation importance rather than by the trained coefficient's sign or magnitude?",
     "options": [
@@ -13398,7 +12710,7 @@
     "id": "mcq-classical-vs-deep-learning-agents-04",
     "type": "mcq",
     "chapterId": "classical-vs-deep-learning-agents",
-    "chapterTitle": "6.5 Classical vs Deep Learning Agents",
+    "chapterTitle": "6.3 Classical vs Deep Learning Agents",
     "sourceUrl": "/post-game/classical-vs-deep-learning-agents/",
     "question": "What does a deep learning training-supervisor agent need to watch for that a tabular agent's .fit() call does not typically risk?",
     "options": [
@@ -13414,7 +12726,7 @@
     "id": "mcq-classical-vs-deep-learning-agents-05",
     "type": "mcq",
     "chapterId": "classical-vs-deep-learning-agents",
-    "chapterTitle": "6.5 Classical vs Deep Learning Agents",
+    "chapterTitle": "6.3 Classical vs Deep Learning Agents",
     "sourceUrl": "/post-game/classical-vs-deep-learning-agents/",
     "question": "In the training-loop code example, what triggers a learning-rate decay?",
     "options": [
@@ -13430,7 +12742,7 @@
     "id": "mcq-classical-vs-deep-learning-agents-06",
     "type": "mcq",
     "chapterId": "classical-vs-deep-learning-agents",
-    "chapterTitle": "6.5 Classical vs Deep Learning Agents",
+    "chapterTitle": "6.3 Classical vs Deep Learning Agents",
     "sourceUrl": "/post-game/classical-vs-deep-learning-agents/",
     "question": "According to the chapter, what is the actual tell for overfitting during a training run?",
     "options": [
@@ -13446,7 +12758,7 @@
     "id": "mcq-classical-vs-deep-learning-agents-07",
     "type": "mcq",
     "chapterId": "classical-vs-deep-learning-agents",
-    "chapterTitle": "6.5 Classical vs Deep Learning Agents",
+    "chapterTitle": "6.3 Classical vs Deep Learning Agents",
     "sourceUrl": "/post-game/classical-vs-deep-learning-agents/",
     "question": "Why does the training loop save the checkpoint from before validation loss turns upward, rather than the last epoch?",
     "options": [
@@ -13462,7 +12774,7 @@
     "id": "mcq-classical-vs-deep-learning-agents-08",
     "type": "mcq",
     "chapterId": "classical-vs-deep-learning-agents",
-    "chapterTitle": "6.5 Classical vs Deep Learning Agents",
+    "chapterTitle": "6.3 Classical vs Deep Learning Agents",
     "sourceUrl": "/post-game/classical-vs-deep-learning-agents/",
     "question": "Per the comparison table, what is a typical execution environment difference between a tabular agent and a deep learning agent?",
     "options": [
@@ -13478,7 +12790,7 @@
     "id": "mcq-classical-vs-deep-learning-agents-09",
     "type": "mcq",
     "chapterId": "classical-vs-deep-learning-agents",
-    "chapterTitle": "6.5 Classical vs Deep Learning Agents",
+    "chapterTitle": "6.3 Classical vs Deep Learning Agents",
     "sourceUrl": "/post-game/classical-vs-deep-learning-agents/",
     "question": "What stopping criterion does the chapter give for a tabular Feature Factory agent, as opposed to a deep learning agent?",
     "options": [
@@ -13494,7 +12806,7 @@
     "id": "mcq-classical-vs-deep-learning-agents-10",
     "type": "mcq",
     "chapterId": "classical-vs-deep-learning-agents",
-    "chapterTitle": "6.5 Classical vs Deep Learning Agents",
+    "chapterTitle": "6.3 Classical vs Deep Learning Agents",
     "sourceUrl": "/post-game/classical-vs-deep-learning-agents/",
     "question": "What failure mode does the chapter identify as having 'no tabular equivalent'?",
     "options": [
@@ -13510,7 +12822,7 @@
     "id": "sa-classical-vs-deep-learning-agents-01",
     "type": "short_answer",
     "chapterId": "classical-vs-deep-learning-agents",
-    "chapterTitle": "6.5 Classical vs Deep Learning Agents",
+    "chapterTitle": "6.3 Classical vs Deep Learning Agents",
     "sourceUrl": "/post-game/classical-vs-deep-learning-agents/",
     "question": "Explain why a tabular ML agent spends most of its effort on features while a deep learning agent spends most of its effort on the training run itself.",
     "modelAnswer": "A tabular model's inputs are named, human-meaningful columns, so most of the signal-finding work is manufacturing and pruning good features by hand before the algorithm ever sees them. A deep network takes raw or lightly-processed tensors and is meant to find its own interactions internally, so the agent's effort shifts to supervising the training process — the loss curve, learning rate, and memory — rather than hand-crafting inputs.",
@@ -13523,7 +12835,7 @@
     "id": "sa-classical-vs-deep-learning-agents-02",
     "type": "short_answer",
     "chapterId": "classical-vs-deep-learning-agents",
-    "chapterTitle": "6.5 Classical vs Deep Learning Agents",
+    "chapterTitle": "6.3 Classical vs Deep Learning Agents",
     "sourceUrl": "/post-game/classical-vs-deep-learning-agents/",
     "question": "What does the learning rate decay formula in the chapter do, and when does it trigger in the example code?",
     "modelAnswer": "It multiplies the current learning rate by a decay factor (0.2 in the example) to reduce it. In the code, it triggers after three consecutive epochs where validation loss fails to improve on the best value seen so far, after which the patience counter resets.",
@@ -13536,7 +12848,7 @@
     "id": "sa-classical-vs-deep-learning-agents-03",
     "type": "short_answer",
     "chapterId": "classical-vs-deep-learning-agents",
-    "chapterTitle": "6.5 Classical vs Deep Learning Agents",
+    "chapterTitle": "6.3 Classical vs Deep Learning Agents",
     "sourceUrl": "/post-game/classical-vs-deep-learning-agents/",
     "question": "Why is permutation importance a more reliable pruning signal than a model's raw coefficients, per the chapter?",
     "modelAnswer": "A coefficient reflects how the model weighted a feature during fitting, which can be large and confident even for a feature that turns out to change nothing when it's actually shuffled and re-evaluated. Permutation importance measures the real effect on model performance when a feature's values are shuffled, so it catches features that look important on paper but aren't actually earning their place.",
@@ -13549,7 +12861,7 @@
     "id": "sa-classical-vs-deep-learning-agents-04",
     "type": "short_answer",
     "chapterId": "classical-vs-deep-learning-agents",
-    "chapterTitle": "6.5 Classical vs Deep Learning Agents",
+    "chapterTitle": "6.3 Classical vs Deep Learning Agents",
     "sourceUrl": "/post-game/classical-vs-deep-learning-agents/",
     "question": "Describe one difference in failure modes between a tabular agent and a deep learning agent, using an example from the chapter.",
     "modelAnswer": "A tabular agent's typical failure is a leaked or collinear feature inflating the reported score, caught through pruning steps like permutation importance. A deep learning agent's typical failure is the loss diverging outright, or memory overflowing mid-epoch on a GPU run, which requires monitoring the training curve and having a batch-size backoff plan rather than a feature-pruning step.",
@@ -13563,7 +12875,7 @@
     "id": "sa-classical-vs-deep-learning-agents-05",
     "type": "short_answer",
     "chapterId": "classical-vs-deep-learning-agents",
-    "chapterTitle": "6.5 Classical vs Deep Learning Agents",
+    "chapterTitle": "6.3 Classical vs Deep Learning Agents",
     "sourceUrl": "/post-game/classical-vs-deep-learning-agents/",
     "question": "Why does the chapter argue that 'always checkpoint on the best validation score, not the last epoch' matters for a training-supervisor agent?",
     "modelAnswer": "Training can continue past the point where the model was actually at its best, with validation loss climbing afterward due to overfitting or an unstable learning rate. If the agent only ever keeps the model from whichever epoch training happened to stop on, it discards the genuinely best version of the model in favour of a worse one that just happened to run last.",
@@ -13576,7 +12888,7 @@
     "id": "mcq-execution-environments-01",
     "type": "mcq",
     "chapterId": "execution-environments",
-    "chapterTitle": "6.6 Execution Environments",
+    "chapterTitle": "6.4 Execution Environments",
     "sourceUrl": "/post-game/execution-environments/",
     "question": "What is the 'Notebook Paradox' described in the chapter?",
     "options": [
@@ -13592,7 +12904,7 @@
     "id": "mcq-execution-environments-02",
     "type": "mcq",
     "chapterId": "execution-environments",
-    "chapterTitle": "6.6 Execution Environments",
+    "chapterTitle": "6.4 Execution Environments",
     "sourceUrl": "/post-game/execution-environments/",
     "question": "In the notebook diagram example, why does the agent's top-to-bottom replay get a different df than the human saw?",
     "options": [
@@ -13608,7 +12920,7 @@
     "id": "mcq-execution-environments-03",
     "type": "mcq",
     "chapterId": "execution-environments",
-    "chapterTitle": "6.6 Execution Environments",
+    "chapterTitle": "6.4 Execution Environments",
     "sourceUrl": "/post-game/execution-environments/",
     "question": "What does the sandbox runner code capture as the 'actual result' of a script run?",
     "options": [
@@ -13624,7 +12936,7 @@
     "id": "mcq-execution-environments-04",
     "type": "mcq",
     "chapterId": "execution-environments",
-    "chapterTitle": "6.6 Execution Environments",
+    "chapterTitle": "6.4 Execution Environments",
     "sourceUrl": "/post-game/execution-environments/",
     "question": "What happens when a sandboxed script fails, per the run_in_sandbox example?",
     "options": [
@@ -13640,7 +12952,7 @@
     "id": "mcq-execution-environments-05",
     "type": "mcq",
     "chapterId": "execution-environments",
-    "chapterTitle": "6.6 Execution Environments",
+    "chapterTitle": "6.4 Execution Environments",
     "sourceUrl": "/post-game/execution-environments/",
     "question": "Why does every sandboxed run get a hard timeout, according to the chapter?",
     "options": [
@@ -13656,7 +12968,7 @@
     "id": "mcq-execution-environments-06",
     "type": "mcq",
     "chapterId": "execution-environments",
-    "chapterTitle": "6.6 Execution Environments",
+    "chapterTitle": "6.4 Execution Environments",
     "sourceUrl": "/post-game/execution-environments/",
     "question": "In the Hybrid IDE Workflow, what is the human's role versus the agent's role?",
     "options": [
@@ -13672,7 +12984,7 @@
     "id": "mcq-execution-environments-07",
     "type": "mcq",
     "chapterId": "execution-environments",
-    "chapterTitle": "6.6 Execution Environments",
+    "chapterTitle": "6.4 Execution Environments",
     "sourceUrl": "/post-game/execution-environments/",
     "question": "What does the chapter say should actually be reviewed in the hybrid workflow?",
     "options": [
@@ -13688,7 +13000,7 @@
     "id": "mcq-execution-environments-08",
     "type": "mcq",
     "chapterId": "execution-environments",
-    "chapterTitle": "6.6 Execution Environments",
+    "chapterTitle": "6.4 Execution Environments",
     "sourceUrl": "/post-game/execution-environments/",
     "question": "Per the chapter's stats, what state does an agent's sandboxed script start with on every run?",
     "options": [
@@ -13704,7 +13016,7 @@
     "id": "mcq-execution-environments-09",
     "type": "mcq",
     "chapterId": "execution-environments",
-    "chapterTitle": "6.6 Execution Environments",
+    "chapterTitle": "6.4 Execution Environments",
     "sourceUrl": "/post-game/execution-environments/",
     "question": "According to the 'Dressing Room Ground Rules,' who should have access to a live notebook kernel in this workflow?",
     "options": [
@@ -13720,7 +13032,7 @@
     "id": "mcq-execution-environments-10",
     "type": "mcq",
     "chapterId": "execution-environments",
-    "chapterTitle": "6.6 Execution Environments",
+    "chapterTitle": "6.4 Execution Environments",
     "sourceUrl": "/post-game/execution-environments/",
     "question": "Why does the chapter say stdout and stderr should be read directly rather than through the agent's summary of them?",
     "options": [
@@ -13736,7 +13048,7 @@
     "id": "sa-execution-environments-01",
     "type": "short_answer",
     "chapterId": "execution-environments",
-    "chapterTitle": "6.6 Execution Environments",
+    "chapterTitle": "6.4 Execution Environments",
     "sourceUrl": "/post-game/execution-environments/",
     "question": "Explain the Notebook Paradox in your own words, using the human/agent example from the chapter.",
     "modelAnswer": "Notebooks let a human run cells out of order — redefining a variable in a later cell and then re-running an earlier one — which is a genuinely useful, deliberate way to explore data, but that same flexibility means the 'true' state of a variable exists only in whatever order the human actually clicked run in, not in the notebook's visible top-to-bottom order. An agent that replays the notebook from top to bottom will therefore compute a different result, a different df in the chapter's example, than the one the human was actually looking at.",
@@ -13749,7 +13061,7 @@
     "id": "sa-execution-environments-02",
     "type": "short_answer",
     "chapterId": "execution-environments",
-    "chapterTitle": "6.6 Execution Environments",
+    "chapterTitle": "6.4 Execution Environments",
     "sourceUrl": "/post-game/execution-environments/",
     "question": "Describe the patch-and-retry loop shown in the sandbox runner example, and explain what makes it possible.",
     "modelAnswer": "The agent runs a script in the sandbox; if it fails, the captured stderr traceback is passed directly to the agent, which uses it to patch the script and run the corrected version. This is possible because the sandbox runs fresh, isolated state on every invocation and returns the raw stdout/stderr rather than an interpretation of it, so the agent gets exactly the information it needs to diagnose the failure.",
@@ -13762,7 +13074,7 @@
     "id": "sa-execution-environments-03",
     "type": "short_answer",
     "chapterId": "execution-environments",
-    "chapterTitle": "6.6 Execution Environments",
+    "chapterTitle": "6.4 Execution Environments",
     "sourceUrl": "/post-game/execution-environments/",
     "question": "In the Hybrid IDE Workflow, what is 'the notebook is where the idea gets found, the container is where it gets proven' meant to capture?",
     "modelAnswer": "It draws a boundary between two different jobs: exploratory, improvised analysis where a human forms a hypothesis is well suited to a notebook, while confirming that the resulting approach actually works reliably belongs in a clean, deterministic script run inside an isolated container. Mixing the two — letting an agent execute directly inside the exploratory notebook — combines a job that tolerates messy state with an execution mode that requires clean, reproducible state.",
@@ -13775,7 +13087,7 @@
     "id": "sa-execution-environments-04",
     "type": "short_answer",
     "chapterId": "execution-environments",
-    "chapterTitle": "6.6 Execution Environments",
+    "chapterTitle": "6.4 Execution Environments",
     "sourceUrl": "/post-game/execution-environments/",
     "question": "Why does the chapter recommend reviewing the agent's script diff rather than its chat transcript?",
     "modelAnswer": "The script diff shows exactly what code will actually run and what changed, in the same form a human would review any other code change, whereas a chat transcript is a narrative account that could omit or misrepresent details of the actual execution. Reviewing the diff keeps the review grounded in the real, reproducible artefact rather than the agent's description of its own work.",
@@ -13788,7 +13100,7 @@
     "id": "sa-execution-environments-05",
     "type": "short_answer",
     "chapterId": "execution-environments",
-    "chapterTitle": "6.6 Execution Environments",
+    "chapterTitle": "6.4 Execution Environments",
     "sourceUrl": "/post-game/execution-environments/",
     "question": "What two guardrails does the chapter identify for keeping a sandboxed agent run safe, and why is each necessary?",
     "modelAnswer": "A hard timeout, so a stuck or runaway loop fails fast instead of silently consuming compute indefinitely; and isolation via a container, so a script's fresh state each run can't be corrupted by, or corrupt, leftover state from a previous attempt. Together they keep a failing run cheap to detect and easy to reason about, rather than an expensive, ambiguous mess.",
@@ -13918,5 +13230,311 @@
       "States the inverse transform must be applied before predictions are usable",
       "Explains the consequence of skipping it: downstream values/metrics end up in the wrong units"
     ]
+  },
+  {
+    "id": "mcq-agent-architectures-and-tools-01",
+    "type": "mcq",
+    "chapterId": "agent-architectures-and-tools",
+    "chapterTitle": "6.1 Agent Architectures & Tools",
+    "sourceUrl": "/post-game/agent-architectures-and-tools/",
+    "question": "In the ReAct pattern, what does a single agent hold that a multi-agent team splits across several agents instead?",
+    "options": [
+      "The tool schemas",
+      "The whole scratchpad — every thought, tool call, and observation in one place",
+      "The step cap",
+      "The reviewer's verdict list"
+    ],
+    "correctAnswerIndex": 1,
+    "explanation": "A ReAct agent keeps its entire reasoning trace in one scratchpad, which is exactly why there's no handoff to lose context across — and exactly why it doesn't scale to jobs needing several things done in parallel."
+  },
+  {
+    "id": "mcq-agent-architectures-and-tools-02",
+    "type": "mcq",
+    "chapterId": "agent-architectures-and-tools",
+    "chapterTitle": "6.1 Agent Architectures & Tools",
+    "sourceUrl": "/post-game/agent-architectures-and-tools/",
+    "question": "Per the chapter, what are the three boundaries every tool definition needs, regardless of which pattern calls it?",
+    "options": [
+      "A name, a description, and a version number",
+      "A timeout, a row cap, and read-only access",
+      "A retry policy, a cache, and a rate limit",
+      "A prompt, a temperature, and a token budget"
+    ],
+    "correctAnswerIndex": 1,
+    "explanation": "The chapter names all three explicitly: a timeout so a stuck call can't become a stuck agent, a row cap so a reasonable question can't return an unreasonable amount of data, and read-only access so an understanding tool can never become a mutating one."
+  },
+  {
+    "id": "mcq-agent-architectures-and-tools-03",
+    "type": "mcq",
+    "chapterId": "agent-architectures-and-tools",
+    "chapterTitle": "6.1 Agent Architectures & Tools",
+    "sourceUrl": "/post-game/agent-architectures-and-tools/",
+    "question": "In the multi-agent roster (captain, data engineer, ML scientist, validator), what is the captain's job?",
+    "options": [
+      "To train the final model directly",
+      "To route the question to the right specialist and judge when the group's answer is settled",
+      "To clean data and engineer features",
+      "To check metrics for leakage"
+    ],
+    "correctAnswerIndex": 1,
+    "explanation": "The captain never answers directly — it only decides who acts next and whether the accumulated work settles the original question."
+  },
+  {
+    "id": "mcq-agent-architectures-and-tools-04",
+    "type": "mcq",
+    "chapterId": "agent-architectures-and-tools",
+    "chapterTitle": "6.1 Agent Architectures & Tools",
+    "sourceUrl": "/post-game/agent-architectures-and-tools/",
+    "question": "Why does the chapter say a strictly unidirectional (assembly-line) handoff chain fails?",
+    "options": [
+      "It runs too slowly for real use",
+      "It can ship a model built on a feature the validator already condemned, because nothing lets that finding travel backwards into earlier steps",
+      "It cannot call any tools",
+      "It requires more agents than a ReAct loop"
+    ],
+    "correctAnswerIndex": 1,
+    "explanation": "When the validator finds a leaked or near-zero-importance feature, that result has to travel backwards into feature pruning before the next attempt runs — a one-way chain has no mechanism for that."
+  },
+  {
+    "id": "mcq-agent-architectures-and-tools-05",
+    "type": "mcq",
+    "chapterId": "agent-architectures-and-tools",
+    "chapterTitle": "6.1 Agent Architectures & Tools",
+    "sourceUrl": "/post-game/agent-architectures-and-tools/",
+    "question": "According to the comparison table, what is a typical failure mode of the multi-agent XI that a single ReAct agent doesn't share?",
+    "options": [
+      "The loop rambles or repeats a tool with no new information",
+      "A handoff drops context the next specialist actually needed",
+      "The agent runs out of tools to call",
+      "The reviewer escalates too often"
+    ],
+    "correctAnswerIndex": 1,
+    "explanation": "The table lists 'a handoff drops context the next specialist needed' as the multi-agent XI's characteristic failure mode, distinct from ReAct's rambling-loop failure mode."
+  },
+  {
+    "id": "mcq-agent-architectures-and-tools-06",
+    "type": "mcq",
+    "chapterId": "agent-architectures-and-tools",
+    "chapterTitle": "6.1 Agent Architectures & Tools",
+    "sourceUrl": "/post-game/agent-architectures-and-tools/",
+    "question": "What does the DRS reviewer agent see when judging a primary agent's answer?",
+    "options": [
+      "The primary agent's full chain of thought and confidence score",
+      "Only the question, the answer, and the retrieved evidence",
+      "The captain's entire handoff log",
+      "The reviewer's own prior verdicts"
+    ],
+    "correctAnswerIndex": 1,
+    "explanation": "The reviewer deliberately never sees confidence or chain of thought — only the question, the answer, and the evidence, so it rules on the footage rather than how convincing the appeal sounds."
+  },
+  {
+    "id": "mcq-agent-architectures-and-tools-07",
+    "type": "mcq",
+    "chapterId": "agent-architectures-and-tools",
+    "chapterTitle": "6.1 Agent Architectures & Tools",
+    "sourceUrl": "/post-game/agent-architectures-and-tools/",
+    "question": "What are the three verdicts a DRS reviewer agent is allowed to return?",
+    "options": [
+      "Correct, incorrect, unknown",
+      "Upheld, overturned, umpire's call",
+      "Pass, fail, retry",
+      "Accept, reject, escalate"
+    ],
+    "correctAnswerIndex": 1,
+    "explanation": "VERDICTS in the chapter's code is explicitly the fixed tuple (\"upheld\", \"overturned\", \"umpires_call\") — confining verdicts to a fixed list keeps the review inside the laws of the game."
+  },
+  {
+    "id": "mcq-agent-architectures-and-tools-08",
+    "type": "mcq",
+    "chapterId": "agent-architectures-and-tools",
+    "chapterTitle": "6.1 Agent Architectures & Tools",
+    "sourceUrl": "/post-game/agent-architectures-and-tools/",
+    "question": "What happens when the reviewer returns 'umpire's call'?",
+    "options": [
+      "The answer ships unchanged",
+      "The primary agent retries automatically with the reviewer's reason",
+      "The question is escalated to a human rather than guessed at with extra steps",
+      "The reviewer's verdict is discarded"
+    ],
+    "correctAnswerIndex": 2,
+    "explanation": "Umpire's call is the honest shrug — when evidence can't settle it, the system escalates to a human instead of inventing confidence it doesn't have."
+  },
+  {
+    "id": "mcq-agent-architectures-and-tools-09",
+    "type": "mcq",
+    "chapterId": "agent-architectures-and-tools",
+    "chapterTitle": "6.1 Agent Architectures & Tools",
+    "sourceUrl": "/post-game/agent-architectures-and-tools/",
+    "question": "Why does the chapter insist on a hard step cap (max_overs) in both the ReAct and multi-agent patterns?",
+    "options": [
+      "To reduce the number of tools available",
+      "Because an uncapped loop is not thorough, it is stuck — expensive and going nowhere without one",
+      "Because reviewers only check capped runs",
+      "To make debugging harder on purpose"
+    ],
+    "correctAnswerIndex": 1,
+    "explanation": "Uncapped agent loops are described as endless rain delays; the step cap forces whoever holds the loop to declare the answer settled within a fixed number of steps."
+  },
+  {
+    "id": "mcq-agent-architectures-and-tools-10",
+    "type": "mcq",
+    "chapterId": "agent-architectures-and-tools",
+    "chapterTitle": "6.1 Agent Architectures & Tools",
+    "sourceUrl": "/post-game/agent-architectures-and-tools/",
+    "question": "What single principle connects all three patterns — ReAct, multi-agent XI, and the DRS reviewer — according to the chapter's closing diagram?",
+    "options": [
+      "All three patterns require a GPU",
+      "Every pattern feeds the same review gate before an answer ships, turning 'an agent produced an answer' into 'an answer somebody checked'",
+      "Only the multi-agent XI needs a reviewer",
+      "The reviewer replaces the need for tool schemas"
+    ],
+    "correctAnswerIndex": 1,
+    "explanation": "The chapter's closing diagram shows both production patterns feeding the same DRS gate on the way out — the gate is what turns a produced answer into a checked one."
+  },
+  {
+    "id": "sa-agent-architectures-and-tools-01",
+    "type": "short_answer",
+    "chapterId": "agent-architectures-and-tools",
+    "chapterTitle": "6.1 Agent Architectures & Tools",
+    "sourceUrl": "/post-game/agent-architectures-and-tools/",
+    "question": "Explain the difference between the ReAct pattern and a multi-agent team, and describe one situation where each is the better choice.",
+    "modelAnswer": "ReAct is a single agent running its own think/tool-call/observation loop, holding the whole scratchpad itself, well suited to small well-scoped tasks with a tight tool set since there's no handoff to lose context across. A multi-agent team splits the work across several specialist agents coordinated by a captain, better suited to large tasks that split cleanly into distinct roles, since it allows each agent's prompt and tools to stay small enough to actually get right.",
+    "rubric": [
+      "Describes ReAct as a single agent with its own scratchpad",
+      "Describes multi-agent as split specialists coordinated by a captain",
+      "Gives a correct scenario for at least one pattern"
+    ]
+  },
+  {
+    "id": "sa-agent-architectures-and-tools-02",
+    "type": "short_answer",
+    "chapterId": "agent-architectures-and-tools",
+    "chapterTitle": "6.1 Agent Architectures & Tools",
+    "sourceUrl": "/post-game/agent-architectures-and-tools/",
+    "question": "What three properties does the chapter say every tool definition needs, and why does each one matter?",
+    "modelAnswer": "Every tool needs a timeout, so a stuck call can't turn into a stuck agent; a row cap, so a reasonable question can't return an unreasonable amount of data; and read-only access, so a tool meant to help the agent understand data can never be used to change it. Together these boundaries mean the model decides when to call a tool, but the tool itself decides what calling it is allowed to mean.",
+    "rubric": [
+      "Names timeout and its purpose",
+      "Names row cap and its purpose",
+      "Names read-only access and its purpose"
+    ]
+  },
+  {
+    "id": "sa-agent-architectures-and-tools-03",
+    "type": "short_answer",
+    "chapterId": "agent-architectures-and-tools",
+    "chapterTitle": "6.1 Agent Architectures & Tools",
+    "sourceUrl": "/post-game/agent-architectures-and-tools/",
+    "question": "Describe what 'the pipeline is not an assembly line' means for the multi-agent team, using the validator's role as an example.",
+    "modelAnswer": "It means the stages of the pipeline shouldn't run strictly forward-only, where the validator hands back a report and the process ends. When the validator finds a problem — like a near-zero-importance or leaked feature — that finding needs to flow backwards into the data engineer's feature pruning, or even into earlier imputation choices, before the ML scientist's next attempt is trusted, rather than being noted in a final report only.",
+    "rubric": [
+      "Explains the assembly-line metaphor as one-directional, no revisiting",
+      "Explains the validator's findings need to feed back into earlier agents' work",
+      "Gives a concrete example, such as pruning a leaked or low-importance feature"
+    ]
+  },
+  {
+    "id": "sa-agent-architectures-and-tools-04",
+    "type": "short_answer",
+    "chapterId": "agent-architectures-and-tools",
+    "chapterTitle": "6.1 Agent Architectures & Tools",
+    "sourceUrl": "/post-game/agent-architectures-and-tools/",
+    "question": "Why does the DRS reviewer agent deliberately not see the primary agent's confidence or chain of thought?",
+    "modelAnswer": "If the reviewer could see how confident or persuasive the primary agent's reasoning sounded, it would risk judging the appeal rather than the evidence — exactly the failure DRS itself exists to prevent among human officials. Limiting the reviewer to only the question, the answer, and the retrieved evidence forces it to rule on what actually happened, not on how convincingly it was argued.",
+    "rubric": [
+      "States the reviewer only sees question, answer, and evidence",
+      "Explains this prevents judging confidence/persuasiveness instead of evidence"
+    ]
+  },
+  {
+    "id": "sa-agent-architectures-and-tools-05",
+    "type": "short_answer",
+    "chapterId": "agent-architectures-and-tools",
+    "chapterTitle": "6.1 Agent Architectures & Tools",
+    "sourceUrl": "/post-game/agent-architectures-and-tools/",
+    "question": "Why is 'umpire's call' described as the most important verdict a reviewer agent can return, rather than the least useful?",
+    "modelAnswer": "A review system that is never allowed to admit the evidence is insufficient will eventually invent confidence it doesn't have, which is how confident nonsense ends up shipping to production. Umpire's call is the honest, designed alternative — it escalates the decision to a human instead of guessing, which makes the reviewer trustworthy precisely because it has a way to say 'I don't know.'",
+    "rubric": [
+      "Explains that a reviewer forced to always decide will eventually fabricate confidence",
+      "States umpire's call escalates to a human instead of guessing",
+      "Connects this to why it makes the reviewer more trustworthy, not less useful"
+    ]
+  },
+  {
+    "id": "mcq-classical-vs-deep-learning-agents-11",
+    "type": "mcq",
+    "chapterId": "classical-vs-deep-learning-agents",
+    "chapterTitle": "6.3 Classical vs Deep Learning Agents",
+    "sourceUrl": "/post-game/classical-vs-deep-learning-agents/",
+    "question": "Per the 'Context Window Hygiene' section, what is the risk of pasting every epoch's raw output directly into a training-supervisor agent's context?",
+    "options": [
+      "It makes the model overfit faster",
+      "The context window is finite, and high-volume, low-signal text fills it fastest, crowding out the reasoning that explained why the run started",
+      "It causes the learning rate to decay too quickly",
+      "It prevents checkpointing from working"
+    ],
+    "correctAnswerIndex": 1,
+    "explanation": "A long run's raw stdout is exactly the kind of low-signal, high-volume text that fills a finite context window fastest, quietly pushing out earlier, more important reasoning."
+  },
+  {
+    "id": "mcq-classical-vs-deep-learning-agents-12",
+    "type": "mcq",
+    "chapterId": "classical-vs-deep-learning-agents",
+    "chapterTitle": "6.3 Classical vs Deep Learning Agents",
+    "sourceUrl": "/post-game/classical-vs-deep-learning-agents/",
+    "question": "What does the chapter recommend instead of appending raw epoch-by-epoch output to the agent's context?",
+    "options": [
+      "Stopping training after 10 epochs regardless of performance",
+      "Logging every epoch to a durable file (like experiments.csv or a TensorBoard summary) and giving the agent a short, rebuilt-each-time summary",
+      "Disabling logging entirely to save context",
+      "Running the training loop without an agent supervising it"
+    ],
+    "correctAnswerIndex": 1,
+    "explanation": "The full history lives in a durable, greppable log file; what the agent reasons over is a short summary rebuilt from that log, not the raw stream itself."
+  },
+  {
+    "id": "sa-classical-vs-deep-learning-agents-06",
+    "type": "short_answer",
+    "chapterId": "classical-vs-deep-learning-agents",
+    "chapterTitle": "6.3 Classical vs Deep Learning Agents",
+    "sourceUrl": "/post-game/classical-vs-deep-learning-agents/",
+    "question": "Explain why context window hygiene matters more for a 300-epoch run than a quick 10-epoch fit.",
+    "modelAnswer": "A short run produces little enough raw output that pasting all of it into context is cheap and harmless. A long run produces far more raw output, which competes for a fixed amount of context space — the longer the run, the more likely early, important reasoning (such as why the run was started, or what the initial hypothesis was) gets crowded out by an ever-growing stream of recent, lower-signal epoch logs.",
+    "rubric": [
+      "Explains that context space is finite and raw output volume grows with run length",
+      "Explains the consequence: early important context gets crowded out by low-signal recent logs"
+    ]
+  },
+  {
+    "id": "mcq-execution-environments-11",
+    "type": "mcq",
+    "chapterId": "execution-environments",
+    "chapterTitle": "6.4 Execution Environments",
+    "sourceUrl": "/post-game/execution-environments/",
+    "question": "In the three-boundary diagram (Agent Brain / Sandbox Container / Logs & VCS), what is the Agent Brain never allowed to do?",
+    "options": [
+      "Read results from the sandbox",
+      "Plan the next step",
+      "Execute code directly, or touch disk without going through the sandbox boundary",
+      "Decide when a run has failed"
+    ],
+    "correctAnswerIndex": 2,
+    "explanation": "The brain reasons and plans; the sandbox is the only place code actually executes. Collapsing that boundary — letting the brain execute directly — is exactly the failure the diagram warns against."
+  },
+  {
+    "id": "mcq-execution-environments-12",
+    "type": "mcq",
+    "chapterId": "execution-environments",
+    "chapterTitle": "6.4 Execution Environments",
+    "sourceUrl": "/post-game/execution-environments/",
+    "question": "Per the chapter, what should be the only place a run is allowed to leave a permanent trace?",
+    "options": [
+      "The agent's own context window",
+      "Logs and version control (e.g. experiments.csv, git diff/commit)",
+      "The sandbox container's in-memory state",
+      "A chat transcript"
+    ],
+    "correctAnswerIndex": 1,
+    "explanation": "The third boundary in the diagram is logs and VCS — the only place a run's results are allowed to persist, separate from both the reasoning brain and the execution container."
   }
 ]
