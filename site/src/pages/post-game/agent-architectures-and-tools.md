@@ -56,7 +56,7 @@ One model holding the whole scratchpad is genuinely good at small-to-medium jobs
 
 ## The Schema Is the Job Description
 
-None of `match_stats`, `eda_tool`, or `train_eval_tool` are safe to hand an agent as bare functions. A **tool definition** is three things: a name the model can call, a **description** written like instructions to a debutant, and a schema that makes bad calls unrepresentable.
+None of the agent tools of `match_stats`, `eda_tool`, or `train_eval_tool` are safe to hand an agent as bare functions. A **tool definition** is three things: a name the model can call, a **description** written like instructions to a debutant, and a schema that makes bad calls unrepresentable.
 
 ```python
 TOOLS_SCHEMA = [
@@ -90,6 +90,22 @@ The roster in this chapter's frontmatter names four: a **captain** who never ans
 ## Why Assembly Lines Fail
 
 The pipeline above is not an assembly line where the validator hands back a report and the innings ends. When the validator finds a feature with near-zero permutation importance, or worse, a leaked one, that result has to travel **backwards** — into the data engineer's feature pruning, sometimes into imputation choices — before the ML scientist's next attempt runs. A strictly unidirectional handoff chain that only ever moves forward will happily ship a model built on a feature the validator already condemned, because nothing in the pipeline was allowed to go back and say so.
+
+## Getting Better, Not Just Getting Corrected
+
+The validator catching a leaked feature and sending it back to the data engineer fixes *this* run. It doesn't make the data engineer agent any sharper on the next one — nothing about that exchange persists once the innings ends, unless something is deliberately built to carry it forward.
+
+An agent in this roster actually gets better at its role through a handful of levers, none of which involve retraining the underlying model mid-season:
+
+- **Sharper instructions.** A human — or a captain reviewing a string of failures — tightens the agent's system prompt. This is the lever pulled most often in production: not a smarter model, a better job description.
+- **Better tools.** A more precisely-scoped tool, per the schema rules above, often improves an agent's effective performance more than any prompt rewrite would.
+- **Few-shot examples.** Worked examples of a good feature-pruning call versus a bad one, added straight into the prompt, teach the pattern in-context without touching a single weight. These live in a small, version-controlled file next to the agent's own prompt — curated once by a human, not regenerated per run.
+- **Persistent memory.** A running log of past decisions and their outcomes that the agent can retrieve on its next task — closer to real learning, since it accumulates on its own rather than needing a human to keep rewriting the prompt.
+- **Fine-tuning.** The heaviest lever, and the rarest in practice: with enough labelled examples of good decisions for one specific role, that role's model can be fine-tuned directly.
+
+Neither of the first two lives inside the agent's own context window, because nothing there survives past the task it was created for. Few-shot examples sit in that version-controlled file, loaded fresh at startup. A memory log belongs in a durable store outside the conversation entirely — a flat file or database table while it's small, a vector store once it's large enough that the agent needs to retrieve only the handful of entries most relevant to the task in front of it, not replay its whole history. That's the same discipline **Classical vs Deep Learning Agents**' Context Window Hygiene section teaches for training logs, applied to a different kind of history: write everything durably, read back only the relevant slice.
+
+None of this happens by default. A multi-agent team that never revisits its agents' prompts, tools, or memory is running the same XI, unchanged, all season — however many times the validator sends a feature back.
 
 ## Picking a Team Sheet
 
@@ -159,5 +175,6 @@ Either production pattern — one all-rounder or a full XI — feeds the same ga
 - **Every tool gets a timeout, a row cap, and read-only access.** The model decides *when* to call a tool. The tool decides what calling it is allowed to mean.
 - **Either pattern needs a hard step cap.** An uncapped loop is not thorough, it is stuck.
 - **Validator output is an input to earlier steps, not just a final report.** Wire the feedback edge back into feature engineering before you trust the forward pass.
+- **A correction fixes one run; it doesn't upskill the agent.** Sharper prompts, better tools, few-shot examples, memory, or fine-tuning are what actually make an agent better next time — not the validator sending something back this time.
 - **The DRS Reviewer Agent isn't a third architecture — it's quality control for whichever one you used.** It never produces an answer itself; it only checks one, after the fact, against the evidence.
 - **A reviewer judges evidence, not confidence**, and is allowed to say "insufficient evidence" — that's what turns umpire's call into a feature instead of a crash.
