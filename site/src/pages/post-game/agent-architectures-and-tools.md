@@ -146,6 +146,22 @@ def review(question, answer, evidence):
     return answer
 ```
 
+`question`, `answer`, and `evidence` aren't abstract placeholders — a real call grounds every one of them in the actual claim being checked:
+
+```python
+review(
+    question="Should we ship the Random Forest model for the wicket-probability task?",
+    answer="Yes — ship Random Forest, trained on the 2019-2023 seasons",
+    evidence={
+        "metric": "accuracy = 0.91, precision = 0.88",
+        "validation": "80/20 split on match_date, cutoff respected, no rows shared",
+        "feature_check": "permutation importance run, no near-zero-importance features kept",
+    },
+)
+```
+
+The **answer** is the claim itself — "ship Random Forest" — never a bare number sitting on its own; a metric isn't something to rule on, it's something a claim leans on. The **evidence** is whatever actually backs that claim up, and it's rarely just one figure: the metric that fits the task (accuracy or precision for a classification claim, RMSE or R² for a regression one — the same distinction **Classification vs Regression** covers), plus the methodology behind it — which split was used, whether it respects a temporal cutoff, whether permutation importance already ruled out a leaked feature. A metric alone proves nothing: handed `"accuracy = 0.91"` with no split details, the reviewer has no way to catch a leaked validation set quietly inflating that number.
+
 The reviewer never sees the primary agent's confidence or chain of thought — only the question, the answer, and the retrieved evidence. Like the third umpire, it rules on the footage, not the appeal. Confining the verdicts to a fixed list keeps the review inside the laws of the game.
 
 The most important verdict is the honest shrug. When the evidence cannot settle it, **umpire's call escalates to a human** rather than guessing with extra steps. A review layer that is not allowed to say "insufficient evidence" will eventually invent some, and that is how confident nonsense gets into production.
