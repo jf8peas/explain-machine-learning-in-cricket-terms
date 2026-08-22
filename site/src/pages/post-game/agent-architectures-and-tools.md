@@ -83,7 +83,7 @@ Three boundaries matter on every tool, regardless of which pattern calls it:
 
 ## Architecture Two: Nobody Fields at Every Position
 
-Ask one model to route the question, clean the data, train the model, *and* validate the metrics, and you get a jack of all trades that's mediocre at every one of them — the same reason a real captain doesn't keep wicket and open the bowling. A **multi-agent team** splits that single impossible job into several plausible ones instead, each with its own tools, its own prompt, and exactly one thing it's actually good at.
+Ask one agent to route the question, clean the data, train the model, *and* validate the metrics, and you get a jack of all trades that's mediocre at every one of them — the same reason a real captain doesn't keep wicket and open the bowling. A **multi-agent team** splits that single impossible job into several plausible ones instead, each with its own tools, its own prompt, and exactly one thing it's actually good at.
 
 The roster in this chapter's frontmatter names four: a **captain** who never answers directly, only routes and judges when the group's answer is settled; a **data engineer agent** who owns cleaning and feature generation; an **ML scientist agent** who owns training and tuning candidate models; and a **validator agent** whose only job is checking the other two's work before anything ships.
 
@@ -117,9 +117,11 @@ None of this happens by default. A multi-agent team that never revisits its agen
 | **Best for** | Small, well-scoped tasks with a tight tool set | Large tasks that split cleanly into distinct roles |
 | **Failure mode** | Loop rambles or repeats a tool with no new information | A handoff drops context the next specialist actually needed |
 
-## The Step Cap Is the Match Rules
+## A Maximum Iteration Count, Not a Threshold
 
 `max_overs` in this chapter's frontmatter code matters more than any prompt, in either pattern. Uncapped agent loops are endless rain delays — expensive and going nowhere. Eight overs, every handoff logged, and whoever holds the loop — a lone all-rounder or a captain — must declare when the answer is settled. Structure is what turns a chat model into a team, not the number of models on the sheet.
+
+`max_overs` itself is this chapter's own invented name for the idea, not a real parameter you'd import — the same cap exists in actual frameworks under its own name: LangGraph's `recursion_limit`, LangChain's `AgentExecutor(max_iterations=...)`, AutoGen's `max_turns`, CrewAI's `max_iter`. Whichever a real stack uses, the job is identical: force a declared stop before the loop pays for its own indecision.
 
 ## The Quality Gate: The DRS Reviewer Agent
 
@@ -173,7 +175,7 @@ Either production pattern — one all-rounder or a full XI — feeds the same ga
 - **Small, tightly-scoped task, one obvious tool sequence** → a single ReAct loop. Adding a captain just adds handoff latency for no benefit.
 - **Task splits cleanly into independent specialisms** → a multi-agent XI, so each agent's prompt and tools stay small enough to actually get right.
 - **Every tool gets a timeout, a row cap, and read-only access.** The model decides *when* to call a tool. The tool decides what calling it is allowed to mean.
-- **Either pattern needs a hard step cap.** An uncapped loop is not thorough, it is stuck.
+- **Either pattern needs a hard maximum iteration count.** An uncapped loop is not thorough, it is stuck.
 - **Validator output is an input to earlier steps, not just a final report.** Wire the feedback edge back into feature engineering before you trust the forward pass.
 - **A correction fixes one run; it doesn't upskill the agent.** Sharper prompts, better tools, few-shot examples, memory, or fine-tuning are what actually make an agent better next time — not the validator sending something back this time.
 - **The DRS Reviewer Agent isn't a third architecture — it's quality control for whichever one you used.** It never produces an answer itself; it only checks one, after the fact, against the evidence.
