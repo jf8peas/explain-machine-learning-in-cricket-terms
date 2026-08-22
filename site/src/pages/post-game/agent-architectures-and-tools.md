@@ -119,11 +119,11 @@ None of this happens by default. A multi-agent team that never revisits its agen
 
 ## A Maximum Iteration Count, Not a Threshold
 
-`max_overs` in this chapter's frontmatter code matters more than any prompt, in either pattern. Uncapped agent loops are endless rain delays — expensive and going nowhere. Eight overs, every handoff logged, and whoever holds the loop — a lone all-rounder or a captain — must declare when the answer is settled. Structure is what turns a chat model into a team, not the number of models on the sheet.
+`max_overs` — a parameter created for this chapter's own frontmatter code, not a hyperparameter you'd tune in `scikit-learn` — matters more than any prompt, in either pattern. Uncapped agent loops are endless rain delays — expensive and going nowhere. Eight overs, every handoff logged, and whoever holds the loop — a lone all-rounder or a captain — must declare when the answer is settled. Structure is what turns a chat model into a team, not the number of models on the sheet.
 
-`max_overs` itself is this chapter's own invented name for the idea, not a real parameter you'd import — the same cap exists in actual frameworks under its own name: LangGraph's `recursion_limit`, LangChain's `AgentExecutor(max_iterations=...)`, AutoGen's `max_turns`, CrewAI's `max_iter`. Whichever a real stack uses, the job is identical: force a declared stop before the loop pays for its own indecision.
+It isn't a real parameter you'd import from an agent framework either — the same cap exists in actual frameworks under its own name: LangGraph's `recursion_limit`, LangChain's `AgentExecutor(max_iterations=...)`, AutoGen's `max_turns`, CrewAI's `max_iter`. Whichever a real stack uses, the job is identical: force a declared stop before the loop pays for its own indecision.
 
-## The Quality Gate: The DRS Reviewer Agent
+## The Quality Gate: The DRS Reviewer Agent (LLM-as-a-Judge)
 
 This isn't a third architecture sitting next to the other two — it doesn't compete with them for the job of producing an answer, and it isn't running while they run. The **DRS Reviewer Agent** only switches on once the ReAct loop or the multi-agent XI has already finished and handed over a result. Its entire job is to check that one finished answer against the evidence, not to help make it.
 
