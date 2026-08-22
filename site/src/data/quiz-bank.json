@@ -13365,7 +13365,7 @@
     "chapterId": "agent-architectures-and-tools",
     "chapterTitle": "6.1 Agent Architectures & Tools",
     "sourceUrl": "/post-game/agent-architectures-and-tools/",
-    "question": "Why does the chapter insist on a hard step cap (max_overs) in both the ReAct and multi-agent patterns?",
+    "question": "Why does the chapter insist on a hard maximum iteration count in both the ReAct and multi-agent patterns?",
     "options": [
       "To reduce the number of tools available",
       "Because an uncapped loop is not thorough, it is stuck — expensive and going nowhere without one",
@@ -13373,7 +13373,7 @@
       "To make debugging harder on purpose"
     ],
     "correctAnswerIndex": 1,
-    "explanation": "Uncapped agent loops are described as endless rain delays; the step cap forces whoever holds the loop to declare the answer settled within a fixed number of steps."
+    "explanation": "Uncapped agent loops are described as endless rain delays; the maximum iteration count forces whoever holds the loop to declare the answer settled within a fixed number of steps."
   },
   {
     "id": "mcq-agent-architectures-and-tools-10",
@@ -13536,5 +13536,129 @@
     ],
     "correctAnswerIndex": 1,
     "explanation": "The third boundary in the diagram is logs and VCS — the only place a run's results are allowed to persist, separate from both the reasoning brain and the execution container."
+  },
+  {
+    "id": "mcq-agent-architectures-and-tools-11",
+    "type": "mcq",
+    "chapterId": "agent-architectures-and-tools",
+    "chapterTitle": "6.1 Agent Architectures & Tools",
+    "sourceUrl": "/post-game/agent-architectures-and-tools/",
+    "question": "Is `max_overs`, as used in this chapter's code, a real parameter from scikit-learn or an actual agent framework?",
+    "options": [
+      "Yes, it's a standard scikit-learn hyperparameter",
+      "No — it's a name invented for this chapter's own example; real frameworks use their own names for the same idea, like LangGraph's recursion_limit or LangChain's max_iterations",
+      "Yes, it's a standard parameter in every LLM API",
+      "No — no real framework has an equivalent concept at all"
+    ],
+    "correctAnswerIndex": 1,
+    "explanation": "The chapter is explicit that max_overs is neither a scikit-learn hyperparameter nor a real agent-framework parameter — it's this chapter's own invented name, with real equivalents named directly: LangGraph's recursion_limit, LangChain's AgentExecutor(max_iterations=...), AutoGen's max_turns, CrewAI's max_iter."
+  },
+  {
+    "id": "mcq-agent-architectures-and-tools-12",
+    "type": "mcq",
+    "chapterId": "agent-architectures-and-tools",
+    "chapterTitle": "6.1 Agent Architectures & Tools",
+    "sourceUrl": "/post-game/agent-architectures-and-tools/",
+    "question": "What is the difference between a 'maximum iteration count' and a 'threshold', as the chapter distinguishes them?",
+    "options": [
+      "There is no real difference — they're the same thing",
+      "A threshold triggers a change in behaviour when crossed; a maximum iteration count is a hard ceiling that simply stops the loop, with no behaviour change partway through",
+      "A threshold only applies to deep learning agents, a maximum iteration count only applies to tabular agents",
+      "A maximum iteration count can be exceeded in an emergency; a threshold cannot"
+    ],
+    "correctAnswerIndex": 1,
+    "explanation": "A threshold (like a learning-rate decay trigger) changes behaviour once crossed. max_overs isn't that — it's a hard ceiling with no partial behaviour change; the loop simply cannot run past it."
+  },
+  {
+    "id": "mcq-agent-architectures-and-tools-13",
+    "type": "mcq",
+    "chapterId": "agent-architectures-and-tools",
+    "chapterTitle": "6.1 Agent Architectures & Tools",
+    "sourceUrl": "/post-game/agent-architectures-and-tools/",
+    "question": "What is the real, industry-standard name for the pattern the chapter calls the 'DRS Reviewer Agent'?",
+    "options": [
+      "Gradient boosting",
+      "LLM-as-a-Judge",
+      "Chain-of-thought prompting",
+      "Retrieval-augmented generation"
+    ],
+    "correctAnswerIndex": 1,
+    "explanation": "The section heading and body both name it directly: this is the well-established 'LLM-as-a-Judge' pattern — using a second model to grade or verify a primary model's output."
+  },
+  {
+    "id": "mcq-agent-architectures-and-tools-14",
+    "type": "mcq",
+    "chapterId": "agent-architectures-and-tools",
+    "chapterTitle": "6.1 Agent Architectures & Tools",
+    "sourceUrl": "/post-game/agent-architectures-and-tools/",
+    "question": "According to 'Getting Better, Not Just Getting Corrected,' what does the validator sending a leaked feature back to the data engineer actually fix?",
+    "options": [
+      "It permanently improves the data engineer agent's skill for all future runs",
+      "It only fixes the current run — nothing about the exchange persists into future runs unless something is deliberately built to carry it forward",
+      "It automatically fine-tunes the data engineer agent's underlying model",
+      "It removes the data engineer agent from the roster"
+    ],
+    "correctAnswerIndex": 1,
+    "explanation": "The chapter is explicit: the correction fixes this run, but nothing about it makes the data engineer agent sharper next time unless a separate mechanism — prompt, memory, fine-tuning — is deliberately in place."
+  },
+  {
+    "id": "mcq-agent-architectures-and-tools-15",
+    "type": "mcq",
+    "chapterId": "agent-architectures-and-tools",
+    "chapterTitle": "6.1 Agent Architectures & Tools",
+    "sourceUrl": "/post-game/agent-architectures-and-tools/",
+    "question": "Which lever does the chapter describe as the one 'pulled most often in production' for making an agent better at its role?",
+    "options": [
+      "Fine-tuning the underlying model",
+      "Sharper instructions — tightening the agent's system prompt",
+      "Increasing the maximum iteration count",
+      "Adding more agents to the roster"
+    ],
+    "correctAnswerIndex": 1,
+    "explanation": "The chapter calls sharper instructions 'the lever pulled most often in production: not a smarter model, a better job description' — fine-tuning is called the heaviest and rarest lever, by contrast."
+  },
+  {
+    "id": "mcq-agent-architectures-and-tools-16",
+    "type": "mcq",
+    "chapterId": "agent-architectures-and-tools",
+    "chapterTitle": "6.1 Agent Architectures & Tools",
+    "sourceUrl": "/post-game/agent-architectures-and-tools/",
+    "question": "Where does the chapter say a persistent memory log should actually live?",
+    "options": [
+      "Inside the agent's own context window, so it's always available",
+      "In a durable store outside the conversation — a flat file or database while small, a vector store once large enough to need retrieval of only the most relevant entries",
+      "In the reviewer agent's verdict list",
+      "It should not be stored at all — each task should start with no prior context"
+    ],
+    "correctAnswerIndex": 1,
+    "explanation": "Nothing in the agent's context window survives past the task it was created for, so a memory log has to live in a durable store outside the conversation — escalating from a flat file or DB table to a vector store as it grows."
+  },
+  {
+    "id": "sa-agent-architectures-and-tools-06",
+    "type": "short_answer",
+    "chapterId": "agent-architectures-and-tools",
+    "chapterTitle": "6.1 Agent Architectures & Tools",
+    "sourceUrl": "/post-game/agent-architectures-and-tools/",
+    "question": "The chapter distinguishes a validator's correction from an agent actually getting better at its job. Explain the difference, using the leaked-feature example.",
+    "modelAnswer": "When the validator catches a leaked feature and sends it back to the data engineer, that fixes the current run's specific problem — the model that eventually ships won't be built on that leaked feature. But it doesn't make the data engineer agent any better at avoiding leaked features on a future, unrelated task, because nothing about that one exchange is retained anywhere. Actual improvement requires a separate, deliberate mechanism — like tightening the agent's prompt, adding a few-shot example of the mistake, or logging it to a memory the agent can retrieve later.",
+    "rubric": [
+      "Explains the validator's correction fixes only the current run",
+      "Explains nothing persists to future runs without a deliberate mechanism",
+      "References the leaked-feature example or an equivalent concrete case"
+    ]
+  },
+  {
+    "id": "sa-agent-architectures-and-tools-07",
+    "type": "short_answer",
+    "chapterId": "agent-architectures-and-tools",
+    "chapterTitle": "6.1 Agent Architectures & Tools",
+    "sourceUrl": "/post-game/agent-architectures-and-tools/",
+    "question": "Where should few-shot examples and a persistent memory log each be stored, and why can't either live inside the agent's context window?",
+    "modelAnswer": "Few-shot examples belong in a small, version-controlled file next to the agent's prompt, since they're curated once by a human and loaded fresh at the start of every run. A persistent memory log needs a durable store outside the conversation entirely — a flat file or database table while it's small, moving to a vector store once it's large enough that the agent needs to retrieve only the most relevant entries rather than its whole history. Neither can live in the context window because nothing there survives past the task it was created for — the context is rebuilt from scratch each time, so anything meant to persist has to be written somewhere durable and read back in.",
+    "rubric": [
+      "States few-shot examples live in a version-controlled file",
+      "States persistent memory lives in a durable store (file/DB/vector store)",
+      "Explains the context window doesn't survive past one task, so nothing persists there by default"
+    ]
   }
 ]
