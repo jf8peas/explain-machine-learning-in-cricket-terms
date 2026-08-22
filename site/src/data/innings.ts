@@ -731,12 +731,12 @@ model.compile(optimizer="adam", loss="binary_crossentropy",
       {
         slug: "agent-architectures-and-tools",
         nav: "Agent Architectures & Tools",
-        meta: "20 min · three ways to run the innings",
+        meta: "20 min · two architectures, one quality gate",
         title: "Agent Architectures & Tools",
-        subtitle: "One All-Rounder, Multi-Agent XI, and the DRS Reviewer",
-        lede: "An agent working an ML problem can play it three ways: one all-rounder looping through every tool alone, a full XI where a captain routes work to specialists, or either pattern with a reviewer standing behind it checking the verdict. All three are legitimate team sheets — the job is matching the pattern to the problem, then never shipping a verdict nobody checked.",
+        subtitle: "Two Architectures, and the Reviewer That Checks Both",
+        lede: "An agent working an ML problem can produce an answer two ways: one all-rounder looping through every tool alone, or a full XI where a captain routes work to specialists. Neither is complete on its own — the DRS Reviewer Agent checks whichever one you used before the answer is allowed to ship. Two team sheets, one quality gate; skip the gate and you're shipping verdicts nobody checked.",
         commentary:
-          "'The kit man doesn't set the batting order, and the third umpire doesn't bat. Everyone gets exactly one job.' — Data Analyst",
+          "'The kit man doesn't set the batting order, and the third umpire doesn't bat. The reviewer's only job is checking the others' work.' — Data Analyst",
         codeFile: "post_game/agent_patterns.py",
         codeOut: "turn 4/8 · handoff → validator · verdict: upheld",
         code: `ROSTER = {
@@ -754,7 +754,7 @@ def play(question, max_overs=8):
         if captain.is_settled(memory):
             return captain.summarise(memory)`,
         stats: [
-          { k: "Patterns", v: "3", s: "ReAct · multi-agent XI · DRS reviewer" },
+          { k: "Architectures", v: "2", s: "ReAct loop · multi-agent XI" },
           { k: "Agents", v: "4", s: "captain + data-eng + ml-sci + validator" },
           { k: "Tool timeout", v: "5s", s: "hard limit per call" },
           { k: "Reviewer verdicts", v: "3", s: "upheld · overturned · umpire's call" },

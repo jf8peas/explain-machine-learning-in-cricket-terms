@@ -13381,15 +13381,15 @@
     "chapterId": "agent-architectures-and-tools",
     "chapterTitle": "6.1 Agent Architectures & Tools",
     "sourceUrl": "/post-game/agent-architectures-and-tools/",
-    "question": "What single principle connects all three patterns — ReAct, multi-agent XI, and the DRS reviewer — according to the chapter's closing diagram?",
+    "question": "According to the chapter, is the DRS Reviewer Agent a third architecture alongside ReAct and the multi-agent XI?",
     "options": [
-      "All three patterns require a GPU",
-      "Every pattern feeds the same review gate before an answer ships, turning 'an agent produced an answer' into 'an answer somebody checked'",
-      "Only the multi-agent XI needs a reviewer",
-      "The reviewer replaces the need for tool schemas"
+      "Yes — there are three peer architectures to choose between",
+      "No — there are two architectures for producing an answer, and the reviewer is a separate quality gate that checks whichever one was used, after the fact",
+      "No — the reviewer replaces both architectures entirely",
+      "Yes, but only when the task involves deep learning"
     ],
     "correctAnswerIndex": 1,
-    "explanation": "The chapter's closing diagram shows both production patterns feeding the same DRS gate on the way out — the gate is what turns a produced answer into a checked one."
+    "explanation": "The chapter is explicit that this is not a third production pattern: ReAct and the multi-agent XI are the two ways to produce an answer, and the DRS Reviewer Agent never produces one itself — it only checks a finished answer against the evidence after either architecture has already run."
   },
   {
     "id": "sa-agent-architectures-and-tools-01",

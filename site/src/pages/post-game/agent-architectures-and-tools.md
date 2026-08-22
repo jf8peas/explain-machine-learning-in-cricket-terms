@@ -1,12 +1,12 @@
 ---
 layout: ../../layouts/MatchLayout.astro
 title: "Agent Architectures & Tools"
-subtitle: "One All-Rounder, Multi-Agent XI, and the DRS Reviewer"
+subtitle: "Two Architectures, and the Reviewer That Checks Both"
 innings: post-game
 chapter: agent-architectures-and-tools
-meta: "20 min · three ways to run the innings"
-lede: "An agent working an ML problem can play it three ways: one all-rounder looping through every tool alone, a full XI where a captain routes work to specialists, or either pattern with a reviewer standing behind it checking the verdict. All three are legitimate team sheets — the job is matching the pattern to the problem, then never shipping a verdict nobody checked."
-commentary: "'The kit man doesn't set the batting order, and the third umpire doesn't bat. Everyone gets exactly one job.' — Data Analyst"
+meta: "20 min · two architectures, one quality gate"
+lede: "An agent working an ML problem can produce an answer two ways: one all-rounder looping through every tool alone, or a full XI where a captain routes work to specialists. Neither is complete on its own — the DRS Reviewer Agent checks whichever one you used before the answer is allowed to ship. Two team sheets, one quality gate; skip the gate and you're shipping verdicts nobody checked."
+commentary: "'The kit man doesn't set the batting order, and the third umpire doesn't bat. The reviewer's only job is checking the others' work.' — Data Analyst"
 codeFile: post_game/agent_patterns.py
 codeOut: "turn 4/8 · handoff → validator · verdict: upheld"
 code: |
@@ -25,17 +25,17 @@ code: |
           if captain.is_settled(memory):
               return captain.summarise(memory)
 stats:
-  - { k: "Patterns", v: "3", s: "ReAct · multi-agent XI · DRS reviewer" }
+  - { k: "Architectures", v: "2", s: "ReAct loop · multi-agent XI" }
   - { k: "Agents", v: "4", s: "captain + data-eng + ml-sci + validator" }
   - { k: "Tool timeout", v: "5s", s: "hard limit per call" }
   - { k: "Reviewer verdicts", v: "3", s: "upheld · overturned · umpire's call" }
 ---
 
-## Three Ways to Run the Innings
+## Two Architectures, and a Quality Gate
 
-Every agentic ML workflow you'll meet is built from three patterns, used alone or stacked together. **One all-rounder** loops through every tool themselves. **A multi-agent XI** splits the work across a captain and specialists. **A DRS reviewer** sits behind either pattern, checking the verdict before it ships. None of the three is strictly better — they solve different problems, and the failure mode of picking the wrong one is either wasted handoff latency or an unreliable generalist trying to do four jobs at once.
+Every agentic ML workflow you'll meet is built from **two architectures for producing an answer**, plus **one quality gate for checking it**. **One all-rounder** loops through every tool themselves. **A multi-agent XI** splits the work across a captain and specialists. Those are the two choices — pick whichever matches the job. What's not a third choice is the **DRS Reviewer Agent**: it doesn't produce an answer of its own, it sits downstream of whichever architecture you picked and checks the answer before it ships. Skip it, and either architecture can still confidently hand you something wrong.
 
-## Pattern One: One All-Rounder, Every Tool in the Kit Bag
+## Architecture One: One All-Rounder, Every Tool in the Kit Bag
 
 The simplest way to run an agent on an ML problem is a single model in a loop: think, call a tool, read the result, think again. This is the **ReAct pattern** — one all-rounder who bowls, fields the return throw, and decides the next ball, with a small set of well-defined tools sitting in front of them rather than separate teammates.
 
@@ -81,7 +81,7 @@ Three boundaries matter on every tool, regardless of which pattern calls it:
 - **A row cap.** `[:limit]` stops a reasonable question ("show me the over-by-over breakdown") from becoming an unreasonable answer (every ball this decade).
 - **Read-only, always.** A tool an agent calls to *understand* the data should never be a tool that can *change* it. If the model keeps misusing a tool, the description is vague — fix the words before you fix the model.
 
-## Pattern Two: Nobody Fields at Every Position
+## Architecture Two: Nobody Fields at Every Position
 
 Ask one model to route the question, clean the data, train the model, *and* validate the metrics, and you get a jack of all trades that's mediocre at every one of them — the same reason a real captain doesn't keep wicket and open the bowling. A **multi-agent team** splits that single impossible job into several plausible ones instead, each with its own tools, its own prompt, and exactly one thing it's actually good at.
 
@@ -105,7 +105,9 @@ The pipeline above is not an assembly line where the validator hands back a repo
 
 `max_overs` in this chapter's frontmatter code matters more than any prompt, in either pattern. Uncapped agent loops are endless rain delays — expensive and going nowhere. Eight overs, every handoff logged, and whoever holds the loop — a lone all-rounder or a captain — must declare when the answer is settled. Structure is what turns a chat model into a team, not the number of models on the sheet.
 
-## Pattern Three: The DRS Reviewer Agent
+## The Quality Gate: The DRS Reviewer Agent
+
+This isn't a third architecture sitting next to the other two — it doesn't compete with them for the job of producing an answer, and it isn't running while they run. The **DRS Reviewer Agent** only switches on once the ReAct loop or the multi-agent XI has already finished and handed over a result. Its entire job is to check that one finished answer against the evidence, not to help make it.
 
 DRS exists because confident officials are sometimes wrong. An **LLM-as-judge reviewer agent** is the same institution in software: a second model whose only job is to check the first one's — or the whole XI's — work against the evidence, not against how confident it sounds.
 
@@ -157,4 +159,5 @@ Either production pattern — one all-rounder or a full XI — feeds the same ga
 - **Every tool gets a timeout, a row cap, and read-only access.** The model decides *when* to call a tool. The tool decides what calling it is allowed to mean.
 - **Either pattern needs a hard step cap.** An uncapped loop is not thorough, it is stuck.
 - **Validator output is an input to earlier steps, not just a final report.** Wire the feedback edge back into feature engineering before you trust the forward pass.
+- **The DRS Reviewer Agent isn't a third architecture — it's quality control for whichever one you used.** It never produces an answer itself; it only checks one, after the fact, against the evidence.
 - **A reviewer judges evidence, not confidence**, and is allowed to say "insufficient evidence" — that's what turns umpire's call into a feature instead of a crash.
