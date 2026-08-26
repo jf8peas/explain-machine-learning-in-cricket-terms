@@ -13660,5 +13660,113 @@
       "States persistent memory lives in a durable store (file/DB/vector store)",
       "Explains the context window doesn't survive past one task, so nothing persists there by default"
     ]
+  },
+  {
+    "id": "mcq-director-and-executor-11",
+    "type": "mcq",
+    "chapterId": "director-and-executor",
+    "chapterTitle": "6.2 Director and Executor",
+    "sourceUrl": "/post-game/director-and-executor/",
+    "question": "What problem does writing a BRIEF solve that verbally deciding the same rules doesn't?",
+    "options": [
+      "It makes the agent run faster",
+      "It turns decisions that would otherwise erode or get forgotten into one checkable artifact the agent (and reviewer) can verify itself against",
+      "It replaces the need for a validation split",
+      "It automatically fine-tunes the agent"
+    ],
+    "correctAnswerIndex": 1,
+    "explanation": "The chapter is explicit that a decision that only exists as something said out loud on day one tends to erode by day ten — writing it down once fixes that, without changing what the rules actually are."
+  },
+  {
+    "id": "mcq-director-and-executor-12",
+    "type": "mcq",
+    "chapterId": "director-and-executor",
+    "chapterTitle": "6.2 Director and Executor",
+    "sourceUrl": "/post-game/director-and-executor/",
+    "question": "In the BRIEF example, which field exists specifically to stop an agent from rediscovering an already-known leak like third_umpire_ruling?",
+    "options": [
+      "success_metric",
+      "forbidden_features",
+      "leakage_cutoff",
+      "outlier_rule"
+    ],
+    "correctAnswerIndex": 1,
+    "explanation": "forbidden_features rules a known leak out permanently, rather than leaving the agent to rediscover it through corr() on every single run."
+  },
+  {
+    "id": "mcq-director-and-executor-13",
+    "type": "mcq",
+    "chapterId": "director-and-executor",
+    "chapterTitle": "6.2 Director and Executor",
+    "sourceUrl": "/post-game/director-and-executor/",
+    "question": "Which BRIEF field is enforced by the same mechanism as the make_split guard shown earlier in the chapter?",
+    "options": [
+      "approved_features",
+      "success_metric",
+      "leakage_cutoff",
+      "task"
+    ],
+    "correctAnswerIndex": 2,
+    "explanation": "leakage_cutoff is the field make_split's cutoff-date check enforces — the code-level guard the chapter introduces before the BRIEF is shown."
+  },
+  {
+    "id": "mcq-director-and-executor-14",
+    "type": "mcq",
+    "chapterId": "director-and-executor",
+    "chapterTitle": "6.2 Director and Executor",
+    "sourceUrl": "/post-game/director-and-executor/",
+    "question": "According to the chapter, what actually checks a finished answer against BRIEF['success_metric']?",
+    "options": [
+      "The Executor grades its own work",
+      "The DRS Reviewer Agent, from Agent Architectures & Tools",
+      "A second, independent Director",
+      "Nothing — the metric is only for documentation"
+    ],
+    "correctAnswerIndex": 1,
+    "explanation": "The chapter names the DRS Reviewer Agent directly as \"whatever checks its work afterwards\" — success_metric is exactly the shape of evidence-with-a-bar that reviewer judges a claim against."
+  },
+  {
+    "id": "mcq-director-and-executor-15",
+    "type": "mcq",
+    "chapterId": "director-and-executor",
+    "chapterTitle": "6.2 Director and Executor",
+    "sourceUrl": "/post-game/director-and-executor/",
+    "question": "What does the chapter say should happen when the Executor encounters a feature that is neither in approved_features nor forbidden_features?",
+    "options": [
+      "The agent should include it if it improves the metric",
+      "The agent should always exclude it to be safe",
+      "It's umpire's call — escalate to the Director rather than let the agent decide alone",
+      "The brief is invalid and must be rewritten"
+    ],
+    "correctAnswerIndex": 2,
+    "explanation": "A gap in the brief isn't the agent's judgment call to make; the chapter treats it the same way the DRS Reviewer treats insufficient evidence — escalate rather than guess."
+  },
+  {
+    "id": "sa-director-and-executor-06",
+    "type": "short_answer",
+    "chapterId": "director-and-executor",
+    "chapterTitle": "6.2 Director and Executor",
+    "sourceUrl": "/post-game/director-and-executor/",
+    "question": "Explain what problem the BRIEF actually solves, given that everything in it — the metric, the cutoff, the feature universe, the outlier rule — was already covered earlier in the chapter.",
+    "modelAnswer": "The BRIEF doesn't introduce new rules; it changes where those rules live. A decision that only exists as something the Director said out loud tends to erode over time as the details get forgotten or reinterpreted. Writing the same decisions down once, in a single structured artifact, gives the agent and anything checking its work a fixed, checkable reference instead of a fading memory of a conversation.",
+    "rubric": [
+      "States the BRIEF's content is the same as what's already covered, not new rules",
+      "Explains verbal/informal decisions erode or get forgotten over time",
+      "States the BRIEF gives a fixed, checkable reference instead"
+    ]
+  },
+  {
+    "id": "sa-director-and-executor-07",
+    "type": "short_answer",
+    "chapterId": "director-and-executor",
+    "chapterTitle": "6.2 Director and Executor",
+    "sourceUrl": "/post-game/director-and-executor/",
+    "question": "How does the BRIEF connect to the DRS Reviewer Agent from Agent Architectures & Tools, and what should happen when the brief doesn't cover a case the Executor runs into?",
+    "modelAnswer": "The BRIEF's success_metric is exactly the kind of evidence-with-a-bar the DRS Reviewer Agent checks a finished answer against — the reviewer is the \"whatever checks its work afterwards\" the chapter refers to. When the Executor hits a feature that's neither approved nor forbidden, the brief hasn't actually failed; that gap is treated the same way as any other insufficient evidence in a review — it's umpire's call, and the decision escalates to the Director rather than the agent deciding on its own what counts as fair game.",
+    "rubric": [
+      "Names the DRS Reviewer Agent as the thing that checks success_metric",
+      "Explains a feature not covered by the brief is treated as umpire's call",
+      "States it escalates to the Director rather than the agent deciding alone"
+    ]
   }
 ]

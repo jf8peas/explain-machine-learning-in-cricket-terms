@@ -77,6 +77,8 @@ Nothing here is new — the metric, the cutoff, the feature universe, and the ou
 
 **Forbidden features especially earns its own line.** Approving what's fair game is only half the job. `third_umpire_ruling` — the exact leak **Feature Selection & Hyperparameter Optimisation**'s worked example found, a column that doesn't exist until after the thing it's predicting has already happened — is precisely the kind of feature a Director who has already been burned once should rule out permanently, not leave for an agent to re-discover through `corr()` every single run.
 
+"Whatever checks its work afterwards" has a name: the **DRS Reviewer Agent**, from **Agent Architectures & Tools**. `BRIEF["success_metric"]` is exactly the shape of evidence that reviewer judges a finished answer against — a metric with a bar, not a number floating free with nothing to be measured against. And the brief doesn't have to be exhaustive to be useful: the moment an Executor hits a feature that's neither approved nor forbidden, that's not a gap to guess through — it's umpire's call, escalate to the Director rather than let the agent quietly decide for itself what counts as fair game.
+
 ## Ground Rules for the Handover
 
 - **The target column and the success metric are never delegated.** They're decided before the first tool call, not discovered by the agent along the way.
@@ -84,3 +86,4 @@ Nothing here is new — the metric, the cutoff, the feature universe, and the ou
 - **Write the brief down once, not out loud.** A target, a metric with a bar, a feature allow/forbid list, and an outlier rule, in one checkable place — not scattered across a conversation nobody can re-read three runs later.
 - **"Outlier" needs a definition before the sweep starts.** Otherwise the agent's definition is whatever produces the best-looking training score.
 - **The agent logs everything it tried, not just what won.** A Director who only sees the final model has no way to catch a cheat that happened three attempts ago.
+- **A brief doesn't have to cover everything — it has to know when it doesn't.** A feature that's neither approved nor forbidden isn't the agent's call to make alone; it's umpire's call, same as any other insufficient evidence.
