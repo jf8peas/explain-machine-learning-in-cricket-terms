@@ -31,7 +31,7 @@ stats:
 
 ## Every decision gets reviewed, ball by ball
 
-No single review fixes an umpire. It's the accumulation — thousands of small corrections, each one too small to overcorrect on its own — that eventually produces someone whose calls you stop double-checking. Training a network is that same accumulation, run at a scale no human panel could manage: the exact same review cycle below, repeated once per prediction, thousands of times over, until the pattern of tiny corrections adds up to something that looks like judgement.
+**Tensors** gave the numbers flowing through a network their shape. This chapter is about what actually happens to them on the way through — and, more importantly, on the way back. No single review fixes an umpire. It's the accumulation — thousands of small corrections, each one too small to overcorrect on its own — that eventually produces someone whose calls you stop double-checking. Training a network is that same accumulation, run at a scale no human panel could manage: the exact same review cycle below, repeated once per prediction, thousands of times over, until the pattern of tiny corrections adds up to something that looks like judgement.
 
 The forward pass is the on-field call. The **loss** is how badly it missed. Backpropagation then replays the decision backwards through every layer, assigning each weight its precise share of the blame — its **gradient** — and the optimiser applies a small correction.
 

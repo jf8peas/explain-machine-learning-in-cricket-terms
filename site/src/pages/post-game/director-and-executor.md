@@ -28,6 +28,8 @@ stats:
 
 ## Nobody Actually Puts Their Feet Up
 
+The last chapter covered the shapes an agent system can take and how its finished answer gets checked. Neither says who's actually accountable for the decisions inside it — and that gap is exactly where an agent can quietly go wrong.
+
 "The agent builds the model, I put my feet up" is the pitch. It is also not what happens. Somebody still calls the toss — decides what question the model is answering, what a leaked feature looks like in this dataset, what a legitimate outlier is versus a data entry error, and what "good enough" means before the model ever sees a row. An agent that runs unattended doesn't remove that job. It just means nobody's doing it, which is worse than doing it slowly.
 
 ## What the Agent Is Actually Good At

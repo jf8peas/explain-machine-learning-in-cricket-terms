@@ -22,7 +22,7 @@ stats:
   - { k: "The Vault", v: "Opened Once", s: "no second looks" }
 ---
 
-Every club has one. The player who murders the bowling in the nets — pulls, cuts, lofts everything over the sightscreen — and then walks out on Saturday and nicks off for three. The coach knew. The coach always knows. And the reason the coach knows is that they never once mistook net form for match form.
+**Parameters & Hyperparameters** closed out Pre-Game by explaining what a model actually learns during training. This chapter opens Scoring by asking the question that makes any of that worth trusting: how do you actually know if what it learned is any good? Every club has one. The player who murders the bowling in the nets — pulls, cuts, lofts everything over the sightscreen — and then walks out on Saturday and nicks off for three. The coach knew. The coach always knows. And the reason the coach knows is that they never once mistook net form for match form.
 
 Your model has exactly the same problem, and this chapter is about building a ground that won't let it fool you.
 

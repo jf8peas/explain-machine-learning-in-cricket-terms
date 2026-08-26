@@ -20,7 +20,7 @@ stats:
   - { k: "The Verdict", v: "The Gap", s: "watch it, not the score" }
 ---
 
-Four selectors, a folder of printed numbers, and a decision nobody in the room is eager to sign their name to. Two figures sit next to each other for every name on the list — how they scored in the nets, and how they scored in the warm-up fixture — and for a handful of names, those two numbers flatly disagree with each other.
+**Train/Validation/Test Splits** set up the honest way to check a model's score. What that honest score can actually go wrong in is tonight's business — and it goes wrong in exactly two directions. Four selectors, a folder of printed numbers, and a decision nobody in the room is eager to sign their name to. Two figures sit next to each other for every name on the list — how they scored in the nets, and how they scored in the warm-up fixture — and for a handful of names, those two numbers flatly disagree with each other.
 
 Because a batting average, on its own, has never once told anyone whether a player can bat. What tells you is *where* the runs came from, and *against what*. That is the entire agenda of tonight's meeting, and there are only three kinds of player on the list.
 

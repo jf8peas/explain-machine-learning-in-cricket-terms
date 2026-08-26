@@ -27,7 +27,7 @@ stats:
 
 ## Two Boards, Two Questions
 
-Watch any broadcast during a run chase and there are two entirely different kinds of number competing for space on the screen. One is a projected total — 187, give or take a handful. The other is a verdict — OUT, delivered after a review. Both are produced from data. Both, these days, are probably produced by a model. And they are not remotely the same job.
+**ML Workflow** laid out the seven steps every project follows, in order — but skipped straight past a decision that has to be made before step one means anything. Watch any broadcast during a run chase and there are two entirely different kinds of number competing for space on the screen. One is a projected total — 187, give or take a handful. The other is a verdict — OUT, delivered after a review. Both are produced from data. Both, these days, are probably produced by a model. And they are not remotely the same job.
 
 Every supervised model you'll meet in First Innings is doing one of those two jobs, and the job is decided the instant you pick what column you're asking it to predict. Everything downstream — which algorithm fits, which score to trust, what the output even means — falls out of that one choice.
 

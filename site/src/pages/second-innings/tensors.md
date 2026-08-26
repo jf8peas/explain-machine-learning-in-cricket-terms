@@ -27,6 +27,8 @@ stats:
 
 ## Rank is just how many columns deep the scorecard goes
 
+Every algorithm in First Innings — trees, forests, regressions — worked directly on a table of named columns. Second Innings leaves that table behind, and before any of the chapters that follow make sense, the numbers themselves need a new shape.
+
 Every example in the card above climbs the same ladder, one column at a time — and a **tensor** is just the name that ladder gets once you stop giving each rung its own separate word. A scorer doesn't reach for new vocabulary going from a single delivery to a whole season; they just keep more columns on the same page. Neural networks work the same way: no special machinery kicks in at rank 3 that wasn't already there at rank 1, just more axes to keep straight.
 
 ## Axis zero is sacred

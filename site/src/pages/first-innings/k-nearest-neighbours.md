@@ -31,7 +31,7 @@ stats:
 
 ## The Scouting Instinct, Formalised
 
-Every commentary box does this. An uncapped nineteen-year-old walks out, plays three shots, and someone leans into the microphone: "reminds me of a young [established player]." Nobody derived that from first principles. They compared this player's numbers to players they already know, found the closest few, and borrowed a label.
+Every algorithm so far — **Linear Regression**, its curved cousins, **Logistic Regression** — has worked the same way: fit a fixed set of weights once, then apply that same formula to every new player forever. **K-Nearest Neighbours** throws that approach out and starts from scratch every time. Every commentary box does this. An uncapped nineteen-year-old walks out, plays three shots, and someone leans into the microphone: "reminds me of a young [established player]." Nobody derived that from first principles. They compared this player's numbers to players they already know, found the closest few, and borrowed a label.
 
 **K-Nearest Neighbours (KNN)** is that instinct with the guesswork surgically removed. Give it an unlabelled player, and it finds the **K** most similar players already on file — by the numbers, not the eye test — and hands the new player whatever label the majority of them share.
 

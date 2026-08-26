@@ -33,6 +33,8 @@ stats:
 
 ## Two Architectures, and a Quality Gate
 
+Every chapter up to this point taught you how to build a model yourself — the algorithm, the metric, the tuning. This one changes the question: what does it look like to have an agent do that work instead, and how do you trust what it hands back?
+
 Every agentic ML workflow you'll meet is built from **two architectures for producing an answer**, plus **one quality gate for checking it**. **One all-rounder** loops through every tool themselves. **A multi-agent XI** splits the work across a captain and specialists. Those are the two choices — pick whichever matches the job. What's not a third choice is the **DRS Reviewer Agent**: it doesn't produce an answer of its own, it sits downstream of whichever architecture you picked and checks the answer before it ships. Skip it, and either architecture can still confidently hand you something wrong.
 
 ## Architecture One: One All-Rounder, Every Tool in the Kit Bag

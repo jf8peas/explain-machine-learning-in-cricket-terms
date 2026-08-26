@@ -33,7 +33,7 @@ stats:
 
 ## Before the Model Sees Anything
 
-**Feature engineering** is the umbrella term for everything that happens to a scorecard before it's fit for a model to read — extracting and transforming raw data into a shape the model can actually use. You'll meet plenty more of it under other names as this series goes on: dummy variables in **Linear Regression**, ordinal and binary encoding in **Decision Trees**, min-max scaling in **K-Nearest Neighbours**. Those chapters solve the problem of getting the *right kind* of numbers into a model.
+**Classification vs Regression** settled what a model is being asked to predict. This chapter is about what it's actually handed to work with — and real data is rarely clean enough to use as-is. **Feature engineering** is the umbrella term for everything that happens to a scorecard before it's fit for a model to read — extracting and transforming raw data into a shape the model can actually use. You'll meet plenty more of it under other names as this series goes on: dummy variables in **Linear Regression**, ordinal and binary encoding in **Decision Trees**, min-max scaling in **K-Nearest Neighbours**. Those chapters solve the problem of getting the *right kind* of numbers into a model.
 
 This chapter solves three problems that come earlier than that, and matter regardless of which algorithm eventually gets used: **what do you do when a value is simply missing, what do you do when a value is real but absurd, and what do you do when one class dominates the sheet so completely that the rare one barely gets a vote?**
 

@@ -32,7 +32,7 @@ stats:
   - { k: "Verdict", v: "Binary", s: "selected or not" }
 ---
 
-Machine learning lets us build mathematical models that find patterns in data on their own, and then apply those patterns to data they have never seen. That last clause is the whole game. A model that performs beautifully on the deliveries it has already faced has proved nothing — every batter looks like a century-maker against a bowling machine set to the same length.
+**Environment Setup** got the ground itself ready — one shared, reproducible place for every script and notebook to run. This chapter is what actually happens on that ground, and every version of it starts the same way. Machine learning lets us build mathematical models that find patterns in data on their own, and then apply those patterns to data they have never seen. That last clause is the whole game. A model that performs beautifully on the deliveries it has already faced has proved nothing — every batter looks like a century-maker against a bowling machine set to the same length.
 
 So the workflow is built to prevent self-deception. Seven steps, in order:
 

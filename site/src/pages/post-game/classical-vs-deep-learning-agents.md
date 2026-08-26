@@ -36,6 +36,8 @@ stats:
 
 ## The Feature Factory
 
+The last chapter drew the line between what the human Director decides and what the agent Executor carries out. What the Executor actually spends its time doing, though, depends entirely on the kind of model being built.
+
 A tabular ML agent spends almost its entire budget on the columns, not the algorithm. Given a clean-ish dataframe, the job is to manufacture candidate features, check each one earns its place, and discard the rest before they start eating signal from something better:
 
 ```python

@@ -26,7 +26,7 @@ stats:
   - { k: "The Vault", v: "One Final Score", s: "best_estimator_.score()" }
 ---
 
-Somewhere in the gap between a forty-name shortlist and an eleven-name team sheet sits a decision that will be second-guessed by every person in the country who owns a television.
+**Evaluation Metrics & Data Leakage** gave you a number worth trusting. This chapter is about using that number to make actual decisions — which features earn a place on the sheet, and what settings the model should run with. Somewhere in the gap between a forty-name shortlist and an eleven-name team sheet sits a decision that will be second-guessed by every person in the country who owns a television.
 
 And the decision is not one decision. It is two, tangled together. *Who is in the side?* And *what conditions do you set for them* — the batting order, the field restrictions, the bowling plans. Change the personnel and the ideal conditions change. Change the conditions and a different player suddenly looks like the right pick.
 

@@ -31,7 +31,7 @@ stats:
 
 ## The Rules of the Drill vs. What Sticks: Setting the Stage
 
-When a squad turns up for a net session, there are two distinct things happening:
+**Feature Engineering** got the data itself ready for a model. Before any of it gets fed in, there's one more decision left — not about the data, but about the rules the model has to learn inside. When a squad turns up for a net session, there are two distinct things happening:
 
 1. **Constraints the coach imposes on the drill** — decided once, before the first ball, and then held fixed for the entire session no matter what happens inside it.
 2. **What the players' bodies and instincts work out for themselves** as they face ball after ball inside those constraints, adjusting in real time to whatever the last delivery taught them.

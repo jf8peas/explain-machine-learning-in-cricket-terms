@@ -21,7 +21,7 @@ stats:
   - { k: "Cheating", v: "Data Leakage", s: "reading bowler signs" }
 ---
 
-The scorer's box is the quietest room at any ground. No shouting, no appealing, no theatre — just two people with a ledger who know precisely what happened, ball by ball, in a way the crowd never quite does. The crowd sees a batter smash 80 off 40 and roars. The scorer sees that three of those boundaries came off outside edges through a vacant slip cordon, and that the same batter was dropped on 12.
+**Underfitting, Overfitting & Finding the Sweet Spot** assumed the score itself could be trusted, and asked only whether the model's capacity matched the data. This chapter questions the score itself — because the most common one is dangerously easy to fake. The scorer's box is the quietest room at any ground. No shouting, no appealing, no theatre — just two people with a ledger who know precisely what happened, ball by ball, in a way the crowd never quite does. The crowd sees a batter smash 80 off 40 and roars. The scorer sees that three of those boundaries came off outside edges through a vacant slip cordon, and that the same batter was dropped on 12.
 
 Both are watching the same innings. Only one of them is measuring it properly.
 

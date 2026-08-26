@@ -33,6 +33,8 @@ stats:
 
 ## The Notebook Paradox
 
+The last chapter covered what an agent concretely does differently for a tabular model versus a deep learning one. None of that matters if the code itself isn't running somewhere safe — which is the last piece: where any of this actually executes.
+
 A notebook is a superb tool for a human and a trap for an agent, and it's the same feature that makes it both: cells can run out of order, and state quietly outlives the cell that created it. A human remembers they redefined `df` in cell 47 and re-ran cell 12 afterwards; an agent replaying "the notebook" top to bottom gets a different `df` than the one the human was actually looking at when they drew their conclusion. The bug isn't in the code. It's in an execution order that only ever existed in one person's head.
 
 ```
