@@ -38,6 +38,8 @@ None of that is a knock on what agents are genuinely excellent at: grinding thro
 
 ## The Team Sheet
 
+That same division — decide, then execute inside the decision — holds across every stage of the pipeline:
+
 | Task | Director (Human) | Executor (Agent) |
 |---|---|---|
 | **Problem formulation** | Decides what's being predicted and why it matters | Not delegated — the agent doesn't get a vote on the target column |
