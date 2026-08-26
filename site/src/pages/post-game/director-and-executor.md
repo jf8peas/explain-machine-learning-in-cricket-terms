@@ -55,9 +55,30 @@ Not maliciously — an agent optimising a metric with no rules attached will tak
 
 None of these throw an error. They all report a better score. That's exactly why they need a rule sitting above the metric, not a smarter metric.
 
+## The Brief Is the Interface
+
+"Sets the leakage boundary" and "approves the feature universe" in the Team Sheet above are decisions, not documents — and a decision that only exists as something the Director said out loud on day one has a way of quietly eroding by day ten, once nobody remembers exactly what was agreed. The fix is the same one that already turned leakage into a guard instead of a suggestion: write the whole brief down, once, in a form the agent — and whatever checks its work afterwards — can actually check itself against.
+
+```python
+BRIEF = {
+    "target": "wicket_next_over",
+    "task": "classification",
+    "success_metric": {"name": "f1", "min": 0.75},
+    "leakage_cutoff": "match_date",
+    "approved_features": ["strike_rate", "economy_rate", "phase_of_innings"],
+    "forbidden_features": ["third_umpire_ruling", "postmatch_report_id"],
+    "outlier_rule": "|z| > 3 on strike_rate, flagged not dropped",
+}
+```
+
+Nothing here is new — the metric, the cutoff, the feature universe, and the outlier definition are the same ones already covered above. What's new is that they now live in one checkable place instead of three prose paragraphs and a Slack message. Each field closes off one of the cheats from the last section: `leakage_cutoff` closes temporal leakage, `forbidden_features` closes a known leak before an agent has to rediscover it the hard way, and `outlier_rule` closes the freak-innings problem before the sweep even starts.
+
+**Forbidden features especially earns its own line.** Approving what's fair game is only half the job. `third_umpire_ruling` — the exact leak **Feature Selection & Hyperparameter Optimisation**'s worked example found, a column that doesn't exist until after the thing it's predicting has already happened — is precisely the kind of feature a Director who has already been burned once should rule out permanently, not leave for an agent to re-discover through `corr()` every single run.
+
 ## Ground Rules for the Handover
 
 - **The target column and the success metric are never delegated.** They're decided before the first tool call, not discovered by the agent along the way.
 - **Leakage rules live in code, not in a prompt.** A guard the agent can't argue past — like the cutoff check above — beats an instruction it can rationalise around under metric pressure.
+- **Write the brief down once, not out loud.** A target, a metric with a bar, a feature allow/forbid list, and an outlier rule, in one checkable place — not scattered across a conversation nobody can re-read three runs later.
 - **"Outlier" needs a definition before the sweep starts.** Otherwise the agent's definition is whatever produces the best-looking training score.
 - **The agent logs everything it tried, not just what won.** A Director who only sees the final model has no way to catch a cheat that happened three attempts ago.
