@@ -78,7 +78,7 @@ def match_stats(match_id, timeout=5, limit=50):
 Three boundaries matter on every tool, regardless of which pattern calls it:
 
 - **A timeout.** Models are enthusiastic and occasionally wrong in expensive ways; five seconds is the boundary rope that keeps a stuck query from becoming a stuck agent.
-- **A row cap.** `[:limit]` stops a reasonable question ("show me the over-by-over breakdown") from becoming an unreasonable answer (every ball this decade).
+- **A row cap.** A hard limit on how many results a single tool call is allowed to return. `[:limit]` stops a reasonable question ("show me the over-by-over breakdown") from becoming an unreasonable answer (every ball this decade). Without a cap, the tool would happily return all of them — flooding the agent's context with data it doesn't need, and burning cost and latency doing it. With the cap, the tool always hands back at most 50 rows regardless of how big the real result set is.
 - **Read-only, always.** A tool an agent calls to *understand* the data should never be a tool that can *change* it. If the model keeps misusing a tool, the description is vague — fix the words before you fix the model.
 
 ## Architecture Two: Nobody Fields at Every Position
