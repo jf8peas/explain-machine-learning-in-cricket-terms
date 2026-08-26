@@ -69,11 +69,16 @@ BRIEF = {
     "leakage_cutoff": "match_date",
     "approved_features": ["strike_rate", "economy_rate", "phase_of_innings"],
     "forbidden_features": ["third_umpire_ruling", "postmatch_report_id"],
+    "encoding_rule": "fit categorical encodings on the training fold only",
     "outlier_rule": "|z| > 3 on strike_rate, flagged not dropped",
 }
 ```
 
-Nothing here is new — the metric, the cutoff, the feature universe, and the outlier definition are the same ones already covered above. What's new is that they now live in one checkable place instead of three prose paragraphs and a Slack message. Each field closes off one of the cheats from the last section: `leakage_cutoff` closes temporal leakage, `forbidden_features` closes a known leak before an agent has to rediscover it the hard way, and `outlier_rule` closes the freak-innings problem before the sweep even starts.
+Nothing here is new — the metric, the cutoff, the feature rules, and the outlier definition are the same ones already covered above. What's new is that they now live in one checkable place instead of three prose paragraphs and a Slack message.
+
+Three fields map directly onto the three cheats from the last section, one each. `leakage_cutoff` closes temporal leakage, enforced the same way `make_split` already showed. `encoding_rule` closes the target-encoding trap, by requiring any categorical encoding to be fit on the training fold only — the exact fix that section named, now made explicit instead of assumed. `outlier_rule` doesn't close over-indexing by removing the outlier's influence — a genuine freak performance is real signal, not noise to strip out — it closes the *silent* part: an outlier gets flagged and logged rather than quietly absorbed into a better-looking training score with nobody reviewing whether that was the right call.
+
+`approved_features` and `forbidden_features` are doing a different job — not closing one specific cheat, but setting the boundary of the search space itself: an allow-list and a deny-list, defining what's fair game to derive from at all before any sweep begins.
 
 **Forbidden features especially earns its own line.** Approving what's fair game is only half the job. `third_umpire_ruling` — the exact leak **Feature Selection & Hyperparameter Optimisation**'s worked example found, a column that doesn't exist until after the thing it's predicting has already happened — is precisely the kind of feature a Director who has already been burned once should rule out permanently, not leave for an agent to re-discover through `corr()` every single run.
 
