@@ -33,9 +33,9 @@ stats:
   - { k: "Notebook access", v: "Human only", s: "agents write .py" }
 ---
 
-## The Notebook Paradox
-
 The last chapter covered what an agent concretely does differently for a tabular model versus a deep learning one. None of that matters if the code itself isn't running somewhere safe — which is the last piece: where any of this actually executes.
+
+## The Notebook Paradox
 
 A notebook is a superb tool for a human and a trap for an agent, and it's the same feature that makes it both: cells can run out of order, and state quietly outlives the cell that created it. A human remembers they redefined `df` in cell 47 and re-ran cell 12 afterwards; an agent replaying "the notebook" top to bottom gets a different `df` than the one the human was actually looking at when they drew their conclusion. The bug isn't in the code. It's in an execution order that only ever existed in one person's head.
 
@@ -49,7 +49,16 @@ A notebook is a superb tool for a human and a trap for an agent, and it's the sa
 
 ## Headless Sandboxes
 
-The fix isn't a smarter notebook — it's not using one for agent execution at all. An agent's code runs as a plain `.py` script inside an isolated container (Docker, e2b, or similar): fresh state on every invocation, stdout and stderr captured as the actual result, and a hard timeout so a runaway loop gets killed instead of billed. When a script fails, the traceback goes straight back to the agent as its next input — the sandbox above shows exactly that loop, patch-and-retry, with no hidden variable surviving from the failed attempt into the fixed one.
+The fix isn't a smarter notebook — it's not using one for agent execution at all. An agent's code runs as a plain `.py` script inside an isolated container (Docker, e2b, or similar): fresh state on every invocation, stdout and stderr captured as the actual result, and a hard timeout so a runaway loop gets killed instead of billed. When a script fails, the traceback goes straight back to the agent as its next input, patch-and-retry, with no hidden variable surviving from the failed attempt into the fixed one:
+
+```python
+code, out, err = run_in_sandbox("attempt.py")
+for _ in range(max_attempts - 1):
+    if code == 0:
+        break
+    fixed = agent.patch(script="attempt.py", traceback=err)
+    code, out, err = run_in_sandbox(fixed)
+```
 
 That loop isn't unbounded, either. Patch-and-retry with no cap on the number of attempts is the exact same stuck-loop risk **Agent Architectures & Tools** already covered with `max_overs`: `max_attempts` stops the retries cold once it's spent, win or lose, rather than letting a bad patch chase its own tail indefinitely.
 

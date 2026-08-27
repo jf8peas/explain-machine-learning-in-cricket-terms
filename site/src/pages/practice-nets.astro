@@ -527,22 +527,18 @@ const scopeOptions = [
     });
   }
 
-  // ── Overall score for the current plan (0-100), same weighting used on the scorecard ──
+  // ── Overall score for the current plan (0-100): each MCQ is worth 1 point,
+  // each short answer up to 3 rubric points — same raw-points model computeWeakSpots() uses ──
   function computeOverallScore(): number {
     const mcqItems = plan.filter((p) => p.t === "mcq");
     const saItems = plan.filter((p) => p.t === "sa");
-    const mcqAsked = mcqItems.length;
-    const saAsked = saItems.length;
 
     const correct = mcqItems.filter((p) => picks[p.key] === p.q.correctAnswerIndex).length;
     const saTotal = saItems.reduce((sum, p) => sum + (saScores[p.key]?.score ?? 0), 0);
-    const saMax = saAsked * 3;
 
-    const mcqPct = mcqAsked ? correct / mcqAsked : 0;
-    const saPct = saMax ? saTotal / saMax : 0;
-    const wM = mcqAsked ? 0.7 : 0;
-    const wS = saAsked ? 0.3 : 0;
-    return Math.round(((mcqPct * 100 * wM) + (saPct * 100 * wS)) / (wM + wS || 1));
+    const earned = correct + saTotal;
+    const total = mcqItems.length + saItems.length * 3;
+    return total ? Math.round((earned / total) * 100) : 0;
   }
 
   // ── Render ──
