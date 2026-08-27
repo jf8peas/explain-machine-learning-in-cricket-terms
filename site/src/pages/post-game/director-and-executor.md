@@ -102,6 +102,8 @@ Three fields map directly onto the three cheats from the last section, one each.
 
 "Whatever checks its work afterwards" has a name: the **DRS Reviewer Agent**, from **Agent Architectures & Tools**. `BRIEF["success_metric"]` is exactly the shape of evidence that reviewer judges a finished answer against — a metric with a bar, not a number floating free with nothing to be measured against. And the brief doesn't have to be exhaustive to be useful: the moment an Executor hits a feature that's neither approved nor forbidden, that's not a gap to guess through — it's umpire's call, escalate to the Director rather than let the agent quietly decide for itself what counts as fair game.
 
+The same kind of gap shows up in forms that have nothing to do with features. An outlier turns up in `economy_rate` instead of `strike_rate` — `outlier_rule` only names one column, so a freak value anywhere else has no rule to check it against, exactly like an unlisted feature. Or the Executor derives a new column by combining two approved ones, `strike_rate × economy_rate` — neither `approved_features` nor `forbidden_features` was ever written with a *derived* feature in mind, only raw ones, so there's no rule saying whether combining approved inputs is itself approved. Neither case is a metric problem — `success_metric` never even enters into it. Both are `umpires_call` for the same underlying reason as the unlisted feature: not a bad number, a missing rule.
+
 ## Ground Rules for the Handover
 
 - **The target column and the success metric are never delegated.** They're decided before the first tool call, not discovered by the agent along the way.
