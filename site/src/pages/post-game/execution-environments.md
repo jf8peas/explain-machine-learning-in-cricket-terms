@@ -47,6 +47,8 @@ A notebook is a superb tool for a human and a trap for an agent, and it's the sa
   "looks clean" ✓                    "looks clean" ✓  (for the wrong reason)
 ```
 
+A notebook was built for a human thinking out loud in it, replaying cells on purpose — not for a process that just executes whatever's on the page in order. That's exactly the wrong tool for an agent to run code in.
+
 ## Headless Sandboxes
 
 The fix isn't a smarter notebook — it's not using one for agent execution at all. An agent's code runs as a plain `.py` script inside an isolated container (Docker, e2b, or similar): fresh state on every invocation, stdout and stderr captured as the actual result, and a hard timeout so a runaway loop gets killed instead of billed. When a script fails, the traceback goes straight back to the agent as its next input, patch-and-retry, with no hidden variable surviving from the failed attempt into the fixed one:
@@ -82,6 +84,8 @@ Three boundaries, not two — the model that decides *what* to run should never 
 ```
 
 The brain plans and reads results; the container is the only place a line of Python ever actually runs; the logs and version control are the only place a run is allowed to leave a permanent trace. Collapse any one of those three into another — let the agent's reasoning process execute code directly, or let a run mutate state with no log of what changed — and the whole point of sandboxing quietly disappears.
+
+Whichever orchestration framework is running the agent loop — LangGraph, LangChain's `AgentExecutor`, AutoGen, CrewAI, the same names **Agent Architectures & Tools** ties to the iteration cap — it's the AGENT BRAIN box here, never the SANDBOX CONTAINER. The framework decides what runs next; this boundary still decides where it's actually allowed to run.
 
 No network belongs on that boundary list for the same reason as the timeout, not as a formality: without it, a sandboxed script could just as easily phone the dataset out to an external endpoint, or quietly pull down a different package than the one that got tested, and stdout would show nothing wrong either way.
 
