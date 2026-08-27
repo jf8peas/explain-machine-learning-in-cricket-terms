@@ -13768,5 +13768,113 @@
       "Explains a feature not covered by the brief is treated as umpire's call",
       "States it escalates to the Director rather than the agent deciding alone"
     ]
+  },
+  {
+    "id": "mcq-director-and-executor-16",
+    "type": "mcq",
+    "chapterId": "director-and-executor",
+    "chapterTitle": "6.2 Director and Executor",
+    "sourceUrl": "/post-game/director-and-executor/",
+    "question": "What does the encoding_rule field in the BRIEF close, and what does it require?",
+    "options": [
+      "Closes temporal leakage by referencing match_date",
+      "Closes the target-encoding trap, by requiring categorical encodings to be fit on the training fold only",
+      "Closes over-indexing on outliers by dropping them",
+      "Closes forbidden features by removing them from the dataframe"
+    ],
+    "correctAnswerIndex": 1,
+    "explanation": "encoding_rule is the field added specifically to close the target-encoding trap — the one cheat that, before this field existed, had no corresponding BRIEF field at all."
+  },
+  {
+    "id": "mcq-director-and-executor-17",
+    "type": "mcq",
+    "chapterId": "director-and-executor",
+    "chapterTitle": "6.2 Director and Executor",
+    "sourceUrl": "/post-game/director-and-executor/",
+    "question": "Per the chapter, does outlier_rule prevent a flagged outlier from influencing the model's fit?",
+    "options": [
+      "Yes, flagged outliers are automatically dropped before training",
+      "No — the row stays in and still shapes the fit either way; flagging only makes that influence visible and reviewable rather than silent",
+      "Yes, but only for regression tasks",
+      "No, because outlier_rule only applies to categorical features"
+    ],
+    "correctAnswerIndex": 1,
+    "explanation": "\"Flagged not dropped\" means exactly that: the row is kept and still influences training. The rule doesn't remove the outlier's effect — it stops that effect from happening silently, since a genuine freak performance is real signal, not noise to strip out."
+  },
+  {
+    "id": "mcq-director-and-executor-18",
+    "type": "mcq",
+    "chapterId": "director-and-executor",
+    "chapterTitle": "6.2 Director and Executor",
+    "sourceUrl": "/post-game/director-and-executor/",
+    "question": "Why doesn't make_split require the dataframe's rows to already be sorted by date?",
+    "options": [
+      "Because it converts match_date to a row index first",
+      "Because it filters and aggregates (min/max) by value, not by row position, so row order doesn't affect the result",
+      "Because pandas automatically sorts every dataframe on load",
+      "Because the Director is required to pre-sort the data before handing it over"
+    ],
+    "correctAnswerIndex": 1,
+    "explanation": "df.match_date < cutoff_date filters by value, and .min()/.max() scan the whole column for the true minimum and maximum — both operate correctly regardless of what order the rows happen to be in."
+  },
+  {
+    "id": "mcq-director-and-executor-19",
+    "type": "mcq",
+    "chapterId": "director-and-executor",
+    "chapterTitle": "6.2 Director and Executor",
+    "sourceUrl": "/post-game/director-and-executor/",
+    "question": "What goes wrong if leakage_cutoff only names a column (e.g. \"match_date\") without also specifying a rule or value?",
+    "options": [
+      "Nothing — the column name alone is sufficient",
+      "The Executor has no way to know where the actual cutoff line falls, since make_split needs an actual cutoff_date value, not just a column name",
+      "The BRIEF fails to parse as valid Python",
+      "The DRS Reviewer automatically rejects the brief"
+    ],
+    "correctAnswerIndex": 1,
+    "explanation": "Naming the column only says which field matters. Without a rule (like \"last 15% by date\"), the specific cutoff_date make_split needs would be one more thing left for the agent to invent — exactly what the BRIEF exists to prevent."
+  },
+  {
+    "id": "mcq-director-and-executor-20",
+    "type": "mcq",
+    "chapterId": "director-and-executor",
+    "chapterTitle": "6.2 Director and Executor",
+    "sourceUrl": "/post-game/director-and-executor/",
+    "question": "According to the chapter, who should write make_split — the Director or the Executor?",
+    "options": [
+      "The Executor, since it needs to be regenerated fresh for each run",
+      "The Director (or their team) — a guard the Executor could freely rewrite would just be one more thing the agent decided, defeating its purpose",
+      "Either one, as long as it passes tests",
+      "A separate, independent third-party auditor"
+    ],
+    "correctAnswerIndex": 1,
+    "explanation": "The chapter is explicit: make_split only earns \"an Executor can't route around\" because it's fixed infrastructure the Director owns and the Executor merely calls, not code the Executor is ever trusted to author itself."
+  },
+  {
+    "id": "sa-director-and-executor-08",
+    "type": "short_answer",
+    "chapterId": "director-and-executor",
+    "chapterTitle": "6.2 Director and Executor",
+    "sourceUrl": "/post-game/director-and-executor/",
+    "question": "Explain why make_split's guard clause works correctly even if the dataframe's rows are in random order, not sorted by date.",
+    "modelAnswer": "make_split relies entirely on comparing values, not row positions. df.match_date < cutoff_date is a boolean filter applied to every row's date value regardless of where that row sits in the dataframe, and .min()/.max() scan the whole column to find the true minimum and maximum dates, again independent of row order. So whether the rows arrive sorted or completely shuffled, the filter and the leakage check produce the same correct result either way.",
+    "rubric": [
+      "Explains the filter works by value, not row position",
+      "Explains .min()/.max() scan the whole column regardless of order",
+      "States the result is the same either way, sorted or not"
+    ]
+  },
+  {
+    "id": "sa-director-and-executor-09",
+    "type": "short_answer",
+    "chapterId": "director-and-executor",
+    "chapterTitle": "6.2 Director and Executor",
+    "sourceUrl": "/post-game/director-and-executor/",
+    "question": "Why does the chapter argue that make_split should be written by the Director rather than the Executor, even though it's just code?",
+    "modelAnswer": "If the Executor were free to write or rewrite its own leakage guard each run, that guard would just be one more decision the agent made — exactly the trust problem the chapter is trying to solve, since an agent under pressure to hit a metric could write a guard with a subtle bug that still passes while leaking. make_split only earns the description \"an Executor can't route around\" because it's fixed infrastructure the Director owns and the Executor merely calls, not code the Executor is ever trusted to author itself.",
+    "rubric": [
+      "States a guard the Executor could rewrite would just be another agent decision",
+      "Explains this recreates the trust problem the chapter is solving",
+      "States make_split is owned by the Director, only called by the Executor"
+    ]
   }
 ]
