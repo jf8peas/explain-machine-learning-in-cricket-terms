@@ -69,12 +69,13 @@ Three boundaries, not two — the model that decides *what* to run should never 
 ```
           AGENT BRAIN
     (reasons, never executes)
+   writes attempt.py, calls run_in_sandbox()
                │
                │  writes code — never touches disk directly
                ▼
         SANDBOX CONTAINER
      (the only place code runs)
-   python script.py · timeout · no network
+   python attempt.py · timeout · no network
                │
                │  stdout / stderr only — no shared memory
                ▼
@@ -82,6 +83,8 @@ Three boundaries, not two — the model that decides *what* to run should never 
    (the only place a run persists)
     experiments.csv · git diff / commit
 ```
+
+Two files, not one. `attempt.py` is what the agent actually writes — it's the only thing that changes between retries, and the only thing that ever runs inside the container. `run_in_sandbox()`, defined in `sandbox_runner.py`, is the launcher: fixed infrastructure on the AGENT BRAIN side of the boundary, calling `subprocess.run(...)` with the isolation flags already baked in. The agent never touches `sandbox_runner.py` — it only ever hands it a script name and gets back a return code.
 
 The brain plans and reads results; the container is the only place a line of Python ever actually runs; the logs and version control are the only place a run is allowed to leave a permanent trace. Collapse any one of those three into another — let the agent's reasoning process execute code directly, or let a run mutate state with no log of what changed — and the whole point of sandboxing quietly disappears.
 
