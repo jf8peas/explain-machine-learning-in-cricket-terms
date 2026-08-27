@@ -67,7 +67,27 @@ None of this happens outside the framework **Director and Executor** already set
 
 A deep learning agent barely touches individual columns — the network is meant to find its own interactions. What it needs supervising instead is the *training run itself*, epoch by epoch, because a network can silently go wrong in ways a tabular model's `.fit()` call simply can't: it can memorise the training set while validation loss climbs, or the loss can diverge outright from a learning rate set one order of magnitude too high.
 
-The learning rate schedule in the code above backs off automatically:
+The learning rate schedule backs off automatically once validation loss stalls:
+
+```python
+best_val, bad_epochs = float("inf"), 0
+
+for epoch in range(max_epochs):
+    train_loss = run_epoch(model, train_loader, optimizer)
+    val_loss = evaluate(model, val_loader)
+
+    if val_loss < best_val:
+        best_val, bad_epochs = val_loss, 0
+        save_checkpoint(model)
+    else:
+        bad_epochs += 1
+
+    if bad_epochs == 3:
+        decay_learning_rate(optimizer, factor=0.2)
+        bad_epochs = 0
+    if bad_epochs >= patience:
+        break  # stop the innings, best checkpoint already saved
+```
 
 $$\eta_{t+1} = \eta_t \times \gamma \quad \text{where } \gamma = 0.2 \text{ after 3 stagnant epochs}$$
 

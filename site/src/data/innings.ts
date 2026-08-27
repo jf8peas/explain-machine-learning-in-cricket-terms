@@ -824,7 +824,7 @@ for epoch in range(max_epochs):
       {
         slug: "execution-environments",
         nav: "Execution Environments",
-        meta: "11 min · where the agent actually runs",
+        meta: "16 min · where the agent actually runs",
         title: "Execution Environments",
         subtitle: "Keeping the Agent from Burning Down the Pavilion",
         lede: "A human exploring a dataset in a notebook is doing careful, improvised net practice — running cells out of order on purpose, keeping useful state around, backtracking freely. Point an agent at the same notebook and every one of those habits becomes a way to quietly corrupt the innings.",

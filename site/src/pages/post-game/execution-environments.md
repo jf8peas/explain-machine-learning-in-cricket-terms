@@ -4,7 +4,7 @@ title: "Execution Environments"
 subtitle: "Keeping the Agent from Burning Down the Pavilion"
 innings: post-game
 chapter: execution-environments
-meta: "11 min · where the agent actually runs"
+meta: "16 min · where the agent actually runs"
 lede: "A human exploring a dataset in a notebook is doing careful, improvised net practice — running cells out of order on purpose, keeping useful state around, backtracking freely. Point an agent at the same notebook and every one of those habits becomes a way to quietly corrupt the innings."
 commentary: "'Nets are for the players. The agent gets a clean pitch, a fresh scorecard, and a timer.' — Lead Systems Engineer"
 codeFile: post_game/sandbox_runner.py
@@ -21,7 +21,9 @@ code: |
       return result.returncode, result.stdout, result.stderr
 
   code, out, err = run_in_sandbox("attempt.py")
-  if code != 0:
+  for _ in range(max_attempts - 1):
+      if code == 0:
+          break
       fixed = agent.patch(script="attempt.py", traceback=err)
       code, out, err = run_in_sandbox(fixed)
 stats:
@@ -49,6 +51,8 @@ A notebook is a superb tool for a human and a trap for an agent, and it's the sa
 
 The fix isn't a smarter notebook — it's not using one for agent execution at all. An agent's code runs as a plain `.py` script inside an isolated container (Docker, e2b, or similar): fresh state on every invocation, stdout and stderr captured as the actual result, and a hard timeout so a runaway loop gets killed instead of billed. When a script fails, the traceback goes straight back to the agent as its next input — the sandbox above shows exactly that loop, patch-and-retry, with no hidden variable surviving from the failed attempt into the fixed one.
 
+That loop isn't unbounded, either. Patch-and-retry with no cap on the number of attempts is the exact same stuck-loop risk **Agent Architectures & Tools** already covered with `max_overs`: `max_attempts` stops the retries cold once it's spent, win or lose, rather than letting a bad patch chase its own tail indefinitely.
+
 Three boundaries, not two — the model that decides *what* to run should never be the process that runs it:
 
 ```
@@ -70,6 +74,10 @@ Three boundaries, not two — the model that decides *what* to run should never 
 
 The brain plans and reads results; the container is the only place a line of Python ever actually runs; the logs and version control are the only place a run is allowed to leave a permanent trace. Collapse any one of those three into another — let the agent's reasoning process execute code directly, or let a run mutate state with no log of what changed — and the whole point of sandboxing quietly disappears.
 
+No network belongs on that boundary list for the same reason as the timeout, not as a formality: without it, a sandboxed script could just as easily phone the dataset out to an external endpoint, or quietly pull down a different package than the one that got tested, and stdout would show nothing wrong either way.
+
+None of `timeout`, `no network`, or `max_attempts` is the agent's to set, either. They're the same kind of Director's rule as `leakage_cutoff` or `outlier_rule` from **Director and Executor** — fixed infrastructure the Executor calls, not a setting it's ever trusted to loosen the day a run keeps timing out. And a clean exit code isn't the same as a result that ships: the same **DRS Reviewer Agent** from **Agent Architectures & Tools** still checks the answer against evidence before that happens, and now that evidence can include how the answer was produced — whether the run stayed inside the sandbox, and how many patched retries it took to get there.
+
 ## The Hybrid IDE Workflow
 
 None of this makes notebooks useless — it relocates them. A human still explores interactively in Jupyter or an IDE's interactive window, forming the hypothesis. Once the approach is decided, the agent's job is to write it as a clean script the sandbox can run deterministically, and the human reviews *that script's diff* in VS Code or Cursor, not a wall of cell-by-cell chat transcript. The notebook is where the idea gets found. The container is where it gets proven.
@@ -80,5 +88,7 @@ None of this makes notebooks useless — it relocates them. A human still explor
 - **Agents execute `.py` scripts in isolated containers, never a live notebook kernel.** No hidden globals, no out-of-order cell state to misread.
 - **Every run gets a hard timeout.** A stuck loop should fail loudly and fast, not sit consuming compute until someone notices.
 - **stdout and stderr are the ground truth, not the agent's summary of them.** Capture the raw output and let a human — or a reviewer agent — read it directly.
-- **A failed run's traceback feeds the next attempt.** That's what makes patch-and-retry work without a human relaying the error by hand.
+- **A failed run's traceback feeds the next attempt — up to a cap.** That's what makes patch-and-retry work without a human relaying the error by hand, and `max_attempts` is what stops a bad patch from chasing its own tail forever.
+- **The sandbox's boundaries are the Director's to set, not the agent's to loosen.** `timeout`, `no network`, and `max_attempts` are fixed infrastructure, the same kind of rule as `leakage_cutoff` — an Executor that's free to widen them under pressure is exactly the trust problem sandboxing exists to solve.
+- **A clean exit code isn't the same as a result that ships.** The DRS Reviewer Agent still checks the answer against evidence afterwards, and that evidence can include how it was produced, not just what it says.
 - **The notebook is for finding the idea; the sandbox is for proving it.** Keep humans in the first, agents in the second, and review the script diff, not the chat log.
