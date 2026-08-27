@@ -13922,5 +13922,113 @@
       "Distinguishes this from a metric miss, which the reviewer can still judge as overturned",
       "States umpires_call is about absence of a rule, not proximity to a threshold"
     ]
+  },
+  {
+    "id": "mcq-classical-vs-deep-learning-agents-13",
+    "type": "mcq",
+    "chapterId": "classical-vs-deep-learning-agents",
+    "chapterTitle": "6.3 Classical vs Deep Learning Agents",
+    "sourceUrl": "/post-game/classical-vs-deep-learning-agents/",
+    "question": "According to the chapter, what do \"classical\" (in the title) and \"tabular\" (in the text) refer to?",
+    "options": [
+      "Two different things — classical means deep learning, tabular means the Feature Factory",
+      "The same thing: an agent whose input is a dataframe of named, meaningful columns, as opposed to raw tensors",
+      "Classical refers only to older scikit-learn versions",
+      "Tabular refers only to SQL databases"
+    ],
+    "correctAnswerIndex": 1,
+    "explanation": "The chapter states this explicitly at the top: \"classical\" and \"tabular\" mean the same thing here, the same structured, named-column data every First Innings chapter works with."
+  },
+  {
+    "id": "mcq-classical-vs-deep-learning-agents-14",
+    "type": "mcq",
+    "chapterId": "classical-vs-deep-learning-agents",
+    "chapterTitle": "6.3 Classical vs Deep Learning Agents",
+    "sourceUrl": "/post-game/classical-vs-deep-learning-agents/",
+    "question": "Per the chapter, what actually happens if you point a tabular agent's supervision effort at architecture search instead of features?",
+    "options": [
+      "It saves time since architecture search is unnecessary for tabular models",
+      "A tabular model actually breaks on a bad feature, not on architecture choices, so watching the wrong thing lets the real failure slip past",
+      "Architecture search is impossible to run on tabular models",
+      "It has no consequence either way"
+    ],
+    "correctAnswerIndex": 1,
+    "explanation": "The chapter is explicit: a tabular model breaks on a bad feature, a deep learning model breaks during training — watching the wrong one means the actual failure goes uncaught."
+  },
+  {
+    "id": "mcq-classical-vs-deep-learning-agents-15",
+    "type": "mcq",
+    "chapterId": "classical-vs-deep-learning-agents",
+    "chapterTitle": "6.3 Classical vs Deep Learning Agents",
+    "sourceUrl": "/post-game/classical-vs-deep-learning-agents/",
+    "question": "Why does the chapter say sr_x_rrr (strike_rate × required_run_rate) is NOT automatically covered by the BRIEF just because both raw inputs are individually approved?",
+    "options": [
+      "Because multiplication is banned by default in every BRIEF",
+      "Because approved_features and forbidden_features were written with raw columns in mind, not derived combinations — this is exactly the kind of gap treated as umpires_call",
+      "Because sr_x_rrr always leaks the target variable",
+      "Because the DRS Reviewer automatically retrains the model whenever a new column appears"
+    ],
+    "correctAnswerIndex": 1,
+    "explanation": "Neither list says whether combining two approved raw columns into a new one is itself approved — creating the combination is a decision that needs sign-off, the same umpires_call gap covered in Director and Executor."
+  },
+  {
+    "id": "mcq-classical-vs-deep-learning-agents-16",
+    "type": "mcq",
+    "chapterId": "classical-vs-deep-learning-agents",
+    "chapterTitle": "6.3 Classical vs Deep Learning Agents",
+    "sourceUrl": "/post-game/classical-vs-deep-learning-agents/",
+    "question": "According to the chapter, what does permutation_importance's pruning step NOT do?",
+    "options": [
+      "It doesn't grant permission to create a candidate feature in the first place — manufacturing a derived column is a separate decision that needs sign-off",
+      "It doesn't compute an importance score for any column",
+      "It doesn't work on dummy-encoded columns",
+      "It doesn't require an already-trained model to run"
+    ],
+    "correctAnswerIndex": 0,
+    "explanation": "Permutation importance can only prune a candidate that already exists; it says nothing about whether manufacturing that candidate in the first place was ever approved."
+  },
+  {
+    "id": "mcq-classical-vs-deep-learning-agents-17",
+    "type": "mcq",
+    "chapterId": "classical-vs-deep-learning-agents",
+    "chapterTitle": "6.3 Classical vs Deep Learning Agents",
+    "sourceUrl": "/post-game/classical-vs-deep-learning-agents/",
+    "question": "Before a training-supervisor agent's best checkpoint can ship, what has to happen according to the chapter?",
+    "options": [
+      "Nothing — the best validation score is sufficient on its own",
+      "The DRS Reviewer Agent has to check it against evidence (val_loss, the lr_schedule, whether it diverged), the same as anywhere else in the section",
+      "It has to be retrained from scratch with a different optimiser",
+      "The Feature Factory has to approve it first"
+    ],
+    "correctAnswerIndex": 1,
+    "explanation": "Saving the best checkpoint isn't the same as shipping it — that decision still belongs to the same DRS Reviewer Agent, checking the same shape of evidence as everywhere else in Post-Game."
+  },
+  {
+    "id": "sa-classical-vs-deep-learning-agents-07",
+    "type": "short_answer",
+    "chapterId": "classical-vs-deep-learning-agents",
+    "chapterTitle": "6.3 Classical vs Deep Learning Agents",
+    "sourceUrl": "/post-game/classical-vs-deep-learning-agents/",
+    "question": "The chapter states that a tabular model 'breaks on a bad feature' and a deep learning model 'breaks during training.' Explain why pointing a tabular agent's supervision at architecture search, or a deep-learning agent's supervision at hand-crafted features, wastes that supervision.",
+    "modelAnswer": "Each kind of model's actual risk lives in a specific place: a tabular model's danger is a leaked or collinear feature inflating its score, which only scrutinising features catches; a deep learning model's danger is something going wrong during training itself, like memorising the training set or the loss diverging, which only watching the training run catches. If a tabular agent spends its effort on architecture search, or a deep learning agent spends its effort hand-crafting features the network would re-derive anyway, neither is watching the place its model actually tends to fail, so the real failure can slip past unnoticed.",
+    "rubric": [
+      "States a tabular model's real risk is a bad or leaked feature",
+      "States a deep learning model's real risk is something going wrong during training",
+      "Explains that supervising the wrong dimension lets the actual failure go uncaught"
+    ]
+  },
+  {
+    "id": "sa-classical-vs-deep-learning-agents-08",
+    "type": "short_answer",
+    "chapterId": "classical-vs-deep-learning-agents",
+    "chapterTitle": "6.3 Classical vs Deep Learning Agents",
+    "sourceUrl": "/post-game/classical-vs-deep-learning-agents/",
+    "question": "Explain why creating sr_x_rrr (an interaction term combining two approved raw features) is treated as a brief gap rather than something automatically approved, according to the chapter.",
+    "modelAnswer": "approved_features and forbidden_features name raw columns like strike_rate and required_run_rate, not derived combinations of them. Nothing in either list says whether combining two approved raw columns into a new one is itself approved, so creating sr_x_rrr is a genuine gap in the brief, not something the Feature Factory should assume is fine just because its ingredients were individually cleared. This is the same kind of gap treated as umpires_call elsewhere in the section: manufacturing the candidate is a decision that needs sign-off, separate from later pruning it with permutation importance.",
+    "rubric": [
+      "States approved_features/forbidden_features name raw columns, not derived combinations",
+      "Explains there's no rule saying combining approved inputs is itself approved",
+      "Connects this to umpires_call / needing sign-off, not automatic approval"
+    ]
   }
 ]
