@@ -5,7 +5,7 @@ subtitle: "From Feature Factories to Gradient Descent Supervision"
 innings: post-game
 chapter: classical-vs-deep-learning-agents
 meta: "14 min · feature factory vs training floor"
-lede: "An agent sweeping a tabular model and an agent training a network are not doing variations on the same job. One spends its overs inventing columns. The other spends them watching a loss curve for signs of trouble it can't undo after the fact."
+lede: "An agent sweeping a tabular model and an agent training a network are not doing variations on the same job. One spends its overs inventing columns. The other spends them watching a loss curve, catching trouble the moment it starts — because once training's gone wrong, there's no fixing it afterwards."
 commentary: "'One squad drills fielding positions. The other watches the scoreboard tick over ball by ball. Different net, different session.' — Data Analyst"
 codeFile: post_game/training_supervisor.py
 codeOut: "epoch 14 · val loss ↑ 3 in a row → lr 3e-4 → 6e-5, patience reset"
