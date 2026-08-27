@@ -13876,5 +13876,51 @@
       "Explains this recreates the trust problem the chapter is solving",
       "States make_split is owned by the Director, only called by the Executor"
     ]
+  },
+  {
+    "id": "mcq-director-and-executor-21",
+    "type": "mcq",
+    "chapterId": "director-and-executor",
+    "chapterTitle": "6.2 Director and Executor",
+    "sourceUrl": "/post-game/director-and-executor/",
+    "question": "Besides an unlisted feature, what other examples does the chapter give of something that triggers umpires_call?",
+    "options": [
+      "A metric that's slightly below its success_metric bar",
+      "An outlier found in a column that outlier_rule doesn't name, or a derived feature combining two approved raw ones",
+      "A leakage_cutoff rule that's stated incorrectly",
+      "A model that trains too slowly"
+    ],
+    "correctAnswerIndex": 1,
+    "explanation": "Both are the same kind of gap as the unlisted feature: outlier_rule only names strike_rate, and approved_features/forbidden_features were written with raw columns in mind, not derived combinations."
+  },
+  {
+    "id": "mcq-director-and-executor-22",
+    "type": "mcq",
+    "chapterId": "director-and-executor",
+    "chapterTitle": "6.2 Director and Executor",
+    "sourceUrl": "/post-game/director-and-executor/",
+    "question": "Why does the chapter say a derived feature like strike_rate × economy_rate triggers umpires_call, even though both strike_rate and economy_rate are individually approved?",
+    "options": [
+      "Because multiplication is not allowed in any BRIEF",
+      "Because approved_features and forbidden_features were written with raw columns in mind, not derived combinations, so there's no rule covering whether combining approved inputs is itself approved",
+      "Because interaction terms always leak information",
+      "Because the DRS Reviewer automatically rejects all derived features"
+    ],
+    "correctAnswerIndex": 1,
+    "explanation": "The brief's allow-list and deny-list name raw columns. Nothing in either list says whether combining two approved raw columns into a new derived one inherits that approval — that's a gap, not a violation."
+  },
+  {
+    "id": "sa-director-and-executor-10",
+    "type": "short_answer",
+    "chapterId": "director-and-executor",
+    "chapterTitle": "6.2 Director and Executor",
+    "sourceUrl": "/post-game/director-and-executor/",
+    "question": "The chapter gives three examples of what triggers umpires_call — an unlisted feature, an outlier in an unlisted column, and a derived feature. What do all three have in common, and how is that different from a metric that simply misses its bar?",
+    "modelAnswer": "All three examples share the same root cause: the BRIEF has no rule covering the specific situation the Executor ran into — not a rule that was violated, and not one that was clearly satisfied. This is different from a metric missing its bar, which the reviewer can still judge on its own: it clears the bar (upheld) or it doesn't (overturned, sent back to the agent to retry). umpires_call isn't about how close a number is to a threshold; it's reserved for situations where there's nothing in the brief to check the decision against at all.",
+    "rubric": [
+      "Identifies all three examples as missing-rule gaps in the brief, not rule violations",
+      "Distinguishes this from a metric miss, which the reviewer can still judge as overturned",
+      "States umpires_call is about absence of a rule, not proximity to a threshold"
+    ]
   }
 ]

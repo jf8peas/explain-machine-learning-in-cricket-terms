@@ -763,7 +763,7 @@ def play(question, max_overs=8):
       {
         slug: "director-and-executor",
         nav: "Director and Executor",
-        meta: "12 min · who owns the toss",
+        meta: "15 min · who owns the toss",
         title: "Director and Executor",
         subtitle: "Why AI Agents Don't Take Vacations (And Why You Can't Either)",
         lede: "Hand an agent the dataset and it will happily hand you back a model — confidently, quickly, and sometimes built on a rule it invented to get there. The agent can run the drill. It cannot decide what the drill is for.",
@@ -789,7 +789,7 @@ def play(question, max_overs=8):
       {
         slug: "classical-vs-deep-learning-agents",
         nav: "Classical vs Deep Learning Agents",
-        meta: "12 min · feature factory vs training floor",
+        meta: "14 min · feature factory vs training floor",
         title: "Classical vs Deep Learning Agents",
         subtitle: "From Feature Factories to Gradient Descent Supervision",
         lede: "An agent sweeping a tabular model and an agent training a network are not doing variations on the same job. One spends its overs inventing columns. The other spends them watching a loss curve for signs of trouble it can't undo after the fact.",

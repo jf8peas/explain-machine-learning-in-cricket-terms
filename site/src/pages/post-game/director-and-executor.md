@@ -4,7 +4,7 @@ title: "Director and Executor"
 subtitle: "Why AI Agents Don't Take Vacations (And Why You Can't Either)"
 innings: post-game
 chapter: director-and-executor
-meta: "12 min · who owns the toss"
+meta: "15 min · who owns the toss"
 lede: "Hand an agent the dataset and it will happily hand you back a model — confidently, quickly, and sometimes built on a rule it invented to get there. The agent can run the drill. It cannot decide what the drill is for."
 commentary: "'The kit man doesn't set the batting order.' — Head Coach"
 codeFile: post_game/guardrails.py
