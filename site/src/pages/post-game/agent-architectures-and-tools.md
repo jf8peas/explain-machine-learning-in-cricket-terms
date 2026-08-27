@@ -35,6 +35,10 @@ stats:
 
 Every chapter up to this point taught you how to build a model yourself — the algorithm, the metric, the tuning. This one changes the question: what does it look like to have an agent do that work instead, and how do you trust what it hands back?
 
+An agent, mechanically, is nothing more exotic than a loop: an LLM reasons about what to do next, that decision becomes a real function call — a tool, or a line of code — the result feeds back in, and the loop repeats until it declares itself done or runs out of turns. It's an ordinary program you run yourself, calling an LLM's API and your own functions; a framework like LangGraph just handles that loop's bookkeeping for you, it isn't a separate thing the agent runs inside of.
+
+Standing one up is five concrete pieces, each covered in full where it's actually used rather than here: pick an LLM to do the reasoning; give it a set of tools defined as callable functions with a schema, covered next in **The Schema Is the Job Description**; wire the loop itself — call the model, act on its decision, feed the result back in, repeat — capped at a hard maximum iteration count, covered in **A Maximum Iteration Count, Not a Threshold**; run anything the agent writes in a sandbox, never inside the loop itself, the whole subject of **Execution Environments**; and then just run the thing as an ordinary program. No step here needs a special "agent runtime" — it's your own code, calling an LLM and your own functions, in a loop.
+
 Every agentic ML workflow you'll meet is built from **two architectures for producing an answer**, plus **one quality gate for checking it**. **One all-rounder** loops through every tool themselves. **A multi-agent XI** splits the work across a captain and specialists. Those are the two choices — pick whichever matches the job. What's not a third choice is the **DRS Reviewer Agent**: it doesn't produce an answer of its own, it sits downstream of whichever architecture you picked and checks the answer before it ships. Skip it, and either architecture can still confidently hand you something wrong.
 
 ## Architecture One: One All-Rounder, Every Tool in the Kit Bag
