@@ -34,15 +34,15 @@ stats:
   - { k: "Tabular stop signal", v: "ΔScore < 0.001", s: "next candidate feature" }
 ---
 
-## The Feature Factory
-
 "Classical" in the title and "tabular" in the text mean the same thing here: an agent whose input is a dataframe of named, meaningful columns — the same structured data every **First Innings** chapter works with — as opposed to the raw tensors a deep learning agent trains on.
 
 The last chapter drew the line between what the human Director decides and what the agent Executor carries out. What the Executor actually spends its time doing, though, depends entirely on the kind of model being built — and that's the real lesson here, not just that the two kinds of agent are different. Point a tabular agent's effort at architecture search, or a deep-learning agent's effort at hand-crafting features, and you've mis-aimed the supervision. A tabular model breaks on a bad feature. A deep learning model breaks during training. Watch the wrong one and the real failure slips past.
 
 Two things follow from that difference — what each agent should be watching, and an extra logging discipline a long training run forces that a quick feature sweep never needs. One thing doesn't follow from it at all: both agents still answer to the same Director's rules and the same DRS Reviewer check, regardless of which kind of model is being built.
 
-A tabular ML agent spends almost its entire budget on the columns, not the algorithm. Given a clean-ish dataframe, the job is to manufacture candidate features, check each one earns its place, and discard the rest before they start eating signal from something better:
+## The Feature Factory
+
+A tabular ML agent spends almost its entire budget on the columns, not the algorithm. Given a clean-ish dataframe, the job is to manufacture candidate features, check each candidate earns its place, and discard the rest before they start eating signal from something better:
 
 ```python
 import pandas as pd
