@@ -51,11 +51,27 @@ That same division — decide, then execute inside the decision — holds across
 
 Not maliciously — an agent optimising a metric with no rules attached will take the shortest path to a good number, and the shortest path is usually a leak:
 
-- **Temporal leakage.** Randomly shuffling rows before a train/val split, when the real deployment question is "predict the next match from the last ten," silently hands the model a peek at the future. The guarded `make_split` above exists because an unguarded version of the same function will pass every test and still be wrong.
+- **Temporal leakage.** Randomly shuffling rows before a train/val split, when the real deployment question is "predict the next match from the last ten," silently hands the model a peek at the future.
 - **Target-encoding traps.** Encoding a categorical column using the mean target *across the whole dataset*, validation rows included, quietly leaks the answer into the feature. The fix is trivial — fit the encoding on the training fold only — but nothing about "reduce validation error" tells an agent to bother.
 - **Over-indexing on freak outliers.** A single once-in-a-season 200 not out drags a linear model's coefficients toward fitting that one innings instead of the other 999. An agent chasing R² will happily let it, because keeping the outlier usually *improves* the training metric it's watching.
 
 None of these throw an error. They all report a better score. That's exactly why they need a rule sitting above the metric, not a smarter metric.
+
+Temporal leakage is the easiest of the three to close, because the fix is a single guard clause rather than a change in judgement:
+
+```python
+def make_split(df, cutoff_date):
+    # A Director's rule, enforced in code an Executor can't route around
+    train = df[df.match_date < cutoff_date]
+    val = df[df.match_date >= cutoff_date]
+
+    if val.match_date.min() <= train.match_date.max():
+        raise ValueError("split rejected: val window starts before train window ends")
+
+    return train, val
+```
+
+An unguarded version of the same function — one that shuffles rows randomly before splitting — will pass every test and still be wrong. This one refuses to run at all if any validation row's date isn't strictly after every training row's.
 
 ## The Brief Is the Interface
 
