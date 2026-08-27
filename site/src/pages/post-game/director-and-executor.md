@@ -71,7 +71,9 @@ def make_split(df, cutoff_date):
     return train, val
 ```
 
-An unguarded version of the same function — one that shuffles rows randomly before splitting — will pass every test and still be wrong. This one refuses to run at all if any validation row's date isn't strictly after every training row's.
+An unguarded version of the same function — one that shuffles rows randomly before splitting — will pass every test and still be wrong. This one refuses to run at all if any validation row's date isn't strictly after every training row's. Note what it doesn't require: the rows don't need to already be sorted by date. `df.match_date < cutoff_date` filters by value, and `.min()` / `.max()` scan the whole column, so the guard works correctly no matter what order the rows arrive in — it's comparing dates, not positions.
+
+Both the brief and this guard are the Director's to write, not the Executor's. A guard clause the Executor was free to rewrite each run would just be one more thing the agent decided — exactly the trust problem this chapter exists to solve. `make_split` earns "an Executor can't route around" only because it's fixed infrastructure the Director owns and the Executor merely calls, not code the Executor is ever trusted to author itself.
 
 ## The Brief Is the Interface
 
@@ -82,7 +84,7 @@ BRIEF = {
     "target": "wicket_next_over",
     "task": "classification",
     "success_metric": {"name": "f1", "min": 0.75},
-    "leakage_cutoff": "match_date",
+    "leakage_cutoff": {"column": "match_date", "rule": "last 15% by date"},
     "approved_features": ["strike_rate", "economy_rate", "phase_of_innings"],
     "forbidden_features": ["third_umpire_ruling", "postmatch_report_id"],
     "encoding_rule": "fit categorical encodings on the training fold only",
@@ -92,7 +94,7 @@ BRIEF = {
 
 Nothing here is new — the metric, the cutoff, the feature rules, and the outlier definition are the same ones already covered above. What's new is that they now live in one checkable place instead of three prose paragraphs and a Slack message.
 
-Three fields map directly onto the three cheats from the last section, one each. `leakage_cutoff` closes temporal leakage, enforced the same way `make_split` already showed. `encoding_rule` closes the target-encoding trap, by requiring any categorical encoding to be fit on the training fold only — the exact fix that section named, now made explicit instead of assumed. `outlier_rule` doesn't close over-indexing by removing the outlier's influence — a genuine freak performance is real signal, not noise to strip out — it closes the *silent* part: an outlier gets flagged and logged rather than quietly absorbed into a better-looking training score with nobody reviewing whether that was the right call.
+Three fields map directly onto the three cheats from the last section, one each. `leakage_cutoff` closes temporal leakage, enforced the same way `make_split` already showed — note it carries both the column *and* a rule for the cutoff itself. Naming the column alone tells an Executor nothing about where the line actually falls; without a rule, "last 15% by date" here, the specific `cutoff_date` `make_split` needs would be one more thing left for the agent to invent. `encoding_rule` closes the target-encoding trap, by requiring any categorical encoding to be fit on the training fold only — the exact fix that section named, now made explicit instead of assumed. `outlier_rule` doesn't close over-indexing by removing the outlier's influence — a genuine freak performance is real signal, not noise to strip out — it closes the *silent* part: an outlier gets flagged and logged rather than quietly absorbed into a better-looking training score with nobody reviewing whether that was the right call.
 
 `approved_features` and `forbidden_features` are doing a different job — not closing one specific cheat, but setting the boundary of the search space itself: an allow-list and a deny-list, defining what's fair game to derive from at all before any sweep begins.
 
