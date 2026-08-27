@@ -36,7 +36,9 @@ stats:
 
 ## The Feature Factory
 
-The last chapter drew the line between what the human Director decides and what the agent Executor carries out. What the Executor actually spends its time doing, though, depends entirely on the kind of model being built — and that's the real lesson here, not just that the two kinds of agent are different. Point a tabular agent's effort at architecture search, or a deep-learning agent's effort at hand-crafting features, and the supervision has gone to the wrong place: the failure that actually threatens each kind of model lives somewhere else entirely.
+"Classical" in the title and "tabular" in the text mean the same thing here: an agent whose input is a dataframe of named, meaningful columns — the same structured data every **First Innings** chapter works with — as opposed to the raw tensors a deep learning agent trains on.
+
+The last chapter drew the line between what the human Director decides and what the agent Executor carries out. What the Executor actually spends its time doing, though, depends entirely on the kind of model being built — and that's the real lesson here, not just that the two kinds of agent are different. Point a tabular agent's effort at architecture search, or a deep-learning agent's effort at hand-crafting features, and you've mis-aimed the supervision. A tabular model breaks on a bad feature. A deep learning model breaks during training. Watch the wrong one and the real failure slips past.
 
 Two things follow from that difference — what each agent should be watching, and an extra logging discipline a long training run forces that a quick feature sweep never needs. One thing doesn't follow from it at all: both agents still answer to the same Director's rules and the same DRS Reviewer check, regardless of which kind of model is being built.
 
