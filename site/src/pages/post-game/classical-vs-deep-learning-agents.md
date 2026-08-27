@@ -36,7 +36,9 @@ stats:
 
 ## The Feature Factory
 
-The last chapter drew the line between what the human Director decides and what the agent Executor carries out. What the Executor actually spends its time doing, though, depends entirely on the kind of model being built.
+The last chapter drew the line between what the human Director decides and what the agent Executor carries out. What the Executor actually spends its time doing, though, depends entirely on the kind of model being built — and that's the real lesson here, not just that the two kinds of agent are different. Point a tabular agent's effort at architecture search, or a deep-learning agent's effort at hand-crafting features, and the supervision has gone to the wrong place: the failure that actually threatens each kind of model lives somewhere else entirely.
+
+Two things follow from that difference — what each agent should be watching, and an extra logging discipline a long training run forces that a quick feature sweep never needs. One thing doesn't follow from it at all: both agents still answer to the same Director's rules and the same DRS Reviewer check, regardless of which kind of model is being built.
 
 A tabular ML agent spends almost its entire budget on the columns, not the algorithm. Given a clean-ish dataframe, the job is to manufacture candidate features, check each one earns its place, and discard the rest before they start eating signal from something better:
 
@@ -87,7 +89,7 @@ A training-supervisor agent can save the best checkpoint all day — whether tha
 
 ## Context Window Hygiene
 
-A training run that takes 200 epochs produces 200 lines of loss output — and a training-supervisor agent that's naive about it will paste every single one into its own context window, because that's the easiest way to "remember" what happened. It also caps how long the agent can usefully run: a context window is finite, and 200 epochs of raw stdout is exactly the kind of low-signal, high-volume text that fills it fastest.
+This is the second way the Training Floor's job differs from the Feature Factory's, not a new topic. A feature sweep runs in seconds to minutes and comes back with a handful of scored candidates; a training run that takes 200 epochs produces 200 lines of loss output. A training-supervisor agent that's naive about it will paste every single one into its own context window, because that's the easiest way to "remember" what happened. It also caps how long the agent can usefully run: a context window is finite, and 200 epochs of raw stdout is exactly the kind of low-signal, high-volume text that fills it fastest.
 
 The fix is the same one a human would reach for: don't keep the whole innings in your head, keep the scorecard.
 
@@ -112,6 +114,8 @@ This matters more the longer the run goes. A quick ten-epoch fit can get away wi
 
 ## Two Different Nets
 
+Every difference above — inputs, effort, failure mode, when to stop — compresses into one table:
+
 | | Tabular Agent | Deep Learning Agent |
 |---|---|---|
 | **Inputs** | A dataframe with named, meaningful columns | Raw or lightly-processed tensors — pixels, tokens, waveforms |
@@ -126,4 +130,4 @@ This matters more the longer the run goes. A quick ten-epoch fit can get away wi
 - **Always checkpoint on the best validation score, not the last epoch.** An agent that stops on "ran out of patience" without saving the best point along the way has thrown away the good run to keep the bad one.
 - **Out-of-memory is a training-floor failure mode with no tabular equivalent.** A deep learning agent needs a batch-size backoff plan; a tabular agent almost never will.
 - **Log to a file, reason over a summary.** Raw epoch-by-epoch stdout belongs in `experiments.csv` or TensorBoard, not in the agent's own context — feed it a rebuilt summary instead of letting a long run silently push out the reasoning that explained why it started.
-- **Both loops still answer to the same framework.** The Feature Factory's candidate columns are bounded by the Director's approved and forbidden lists; the Training Floor's best checkpoint still needs the DRS Reviewer's evidence check before it ships.
+- **One thing doesn't change between the two loops, unlike everything above.** The Feature Factory's candidate columns are bounded by the Director's approved and forbidden lists; the Training Floor's best checkpoint still needs the DRS Reviewer's evidence check before it ships — same rules, same gate, whichever kind of agent is running.
