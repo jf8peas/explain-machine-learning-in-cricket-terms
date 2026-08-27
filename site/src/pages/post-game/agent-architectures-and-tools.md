@@ -125,6 +125,17 @@ None of this happens by default. A multi-agent team that never revisits its agen
 
 It isn't a real parameter you'd import from an agent framework either — the same cap exists in actual frameworks under its own name: LangGraph's `recursion_limit`, LangChain's `AgentExecutor(max_iterations=...)`, AutoGen's `max_turns`, CrewAI's `max_iter`. Whichever a real stack uses, the job is identical: force a declared stop before the loop pays for its own indecision.
 
+Those four don't split evenly across the two patterns above, either:
+
+| Framework | ReAct (single agent) | Multi-agent XI | Pick it when |
+|---|---|---|---|
+| **LangGraph** | Yes — prebuilt `create_react_agent` | Yes — router node plus specialist nodes | Either pattern, or you're not yet sure which |
+| **AutoGen** | Yes, as the simple case | Yes — its actual center of gravity | Multi-agent from the start |
+| **CrewAI** | Only as a one-agent Crew | Yes — built around role-based Crews | Multi-agent from the start, want its opinionated structure |
+| **LangChain `AgentExecutor`** | Yes | No — no multi-agent primitive of its own | A committed single-agent loop, nothing more |
+
+If the architecture is already settled by the Ground Rules below, that answers the framework question too — everything but `AgentExecutor` will still run a lone ReAct loop, and everything but a plain `AgentExecutor` will run a multi-agent XI. LangGraph is the only one that doesn't force a rewrite if the split changes later.
+
 ## The Quality Gate: The DRS Reviewer Agent (LLM-as-a-Judge)
 
 This isn't a third architecture sitting next to the other two — it doesn't compete with them for the job of producing an answer, and it isn't running while they run. The **DRS Reviewer Agent** only switches on once the ReAct loop or the multi-agent XI has already finished and handed over a result. Its entire job is to check that one finished answer against the evidence, not to help make it.
